@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="pragma" content="no-cache">
+<title>Login</title>
+<link href="<?php echo CSS_PATH ?>/user/login.css" rel="stylesheet" type="text/css" />
+<link href="<?php echo CSS_PATH ?>/user/custom-theme/jquery-ui-1.8.11.custom.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="<?php echo JS_PATH ?>/jquery-1.5.1.min.js"></script>
+<script type="text/javascript" src="<?php echo JS_PATH ?>/jquery-ui-1.8.11.custom.min.js"></script>
+<script type="text/javascript" src="<?php echo JS_PATH ?>/jquery.validate.js"></script>
+<script type="text/javascript" src="<?php echo JS_PATH ?>/user/login.js"></script>
+</head>
+<body class="bodylogin" >
+<div id="logo1">
+  <center>
+    <img id="logo" src="<?php echo IMAGES_PATH; ?>/user/logo.png" alt="logo" border="0" />
+  </center>
+</div>
+<div id="box">
+  <table align="center">
+    <tr>
+      <td> <form name="frmLogin" id="frmLogin" method="post" class="form col" action="">
+          <table>
+            <tr>
+              <td><div style="padding:10px 0px 5px 0px;" class="error_small"><?php echo $this->loginError; ?><?php if($this->Forgot_Error != "") { echo $this->Forgot_Error; } ?>
+                </div>
+                <table>
+                  <tr>
+                    <td nowrap style="padding:0px 10px 0px 10px" valign="top"><?php echo $this->Translate('Username') ?>:</td>
+                    <td nowrap>
+					<input tabindex="1" id="user_name" type="text" class="Field150" name="user_name" title="<?php echo $this->Translate('Tip_Enter_Username') ?>" value="<?php if($this->username != '') { echo $this->username; } ?>" />
+                      <div></div> </td>
+                  </tr>
+                  <tr>
+                    <td height=""></td>
+                  </tr>
+                  <tr>
+                    <td nowrap style="padding:0px 10px 0px 10px" valign="top"><?php echo $this->Translate('Password') ?>:</td>
+                    <td nowrap>
+					 <input tabindex="2" id="password" type="password" class="Field150" name="password" title="<?php echo $this->Translate('Tip_Enter_Password') ?>" value="<?php if($this->password != '') { echo $this->password; } ?>" />
+                      <div></div> </td>
+                  </tr>
+                  <tr>
+                    <td nowrap>&nbsp;</td>
+                    <td>&nbsp;
+						<?php if($this->remember == '1') {  ?>
+                      	<input type="checkbox" checked="checked" name="remember" id="remember" value="1" style="margin-left:-0px">
+						<?php } else { ?>
+						<input type="checkbox"  name="remember" id="remember" value="1" style="margin-left:-0px">
+						<?php } ?>
+                      <label for="remember" >Remember my login details</label>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td height="8"></td>
+                  </tr>
+                  <tr>
+                    <td>&nbsp;</td>
+                    <td><input type="submit" value="<?php echo $this->Translate('Login') ?>"/>					
+                      &nbsp;&nbsp;<a href='#' id="link_forgotpassword"><?php echo $this->Translate('Forgot_Password') ?></a> </td>
+                  </tr>
+                  <tr>
+                    <td class="Gap"></td>
+                  </tr>
+                </table></td>
+            </tr>
+          </table>
+        </form></td>
+    </tr>
+  </table >
+  <form method="post" id="forgotpass_form" name="forgotpass_form" class="form" action="<?php echo SITE_URL; ?>user/login/forgotpass" >
+  <hr>
+    <table style="margin-top:10px;">
+	  	<tr>
+			<td valign="top"><label for="Email"><?php echo $this->Translate('Enter_Your_Email') ?>:</label></td>
+			<td><input class="Field150" id="forgotpass_email" name="forgotpass_email" type="text" /><div></div></td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+			<td >
+				<input type="submit" value="<?php echo $this->Translate('Send') ?>" onclick="return validateForgotPassForm()">
+			</td>
+		</tr>
+	</table>	
+    </form>
+  <div style="padding:10px; margin-bottom:10px; padding-left:0px; text-align:center" class="PageFooter">Powered by Puvoo&trade; - Copyright &copy; 2011 <a href="http://www.puvoo.com">Puvoo&trade;</a></div>
+</div>
+<script>
+     $(function() {
+    	$( ".button,input:button,input:submit" ).button();
+		$("#forgotpass_form").hide();
+		$("#link_forgotpassword").click(function(){ $("#forgotpass_form").toggle(); });		
+    });
+</script>
+<script type="text/javascript">
+var ERR_ENTER_USERNAME = "<?php echo $this->Translate('Tip_Enter_Username') ?>";
+var ERR_ENTER_PASSWORD = "<?php echo $this->Translate('Tip_Enter_Password') ?>";
+var ERR_EMPTY_EMAIL = "<?php echo $this->Translate('Forgot_Pass_Email_Error') ?>";
+var ERR_INVALID_EMAIL = "<?php echo $this->Translate('Forgot_Pass_Email_Invalid') ?>";
+</script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+.bodylogin
+{
+	color: #676767;
+	font-size: 12px;
+	background-color: #ffffff;
+	font: normal 11px Tahoma;
+	margin-top:150px;
+	padding: 10px 30px 30px 30px;
+	background-repeat: repeat-x;
+}
+
+#logo1
+{
+	margin:auto;
+	width:239px;
+	margin-bottom:10px;
+}
+
+#box
+{
+	margin:auto;
+	width:300px;
+	background:#17649e;
+	width:350px;
+	min-height:196px;
+	color:#ffffff;
+	border:2px solid #000000;
+}
+
+
+.box {
+margin: 0 0 20px 0;
+position: relative;
+}
+
+a {
+	font-weight: normal;
+	font-size: 11px;
+	color: #ffffff;
+	font-style: normal;
+	font-family: Tahoma;
+	text-decoration: underline;
+}
+
+.Field150
+{
+	border:1px solid #e2e2e2;
+	width:140px;
+	padding-left:5px;
+	padding-right:5px;
+	font-size:11px;
+	color:#333333;
+}
+
+.error_small
+{
+	color:#faa31f;
+	font-weight:bold;
+	font-size:12px;
+}

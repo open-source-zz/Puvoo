@@ -1,0 +1,95 @@
+<div class="Breadcrumb" id="PageBreadcrumb">
+	<ul>
+	   <li class="Home SecondLast"><a href="#"><?php echo $this->Translate("Administration"); ?></a></li>
+	   <li class="Last"><span><?php echo $this->Translate('Currency'); ?></span></li>
+	</ul>
+</div>
+
+<!--       Set Record value         -->
+<?php  $edit_record = $this->records;  ?>
+
+<div class="BodyContainer DashboardContainer" style="text-align:left;"> 
+	<div class="Heading1">
+		<?php echo $this->Translate('Manage_Currency'); ?>
+	</div>
+	
+	<div >
+		<?php echo $this->editErrorMessage; ?>
+	</div>
+	
+	<form method="post" name="edit_form" id="edit_form" >
+		<table class="Panel" style="margin-top:10px;">
+			<tr>
+				<td class="Heading2" colspan="2"><?php echo $this->Translate('Edit_Currency'); ?></td>
+			</tr>
+			<tr>
+				<td colspan="2">
+				<div id="div0" style="padding-bottom:5px">
+					<table class="Panel" width="100%" cellspacing="0" cellpadding="0">
+						<tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Currency_Name'); ?>
+							</td>
+							<td>
+								<input type="text" name="currency_name" id="currency_name" class="Field250" value="<?php echo $edit_record['currency_name']; ?>"/>
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Currency_Code'); ?>
+							</td>
+							<td>
+								<input type="text" name="currency_code" id="currency_code" class="Field250"  value="<?php echo $edit_record['currency_code']; ?>"/>
+								<span></span>
+							</td>
+						</tr>				
+						<tr><td height="15"></td></tr>
+						<tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Currency_Symbol'); ?>
+							</td>
+							<td>
+								<input type="text" name="currency_symbol" id="currency_symbol" class="Field250"  value="<?php echo $edit_record['currency_symbol']; ?>"/>
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="15"></td></tr>
+						<tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Currency_Value'); ?>
+							</td>
+							<td>
+								<input type="text" name="currency_value" id="currency_value" class="Field250"  value="<?php echo $edit_record['currency_value']; ?>"/>
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="15"></td></tr>
+						<tr>
+						   	<td colspan="2">
+								<input type="submit" onclick="Javascript: return ValidateEditFrom()" value="<?php echo $this->Translate('Submit'); ?>" />
+								<input type="button" value="<?php echo $this->Translate('Cancle'); ?>" onclick="window.location='<?php echo $this->site_url; ?>'"/>
+						   </td>
+						</tr>
+					</table>
+				</div>
+				</td>
+			</tr>
+		</table>   
+		
+		<!--         Hidden fields                       -->
+		<input type="hidden" name="currency_id" id="currency_id" value="<?php echo $this->currency_id; ?>" />
+		
+	</form>            
+</div> 
+
+<!--     JS Global Variable for the language    -->
+
+<script language="javascript" type="text/javascript">
+var siteurl = '<?php echo SITE_URL; ?>';
+var ERR_CURRENCY_NAME = '<?php echo $this->Translate("Err_Currency_Name"); ?>';  
+var ERR_CURRENCY_CODE = '<?php echo $this->Translate("Err_Currency_Code"); ?>';  
+var ERR_CURRENCY_SYMBOL = '<?php echo $this->Translate("Err_Currency_Symbol"); ?>';  
+var ERR_CURRENCY_VALUE = '<?php echo $this->Translate("Err_Currency_Value"); ?>';  
+</script>

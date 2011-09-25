@@ -1,0 +1,82 @@
+<ul id="icons" class="ui-widget ui-helper-clearfix" >
+
+	<!-- First page link -->
+	<?php if (isset($this->previous)): ?>
+		<li class="ui-state-default ui-corner-all" onclick="javascript: getPage(<?php echo $this->first ?>);" title="<?php echo $this->Translate('First'); ?>">
+			<span class="ui-button-text" style="margin-left:10px; margin-right:10px;">
+				&lt;&lt;<?php // echo $this->Translate('First'); ?>
+			</span>
+		</li>
+	<?php else: ?>
+		<li class="ui-state-default ui-corner-all" title="<?php echo $this->Translate('First'); ?>">
+			<span class="ui-button-text" style="margin-left:10px; margin-right:10px;">
+				&lt;&lt;<?php // echo $this->Translate('First'); ?>
+			</span>
+		</li>  
+	<?php endif; ?>
+	
+	<!-- Previous page link -->
+	
+	<?php if (isset($this->previous)): ?>
+		<li class="ui-state-default ui-corner-all" onclick="javascript: getPage(<?php echo $this->previous ?>);" title="<?php echo $this->Translate('Previous'); ?>">
+			<span class="ui-button-text" style="margin-left:10px; margin-right:10px;">
+				&lt;<?php //echo $this->Translate('Prev'); ?>
+			</span>
+		</li>
+	<?php else: ?>
+		<li class="ui-state-default ui-corner-all" title="<?php echo $this->Translate('Previous'); ?>">
+			<span class="ui-button-text" style="margin-left:10px; margin-right:10px;">
+				&lt;<?php //echo $this->Translate('Prev'); ?>
+			</span>
+		</li> 
+	<?php endif; ?>	
+		
+	 <!-- Numbered page links -->
+        <?php foreach ($this->pagesInRange as $page): ?>
+            <?php if ($page != $this->current): ?>
+				
+				<li class="ui-state-default ui-corner-all" onclick="javascript: getPage(<?php echo $page ?>);" title="Page <?php echo $page ?>">
+					<span class="ui-button-text" style="margin-left:10px; margin-right:10px;">
+						<?php echo $page ?>
+					</span>
+				</li> 
+			<?php else: ?>
+				<li class="ui-state-default ui-corner-all" title="Page <?php echo $page ?>">
+					<span class="ui-button-text" style="margin-left:10px; margin-right:10px;">
+						<?php echo $page ?>
+					</span>
+				</li> 
+            <?php endif; ?>
+        <?php endforeach; ?>       
+	
+	<!-- Next page link -->
+        <?php if (isset($this->next)): ?>
+		
+			<li class="ui-state-default ui-corner-all" onclick="javascript: getPage(<?php echo $this->next ?>);" title="<?php echo $this->Translate('Next'); ?>">
+				<span class="ui-button-text" style="margin-left:10px; margin-right:10px;">
+					<?php //echo $this->Translate('Next'); ?> &gt;
+				</span>
+			</li> 
+		<?php else: ?>
+            <li class="ui-state-default ui-corner-all" title="<?php echo $this->Translate('Next'); ?>">
+				<span class="ui-button-text" style="margin-left:10px; margin-right:10px;">
+					<?php //echo $this->Translate('Next'); ?> &gt;
+				</span>
+			</li> 
+        <?php endif; ?>
+	
+	 <!-- Last page link -->
+        <?php if (isset($this->next)): ?>		
+			<li class="ui-state-default ui-corner-all" onclick="javascript: getPage(<?php echo $this->last ?>);" title="<?php echo $this->Translate('Last'); ?>">
+				<span class="ui-button-text" style="margin-left:10px; margin-right:10px;">
+					&gt;&gt;<?php //echo $this->Translate('Last'); ?>
+				</span>
+			</li>             
+		<?php else: ?>
+            <li class="ui-state-default ui-corner-all" title="<?php echo $this->Translate('Last'); ?>">
+				<span class="ui-button-text" style="margin-left:10px; margin-right:10px;">
+					&gt;&gt;<?php //echo $this->Translate('Last'); ?>
+				</span>
+			</li>  
+        <?php endif; ?>
+</ul>

@@ -1,0 +1,33 @@
+<ul class="topnav">
+	
+	<li><a href="<?php echo SITE_URL . 'user/' ?>"><img src="<?php echo IMAGES_PATH; ?>/admin/home2.png" style="vertical-align:middle; padding-bottom:6px;" />&nbsp;<?php echo $this->Translate("User_Home"); ?></a>
+		<ul class="subnav">
+			<li>
+				<a href="<?php echo SITE_URL . 'user/index/changepassword'; ?>">
+					<?php echo $this->Translate("Change_Password"); ?>
+				</a>
+			</li>
+			<li><a href="<?php echo SITE_URL . 'user/logout' ?>" class="">Logout</a></li>
+		</ul>
+	</li>
+	
+	<li><a href="#"><img src="<?php echo IMAGES_PATH; ?>/admin/article.png" style="vertical-align:middle; padding-bottom:6px;" />&nbsp;<?php echo $this->Translate("Settings_configurations"); ?></a>
+		<ul class="subnav">
+			<li>
+				 <a href="<?php echo SITE_URL . 'user/store'; ?>">
+				 	<?php echo $this->Translate("Store_Settings"); ?>
+				</a>
+			</li>			
+			<li>
+				<a href="<?php echo SITE_URL . 'user/taxrates'; ?>">
+				 	<?php echo $this->Translate("Taxes_Rates"); ?>
+				</a>
+			</li>
+			<li>
+				<a href="<?php echo SITE_URL . 'user/shippingmethod'; ?>">
+					<?php echo $this->Translate("Shipping_Method"); ?>
+				</a>
+			</li>
+		</ul>
+	</li>
+</ul>

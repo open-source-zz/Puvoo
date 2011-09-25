@@ -1,0 +1,31 @@
+/* ISSelectReplacement Styles */
+
+
+
+.ISelector { float:left; border: 1px solid #7F9DB9; background: #fff; width: 300px; overflow: auto; height: 200px; }
+
+.ISelector ul, .ISelector li { list-style: none; padding: 0; margin: 0; }
+
+.ISelector li { cursor: pointer; padding-left: 4px; padding-top: 2px; padding-bottom: 2px; border-top: 1px solid #fff; cursor: default; border-bottom: 1px solid #fff; }
+
+.ISelector li.ISelectorGroup { padding-left: 0; }
+
+.ISSelect input, .ISelector input { margin-right: 5px !important; }
+
+.ISelectorGroup li{ padding-left: 20px; }
+
+.ISelector .ISelectorOptionHover { background: #efefef; }
+
+.ISelectorGroup div { font-weight: bold; font-style: italic; padding-left: 4px; }
+
+.ISelector li.ISelectorGroup { background: transparent; border-top: 0; border-bottom: 0; padding-bottom: 0; }
+
+.ISelector .SelectedRow { background: #316AC5; border-top: 1px solid #316AC5; border-bottom: 1px solid #316AC5; color: #fff; }
+
+.ISelectorClear { clear: left; }
+
+
+
+.RTL .ISSelect { float:right; }
+
+.RTL .ISelectorClear { clear: right; }

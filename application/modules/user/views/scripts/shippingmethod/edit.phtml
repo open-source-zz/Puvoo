@@ -1,0 +1,144 @@
+<!--  Crumb  Start -->
+<div class="Breadcrumb" id="PageBreadcrumb">
+	<ul>
+	   <li class="Home SecondLast"><a href="<?php echo SITE_URL; ?>user/"><?php echo $this->Translate("User_Home"); ?></a></li>
+	   <li class="Last"><span><?php echo $this->Translate("Shipping_Method"); ?></span></li>
+	</ul>
+</div>
+<!--  Crumb  end -->
+
+
+
+
+<div class="BodyContainer DashboardContainer" style="text-align:left;"> 
+	<div class="Heading1">
+		<?php echo $this->Translate('Shipping_Management'); ?>
+	</div>
+
+
+	<!--       Error or Success Messages          -->
+	<div style="text-align:center">
+		<?php echo $this->error_message; ?>
+	</div>
+	<!--       End Messages           -->
+
+
+	<!--       Set Record value         -->
+	<?php  $edit_record = $this->records;  ?>
+	
+	<form method="post" name="edit_form" id="edit_form" >
+		<table class="Panel" style="margin-top:10px;">
+			<tr>
+				<td class="Heading2" colspan="2"><?php echo $this->Translate('Shipping_Method_Add'); ?></td>
+			</tr>
+			<tr>
+				<td colspan="2">
+				<div id="div0" style="padding-bottom:5px">
+					<table class="Panel" width="100%" cellspacing="0" cellpadding="0">
+						<tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Shipping_Method_Name'); ?>:
+							</td>
+							<td>
+								<input type="text" name="shipping_method_name" id="shipping_method_name" value="<?php echo $edit_record['shipping_method_name'];  ?>" class="Field250" />
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('ZONE'); ?>:
+							</td>
+							<td>
+								<textarea cols="33" rows="3" name="shipping_zone" id="shipping_zone" ><?php echo $edit_record['zone'];  ?> </textarea>
+								<span></span>
+								<div>
+									<input type="button" onclick="ShowCountryDialog()" value="<?php echo $this->Translate('Shipping_Method_Add_Country_Btn'); ?>" />
+								</div>
+							</td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('PRICE'); ?>:
+							</td>
+						  <td>
+							  <textarea cols="33" rows="3" name="shipping_price" id="shipping_price" ><?php echo $edit_record['price'];  ?></textarea>
+							  <span></span>
+						  </td>
+						</tr>
+						<tr><td height="5"></td></tr>						
+						<tr>
+						   	<td colspan="2">
+								<input type="submit" id="anything" onclick="Javascript: return ValidateEditForm()" value="<?php echo $this->Translate('Submit'); ?>" />
+								<input type="button" id="anything"  value="<?php echo $this->Translate('Cancle'); ?>" onclick="window.location='<?php echo $this->site_url; ?>'"/>
+						   </td>
+						</tr>
+					</table>
+				</div>
+				</td>
+			</tr>
+		</table>  
+		
+		<!--         Hidden fields                       -->
+		<input type="hidden" name="shipping_method_id" id="shipping_method_id" value="<?php echo $this->shipping_method_id; ?>" />
+		 
+	</form>	
+</div>
+
+
+<!-- Necessary Global variable for the language  -->
+<script language="javascript" type="text/javascript">
+	var site_url = '<?php echo SITE_URL; ?>';
+	var ERR_SHIPPING_METHOD_NAME = "<?php echo $this->Translate('Err_Shipping_Method_Name'); ?>";
+	var ERR_SHIPPING_ZONE = "<?php echo $this->Translate('Err_Shipping_Zone'); ?>";
+	var ERR_SHIPPING_METHOD_RATE = "<?php echo $this->Translate('Err_Shipping_Method_Rate'); ?>";
+	var SAVE = "<?php echo $this->Translate('Save'); ?>";
+	var CLEAR = "<?php echo $this->Translate('Clear'); ?>";
+	var ERR_SHIPPING_SELECT_COUNTRY = "<?php echo $this->Translate('Err_Shipping_Select_Country'); ?>";
+	var ERR_SHIPPING_SELECT_STATE = "<?php echo $this->Translate('Err_Shipping_Select_State'); ?>";
+	var ERR_COUNTRY_EXIST = '<?php echo $this->Translate("Err_Country_Exists"); ?>';
+	var ERR_STATE_EXIST = '<?php echo $this->Translate("Err_State_Exists"); ?>';
+</script>
+
+
+
+<div id="dialog-addCountry" title="<?php echo $this->Translate('Edit_Zone_Details'); ?>" style="display:none; text-align:left;">
+	<div>
+		<table width="500" cellspacing="10" cellpadding="5">
+			<tr>
+				<td>Country : &nbsp;&nbsp;</td>
+				<td>
+					<select name="store_country" id="store_country" class="Field250"  >
+						<option value="" >Select Country</option>
+						<?php  		foreach($this->country as $key => $val) { ?>
+						<option value="<?php echo $val['country_id'].'/'.$val['country_iso2']; ?>"><?php echo $val["country_name"];  ?></option>
+						<?php 		}  ?>
+					</select>
+				</td>
+				<td>
+					<a href="#" style="text-decoration:none; cursor:pointer;" onclick="AddCountry()" ><?php echo $this->Translate('Add'); ?></a>
+				</td>
+			</tr>
+			<tr><td colspan="2" height="10" ></td></tr>
+			<tr>
+				<td>State : &nbsp;&nbsp;</td>
+				<td>
+					<select name="store_country_state" id="store_country_state"  class="Field250" >
+						<option value="" selected="selected">Select state</option>
+					</select>
+					<span>(<?php echo $this->Translate('Shipping_State_Optional'); ?>)</span>
+				</td>
+				<td>	
+					<a href="#" onclick="AddCountryState()" style="text-decoration:none; cursor:pointer;"><?php echo $this->Translate('Add'); ?></a>
+				</td>
+			</tr>
+			<tr><td colspan="2" height="10" style="border-bottom:2px solid #CCCCCC; "></td></tr>
+			<tr >
+				<td colspan="2"><b><?php echo $this->Translate('ZONE'); ?> :</b>
+					<div id="Zone_Result"></div>
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>

@@ -1,0 +1,302 @@
+<!--  Crumb  Start -->
+<div class="Breadcrumb" id="PageBreadcrumb">
+	<ul>
+	   <li class="Home SecondLast"><a href="<?php echo SITE_URL; ?>user/"><?php echo $this->Translate("User_Home"); ?></a></li>
+	   <li class="Last"><span><?php echo $this->Translate("Store_Settings"); ?></span></li>
+	</ul>
+</div>
+<!--  Crumb  end -->
+
+
+<div class="BodyContainer DashboardContainer" style="text-align:left;"> 
+	<div class="Heading1">
+		<?php echo $this->Translate('Manage_Store'); ?>
+	</div>
+	
+	<!--       Error or Success Messages          -->
+	<div style="text-align:center">
+		<?php echo $this->StoreMessage; ?>
+	</div>
+	<!--       End Messages           -->
+	
+	<?php $array_records = $this->constant_array; ?>
+	<?php $records = $this->records;  ?>
+	
+	<form method="post" name="Userstoresetting_form" id="Userstoresetting_form" >
+		<table class="Panel" style="margin-top:10px;">
+			<tr>
+				<td class="Heading2" colspan="2"><?php echo $this->Translate('Store_Setting'); ?></td>
+			</tr>
+			<tr>
+				<td colspan="2">
+				<div id="div0" style="padding-bottom:5px">
+					<table class="Panel" width="100%" cellspacing="0" cellpadding="0">
+						<tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Store_Name'); ?>:
+							</td>
+							<td>
+								<input type="text" name="story_name" id="story_name" value="<?php if($records['store_name'] != '' ) {  echo $records['store_name']; } ?>" class="Field250" />
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Store_Description'); ?>:
+							</td>
+							<td>
+								<textarea name="story_desc" id="story_desc" cols="32" ><?php if($records['store_description'] != '' ) { echo $records['store_description']; } ?></textarea>
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Store_Paypal_Email'); ?>:
+							</td>
+						  <td>
+							  <input type="text" name="story_email" id="story_email" class="Field250" value="<?php if($records['paypal_email'] != '' ) {  echo $records['paypal_email']; } ?>" />
+							  <span></span>
+						  </td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Store_Currency'); ?>:
+							</td>
+						  	<td>
+								<select name="story_currency" id="story_currency" class="Field250">
+									  <option value="" selected="selected">Select language</option>
+									  <?php if(count($this->currency) > 0) {  ?>
+									  <?php 	if($records['currency_id'] != "") {  ?>
+									  <?php  		foreach($this->currency as $key => $val) { ?>	
+									  <?php 			if($val['currency_id'] == $records['currency_id']) {  ?>		  
+									  <option selected="selected" value="<?php echo $val['currency_id']; ?>"><?php echo $val["currency_name"];  ?></option>
+									  <?php  			} else {  ?>
+									  <option  value="<?php echo $val['currency_id']; ?>"><?php echo $val["currency_name"];  ?></option>
+									  <?php  			}  ?>
+									  <?php 		}  ?>
+									  <?php  	} else {  ?>
+									   <?php  		foreach($this->currency as $key => $val) { ?>
+									  <option value="<?php echo $val['currency_id']; ?>">
+									  <?php 			echo $val["currency_name"];  ?>
+									  </option>
+									  <?php 		}  ?>
+									  <?php  	}  ?>
+									  <?php  }  ?>
+								</select>
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Store_Country'); ?>:
+							</td>
+						  	<td>
+								<select name="store_country" id="store_country" class="Field250" onchange="FillStateCombo(this.value)">
+								<?php if(count($this->country) > 0) {  ?>
+								<?php 	if($records['country_id'] != "") {  ?>
+								<?php  		foreach($this->country as $key => $val) { ?>	
+								<?php 			if($val['country_id'] == $records['country_id']) {  ?>		  
+								<option selected="selected" value="<?php echo $val['country_id']; ?>"><?php echo $val["country_name"];  ?></option>
+								<?php  			} else {  ?>
+								<option  value="<?php echo $val['country_id']; ?>"><?php echo $val["country_name"];  ?></option>
+								<?php  			}  ?>
+								<?php 		}  ?>
+								<?php  	} else {  ?>
+								<option value="" selected="selected">Select country</option>
+								<?php  		foreach($this->country as $key => $val) { ?>
+								<option value="<?php echo $val['country_id']; ?>"><?php echo $val["country_name"];  ?></option>
+								<?php 		}  ?>
+								<?php  	}  ?>
+								<?php  }  ?>
+								</select>
+							  	<span></span>
+						  	</td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Store_Address'); ?>:
+							</td>
+						  <td>
+							 <textarea name="story_address" id="story_address" cols="32" ><?php if($records['store_address'] != '' ) {  echo $records['store_address']; } ?></textarea>
+							  <span></span>
+						  </td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Store_City'); ?>:
+							</td>
+						  <td>
+							  <input type="text" name="story_city" id="story_city" value="<?php if($records['store_city'] != '' ) {  echo $records['store_city']; } ?>" class="Field250" />
+							  <span></span>
+						  </td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Store_State'); ?>:
+							</td>
+						  <td>
+							 	<select name="store_state" id="store_state" class="Field250">              
+								  <?php if(count($this->country_states) > 0) {  ?>
+								  <?php 	if($records['state_id'] != "") {  ?>
+								  <?php  		foreach($this->country_states as $key => $val) { ?>	
+								  <?php 			if($val['state_id'] == $records['state_id']) {  ?>		  
+								  <option selected="selected" value="<?php echo $val['state_id']; ?>"><?php echo $val["state_name"];  ?></option>
+								  <?php  			} else {  ?>
+								  <option  value="<?php echo $val['state_id']; ?>"><?php echo $val["state_name"];  ?></option>
+								  <?php  			}  ?>
+								  <?php 		}  ?>
+								  <?php  	} else {  ?>
+								  <?php  		foreach($this->country_states as $key => $val) { ?>
+								  <option value="<?php echo $val['state_id']; ?>"><?php echo $val["state_name"];  ?></option>
+								  <?php 		}  ?>
+								  <?php  	}  ?>
+								  <?php  }  ?>
+								</select>
+							  	<span></span>
+						  </td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Store_zipcode'); ?>:
+							</td>
+						  <td>
+							  <input type="text" name="store_zipcode" id="store_zipcode" value="<?php if($records['store_zipcode'] != '' ) {  echo $records['store_zipcode']; } ?>" class="Field250" />
+							  <span></span>
+						  </td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Store_Method'); ?>:
+							</td>
+						  <td>
+							  	<?php if($records['allow_free_shipping'] != '' && $records['allow_free_shipping'] == '1'  ) {  ?>
+								<input type="checkbox" name="free_shipping" checked="checked" id="free_shipping" value="1" />
+								<?php } else {  ?>
+								<input type="checkbox" name="free_shipping"  id="free_shipping" value="1" />
+								<?php }  ?>
+								&nbsp;&nbsp;<?php echo $this->Translate('Store_Free_Shipping'); ?><br />
+								<br />
+								
+								
+								<?php if($records['allow_no_shipping'] != '' && $records['allow_no_shipping'] == '1'  ) {  ?>
+								 <input type="checkbox" name="no_shipping" checked="checked" id="no_shipping" value="1" />
+								<?php } else {  ?>
+								 <input type="checkbox" name="no_shipping" id="no_shipping" value="1" />
+								<?php }  ?>
+								&nbsp;&nbsp;<?php echo $this->Translate('Store_No_Shipping'); ?>
+							 
+						  </td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Store_Item_Return_For'); ?>:
+							</td>
+						  <td>
+							<select name="ship__item_return_for" id="ship__item_return_for" class="Field250">		  
+								  <?php if(count($array_records["return_type"]) > 0) {  ?>
+								  <?php 	if($records['item_returned_for'] != "") {  ?>
+								  <?php  		foreach($array_records["return_type"] as $key => $val) { ?>	
+								  <?php 			if($key == $records['item_returned_for']) {  ?>		  
+								  <option selected="selected" value="<?php echo $key; ?>"><?php echo $val;  ?></option>
+								  <?php  			} else {  ?>
+								  <option  value="<?php echo $key; ?>"><?php echo $val;  ?></option>
+								  <?php  			}  ?>
+								  <?php 		}  ?>
+								  <?php  	} else {  ?>
+								 <?php  		foreach($array_records["return_type"] as $key => $val) { ?>
+								  <option value="<?php echo $key; ?>"><?php echo $val;  ?></option>
+								  <?php 		}  ?>
+								  <?php  	}  ?>
+								  <?php  }  ?>
+						  
+							</select>
+							  <span></span>
+						  </td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Store_Handle_Time'); ?>:
+							</td>
+						  <td>
+							  <select name="ship_handling_time" id="ship_handling_time" class="Field250">
+								  <?php if(count($array_records["handle_time"]) > 0) {  ?>
+								  <?php 	if($records['shipping_handling_time'] != "") {  ?>
+								  <?php  		foreach($array_records["handle_time"] as $key => $val) { ?>	
+								  <?php 			if($key == $records['shipping_handling_time']) {  ?>		  
+								  <option selected="selected" value="<?php echo $key; ?>"><?php echo $val;  ?></option>
+								  <?php  			} else {  ?>
+								  <option  value="<?php echo $key; ?>"><?php echo $val;  ?></option>
+								  <?php  			}  ?>
+								  <?php 		}  ?>
+								  <?php  	} else {  ?>
+								 <?php  		foreach($array_records["handle_time"] as $key => $val) { ?>
+								  <option value="<?php echo $key; ?>"><?php echo $val;  ?></option>
+								  <?php 		}  ?>
+								  <?php  	}  ?>
+								  <?php  }  ?>
+						  
+							</select>
+							  <span></span>
+						  </td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Store_Policy'); ?>:
+							</td>
+						  <td>
+							 <textarea name="ship_return_policy"  id="ship_return_policy" cols="70" rows="10"> <?php if($records['return_policy'] != '' ) {  echo $records['return_policy']; } ?></textarea>
+							  <span></span>
+						  </td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Store_Terms_Policy'); ?>:
+							</td>
+						  <td>
+							  <textarea name="store_terms"  id="store_terms" cols="70" rows="10"> <?php if($records['store_terms_policy'] != '' ) {  echo $records['store_terms_policy']; } ?></textarea>
+							  <span></span>
+						  </td>
+						</tr>
+						<tr><td height="5"></td></tr>						
+						<tr>
+						   	<td colspan="2">
+								<input type="submit" id="anything"  value="<?php echo $this->Translate('Submit'); ?>" />
+								<input type="button" id="anything"  value="<?php echo $this->Translate('Cancle'); ?>" onclick="window.location='<?php echo SITE_URL; ?>user'"/>
+						   </td>
+						</tr>
+					</table>
+				</div>
+				</td>
+			</tr>
+		</table>   
+	</form>            
+</div> 
+
+<!--     JS Global Variable for the language    -->
+
+<script language="javascript" type="text/javascript">
+	var site_url = '<?php echo SITE_URL; ?>';
+	var ERR_STORE_NAME = '<?php echo $this->Translate("Err_Store_Name"); ?>';  
+	var ERR_STORE_DESC = '<?php echo $this->Translate("Err_Store_Description"); ?>';  
+	var ERR_STORE_EMAIL = '<?php echo $this->Translate("Err_Store_Paypal_Email"); ?>';
+	var ERR_STORE_INVALID_EMAIL = '<?php echo $this->Translate("Err_Store_Paypal_Email_Invalid"); ?>';
+	var ERR_STORE_CURRENCY = '<?php echo $this->Translate("Err_Store_Currency"); ?>';
+	var ERR_STORE_COUNTRY = '<?php echo $this->Translate("Err_Store_Country"); ?>';
+	var ERR_STORE_ADDRESS = '<?php echo $this->Translate("Err_Store_Address"); ?>';
+	var ERR_STORE_CITY = '<?php echo $this->Translate("Err_Store_City"); ?>' ; 
+	var ERR_STORE_STATE = '<?php echo $this->Translate("Err_Store_State"); ?>' ; 
+	var ERR_STORE_ZIPCODE = '<?php echo $this->Translate("Err_Store_zipcode"); ?>' ; 
+</script>

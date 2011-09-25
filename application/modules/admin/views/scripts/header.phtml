@@ -1,0 +1,28 @@
+<!-- CSS -->
+<link href="<?php echo CSS_PATH ?>/admin/styles.css" rel="stylesheet" type="text/css" />
+<link href="<?php echo CSS_PATH ?>/admin/iselector.css" rel="stylesheet" type="text/css" />
+<link href="<?php echo CSS_PATH ?>/admin/iModal.css" rel="stylesheet" type="text/css" />
+<link href="<?php echo CSS_PATH ?>/admin/menu.css" rel="stylesheet" type="text/css" />
+<link href="<?php echo CSS_PATH ?>/admin/dashboard.css" rel="stylesheet" type="text/css" />
+<link href="<?php echo CSS_PATH ?>/admin/custom-theme/jquery-ui-1.8.11.custom.css" rel="stylesheet" type="text/css" />
+<link href="<?php echo CSS_PATH ?>/admin/jquery.jscrollpane.css" rel="stylesheet" type="text/css" />
+<link href="<?php echo CSS_PATH ?>/admin/fileuploader.css" rel="stylesheet" type="text/css" />
+<link href="<?php echo CSS_PATH ?>/admin/jquery.multiselect.css" rel="stylesheet" type="text/css" />
+
+<!--  JS  -->
+<script type="text/javascript" src="<?php echo JS_PATH ?>/jquery-1.5.1.min.js"></script> 
+<script type="text/javascript" src="<?php echo JS_PATH ?>/jquery-ui-1.8.11.custom.min.js"></script>
+<script type="text/javascript" src="<?php echo JS_PATH ?>/jquery.validate.js"></script> 
+<script type="text/javascript" src="<?php echo JS_PATH ?>/menu_jquery.js"></script>
+
+<?php  
+		if(count($this->JS_Files) > 0)
+		{
+			foreach($this->JS_Files as $key => $val) 
+			{ 
+?>
+	  			<script type="text/javascript" src="<?php echo JS_PATH ?>/<?php echo $val;?>"></script>
+<?php 
+			}
+		} 
+?> 

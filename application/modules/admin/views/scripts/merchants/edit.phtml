@@ -1,0 +1,126 @@
+<div class="Breadcrumb" id="PageBreadcrumb">
+	<ul>
+	   <li class="Home SecondLast"><a href="#"><?php echo $this->Translate("Administration"); ?></a></li>
+	   <li class="Last"><span><?php echo $this->Translate('Merchants'); ?></span></li>
+	</ul>
+</div>
+
+<!--       Set Record value         -->
+<?php  $edit_record = $this->records;  ?>
+
+<div class="BodyContainer DashboardContainer" style="text-align:left;"> 
+	<div class="Heading1">
+		<?php echo $this->Translate('Merchant_Management'); ?>
+	</div>
+	
+	<div>
+		<?php echo $this->editErrorMessage; ?>
+	</div>
+	
+	<form method="post" name="edit_form" id="edit_form" >
+		<table class="Panel" style="margin-top:10px;">
+			<tr>
+				<td class="Heading2" colspan="2"><?php echo $this->Translate('Edit_Merchant'); ?></td>
+			</tr>
+			<tr>
+				<td colspan="2">
+				<div id="div0" style="padding-bottom:5px">
+					<table class="Panel" width="100%" cellspacing="0" cellpadding="0">
+						<tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Merchant_FName'); ?>:
+							</td>
+							<td>
+								<input type="text" name="user_fname" id="user_fname" value="<?php echo $edit_record['user_fname'];  ?>" class="Field250" />
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Merchant_LName'); ?>:
+							</td>
+							<td>
+								<input type="text" name="user_lname" id="user_lname" value="<?php echo $edit_record['user_lname'];  ?>" class="Field250" />
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Merchant_Email'); ?>:
+							</td>
+						  <td>
+							  <input type="text" name="user_email" id="user_email" value="<?php echo $edit_record['user_email'];  ?>" class="Field250" />
+							  <span></span>
+						  </td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Merchant_FB_Id'); ?>:
+							</td>
+							<td>
+								<input type="text" name="user_facebook_id" id="user_facebook_id" value="<?php echo $edit_record['user_facebook_id'];  ?>" class="Field250" />
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="15"></td></tr>
+						<tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('User_Status'); ?>:
+							</td>
+							<td>
+								<span>
+									<?php if($edit_record["user_status"] == "1") { ?>
+										<input type="radio" name="user_status" id="user_status" checked="checked" class="" value="1" />			
+										<?php echo $this->Translate('Admin_User_Status_Active'); ?>&nbsp;
+										<input type="radio" name="user_status"  value="0" />
+										<?php echo $this->Translate('Admin_User_Status_Inactive'); ?>
+									<?php } elseif($edit_record["user_status"] == "0") {  ?>
+										<input type="radio" name="user_status" id="user_status" class="" value="1" />			
+										<?php echo $this->Translate('Admin_User_Status_Active'); ?>&nbsp;
+										<input type="radio" name="user_status"  value="0" checked="checked" />
+										<?php echo $this->Translate('Admin_User_Status_Inactive'); ?>
+									<?php } else { ?>
+										<input type="radio" name="user_status" id="user_status" class="" value="1" />			
+										<?php echo $this->Translate('Admin_User_Status_Active'); ?>&nbsp;
+										<input type="radio" name="user_status"  value="0" />
+										<?php echo $this->Translate('Admin_User_Status_Inactive'); ?>
+									<?php } ?>  
+								</span>
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="15"></td></tr>
+						<tr>
+						   	<td colspan="2">
+								<input type="submit" onclick="Javascript: return ValidateEditForm()" value="<?php echo $this->Translate('Submit'); ?>" />
+								<input type="button" value="<?php echo $this->Translate('Cancle'); ?>" onclick="window.location='<?php echo $this->site_url; ?>'"/>
+						   </td>
+						</tr>
+					</table>
+				</div>
+				</td>
+			</tr>
+		</table>   
+		
+		<!--         Hidden fields                       -->
+		<input type="hidden" name="merchant_id" id="merchant_id" value="<?php echo $this->merchant_id; ?>" />
+		
+	</form>            
+</div> 
+
+<!--     JS Global Variable for the language    -->
+
+<script language="javascript" type="text/javascript">
+var siteurl = '<?php echo SITE_URL; ?>';
+var ERR_MERCHANTS_FNAME = '<?php echo $this->Translate("Err_Merchant_FName"); ?>';  
+var ERR_MERCHANTS_LNAME = '<?php echo $this->Translate("Err_Merchant_LName"); ?>';  
+var ERR_MERCHANTS_EMAIL = '<?php echo $this->Translate("Err_Merchant_Email"); ?>';
+var ERR_MERCHANTS_INVALID_EMAIL = '<?php echo $this->Translate("Err_Merchant_Invalid_Email"); ?>';
+var ERR_MERCHANTS_PASSWORD = '<?php echo $this->Translate("Err_Merchant_Password"); ?>';
+var ERR_MERCHANTS_PASSWORD_MIN_MAX = '<?php echo $this->Translate("Err_Merchant_Password_Min_Max"); ?>';
+var ERR_MERCHANTS_FB = '<?php echo $this->Translate("Err_Merchant_FB"); ?>';
+var ERR_USER_STATUS = '<?php echo $this->Translate("Err_user_status"); ?>' ; 
+</script>

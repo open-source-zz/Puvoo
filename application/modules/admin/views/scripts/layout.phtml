@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en"><head>
+	
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="pragma" content="no-cache">
+
+<!--  Title   -->
+<title>Puvoo - Admin Section</title>
+
+<!--  CSS and Javascript   -->
+<?php  echo $this->render('header.phtml'); ?> 
+
+
+</head>
+	
+<body class="section action page">
+
+	<!--  Width End  -->
+	<div class="width">
+		
+		<!--  Header Start   -->		
+		<div class="header">
+		
+			<!--  Logo Start   -->
+            <div class="header-top">
+                <img src="<?php echo IMAGES_PATH; ?>/admin/logo.png" class="logo">
+                <div class="header-right">
+                	 <p class="super">
+                          <?php echo $this->Translate("Logged_In"); ?> <?php echo $this->username; ?>
+						  <span class="separator">&nbsp;|&nbsp;</span><?php  echo date("F j, Y"); ?>
+						  <span class="separator">&nbsp;|&nbsp;</span><a href="<?php echo SITE_URL . 'admin/logout' ?>"><?php echo $this->Translate("Logout"); ?></a>
+                      </p>
+                </div>
+            </div>			
+			<!--  Logo End   -->
+			
+        	<div class="clear"></div>
+            
+			<!-- menu start -->			
+			<div class="nav-bar" style="height:28px;" >
+           		<?php  echo $this->partial('menu.phtml'); ?> 	
+           	</div>						
+			<!-- menu end -->
+        
+        </div>		
+		<!--  Header End   -->
+		
+		<!--  Main Contents Start  -->        
+		<div class="ContentContainer">
+			<?php echo $this->layout()->content ?>
+		</div>
+		<!--  Main Contents End  -->    
+		
+    </div>
+	<!--  Width End  -->
+	
+	 
+	 <!--  Footer Start  -->
+     <div class="footer">
+     	<?php  echo $this->partial('footer.phtml'); ?> 	
+     </div>
+	<!--  Footer End  -->
+
+</body>
+</html>

@@ -1,0 +1,20 @@
+<?php echo $this->varifyMessage; ?>
+<?php if($this->flag == "0") { ?>
+
+<form method="post" name="user_verify_form" id="user_verify_form">
+	<table>
+		<tr>
+			<td>Varification code:</td>
+			<td><input type="text" name="verify_code" id="verify_code"></td>
+		</tr>
+		<tr>
+			<td>Email Id:</td>
+			<td><input type="text" name="verify_email" id="verify_email"></td>
+		</tr>
+		<tr>
+			<td colspan="2"><input type="submit" value="submit"></td>
+		</tr>
+	</table>
+</form>
+
+<?php } ?>

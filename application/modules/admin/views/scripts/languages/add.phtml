@@ -1,0 +1,175 @@
+<div class="Breadcrumb" id="PageBreadcrumb">
+	<ul>
+	   <li class="Home SecondLast"><a href="#"><?php echo $this->Translate("Administration"); ?></a></li>
+	   <li class="Last"><span><?php echo $this->Translate('Languages'); ?></span></li>
+	</ul>
+</div>
+
+
+<div class="BodyContainer DashboardContainer" style="text-align:left;"> 
+	<div class="Heading1">
+		<?php echo $this->Translate('Manage_Languages'); ?>
+	</div>
+	
+	<div >
+		<?php 
+			if(count($this->addErrorMessage) > 0){ 
+				for($i = 0; $i < count($this->addErrorMessage); $i++)
+				{
+		
+		?>
+			<h5 style='color:#FF0000;margin-bottom:0px;'><?php echo $this->addErrorMessage[$i]; ?></h5><br />
+		<?php }}?>
+	</div>
+	
+	<form method="post" name="add_form" id="add_form" >
+		<table class="Panel" style="margin-top:10px;">
+			<tr>
+				<td class="Heading2" colspan="2"><?php echo $this->Translate('Add_Language'); ?></td>
+			</tr>
+			<tr>
+				<td colspan="2">
+				<div id="div0" style="padding-bottom:5px">
+					<table class="Panel" width="100%" cellspacing="0" cellpadding="0">
+						<tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Language_Name'); ?>
+							</td>
+							<td>
+								<input type="text" name="name" id="name" class="Field250" />
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Code'); ?>:
+							</td>
+							<td>
+								<input type="text" name="code" id="code" class="Field250" />
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Characterset'); ?>:
+							</td>
+							<td>
+								<input type="text" name="charset" id="charset" class="Field250" />
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Short_Date_Format'); ?>:
+							</td>
+							<td>
+								<select name="date_format_short" id="date_format_short" class="Field250" >
+									<option value="m/d/Y"><?php echo date('m/d/Y'); ?></option>
+									<option value="d/m/Y"><?php echo date('d/m/Y'); ?></option>
+								</select>
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Long_Date_Format'); ?>:
+							</td>
+							<td>
+								<select name="date_format_long" id="date_format_long" class="Field250" >
+									<option value="D M j, Y"><?php echo date('D M j, Y'); ?></option>
+									<option value="D F j, Y"><?php echo date('D F j, Y'); ?></option>
+								</select>
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Time_Format'); ?>:
+							</td>
+							<td>
+								<select name="time_format" id="time_format" class="Field250" >
+									<option value="H:m:s"><?php echo date('H:m:s'); ?></option>
+									<option value="h:i:s A"><?php echo date('h:i:s A'); ?></option>
+								</select>
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Text_Direction'); ?>:
+							</td>
+							<td>
+								<select name="text_direction" id="text_direction" class="Field250" >
+									<option value="ltr">ltr</option>
+									<option value="rtl">rtl</option>
+								</select>
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Decimal_Numeric_Separator'); ?>:
+							</td>
+							<td>
+								<input type="text" name="numeric_separator_decimal" id="numeric_separator_decimal" class="Field250" maxlength="1" />
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Thousands_Numeric_Separator'); ?>:
+							</td>
+							<td>
+								<input type="text" name="numeric_separator_thousands" id="numeric_separator_thousands" class="Field250" maxlength="1" />
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="15"></td></tr>
+						<tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('User_Status'); ?>:
+							</td>
+							<td>
+								<span>
+									<input type="radio" name="status" id="status" class="" value="1" checked="checked" />
+									<?php echo $this->Translate('Admin_User_Status_Active'); ?>&nbsp;
+									<input type="radio" name="status"  value="0" />
+									<?php echo $this->Translate('Admin_User_Status_Inactive'); ?>
+								</span>
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="15"></td></tr>
+						<tr>
+						   	<td colspan="2">
+								<input type="submit" id="anything" onclick="Javascript: return ValidateAddForm()"  value="<?php echo $this->Translate('Submit'); ?>" />
+								<input type="button" id="anything"  value="<?php echo $this->Translate('Cancle'); ?>" onclick="window.location='<?php echo $this->site_url; ?>'"/>
+						   </td>
+						</tr>
+					</table>
+				</div>
+				</td>
+			</tr>
+		</table>   
+	</form>            
+</div> 
+
+<!--     JS Global Variable for the language    -->
+
+<script language="javascript" type="text/javascript">
+var siteurl = '<?php echo SITE_URL; ?>';
+var ERR_LANGUAGE_NAME = '<?php echo $this->Translate("Err_Language_Name"); ?>';  
+var ERR_LANGUAGE_CODE = '<?php echo $this->Translate("Err_Language_Code"); ?>';  
+var ERR_LANGUAGE_CHARSET = '<?php echo $this->Translate("Err_Language_Charset"); ?>';  
+var ERR_LANGUAGE_DECIMAL = '<?php echo $this->Translate("Err_Language_Decimal"); ?>';  
+var ERR_LANGUAGE_THOUSANDS = '<?php echo $this->Translate("Err_Language_Thousands"); ?>';  
+
+</script>

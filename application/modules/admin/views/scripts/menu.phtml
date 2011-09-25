@@ -1,0 +1,52 @@
+<ul class="topnav">
+	
+	<li><a href="<?php echo SITE_URL . 'admin/' ?>"><img src="<?php echo IMAGES_PATH; ?>/admin/home2.png" style="vertical-align:middle; padding-bottom:6px;" />&nbsp;<?php echo $this->Translate("Administration"); ?></a>
+		<ul class="subnav">
+			<li>
+				<a href="<?php echo SITE_URL . 'admin/index/changepassword' ?>" class="">
+					<?php echo $this->Translate("Change_Password"); ?>
+				</a>
+			</li>
+			<li><a href="<?php echo SITE_URL . 'admin/logout' ?>" class="">Logout</a></li>
+		</ul>
+	</li>
+
+	<li>
+		 <a href="<?php echo SITE_URL . 'admin/merchants' ?>" class="">
+		 	<img src="<?php echo IMAGES_PATH; ?>/admin/user.png" style="vertical-align:middle; padding-bottom:4px;" />
+			&nbsp;<?php echo $this->Translate("Merchants"); ?>
+		</a>
+	</li>
+
+	<li><a href="#"><img src="<?php echo IMAGES_PATH; ?>/admin/article.png" style="vertical-align:middle; padding-bottom:6px;" />&nbsp;<?php echo $this->Translate("Warehouse"); ?></a>
+		<ul class="subnav">
+			<li>
+				<a href="<?php echo SITE_URL . 'admin/category' ?>" class="">
+					<?php echo $this->Translate("Categories"); ?>
+				</a>
+			<li>
+			<li>
+				<a href="<?php echo SITE_URL . 'admin/products' ?>" class="">
+					<?php echo $this->Translate("Products"); ?>
+				</a>
+			</li>
+		</ul>
+	</li>
+	
+	<li><a href="#"><img src="<?php echo IMAGES_PATH; ?>/admin/article.png" style="vertical-align:middle; padding-bottom:6px;" />&nbsp;<?php echo $this->Translate("Settings"); ?></a>
+		<ul class="subnav">
+			<li>
+				 <a href="<?php echo SITE_URL . 'admin/currency' ?>" class="">
+					<?php echo $this->Translate("Currency"); ?>
+				</a>
+			</li>
+			<li>
+				<a href="<?php echo SITE_URL . 'admin/languages'; ?>" class="">
+					<?php echo $this->Translate("Manage_Languages"); ?>
+				</a>
+			</li>
+			<li><a href="#" class=""><?php echo $this->Translate("Language_Definitions"); ?></a></li>
+		</ul>
+	</li>
+	
+</ul>

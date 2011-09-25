@@ -1,0 +1,95 @@
+/**
+ * Magento Enterprise Edition
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Magento Enterprise Edition License
+ * that is bundled with this package in the file LICENSE_EE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.magentocommerce.com/license/enterprise-edition
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     default_default
+ * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://www.magentocommerce.com/license/enterprise-edition
+ */
+
+/*.nav-bar { border-top:1px solid #2d444f; border-bottom:1px solid #2d444f; background:url(../../images/admin/nav1_bg.gif) repeat-x 0 100% #666e73; padding:0px; padding-bottom:0px; }*/
+
+ul.topnav {
+	list-style: none;
+	padding: 0 0px;
+	margin: 0;
+	float: left;
+	width: 960px;
+	
+	height:30px;
+	font-size: 1.2em;
+	/*background: #ed9704;*/
+	background: #17649e;
+}
+ul.topnav li {
+	float: left;
+	margin: 0;
+	list-style:none;
+	padding: 0 7px 0 7px;
+	position: relative; 
+	background: url(../../images/admin/nav1_sep1.gif) no-repeat right ;/*--Declare X and Y axis base for sub navigation--*/
+}
+ul.topnav li a{
+	padding: 4px 5px;
+	color: #fff;
+	display: block;
+	text-decoration: none;
+	float: left;
+}
+ul.topnav li a:hover{
+	background: url(../../images/admin/topnav_hover1.gif) no-repeat center top;
+}
+ul.topnav li span { /*--Drop down trigger styles--*/
+	width: 17px;
+	height: 35px;
+	float: left;
+	background: url(../../images/admin/subnav_btn.gif) no-repeat center top;
+}
+ul.topnav li span.subhover {background-position: center bottom; cursor: pointer;} /*--Hover effect for trigger--*/
+ul.topnav li ul.subnav {
+	list-style: none;
+	position: absolute; /*--Important - Keeps subnav from affecting main navigation flow--*/
+	left: 0; top: 31px;
+	background: #ffffff;
+	margin: 0; padding: 0;
+	display: none;
+	float: left;
+	width: 170px;
+	border: 1px solid #e2e2e2;
+}
+ul.topnav li ul.subnav li{
+	margin: 0; padding: 0;
+	border-top: 1px solid #e2e2e2; /*--Create bevel effect--*/
+	 /*--Create bevel effect--*/
+	clear: both;
+	width: 170px;
+}
+html ul.topnav li ul.subnav li a {
+	float: left;
+	width: 145px;
+	background: #ffffff 10px center;
+	padding-left: 20px;
+	text-align:left;
+	color:#333333;
+}
+html ul.topnav li ul.subnav li a:hover { /*--Hover effect for subnav links--*/
+	background: #e2e2e2 10px center;
+}
+
+

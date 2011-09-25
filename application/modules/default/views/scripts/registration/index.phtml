@@ -1,0 +1,45 @@
+<script type="text/javascript" src="<?php echo JS_PATH ?>/default/registartion.js"></script> 
+<?php echo $this->RegMessage ?>
+<form method="post" name="user_registration_form" id="user_registration_form">
+<table>
+  <tr>
+    <td width="210"><?php echo $this->Translate('Reg_FName'); ?>:</td>
+    <td width="416"><input type="text" name="user_fname" id="user_fname" ><span></span></td>
+  </tr>
+  <tr>
+    <td><?php echo $this->Translate('Reg_LName'); ?>:</td>
+    <td><input type="text" name="user_lname" id="user_lname" ><span></span></td>
+  </tr>
+  <tr>
+    <td><?php echo $this->Translate('Reg_Email'); ?>:</td>
+    <td><input type="text" name="user_email" id="user_email" ><span></span></td>
+  </tr>
+  <tr>
+    <td><?php echo $this->Translate('Reg_Password'); ?>:</td>
+    <td><input type="password" name="user_password" id="user_password" ><span></span></td>
+  </tr>
+  <tr>
+    <td><?php echo $this->Translate('Reg_Conf_Password'); ?>:</td>
+    <td><input type="password" name="user_conf_password" id="user_conf_password" ><span></span></td>
+  </tr>
+  <tr>
+    <td><?php echo $this->Translate('Reg_FB_Id'); ?>:</td>
+    <td><input type="text" name="user_facebook_id" id="user_facebook_id" ><span></span></td>
+  </tr>
+  <tr>
+    <td colspan="2"><button type="submit" name="submit"><?php echo $this->Translate('Submit'); ?></button></td>
+  </tr>
+</table>
+</form>
+
+<script language="javascript" type="text/javascript">
+var ERR_REG_FNAME = '<?php echo $this->Translate("Err_Reg_FName"); ?>';  
+var ERR_REG_LNAME = '<?php echo $this->Translate("Err_Reg_LName"); ?>';  
+var ERR_REG_EMAIL = '<?php echo $this->Translate("Err_Reg_Email"); ?>';
+var ERR_REG_INVALID_EMAIL = '<?php echo $this->Translate("Err_Reg_Invalid_Email"); ?>';
+var ERR_REG_PASSWORD = '<?php echo $this->Translate("Err_Reg_Password"); ?>';
+var ERR_REG_PASSWORD_MIN_MAX = '<?php echo $this->Translate("Err_Reg_Password_Min_Max"); ?>';
+var ERR_REG_CONF_PASSWORD = '<?php echo $this->Translate("Err_Reg_Conf_Password"); ?>';
+var ERR_REG_CONF_PASSWORD_MATCH = '<?php echo $this->Translate("Err_Reg_Conf_Password_Match"); ?>';
+var ERR_REG_FB = '<?php echo $this->Translate("Err_Reg_FB_Id"); ?>';
+</script>

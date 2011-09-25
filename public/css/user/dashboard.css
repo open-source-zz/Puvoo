@@ -1,0 +1,671 @@
+.DashboardPanel {
+	border: 5px solid #ececec;
+	
+	font-family: Arial;
+	
+}
+
+.DashboardPanel a {
+	text-decoration: none;
+	color: #184f87;
+}
+
+.DashboardPanel a:hover {
+	text-decoration: underline;
+}
+
+.DashboardPanelContent {
+	border: 10px solid #ccc;
+	padding: 5px; 
+}
+
+.DashboardPanel h3 {
+	color: #000;
+	font-family: Arial;
+	font-size: 14px;
+	font-weight: normal;
+	margin-bottom: 10px;
+	
+}
+
+.DashboardPanelFeatured {
+	border-color: #E6F2F3;
+}
+
+.DashboardPanelFeatured .DashboardPanelContent {
+	border-color: #BADCDE;
+	background: #fff url(../images/dashboard/getstarted-bg-noborder.gif)  repeat-x bottom
+}
+
+.DashboardTrialMessage {
+	border-color: #9BCD96;
+}
+
+.DashboardTrialMessage .DashboardPanelContent {
+	padding: 8px;
+	font-family: Tahoma;
+	border-color: #7CB778;
+	background: #fff url('../images/info.gif') no-repeat 8px 6px;
+	padding-left: 30px;
+}
+
+.DashboardTrialMessage .DashboardPanelContent a {
+	text-decoration: underline;
+}
+
+.DashboardInfoMessage .DashboardPanelContent {
+	padding: 8px;
+	font-family: Tahoma;
+	background: #fff url('../images/info.gif') no-repeat 8px 6px;
+	padding-left: 30px;
+}
+
+
+.DashboardPanel .ToggleLink,
+.DashboardPanel .DashboardHideThis {
+	float: right;
+	text-transform: lowercase;
+}
+
+.DashboardPanelGettingStarted ul, .DashboardPanelGettingStarted li {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.DashboardPanelGettingStarted li {
+	margin-bottom: 2px;
+}
+
+.GettingStartedLabel a {
+	color:#005FA3;
+	text-decoration: none;
+}
+
+.GettingStartedLabel a:hover {
+	text-decoration: underline;
+}
+
+.GettingStartedLabel {
+	margin-left: 5px;
+}
+
+.GettingStartedItemComplete .GettingStartedLabel, .GettingStartedItemComplete .GettingStartedLabel a {
+	text-decoration: line-through;
+	color: #676767;
+}
+
+.DashboardActionButton {
+	display: inline-block;
+	background: url(../images/dashboard/but-mid-sliver.gif) repeat-x;
+	margin-top: -2px;
+	position: relative;
+}
+
+.DashboardActionButton span.ButtonText {
+	display: block;
+	background: url(../images/dashboard/but-right-cap-white.gif) no-repeat top right;
+	padding-top: 5px;
+	padding-left: 15px;
+	padding-right: 15px;
+	height: 20px;
+	white-space: nowrap;
+	position: relative;
+	z-index: 100;
+	
+}
+
+.DashboardActionButton span.ButtonTextWithArrow {
+	padding-right: 29px;
+}
+
+.DashboardActionButton span.ButtonArrow {
+	background: url(../images/dashboard/but-arrow.gif) no-repeat right 3px;
+	position: absolute;
+	top: 0;
+	right: 3px;
+	height: 20px;
+	width: 22px;
+	z-index: 1000;
+}
+
+.DashboardActionDropdown span.ButtonArrow {
+	background-image:  url(../images/dashboard/but-arrow-dropdown.gif);
+}
+
+.DashboardOrderBreakdownAllStatsButton {
+	float: right;
+}
+
+.OrderBreakdownChart, .OrderBreakdownChart li {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.OrderBreakdownChart {
+	border: 1px solid #bad5e4;
+	border-top: 0;
+	clear: both;
+	padding-left: 3px;
+	padding-right: 9px;
+	background:  url(../images/dashboard/dottedline.gif) repeat;
+}
+
+.OrderBreakdownChart li {
+	opacity: 0.8;
+	border:  1px solid #bad5e4;
+	border-right-width: 4px;
+	margin-bottom: 2px;
+	background: #e8f3f4;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	font-family: Arial;
+	font-size: 11px;
+	white-space: nowrap;
+	color: #424242;
+	position: relative;
+	height: 18px;
+}
+
+.OrderBreakdownChart li .InsideRangeLabel span {
+	overflow:  hidden;
+	padding-left: 3px;
+	display: block;
+}
+
+.OrderBreakdownChart li em {
+	color: #053468;
+	font-style: normal;
+}
+
+.OrderBreakdownChart li .InsideRangeLabel em {
+	float: right;
+	padding-right:  5px;
+}
+
+.OrderBreakdownChart .RangeEmpty {
+	border-color: transparent;
+	background: transparent;
+}
+
+.OrderBreakdownChart .OutsideRangeLabel {
+	left: 100%;
+	margin-left: 10px;
+	position: absolute;
+	height: 20px;
+}
+
+.OrderBreakdownChart .RangeEmpty .OutsideRangeLabel {
+	margin-left: 0px;
+}
+
+.OrderBreakdownChart li a {
+	color: #424242;
+}
+
+.OrderBreakdownChartKey {
+	margin-top: 3px;
+	margin-bottom: 10px;
+
+	position: relative;
+}
+
+.OrderBreakdownChartKey div {
+	float: left;
+	width: 25%;
+	text-align: center;
+}
+
+.OrderBreakdownChartKey div.First {
+	width: 12.5%;
+	text-align: left;
+}
+
+.OrderBreakdownChartKey div.Last {
+	position: absolute;
+	right:  0;
+	text-align: right;
+}
+
+.DashboardFilterOptions {
+	background: #f2f3f3;
+	border-top: 1px solid #cbe2e9;
+	padding: 4px;
+	text-transform: uppercase;
+	height: 24px;
+	
+}
+
+.DashboardFilterOptions div {
+	float: left;
+	padding-top: 6px;
+	
+}
+
+.DashboardFilterOptions ul, .DashboardFilterOptions li {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	float: left;
+}
+
+.DashboardFilterOptions li {
+	text-transform: none;
+	padding-left: 8px;
+}
+
+.DashboardFilterOptions li a {
+	display: inline-block;
+	padding: 2px 6px;
+	text-decoration: none;
+	color: #053468;
+}
+
+.DashboardFilterOptions li a:hover {
+	text-decoration: underline;
+}
+
+.DashboardFilterOptions li.Active a{
+	background-color: #fff;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	outline: none;
+}
+
+.DashboardFilterOptions a.Loading {
+	background-image: url(../images/ajax-dots.gif);
+	background-repeat: no-repeat;
+	background-position: center;
+	text-indent: -9000px;
+	display: block;
+}
+
+.DashboardRecentOrderList, .DashboardRecentOrderList li {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.DashboardRecentOrderList li span.OrderStatus {
+	text-transform: uppercase;
+	width: 130px;
+	display: block;
+	white-space: nowrap;
+	text-align: center;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	font-size: 9px;
+	font-weight: bold;
+	color: #fff;
+	float: left;
+	margin-top: 3px;
+	position: absolute;
+	left: 0;
+}
+
+span.OrderDetails a {
+	color: #053468;
+	text-decoration: none;
+	font-size:  12px;;
+}
+
+.DashboardRecentOrderList li span.OrderDetails {
+	position: relative;
+	left: 140px;
+	display: inline-block;
+}
+
+.DashboardRecentOrderList li small {
+	display: block;
+	font-size: 11px;
+	color:  #666;
+}
+
+.DashboardPanelCurrentNotifications {
+	border-color: #fdf6bf;
+}
+
+.DashboardPanelCurrentNotifications .DashboardPanelContent {
+	border-color: #f4c69a;
+}
+
+.DashboardPanelCurrentNotifications ul, .DashboardPanelCurrentNotifications li {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.DashboardPanelCurrentNotifications li {
+	background: url(../images/dashboard/pendingitem.gif) no-repeat top left;
+	padding-left: 32px;
+	padding-top:  3px;
+	padding-bottom: 6px;
+	border-bottom:  1px dotted #ccc;
+	margin-bottom: 3px;
+}
+
+.DashboardPanelHelpArticles ul, .DashboardPanelHelpArticles li {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.DashboardPanelHelpArticles li {
+	background: url(../images/dashboard/helparticle.gif) no-repeat top left;
+	padding-left: 32px;
+	padding-top:  3px;
+	padding-bottom: 6px;
+	border-bottom:  1px dotted #ccc;
+	margin-bottom: 3px;
+}
+
+.DashboardBrowseAllHelpArticlesButton {
+	margin-top: 4px;
+	float: right;
+}
+
+.DashboardHelpArticlesSearchForm {
+	float: right;
+	margin: 0;
+	margin-top: -2px;
+	padding: 0;
+}
+
+#DashboardHelpSearchQuery {
+	border: 1px solid #E6E6E6;
+	height: 14px;
+	padding: 4px 2px;
+	width: 150px;
+}
+.DashboardHelpSearchHasImage {
+	background: url(../images/dashboard/search-bg.gif) no-repeat 4px 3px
+}
+
+.DashboardWhatsNextLink {
+	display: block;
+	float: left;
+	text-indent: -9000px;
+	margin-bottom: 10px;
+	margin-right: 10px;
+}
+
+.DashboardWhatsNextManageOrders {
+	width: 193px;
+	height: 45px;
+	background:  url(../images/dashboard/button-manageorders.gif) no-repeat;
+}
+
+.DashboardWhatsNextAddAProduct {
+		width: 193px;
+	height: 45px;
+	background:  url(../images/dashboard/button-addaproduct.gif) no-repeat;
+}
+
+.DashboardAtAGlance ul, .DashboardAtAGlance li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.DashboardAtAGlance ul {
+	display: inline;
+}
+
+.DashboardAtAGlance li {
+	display: inline;
+	margin-right: 10px;
+	padding-right: 7px;
+	border-right: 1px dotted #000;
+}
+
+.DashboardAtAGlance li.Last{
+	border-right: 0;
+}
+
+.DashboardAtAGlance li a {
+	text-decoration: none;
+}
+
+.DashboardAtAGlanceIcon {
+	background: #005683 url(../images/dashboard/num-mid.gif) repeat-x top left;
+	display: inline-tableblock;
+	text-align: center;
+	font-weight: bold;
+	color: #fff;
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	padding: 1px 4px;
+}
+
+.DashboardPanelFeatured .DashboardPanelContentHelpUsing {
+	border-top: 0;
+	background-image: none;
+}
+.DashboardPanelContentHelpUsing ul, .DashboardPanelContentHelpUsing li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.DashboardPanelContentHelpUsing h3 {
+	color:  #666;
+}
+
+.DashboardPanelContentHelpUsing ul {
+	height: 40px
+}
+
+.DashboardPanelContentHelpUsing li a.DashboardLearnWatchVideo,
+.DashboardPanelContentHelpUsing li a.DashboardLearnGuide {
+	height: 35px;
+	display: block;
+	padding-left: 55px;
+	padding-top: 8px;
+	font-size: 12px;
+	float: left;
+	width: 40%;
+}
+
+.DashboardPanelContentHelpUsing li a.DashboardLearnWatchVideo {
+	background: url(../images/dashboard/gettingstarted-vid.gif) no-repeat bottom left;
+}
+
+.DashboardPanelContentHelpUsing li a.DashboardLearnGuide {
+	background: url(../images/dashboard/gettingstarted-guide.gif) no-repeat bottom left;
+}
+
+.DashboardPanelPerformanceIndicators table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+.DashboardPanelPerformanceIndicators thead th {
+	text-align: center;
+	border-bottom: 1px solid #bad5e4;
+	border-left: 1px solid #bad5e4;
+}
+
+.DashboardPanelPerformanceIndicators thead th.First {
+	border-bottom: none;
+	border-left: none;
+}
+
+.DashboardPanelPerformanceIndicators thead th.Second {
+	border-left: none;
+}
+
+.DashboardPanelPerformanceIndicators tbody th {
+	text-align: right;
+	font-weight: normal;
+	color: ;
+}
+
+.DashboardPanelPerformanceIndicators tbody td {
+	text-align: center;
+	/*border-left: 1px solid #bad5e4;
+	border-top: 1px solid #bad5e4;*/
+	color: #666;
+	width: 65px;
+}
+
+.DashboardPanelPerformanceIndicators tbody td.First {
+	border-left: none;
+}
+
+.DashboardPanelPerformanceIndicators th,
+.DashboardPanelPerformanceIndicators td {
+	padding: 6px;
+}
+
+.DashboardPanelPerformanceIndicators td.PerformanceIndicatorNegative {
+	font-weight: bold;
+	color: maroon;
+}
+
+.DashboardPanelPerformanceIndicators td.PerformanceIndicatorPositive {
+	font-weight: bold;
+	color: green;
+}
+
+.DashboardPerformanceIndicatorsPeriodButton {
+	float: right;
+}
+
+.DashboardPanelPerformanceIndicators .LastPeriodStats {
+	color: #888;
+}
+
+.DashboardActionDropdownMenu ul, .DashboardActionDropdownMenu li {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.DashboardPanelContent {
+	position: relative;
+}
+
+.DashboardPillMenu {
+	display: block;
+	background: url(../images/dashboard/but-mid-sliver.gif) repeat-x;
+	margin-top: -4px;
+	position: relative;
+	height: 25px;
+	padding-left: 12px;
+	padding-right: 12px;
+	padding-top: 5px;
+}
+
+.DashboardPillMenuStart {
+	background: url(../images/dashboard/but-left-cap-white.gif) no-repeat top left;
+	height: 25px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 6px;
+}
+
+.DashboardPillMenuEnd {
+	background: url(../images/dashboard/but-right-cap-white.gif) no-repeat top right;
+	height: 25px;
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 6px;
+}
+
+.DashboardPillMenu .Buttons a {
+	padding-left: 5px;
+	padding-right: 9px;
+	border-right: 1px solid #ccc;
+}
+
+.DashboardPillMenu .Buttons a.Last {
+	border-right: 0;
+	padding-right: 0;
+}
+
+.DashboardPillMenu .Active {
+	font-weight: bold;
+}
+
+.DashboardPillMenuLoading {
+	text-indent: -9000px;
+}
+
+/* ===========================================          EDITED BY US          ======================================================*/
+
+.DashboardRightColumn {
+	/*margin-top: 10px;
+	float: right;
+	width: 375px; */ 
+	float:left; width:48%;
+}
+
+.DashboardLeftColumn {
+/*	margin-top: 10px;
+	margin-right: 385px;*/
+	float:left; width:98%;
+}
+.DashboardLeftColumn1 {
+/*	margin-top: 10px;
+	margin-right: 385px;*/
+	float:left; width:48%;
+	margin-right:10px;
+}
+
+.DashboardPanelGettingStarted li .GettingStartedIcon {
+	/*background: url(../images/dashboard/bluecircle.gif) no-repeat top left;
+	color: #fff;
+	display: block;
+	text-align: center;
+	width: 21px;
+	padding-top: 2px;
+	font-weight: bold;
+	font-family: Arial;
+	font-size: 12px;
+	height: 18px;
+	display: inline-block;*/
+	background: url(../images/dashboard/bluecircle.gif) no-repeat top left;
+	color: #fff;
+	text-align: center;
+	width: 21px;
+	font-weight: bold;
+	font-family: Arial;
+	font-size: 12px;
+	height: 18px;
+	display: inline;
+	line-height:24px;
+	padding-right:10px; padding-bottom:5px; padding-left:7px; padding-top:4px;
+}
+
+li.GettingStartedItemComplete .GettingStartedIcon {
+	/*background-image: url(../images/dashboard/checkmark.gif);*/
+	background-image: url(../images/dashboard/checkmark.gif);
+	display:inline; padding-right:15px; padding-bottom:10px;
+}
+
+.DashboardActionButton a {
+	display: block;
+	font-family: Arial;
+	background: url(../images/dashboard/but-left-cap-white.gif) no-repeat top left;
+	font-family: Arial;
+	font-size: 11px;
+	/*position: relative;*/
+}
+
+.DashboardRecentOrdersAllButton {
+	/*float: right;*/ width:135px;  float:right;
+}
+
+.DashboardRecentOrderList li {
+	border-bottom:  1px dotted #ccc;
+	/*padding: 6px;*/
+	padding-top:6px; padding-bottom:6px;
+	padding-top: 3;
+	position: relative;
+}
