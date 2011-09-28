@@ -1,0 +1,39 @@
+/*=================================*/
+/* The Nivo Slider styles */
+.nivoSlider 					{position:relative;height:264px; width:547px; clear:both; margin-bottom:5px;}
+.nivoSlider img 				{position:absolute;top:0px;left:0px; }
+.nivo-box 						{display: block;position: absolute;z-index: 5;}
+/* If an image is wrapped in a link */
+.nivoSlider a.nivo-imageLink 	{position:absolute;top:0px;left:0px;width:100%;height:100%;border:0;padding:0;margin:0;z-index:60;display:none;}
+/* The slices in the Slider */
+.nivo-slice 					{display:block;position:absolute;z-index:50;height:100%;}
+/* Caption styles */
+.nivo-caption 					{position:absolute;left:0px;bottom:0px;background:#000;color:#fff;opacity:0.8; /* Overridden by captionOpacity setting */width:100%;z-index:89;display:none!important;}
+.nivo-caption p 				{padding:5px;margin:0;}
+.nivo-caption a 				{display:inline !important;}
+.nivo-html-caption 				{display:none;}
+/* Direction nav styles (e.g. Next & Prev) */
+.nivo-directionNav				{position:absolute; top:50%; height:1px; z-index:998; width:100%; visibility:hidden; background:#0C6}
+.nivo-directionNav a 			{z-index:99;cursor:pointer;}
+.nivo-prevNav,
+.nivo-nextNav					{display:inline-block; visibility:visible; padding: 0px 7px 0px 7px; color:#fff; background:#dcdddd; }
+
+.nivo-prevNav:hover,
+.nivo-nextNav:hover				{color:#fff;background:#666;}
+
+.nivo-prevNav 					{float:left;}
+.nivo-nextNav 					{float:right;}
+
+/* Control nav styles (e.g. 1,2,3...) */
+.nivo-controlNav				{position:absolute;z-index:60; right:10px; bottom:14px;overflow:hidden; width:auto; display:block;}
+.nivo-controlNav 				{font-size: 0px; line-height:0; text-align:right;}
+
+.nivo-controlNav a				{background:url('../../images/fb/cs-buttons.png') no-repeat transparent;
+							 	 width:10px;height:0px;display:block;padding:10px 0 0 0;overflow:hidden;float:left;margin:0 5px 0 0px;position:relative; z-index:999;cursor:pointer; text-indent: 100px;}
+.nivo-controlNav a				{background-position: 0 0;}
+.nivo-controlNav a:hover		{background-position: 0 0;}
+.nivo-controlNav a.active		{background-position: 0 -10px;}
+
+.nivo-controlNav a { }
+.nivoSlider_wrapper	{}
+

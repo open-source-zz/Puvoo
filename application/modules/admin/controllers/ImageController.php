@@ -23,15 +23,15 @@
 
 
 /**
- * Rest_ProductController
+ * Admin_ImageController
  *
- * Rest_ProductController extends RestCommonController.
+ * Admin_ImageController extends AdminCommonController.
  * It is used to handle product related api calls.
  *
  * Date created: 2011-09-06
  *
  * @category	Puvoo
- * @package 	Rest_Controllers
+ * @package 	Admin_Controllers
  * @author	    Amar 
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */  
@@ -49,6 +49,7 @@ class Admin_ImageController extends AdminCommonController
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	public function init(){
@@ -69,6 +70,7 @@ class Admin_ImageController extends AdminCommonController
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	 

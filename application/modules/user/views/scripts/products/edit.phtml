@@ -1,0 +1,418 @@
+<div class="Breadcrumb" id="PageBreadcrumb">
+	<ul>
+	    <li class="Home SecondLast"><a href="#"><?php echo $this->Translate("User_Home"); ?></a></li>
+	    <li class="Last"><span><?php echo $this->Translate("Products"); ?></span></li>
+	</ul>
+</div>
+
+<!--       Set Record value         -->
+<?php  $edit_record = $this->records;  ?>
+<?php  $detail = $edit_record["detail"];  ?>
+<?php  $images = $edit_record["images"];  ?>
+<?php  $category = $edit_record["category"];  
+	//$category_id = new array();
+	foreach($category as $key => $val)
+	{
+		$category_id[] = $val["category_id"];	
+	}
+?>
+<?php  $options = $edit_record["options"];  ?>
+
+<div class="BodyContainer DashboardContainer" style="text-align:left;"> 
+	<div class="Heading1">
+		<?php echo $this->Translate("Products_Management"); ?>
+	</div>
+	
+	<div style="text-align:center;">
+		<?php echo $this->editErrorMessage; ?>
+	</div>
+	
+	<form method="post" name="detail_edit_form" id="detail_edit_form" enctype="multipart/form-data" >
+		<table class="Panel" style="margin-top:10px;">
+			<tr>
+				<td class="Heading2" colspan="2"><?php echo $this->Translate("Product_Edit_Detail"); ?></td>
+			</tr>
+			<tr>
+				<td colspan="2">
+				<div id="div0" style="padding-bottom:5px">
+					<table class="Panel" width="100%" cellspacing="0" cellpadding="0">
+						<tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate("Product_Name"); ?>
+							</td>
+							<td>
+								<input type="text" name="product_name" id="product_name" value="<?php echo $detail['product_name'];  ?>" class="Field250" />
+							</td>
+							<td></td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						<tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate("Product_Desc"); ?>
+							</td>
+							<td>
+								<textarea name="product_description" cols="30" id="product_description"><?php echo $detail["product_description"];  ?></textarea>
+							</td>
+							<td></td>
+						</tr>
+						<tr><td height="5"></td></tr>						
+						<tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate("Product_Price"); ?>
+							</td>
+							<td>
+								<input type="text" name="product_price" id="product_price" value="<?php echo $detail['product_price'];  ?>" class="Field250" />								
+							</td>
+							<td></td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						<tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate("Product_Code"); ?>
+							</td>
+							<td>
+								<input type="text" name="product_code" id="product_code" value="<?php echo $detail['product_code'];  ?>" class="Field250" />
+							</td>
+							<td></td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						<tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate("Product_Category"); ?>
+							</td>
+							<td>
+								<select name="product_category" id="product_category" multiple="multiple"  >
+									<?php $category_array = $this->category; ?>
+									
+									
+<?php if(count($category_array) > 0) {  
+		for( $i = 0; $i < count($category_array); $i++) { 
+		
+			if ($category_array[$i]["parent_id"] == 0 ) {
+				
+				echo "<optgroup label='".$category_array[$i]["category_name"]."'>";
+				
+					for( $j = 0; $j < count($category_array); $j++)
+					{
+						if($category_array[$j]["parent_id"] == $category_array[$i]["category_id"]) 	
+						{
+							if(in_array($category_array[$j]["category_id"],$category_id ))  
+							{
+								echo "<option  selected='selected' value='".$category_array[$j]["category_id"]."'>".$category_array[$j]["category_name"]."</option>";
+								
+							} else {
+							
+								echo "<option value='".$category_array[$j]["category_id"]."'>".$category_array[$j]["category_name"]."</option>";
+								
+							}
+						}
+					}
+				
+				echo "</optgroup>";
+					
+			}
+		 }  
+	}
+?>
+									
+								</select>
+								<input type="hidden" name="multiselect_product_category_value" id="multiselect_product_category_value" value="">
+							</td>
+							<td></td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						<tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate("Product_Weight"); ?>
+							</td>
+							<td>
+								<input type="text" name="product_weight" id="product_weight" value="<?php echo $detail["product_weight"];  ?>" class="Field250" />
+								
+								<select name="weight_unit_id" id="weight_unit_id" class="comboField">
+									<option value=""  ><?php echo $this->Translate("Product_Select_Weight_Unit"); ?></option>
+									<?php if(count($this->weight) > 0) {  ?>
+									<?php  		foreach($this->weight as $key => $val) { ?>	
+									<?php  		   	if ( $val["weight_unit_id"] == $detail["weight_unit_id"] ) { ?>	
+									<option value="<?php echo $val["weight_unit_id"]; ?>" selected="selected">
+									<?php 			} else {  ?>
+									<option value="<?php echo $val["weight_unit_id"]; ?>">
+									<?php 			}  ?>		
+									<?php 			echo $val["weight_unit_key"];  ?>	
+									</option>
+									<?php 		}  ?>
+									<?php } else {  ?>
+									<?php }  ?>
+								</select>
+							</td>
+							<td></td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						<tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate("Product_Length"); ?>
+							</td>
+							<td>
+								<input type="text" name="length" id="length" value="<?php echo $detail["length"];  ?>" class="Field250" />
+								<select name="length_unit_id" id="length_unit_id" class="comboField">
+									<option value="" ><?php echo $this->Translate("Product_Select_Length_Unit"); ?></option>
+									<?php if(count($this->length) > 0) {  ?>
+									<?php  		foreach($this->length as $key => $val) { ?>	
+									<?php  		   	if ( $val["length_unit_id"] == $detail["length_unit_id"] ) {  ?>	
+									<option value="<?php echo $val["length_unit_id"]; ?>" selected="selected">
+									<?php 			} else {  ?>
+									<option value="<?php echo $val["length_unit_id"]; ?>">
+									<?php 			}  ?>		
+									<?php 			echo $val["length_unit_key"];  ?>	
+									</option>
+									<?php 		}  ?>
+									<?php } else {  ?>
+									<?php }  ?>
+								</select>
+							</td>
+							<td></td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						<tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate("Product_Width"); ?>
+							</td>
+							<td>
+								<input type="text" name="width" id="width" value="<?php echo $detail["width"];  ?>" class="Field250" />
+							</td>
+							<td></td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate("Product_Depth"); ?>
+							</td>
+							<td>
+								<input type="text" name="depth" id="depth" value="<?php echo $detail["depth"];  ?>" class="Field250" />
+							</td>
+							<td></td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate("Product_Quantity"); ?>
+							</td>
+						  <td>
+							  <input type="text" name="available_qty" id="available_qty" value="<?php echo $detail["available_qty"];  ?>" class="Field250" />
+						  </td>
+						  <td></td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						
+						<tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate("Product_Start_Sales"); ?>
+							</td>
+							<td>
+								<span>
+									<?php if($detail["start_sales"] == "1") { ?>
+										<input type="radio" name="start_sales" id="start_sales" checked="checked" class="" value="1" />			
+										<?php echo $this->Translate("Product_Status_Active"); ?>&nbsp;
+										<input type="radio" name="start_sales"  value="0" />
+										<?php echo $this->Translate("Product_Status_Inactive"); ?>
+									<?php } elseif($detail["start_sales"] == "0") {  ?>
+										<input type="radio" name="start_sales" id="start_sales" class="" value="1" />			
+										<?php echo $this->Translate("Product_Status_Active"); ?>&nbsp;
+										<input type="radio" name="start_sales"  value="0" checked="checked" />
+										<?php echo $this->Translate("Product_Status_Inactive"); ?>
+									<?php } else { ?>
+										<input type="radio" name="start_sales" id="start_sales" class="" value="1" />			
+										<?php echo $this->Translate("Product_Status_Active"); ?>&nbsp;
+										<input type="radio" name="start_sales"  value="0" />
+										<?php echo $this->Translate("Product_Status_Inactive"); ?>
+									<?php } ?>  
+								</span>
+								<span></span>
+							</td>
+						</tr>
+					</table>
+				</div>
+				</td>
+			</tr>
+		</table>   
+		
+		<!--         Hidden fields                       -->
+		<input type="hidden" name="product_id" id="product_id" value="<?php echo $this->product_id; ?>" />
+		<input type="hidden" name="product_edit_type" id="product_edit_type" value="Detail" />
+	
+		<table class="Panel" >
+			<tr>
+				<td class="Heading2" colspan="2"><?php echo $this->Translate("Product_Images"); ?></td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<div id="div0" style="padding-bottom:5px">
+						<table class="Panel" width="100%" cellspacing="0" cellpadding="0">
+							<tr>
+								<td class="FieldLabel">
+									<?php echo $this->Translate("Product_Upload_Images"); ?>
+								</td>
+								<td>
+									<div id="file-uploader-demo1">
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">
+									<ul class="imagegallery" id="imagegallery">
+									<?php 
+										if( $images != NULL ) {
+											foreach( $images as $key => $val ) 
+										  	{  
+												$img_string = SITE_PRODUCT_IMAGES_PATH."/p".$this->product_id."/".str_replace("_img","_th1",$val["image_name"]);	
+									?>
+												<li id="imagegallery<?php echo $val["image_id"]; ?>">
+													<div class="prodimg">
+														<img src="<?php echo $img_string; ?>" alt="" />
+													</div>
+												
+													<div class="borderbottom1">
+														<div style="float:left;">
+															<?php if($val["is_primary_image"] == 1 ) { ?>
+															<input type="radio" value="<?php echo $val['image_id']; ?>" name="product_primary_image" checked="checked" />
+															<?php } else { ?>
+															<input type="radio" value="<?php echo $val['image_id']; ?>" name="product_primary_image"  />
+															<?php } ?>
+														</div>
+														<div style="float:right; margin-top:-5px;">
+															<a style="cursor:pointer;" onclick="DeleteProductImage('<?php echo $this->product_id; ?>','<?php echo $val['image_id']; ?>')">
+																<img src="<?php echo IMAGES_PATH; ?>/admin/delicon.gif" alt="" style="vertical-align:middle; padding-top:1px;" />
+															</a>
+														</div>
+														<div class="clear"></div>
+													</div>
+												</li>
+									<?php  	}
+										} else {
+										
+											echo $this->Translate("Product_No_Images_Found"); 
+										} 
+									 ?>
+									 </ul>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</td>
+			</tr>
+		</table>
+		<table class="Panel" >
+			<tr>
+				<td class="Heading2" colspan="2"><?php echo $this->Translate("Product_Properties"); ?></td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<div id="div0" style="padding-bottom:5px">
+						<table class="Panel" width="100%" cellspacing="0" cellpadding="0">
+							<tr><td height="5"></td></tr>
+							<tr>
+								<td valign="top" class="FieldLabel">
+									<?php echo $this->Translate("Product_Options"); ?>
+								</td>
+								<td>
+									<table cellspacing="0" cellpadding="3" width="100%" > 
+									<?php  if($options != NULL) {  	?>
+									<?php  $option_value = "";  	?>
+									<?php		foreach($options as $key =>$val) {  ?>
+										
+									<?php			if($val["LNK_options_id"] != $option_value) { ?>
+										<tr id="PD_Row_<?php echo $val["product_options_id"]; ?>">
+											<td width="25%" id="PD_Option_<?php echo $val["product_options_id"]; ?>"><?php echo $val["option_title"]; ?></td>
+											<td width="55%" id="PD_Option_Detail_<?php echo $val["product_options_id"]; ?>">
+									<?php  $option_detail_value = "";  	?>
+									<?php				foreach($options as $key =>$val2) { ?>
+									<?php					if($val["LNK_options_id"] == $val2["LNK_options_id"]) { ?>
+									<?php 						$option_detail_value .= $val2["option_value"].","; ?>							
+									<?php  					}		?>
+									<?php  				}			?>
+									<?php		echo $option_detail_value;	?>
+											</td>
+											<td width="20%" id="PD_Option_Action_<?php echo $val["product_options_id"]; ?>"><a  onclick="EditProductOption(<?php echo $val['product_options_id']; ?>)" style="color:#17649E; cursor:pointer;" ><?php echo $this->Translate("Edit"); ?></a>&nbsp;/&nbsp;<a  style="color:#17649E; cursor:pointer;" onclick="DeleteProductOption(<?php echo $val['product_options_id']; ?>)" ><?php echo $this->Translate("Delete"); ?></a></td>
+										</tr>
+									<?php  			}  				?>
+									<?php 		 $option_value = $val["product_options_id"]; ?>
+									<?php  		}  					?>
+									<?php  } else {  				?>
+									<?php  $option_value = "";  	?>
+										<tr id="No_Option">
+											<td colspan="3"><?php echo $this->Translate("Product_No_Options_Found"); ?></td>
+										</tr>
+									<?php  }   ?>
+									<input type="hidden" name="last_product_option_id" id="last_product_option_id" value="<?php echo $option_value; ?>">
+									</table>
+								</td>
+							</tr>
+							<tr><td height="10"></td></tr>
+							<tr><td height="5" ></td><td><input type="button" onclick="AddProductOption(<?php echo $this->product_id; ?>)" value="<?php echo $this->Translate('Add_New'); ?>"></td></tr>
+						</table>
+					</div>
+				</td>
+			</tr>
+		</table>
+		<table>		
+			<tr><td height="15"></td></tr>
+			<tr>
+				<td colspan="2">
+					<input type="submit" onclick="Javascript: return ValidateProductDetailForm()" value="<?php echo $this->Translate('Submit'); ?>" />
+					<input type="button" value="<?php echo $this->Translate('Back'); ?>" onclick='window.location="<?php echo $this->site_url; ?>"'/>
+			   </td>
+			</tr>
+			<tr><td height="15"></td></tr>		
+		</table>
+	</form>
+</div> 
+
+<!--     JS Global Variable for the language    -->
+
+<script language="javascript" type="text/javascript">
+window.onload = createUploader;
+$(function(){
+   $("#product_category").multiselect({
+   		header: false,
+		noneSelectedText: "<?php echo $this->Translate('Product_Select_MCategory'); ?>",
+	}); 
+});
+
+var siteurl = "<?php echo SITE_URL; ?>";
+var image_path = "<?php echo IMAGES_PATH; ?>/user/";
+var product_id = "<?php echo $this->product_id; ?>";
+var EDIT = "<?php echo $this->Translate('Edit'); ?>"; 
+var ADD = "<?php echo $this->Translate('Add'); ?>";  
+var DELETE = "<?php echo $this->Translate('Delete'); ?>"; 
+var UPDATE = "<?php echo $this->Translate('Update'); ?>"; 
+var ERR_PRODUCT_NAME = "<?php echo $this->Translate('Err_Product_Name'); ?>";  
+var ERR_PRODUCT_DESC = "<?php echo $this->Translate('Err_Product_Desc'); ?>";  
+var ERR_PRODUCT_PRICE = "<?php echo $this->Translate('Err_Product_Price'); ?>";
+var ERR_PRODUCT_INVALID_PRICE = "<?php echo $this->Translate('Err_Product_Invalid_Price'); ?>";
+var ERR_PRODUCT_CODE = "<?php echo $this->Translate('Err_Product_Code'); ?>";
+var ERR_PRODUCT_WEIGHT = "<?php echo $this->Translate('Err_Product_Weight'); ?>";
+var ERR_PRODUCT_INVALID_WEIGHT = "<?php echo $this->Translate('Err_Product_Invalid_Weight'); ?>";
+var ERR_PRODUCT_WEIGHT_UNIT = "<?php echo $this->Translate('Err_Product_Weight_Unit'); ?>" ; 
+var ERR_PRODUCT_LENGTH = "<?php echo $this->Translate('Err_Product_Length'); ?>" ; 
+var ERR_PRODUCT_INVALID_LENGTH = "<?php echo $this->Translate('Err_Product_Invalid_Length'); ?>" ; 
+var ERR_PRODUCT_LENGTH_UNIT = "<?php echo $this->Translate('Err_Product_Length_Unit'); ?>" ; 
+var ERR_PRODUCT_WIDTH = "<?php echo $this->Translate('Err_Product_Width'); ?>" ; 
+var ERR_PRODUCT_INVALID_WIDTH = "<?php echo $this->Translate('Err_Product_Invalid_Width'); ?>" ; 
+var ERR_PRODUCT_DEPTH = "<?php echo $this->Translate('Err_Product_Depth'); ?>" ; 
+var ERR_PRODUCT_INVALID_DEPTH = "<?php echo $this->Translate('Err_Product_Invalid_Depth'); ?>" ; 
+var ERR_PRODUCT_QUANTITY = "<?php echo $this->Translate('Err_Product_Quantity'); ?>" ; 
+var ERR_PRODUCT_INVALID_QUANTITY = "<?php echo $this->Translate('Err_Product_Invalid_Quantity'); ?>" ; 
+var ERR_PRODUCT_START_SALE = "<?php echo $this->Translate('Err_Product_Start_Sales'); ?>" ; 
+var ERR_PRODUCT_OPTION_TITLE = "<?php echo $this->Translate('Err_Product_Option_Title'); ?>";
+var ERR_PRODUCT_OPTION_DETAIL = "<?php echo $this->Translate('Err_Product_Option_Detail'); ?>";
+var ERR_PRODUCT_PRIMARY_IMAGE = "<?php echo $this->Translate('Err_Product_Primary_Image'); ?>";
+var ERR_PRODUCT_PRIMARY_IMAGE_OTHER = "<?php echo $this->Translate('Err_Product_Primary_Image_Other'); ?>"; 
+
+</script>
+
+
+<div id="dialog-confirm" title="<?php echo $this->Translate('Confirm_Delete_Product_Option_Title'); ?>" style="display:none;">
+	<div style="text-align:left;">
+		<span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
+		<?php echo $this->Translate('Confirm_Delete_Product_Option'); ?>
+	</div>
+</div>

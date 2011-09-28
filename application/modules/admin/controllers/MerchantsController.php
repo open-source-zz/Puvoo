@@ -51,6 +51,7 @@
 	 * @return (void) - Return void
 	 *
      * @author Yogesh
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
 	 
@@ -76,6 +77,7 @@
 	 * @return (void) - Return void
 	 *
      * @author Amar
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
    function indexAction() 
@@ -129,9 +131,12 @@
 			$result = $merchants->GetAllMerchants();
 			
 		}		
-		// Success Message
-		$this->view->Admin_Message = $mysession->Admin_Message;
-		$mysession->Admin_Message = "";
+		// Error and Success Message
+		$this->view->Admin_SMessage = $mysession->Admin_SMessage;
+		$this->view->Admin_EMessage = $mysession->Admin_EMessage;
+		
+		$mysession->Admin_SMessage = "";
+		$mysession->Admin_EMessage = "";
 		
 		//Set Pagination
 		$paginator = Zend_Paginator::factory($result);
@@ -159,6 +164,7 @@
 	 * @return (void) - Return void
 	 *
      * @author Yogesh
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
    
@@ -188,48 +194,50 @@
 			$data['registration_date']=date("Y-m-d H:i:s"); 
 			$data['user_api_token']=md5($data['user_email'].date("Y-m-d H:i:s"));
 			
-			$addErrorMessage = "";
+			$addErrorMessage = array();
 			if($data['user_fname'] == "" ) {
-				$addErrorMessage .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Merchant_FName')."</h5>";			
+				$addErrorMessage[] = $translate->_('Err_Merchant_FName');			
 			}
 			if($data['user_lname'] == "" ) {
-				$addErrorMessage .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Merchant_LName')."</h5>";			
+				$addErrorMessage[] = $translate->_('Err_Merchant_LName');			
 			}
 			if($data['user_email'] == "" ) {
-				$addErrorMessage .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Merchant_Email')."</h5>";			
+				$addErrorMessage[] = $translate->_('Err_Merchant_Email');			
 			}
+			
 			$validator = new Zend_Validate_EmailAddress();
 			if ($validator->isValid($data['user_email'])) { } else {
-				$addErrorMessage .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Merchant_Invalid_Email')."</h5>";
+				$addErrorMessage[] = $translate->_('Err_Merchant_Invalid_Email');
 			}
 			if($data['user_password'] == "" ) {
-				$addErrorMessage .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Merchant_Password')."</h5>";
+				$addErrorMessage[] = $translate->_('Err_Merchant_Password');
 			}		
 			if($data['user_facebook_id'] == "" ) {
-				$addErrorMessage .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Merchant_FB')."</h5>";
+				$addErrorMessage[] = $translate->_('Err_Merchant_FB');
 			}		
 			if($data['user_status'] == "") {
-				$addErrorMessage .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Is_Active')."</h5>";			
+				$addErrorMessage[] = $translate->_('Err_Is_Active');			
 			}
+			
+			$this->view->data = $data;
+			
 			$where = "1 = 1";
 			if($home->ValidateTableField("user_email",$data['user_email'],"user_master",$where)) {
-				if( $addErrorMessage == ""){
+				if( $addErrorMessage == NULL && $addErrorMessage == ''){
 					$data['user_password'] = md5($data['user_password']);
 					if($merchants->insertMerchants($data)) {
-						$mysession->Admin_Message = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Success_Add_Merchant')."</h5>"; 
+						$mysession->Admin_SMessage = $translate->_('Success_Add_Merchant'); 
 						$this->_redirect('/admin/merchants'); 	
 					} else {
-						$addErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>There is some problem in adding category</h5>";	
+						$addErrorMessage[] = $translate->_('Err_Add_Merchants');	
 					}
 				} else {
 					$this->view->addErrorMessage = $addErrorMessage;
 				} 
 			} else {
-			
-				$this->view->addErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Merchants_Exists')."</h5>";	;
+				$addErrorMessage[] = $translate->_('Err_Merchants_Exists');	
 			}
-			
-			
+			$this->view->addErrorMessage = $addErrorMessage;			
 		}
    }
    
@@ -246,6 +254,7 @@
 	 * @return (void) - Return void
 	 *
      * @author Yogesh
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
    
@@ -280,42 +289,40 @@
 				$data['user_facebook_id']=$filter->filter(trim($this->_request->getPost('user_facebook_id'))); 	
 				$data['user_status']=$filter->filter(trim($this->_request->getPost('user_status'))); 
 				
-				$editErrorMessage = "";
+				$editErrorMessage = array();
 				if($data['user_fname'] == "" ) {
-					$editErrorMessage .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Merchant_FName')."</h5>";			
+					$editErrorMessage[] = $translate->_('Err_Merchant_FName');			
 				}
 				if($data['user_lname'] == "" ) {
-					$editErrorMessage .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Merchant_LName')."</h5>";			
+					$editErrorMessage[] = $translate->_('Err_Merchant_LName');			
 				}
 				if($data['user_email'] == "" ) {
-					$editErrorMessage .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Merchant_Email')."</h5>";			
+					$editErrorMessage[] = $translate->_('Err_Merchant_Email');			
 				}					
 				if($data['user_facebook_id'] == "" ) {
-					$editErrorMessage .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Merchant_FB')."</h5>";
+					$editErrorMessage[] = $translate->_('Err_Merchant_FB');
 				}		
 				if($data['user_status'] == "") {
-					$editErrorMessage .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Is_Active')."</h5>";			
+					$editErrorMessage[] = $translate->_('Err_Is_Active');			
 				}
 				
 				$cond = "user_id != ".$data["user_id"];
 				if($home->ValidateTableField("user_email",$data['user_email'],"user_master",$cond)) {
-				
-					if( $editErrorMessage == ""){
+					if( count($editErrorMessage) ==  0 || $editErrorMessage == ''){
 						$where = "user_id = ".$data["user_id"];
 						if($merchants->updateMerchants($data,$where)) {
-							$mysession->Admin_Message = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Success_Edit_Merchant')."</h5>";
+							$mysession->Admin_SMessage = $translate->_('Success_Edit_Merchant');
 							$this->_redirect('/admin/merchants'); 	
 						} else {
-							$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>There is some problem in editing merchant</h5>";	
+							$editErrorMessage[] = $translate->_('Err_Edit_Merchants');	 
 						}
 					} 
 					
 				} else {
-			
-					$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Merchants_Exists')."</h5>";	
+					$editErrorMessage[] = $translate->_('Err_Merchants_Exists');	
 				}
 				
-				$this->view->records = $merchants->GetMerchantsById($data["user_id"]);	
+				$this->view->records = $data;	
 				$this->view->merchant_id =  $data["user_id"];
 				$this->view->editErrorMessage = $editErrorMessage;
 				
@@ -340,6 +347,7 @@
 	 * @return (void) - Return void
 	 *
      * @author Yogesh
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
    
@@ -350,8 +358,6 @@
 		$translate = Zend_Registry::get('Zend_Translate');
 		
 		$merchants = new Models_Merchants();
-   		
-		
 		$request = $this->getRequest();
 		
 		$filter = new Zend_Filter_StripTags();	
@@ -359,9 +365,9 @@
 		
 		if($merchant_id > 0 && $merchant_id != "") {
 			if($merchants->deleteMerchants($merchant_id)) {
-				$mysession->Admin_Message = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Success_Delete_Merchant')."</h5>";
+				$mysession->Admin_SMessage = $translate->_('Success_Delete_Merchant');
 			} else {
-				$mysession->Admin_Message = "<h5 style='color:#FF0000;margin-bottom:0px;'>There is some problem in deleting merchants</h5>";	
+				$mysession->Admin_EMessage = $translate->_('Err_Delete_Merchant');
 			}		
 		} 
 		$this->_redirect("/admin/merchants");		
@@ -380,6 +386,7 @@
 	 * @return (void) - Return void
 	 *
      * @author Yogesh
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
    
@@ -390,9 +397,7 @@
 		$translate = Zend_Registry::get('Zend_Translate');
 		
 		$merchants = new Models_Merchants();
-		
 		$request = $this->getRequest();
-		
 		$filter = new Zend_Filter_StripTags();	
 		
    		if(isset($_POST["id"])) {
@@ -402,14 +407,14 @@
 			$ids = implode($merchants_ids,",");
 			
 			if($merchants->deletemultipleMerchants($ids)) {
-				$mysession->Admin_Message = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Success_M_Delete_Merchant')."</h5>";	
+				$mysession->Admin_SMessage = $translate->_('Success_M_Delete_Merchant');	
 			} else {
-				$mysession->Admin_Message = "<h5 style='color:#FF0000;margin-bottom:0px;'>There is some problem in deleting merchants</h5>";				
+				$mysession->Admin_EMessage = $translate->_('Err_Delete_Merchant');
 			}	
 			
 		}	else {
 		
-			$mysession->Admin_Message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_M_Delete_Merchant')."</h5>";				
+			$mysession->Admin_EMessage = $translate->_('Err_M_Delete_Merchant');				
 		}
 		$this->_redirect("/admin/merchants");	
    }

@@ -1911,14 +1911,14 @@ HTML TEXT TAG
 	color: #004c7a;
 	padding: 1px 0;
 }
-.typo a:hover {
+/*.typo a:hover {
 	background: #b3dbec;
 	padding: 1px 5px;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	position: relative;
 	left: -5px;
-}
+}*/
 .typo .title {
 	color: #919191;
 	font-size: 14px;
@@ -2800,7 +2800,12 @@ ul.weeks li #week_head .iconhead
 .excersice-list .priority-normal { display: block; width: 16px; height: 16px; background: url('../../images/admin/ball_yellow_16.png') center left no-repeat; float: left; text-indent: -9999px;  }
 
 .excersice-list ul {background:none; list-style:none; height:78px; margin:0px; padding:0px; margin-left:10px; margin-top:6px;}
-.excersice-list ul li { float: left;   background:url(../../images/admin/excercise_bg.png) left no-repeat; width:260px; height:24px; padding:0px; margin:0px; margin-bottom:7px; }
+.excersice-list ul li { float: left; width:128px; height:128px; margin:0px; padding:5px; margin-right:10px; margin-bottom:10px;  list-style:none; }
+/*.excersice-list	{}
+.excersice-list .priority-normal { display: block; width: 16px; height: 16px; background: url('../../images/admin/ball_yellow_16.png') center left no-repeat; float: left; text-indent: -9999px;  }
+
+.excersice-list ul {background:none; list-style:none; height:78px; margin:0px; padding:0px; margin-left:10px; margin-top:6px;}
+.excersice-list ul li { float: left; width:260px; height:24px; padding:0px; margin:0px; margin-bottom:7px; list-style:none; }
 
 .excersice-list ul li .priority-normal		{ width: 16px; height: 16px; background: url('../../images/admin/ball_yellow_16.png') center left no-repeat;  margin-top:4px; margin-left:5px; margin-right:4px; }
 .excersice-list ul li .head1 { font-size:12px; color:#2581b8; font-family:Arial, Helvetica, sans-serif; font-weight:bold; line-height:24px; padding-left:6px; }
@@ -2808,7 +2813,7 @@ ul.weeks li #week_head .iconhead
 .excersice-list ul li .exc_left { float:left; width:180px;}
 .excersice-list ul li .icons ul {background:none; list-style:none; height:16px; margin:0px; padding:0px; margin-top:4px; }
 
-.excersice-list ul li .icons ul li { list-style:none; width:16px; margin-right:3px; background:none; padding-right:3px;  }
+.excersice-list ul li .icons ul li { list-style:none; width:16px; margin-right:3px; background:none; padding-right:3px;  }*/
 
 .play { background:url(../../images/admin/play.png) no-repeat; width:16px; height:16px;  }
 .edit { background:url(../../images/admin/edit.png) no-repeat; width:16px; height:16px; }
@@ -2889,4 +2894,41 @@ ul.videolist li a
 	color:#FF0000;
 	font-size:12px;
 }
-.version { text-align: right; }
+
+
+ul.imagegallery
+{
+	margin:0px;
+	padding:0px;
+	list-style:none;
+	margin-top:10px;
+	margin-left:10px;
+}
+
+ul.imagegallery li
+{
+	list-style:none;
+	margin-right:21px;
+	width:128px;
+	float:left;
+	margin-bottom:20px;
+}
+
+ul.imagegallery li .prodimg img
+{
+	
+	width:128px;
+	height:128px;
+}
+
+ul.imagegallery li.last { margin-right:0px;}
+
+ul.imagegallery li a.delicon { background: url(../images/delicon.gif) no-repeat; width:16px; height:16px }
+
+ul.imagegallery li .borderbottom1 { border-bottom:1px solid #cccccc; border-top:1px solid #cccccc; padding-bottom:5px; padding-top:5px; }
+
+
+
+.message { padding:10px; margin:15px 0; display:block; text-align:left }
+.message-title { font-weight:bold; font-size:1.25em }
+.message-body { margin-top:4px }

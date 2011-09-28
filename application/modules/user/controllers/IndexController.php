@@ -47,6 +47,7 @@ class User_IndexController extends UserCommonController
 	 * @return (void) - Return void
 	 *
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	public function init()
@@ -69,11 +70,33 @@ class User_IndexController extends UserCommonController
 	 * @return (void) - Return void
 	 *
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	public function indexAction()
     {
 		global $mysession;
+		
+		$orders = new Models_UserOrders();
+		$master = new Models_UserMaster();
+		
+		$this->view->records = $orders->getDashboardOrders();
+		$this->view->order_status = $master->getConstantArray();
+		$this->view->active_class = 'All';
+		if($this->_request->isPost()) {
+			
+			$filter = new Zend_Filter_StripTags();
+			$order_status = $filter->filter(trim($this->_request->getPost('order_status')));
+			
+			$this->view->active_class = $order_status;
+			
+			if($order_status == 'All' ) {
+				$where = " AND 1=1 ";
+			} else {
+				$where = " AND om.order_status = '".$order_status."' ";
+			}
+			$this->view->records = $orders->getDashboardOrders($where);
+		}
 		
 	}
 	
@@ -89,6 +112,7 @@ class User_IndexController extends UserCommonController
 	 * @return (void) - Return void
 	 *
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	public function changepasswordAction()

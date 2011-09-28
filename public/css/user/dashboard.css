@@ -34,7 +34,7 @@
 
 .DashboardPanelFeatured .DashboardPanelContent {
 	border-color: #BADCDE;
-	background: #fff url(../images/dashboard/getstarted-bg-noborder.gif)  repeat-x bottom
+	background: #fff url(../../images/user/dashboard/getstarted-bg-noborder.gif)  repeat-x bottom
 }
 
 .DashboardTrialMessage {
@@ -45,7 +45,7 @@
 	padding: 8px;
 	font-family: Tahoma;
 	border-color: #7CB778;
-	background: #fff url('../images/info.gif') no-repeat 8px 6px;
+	background: #fff url('../../images/user/info.gif') no-repeat 8px 6px;
 	padding-left: 30px;
 }
 
@@ -56,7 +56,7 @@
 .DashboardInfoMessage .DashboardPanelContent {
 	padding: 8px;
 	font-family: Tahoma;
-	background: #fff url('../images/info.gif') no-repeat 8px 6px;
+	background: #fff url('../../images/user/info.gif') no-repeat 8px 6px;
 	padding-left: 30px;
 }
 
@@ -97,14 +97,14 @@
 
 .DashboardActionButton {
 	display: inline-block;
-	background: url(../images/dashboard/but-mid-sliver.gif) repeat-x;
+	background: url(../../images/user/dashboard/but-mid-sliver.gif) repeat-x;
 	margin-top: -2px;
 	position: relative;
 }
 
 .DashboardActionButton span.ButtonText {
 	display: block;
-	background: url(../images/dashboard/but-right-cap-white.gif) no-repeat top right;
+	background: url(../../images/user/dashboard/but-right-cap-white.gif) no-repeat top right;
 	padding-top: 5px;
 	padding-left: 15px;
 	padding-right: 15px;
@@ -120,7 +120,7 @@
 }
 
 .DashboardActionButton span.ButtonArrow {
-	background: url(../images/dashboard/but-arrow.gif) no-repeat right 3px;
+	background: url(../../images/user/dashboard/but-arrow.gif) no-repeat right 3px;
 	position: absolute;
 	top: 0;
 	right: 3px;
@@ -130,7 +130,7 @@
 }
 
 .DashboardActionDropdown span.ButtonArrow {
-	background-image:  url(../images/dashboard/but-arrow-dropdown.gif);
+	background-image:  url(../../images/user/dashboard/but-arrow-dropdown.gif);
 }
 
 .DashboardOrderBreakdownAllStatsButton {
@@ -149,7 +149,7 @@
 	clear: both;
 	padding-left: 3px;
 	padding-right: 9px;
-	background:  url(../images/dashboard/dottedline.gif) repeat;
+	background:  url(../../images/user/dashboard/dottedline.gif) repeat;
 }
 
 .OrderBreakdownChart li {
@@ -275,7 +275,7 @@
 }
 
 .DashboardFilterOptions a.Loading {
-	background-image: url(../images/ajax-dots.gif);
+	background-image: url(../../images/user/ajax-dots.gif);
 	background-repeat: no-repeat;
 	background-position: center;
 	text-indent: -9000px;
@@ -339,7 +339,7 @@ span.OrderDetails a {
 }
 
 .DashboardPanelCurrentNotifications li {
-	background: url(../images/dashboard/pendingitem.gif) no-repeat top left;
+	background: url(../../images/user/dashboard/pendingitem.gif) no-repeat top left;
 	padding-left: 32px;
 	padding-top:  3px;
 	padding-bottom: 6px;
@@ -354,7 +354,7 @@ span.OrderDetails a {
 }
 
 .DashboardPanelHelpArticles li {
-	background: url(../images/dashboard/helparticle.gif) no-repeat top left;
+	background: url(../../images/user/dashboard/helparticle.gif) no-repeat top left;
 	padding-left: 32px;
 	padding-top:  3px;
 	padding-bottom: 6px;
@@ -381,7 +381,7 @@ span.OrderDetails a {
 	width: 150px;
 }
 .DashboardHelpSearchHasImage {
-	background: url(../images/dashboard/search-bg.gif) no-repeat 4px 3px
+	background: url(../../images/user/dashboard/search-bg.gif) no-repeat 4px 3px
 }
 
 .DashboardWhatsNextLink {
@@ -395,13 +395,13 @@ span.OrderDetails a {
 .DashboardWhatsNextManageOrders {
 	width: 193px;
 	height: 45px;
-	background:  url(../images/dashboard/button-manageorders.gif) no-repeat;
+	background:  url(../../images/user/dashboard/button-manageorders.gif) no-repeat;
 }
 
 .DashboardWhatsNextAddAProduct {
 		width: 193px;
 	height: 45px;
-	background:  url(../images/dashboard/button-addaproduct.gif) no-repeat;
+	background:  url(../../images/user/dashboard/button-addaproduct.gif) no-repeat;
 }
 
 .DashboardAtAGlance ul, .DashboardAtAGlance li {
@@ -430,7 +430,7 @@ span.OrderDetails a {
 }
 
 .DashboardAtAGlanceIcon {
-	background: #005683 url(../images/dashboard/num-mid.gif) repeat-x top left;
+	background: #005683 url(../../images/user/dashboard/num-mid.gif) repeat-x top left;
 	display: inline-tableblock;
 	text-align: center;
 	font-weight: bold;
@@ -471,11 +471,11 @@ span.OrderDetails a {
 }
 
 .DashboardPanelContentHelpUsing li a.DashboardLearnWatchVideo {
-	background: url(../images/dashboard/gettingstarted-vid.gif) no-repeat bottom left;
+	background: url(../../images/user/dashboard/gettingstarted-vid.gif) no-repeat bottom left;
 }
 
 .DashboardPanelContentHelpUsing li a.DashboardLearnGuide {
-	background: url(../images/dashboard/gettingstarted-guide.gif) no-repeat bottom left;
+	background: url(../../images/user/dashboard/gettingstarted-guide.gif) no-repeat bottom left;
 }
 
 .DashboardPanelPerformanceIndicators table {
@@ -551,7 +551,7 @@ span.OrderDetails a {
 
 .DashboardPillMenu {
 	display: block;
-	background: url(../images/dashboard/but-mid-sliver.gif) repeat-x;
+	background: url(../../images/user/dashboard/but-mid-sliver.gif) repeat-x;
 	margin-top: -4px;
 	position: relative;
 	height: 25px;
@@ -561,7 +561,7 @@ span.OrderDetails a {
 }
 
 .DashboardPillMenuStart {
-	background: url(../images/dashboard/but-left-cap-white.gif) no-repeat top left;
+	background: url(../../images/user/dashboard/but-left-cap-white.gif) no-repeat top left;
 	height: 25px;
 	position: absolute;
 	top: 0;
@@ -570,7 +570,7 @@ span.OrderDetails a {
 }
 
 .DashboardPillMenuEnd {
-	background: url(../images/dashboard/but-right-cap-white.gif) no-repeat top right;
+	background: url(../../images/user/dashboard/but-right-cap-white.gif) no-repeat top right;
 	height: 25px;
 	position: absolute;
 	top: 0;
@@ -630,7 +630,7 @@ span.OrderDetails a {
 	font-size: 12px;
 	height: 18px;
 	display: inline-block;*/
-	background: url(../images/dashboard/bluecircle.gif) no-repeat top left;
+	background: url(../../images/user/dashboard/bluecircle.gif) no-repeat top left;
 	color: #fff;
 	text-align: center;
 	width: 21px;
@@ -645,14 +645,14 @@ span.OrderDetails a {
 
 li.GettingStartedItemComplete .GettingStartedIcon {
 	/*background-image: url(../images/dashboard/checkmark.gif);*/
-	background-image: url(../images/dashboard/checkmark.gif);
+	background-image: url(../../images/user/dashboard/checkmark.gif);
 	display:inline; padding-right:15px; padding-bottom:10px;
 }
 
 .DashboardActionButton a {
 	display: block;
 	font-family: Arial;
-	background: url(../images/dashboard/but-left-cap-white.gif) no-repeat top left;
+	background: url(../../images/user/dashboard/but-left-cap-white.gif) no-repeat top left;
 	font-family: Arial;
 	font-size: 11px;
 	/*position: relative;*/

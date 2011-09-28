@@ -47,6 +47,7 @@ class User_StoreController extends UserCommonController
 	 * @return (void) - Return void
 	 *
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	public function init()
@@ -68,6 +69,7 @@ class User_StoreController extends UserCommonController
 	 * @return (void) - Return void
 	 *
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	public function indexAction()

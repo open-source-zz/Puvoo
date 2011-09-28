@@ -32,7 +32,7 @@
  *
  * @currency	Puvoo
  * @package 	Admin_Controllers
- * @author      Vaibhavi Jariwala 
+ * @author      Vaibhavi
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  **/  
  class Admin_CurrencyController extends AdminCommonController
@@ -50,14 +50,15 @@
 	 * @param ()  - No parameter
 	 * @return (void) - Return void
 	 *
-     * @author Vaibhavi Jariwala
+     * @author Vaibhavi
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
 	 
     function init()
     {
         parent::init();
-        $this->view->JS_Files = array('admin/currency.js','admin/AdminCommon.js');	
+        $this->view->JS_Files = array('admin/currency.js','admin/AdminCommon.js');			
 		Zend_Loader::loadClass('Models_Currency');
 		Zend_Loader::loadClass('Models_AdminMaster');
         
@@ -74,7 +75,8 @@
 	 * @param ()  - No parameter
 	 * @return (void) - Return void
 	 *
-     * @author Vaibhavi Jariwala
+     * @author Vaibhavi
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
    function indexAction() 
@@ -85,6 +87,7 @@
 		$this->view->edit_action = SITE_URL."admin/currency/edit";
 		$this->view->delete_action = SITE_URL."admin/currency/delete";
 		$this->view->delete_all_action = SITE_URL."admin/currency/deleteall";
+		$this->view->updateall_action = SITE_URL."admin/currency/updateall";
 		
 		
 		//Create Object of Currency model
@@ -131,8 +134,11 @@
 			
 		}		
 		// Success Message
-		$this->view->Admin_Message = $mysession->Admin_Message;
-		$mysession->Admin_Message = "";
+		$this->view->Admin_SMessage = $mysession->Admin_SMessage;
+		$this->view->Admin_EMessage = $mysession->Admin_EMessage;
+		
+		$mysession->Admin_SMessage = "";
+		$mysession->Admin_EMessage = "";
 		
 		//Set Pagination
 		$paginator = Zend_Paginator::factory($result);
@@ -160,6 +166,7 @@
 	 * @return (void) - Return void
 	 *
      * @author vaibhavi
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
    
@@ -177,6 +184,7 @@
 		if($request->isPost()){
 			
 			$translate = Zend_Registry::get('Zend_Translate');
+			$float_validator = new Zend_Validate_Float();
 			
 			$filter = new Zend_Filter_StripTags();	
 			$data['currency_name']=$filter->filter(trim($this->_request->getPost('currency_name'))); 	
@@ -184,35 +192,42 @@
 			$data['currency_symbol']=$filter->filter(trim($this->_request->getPost('currency_symbol')));
 			$data['currency_value']=$filter->filter(trim($this->_request->getPost('currency_value')));
 			 	
-			$addErrorMessage = "";
+			$addErrorMessage = array();
 			if($data['currency_name'] == "") {
-				$addErrorMessage .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Currency_Name')."</h5><br />";			
+				$addErrorMessage[] = $translate->_('Err_Currency_Name');			
 			}
 			if($data['currency_code'] == "") {
-				$addErrorMessage .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Currency_Code')."</h5><br />";			
+				$addErrorMessage[] = $translate->_('Err_Currency_Code');			
 			}
 			if($data['currency_symbol'] == "") {
-				$addErrorMessage .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Currency_Symbol')."</h5><br />";			
+				$addErrorMessage[] = $translate->_('Err_Currency_Symbol');			
 			}
 			if($data['currency_value'] == "") {
-				$addErrorMessage .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Currency_Value')."</h5><br />";			
+				$addErrorMessage[] = $translate->_('Err_Currency_Value');			
+			} else if(!$float_validator->isValid($data['currency_value'])) {
+				$addErrorMessage[] = $translate->_('Err_Currency_Invalid_Value');		
 			}
+			
+			$this->view->data = $data;
+			
 			$where = "1 = 1";
 			if($home->ValidateTableField("currency_name",$data['currency_name'],"currency_master",$where)) {
-				if( $addErrorMessage == ""){
+				if( count($addErrorMessage) == 0 || $addErrorMessage == "" ){
 					if($currency->insertCurrency($data)) {
-						$mysession->Admin_Message = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Success_Add_Currency')."</h5>";
+						$mysession->Admin_SMessage = $translate->_('Success_Add_Currency');
 						$this->_redirect('/admin/currency'); 	
 					} else {
-						$addErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>There is some problem in adding currency</h5>";	
+						$addErrorMessage[] = $translate->_('Err_Add_Currency'); 
 					}
 				} else { 
 					$this->view->addErrorMessage = $addErrorMessage;
 				} 
 			} else {
 			
-				$this->view->addErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Currency_Name_Exists')."</h5>";	
+				$addErrorMessage[] = $translate->_('Err_Currency_Name_Exists');	
 			}
+			
+			$this->view->addErrorMessage = $addErrorMessage;
 		}
    }
    
@@ -229,12 +244,16 @@
 	 * @return (void) - Return void
 	 *
      * @author vaibhavi
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
    
    public function editAction()
    {
    		global $mysession;
+		
+		$this->view->site_url = SITE_URL."admin/currency";
+		$this->view->edit_action = SITE_URL."admin/currency/edit";
 		
 		$translate = Zend_Registry::get('Zend_Translate');
 		
@@ -254,43 +273,47 @@
 			
 			if($request->isPost()){
 				
+				$float_validator = new Zend_Validate_Float();
+				
 				$data["currency_id"] = $filter->filter(trim($this->_request->getPost('currency_id'))); 	
 				$data['currency_name']=$filter->filter(trim($this->_request->getPost('currency_name'))); 	
 				$data['currency_code']=$filter->filter(trim($this->_request->getPost('currency_code'))); 	
 				$data['currency_symbol']=$filter->filter(trim($this->_request->getPost('currency_symbol'))); 
 				$data['currency_value']=$filter->filter(trim($this->_request->getPost('currency_value')));
 				
-				$editErrorMessage = "";
+				$editErrorMessage = array();
 				if($data['currency_name'] == "") {
-					$editErrorMessage .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Currency_Name')."</h5>";			
+					$editErrorMessage[] = $translate->_('Err_Currency_Name');			
 				}
 				if($data['currency_code'] == "") {
-					$editErrorMessage .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Currency_Code')."</h5>";			
+					$editErrorMessage[] = $translate->_('Err_Currency_Code');			
 				}
 				if($data['currency_symbol'] == "") {
-					$editErrorMessage .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Currency_Symbol')."</h5>";			
+					$editErrorMessage[]= $translate->_('Err_Currency_Symbol');			
 				}
 				if($data['currency_value'] == "") {
-					$editErrorMessage .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Currency_Value')."</h5>";			
+					$editErrorMessage[] = $translate->_('Err_Currency_Value');			
+				}else if(!$float_validator->isValid($data['currency_value'])) {
+					$editErrorMessage[] = $translate->_('Err_Currency_Invalid_Value');		
 				}
 				
 				$where = "currency_id != ".$data["currency_id"];
 				if($home->ValidateTableField("currency_name",$data['currency_name'],"currency_master",$where)) {
-					if( $editErrorMessage == ""){
+					if( count($editErrorMessage) == 0 || $editErrorMessage == '' ){
 						$where = "currency_id = ".$data["currency_id"];
 						if($currency->updateCurrency($data,$where)) {
-							$mysession->Admin_Message = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Success_Edit_Currency')."</h5>";
+							$mysession->Admin_SMessage = $translate->_('Success_Edit_Currency');
 							$this->_redirect('/admin/currency'); 	
 						} else {
-							$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>There is some problem in editing currency</h5>";	
+							$editErrorMessage[] =  $translate->_('Err_Edit_Currency'); 
 						}
 					} 
 				} else {			
 					
-					$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Currency_Name_Exists')."</h5>";	
+					$editErrorMessage[] = $translate->_('Err_Currency_Name_Exists');	
 				}
 				
-				$this->view->records = $currency->GetCurrencyById($data["currency_id"]);	
+				$this->view->records = $data;	
 				$this->view->currency_id =  $data["currency_id"];	
 				$this->view->editErrorMessage = $editErrorMessage;
 				
@@ -315,6 +338,7 @@
 	 * @return (void) - Return void
 	 *
      * @author Yogesh
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
    
@@ -322,10 +346,8 @@
    {
    		global $mysession;
 		
-		$translate = Zend_Registry::get('Zend_Translate');
-		
+		$translate = Zend_Registry::get('Zend_Translate');		
 		$currency = new Models_Currency();
-		
 		$request = $this->getRequest();
 		
 		$filter = new Zend_Filter_StripTags();	
@@ -333,9 +355,9 @@
 		
 		if($currency_id > 0 && $currency_id != "") {
 			if($currency->deleteCurrency($currency_id)) {
-				$mysession->Admin_Message = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Success_Delete_Currency')."</h5>";
+				$mysession->Admin_SMessage = $translate->_('Success_Delete_Currency');
 			} else {
-				$mysession->Admin_Message = "<h5 style='color:#FF0000;margin-bottom:0px;'>There is some problem in deleting currency</h5>";	
+				$mysession->Admin_EMessage = $translate->_('Err_Delete_Currency');
 			}		
 		} 
 		$this->_redirect("/admin/currency");		
@@ -354,21 +376,17 @@
 	 * @return (void) - Return void
 	 *
      * @author Yogesh
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
    
    public function deleteallAction()
    {
-   		//"deletemultipleCurrency"
-		
 		global $mysession;
 		
 		$translate = Zend_Registry::get('Zend_Translate');
-		
 		$currency = new Models_Currency();
-		
 		$request = $this->getRequest();
-		
 		$filter = new Zend_Filter_StripTags();	
 		
    		if(isset($_POST["id"])) {
@@ -377,17 +395,144 @@
 			$ids = implode($currency_ids,",");
 			
 			if($currency->deletemultipleCurrency($ids)) {
-				$mysession->Admin_Message = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Success_M_Delete_Currency')."</h5>";	
+				$mysession->Admin_SMessage = $translate->_('Success_M_Delete_Currency');	
 			} else {
-				$mysession->Admin_Message = "<h5 style='color:#FF0000;margin-bottom:0px;'>There is some problem in deleting currency</h5>";				
+				$mysession->Admin_EMessage = $translate->_('Err_Delete_Currency');	
 			}	
 			
 		}	else {
 		
-			$mysession->Admin_Message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_M_Delete_Currency')."</h5>";				
+			$mysession->Admin_EMessage = $translate->_('Err_M_Delete_Currency');				
 		}
 		$this->_redirect("/admin/currency");	
    }
    
+   /**
+     * Function updateallAction
+	 *
+	 * This function is used to update all currency.
+	 *
+     * Date Created: 2011-09-27
+     *
+     * @access public
+	 * @param ()  - No parameter
+	 * @return (void) - Return void
+	 *
+     * @author Amar
+     *  
+     * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+     **/
+   
+   public function updateallAction()
+   {
+		global $mysession;
+		
+		$this->view->site_url = SITE_URL."admin/currency";
+		$this->view->updateall_action = SITE_URL."admin/currency/updateall";
+		
+		$translate = Zend_Registry::get('Zend_Translate');
+		$currency = new Models_Currency();
+		$home = new Models_AdminMaster();
+		
+		$request = $this->getRequest();
+		$filter = new Zend_Filter_StripTags();	
+		$total_rec = 0;
+		
+   		if($request->isPost()) {
+			
+			$float_validator = new Zend_Validate_Float();
+			
+			$total_rec = (int)$filter->filter(trim($this->_request->getPost('total_records')));
+			$data = array();
+			if($total_rec > 0)
+			{
+				$editErrorMessage = array();
+				
+				for($i=0; $i < $total_rec; $i++)
+				{
+					$data[$i]["currency_id"] = $filter->filter(trim($this->_request->getPost('currency_id_'.$i))); 	
+					$data[$i]['currency_name']=$filter->filter(trim($this->_request->getPost('currency_name_'.$i))); 	
+					$data[$i]['currency_code']=$filter->filter(trim($this->_request->getPost('currency_code_'.$i))); 	
+					$data[$i]['currency_symbol']=$filter->filter(trim($this->_request->getPost('currency_symbol_'.$i))); 
+					$data[$i]['currency_value']=$filter->filter(trim($this->_request->getPost('currency_value_'.$i)));
+				}	
+				
+				for($i=0; $i < $total_rec; $i++)
+				{
+					
+					if($data[$i]['currency_name'] == "") {
+						$editErrorMessage[] = $translate->_('Err_Currency_Name');			
+					}
+					if($data[$i]['currency_code'] == "") {
+						$editErrorMessage[] = $translate->_('Err_Currency_Code');			
+					}
+					if($data[$i]['currency_symbol'] == "") {
+						$editErrorMessage[]= $translate->_('Err_Currency_Symbol');			
+					}
+					if($data[$i]['currency_value'] == "") {
+						$editErrorMessage[] = $translate->_('Err_Currency_Value');			
+					}else if(!$float_validator->isValid($data[$i]['currency_value'])) {
+						$editErrorMessage[] = $translate->_('Err_Currency_Invalid_Value');		
+					}
+					
+					if(count($editErrorMessage) > 0)
+					{
+						break;
+					}
+				}
+				
+				if(count($editErrorMessage) > 0)
+				{
+					$this->view->records = $data;
+					$this->view->editErrorMessage = $editErrorMessage;
+				}
+				else
+				{
+					for($i=0; $i < $total_rec; $i++)
+					{
+						$where = "currency_id != ".$data[$i]["currency_id"];
+						if($home->ValidateTableField("currency_name",$data[$i]['currency_name'],"currency_master",$where)) {
+							$where = "currency_id = ".$data[$i]["currency_id"];
+							if($currency->updateCurrency($data[$i],$where)) {
+								$mysession->Admin_SMessage = $translate->_('Success_Edit_Currency');
+								 	
+							} else {
+								$editErrorMessage[] =  $translate->_('Err_Edit_Currency'); 
+							}
+							 
+						} else {			
+							
+							$editErrorMessage[] = $translate->_('Err_Currency_Name_Exists');	
+						}
+						
+						
+				
+					}
+					
+					if(count($editErrorMessage) == 0)
+					{
+						$this->_redirect('/admin/currency');
+					}
+					else
+					{
+						$this->view->records = $data;
+						$this->view->editErrorMessage = $editErrorMessage;
+					}
+					
+				}
+				
+				
+			}			
+		}
+		else
+		{
+			$this->view->records = $currency->GetAllCurrency();
+		}
+		
+		
+		
+			
+		
+   }
 }
 ?>

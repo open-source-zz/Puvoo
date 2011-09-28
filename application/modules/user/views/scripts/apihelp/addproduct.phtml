@@ -1,0 +1,375 @@
+<!--  Crumb  Start -->
+<div class="Breadcrumb" id="PageBreadcrumb">
+	<ul>
+	   <li class="Home SecondLast"><a href="<?php echo SITE_URL; ?>user/"><?php echo $this->Translate("User_Home"); ?></a></li>
+	   <li class="Last"><a href="<?php echo SITE_URL; ?>user/apihelp/"><?php echo $this->Translate("Api_Help"); ?></a></li>
+	   <li class="Last"><span><?php echo $this->Translate("Add_Product_Api_Help"); ?></span></li>
+	</ul>
+</div>
+<!--  Crumb  end -->
+
+<div class="BodyContainer DashboardContainer" style="text-align:left;"> 
+	<div class="Heading1">
+		<?php echo $this->Translate('Add_Product_Api_Help'); ?>
+	</div>
+<div style="margin-top:20px;"><h4>REST URL : <?php echo SITE_URL."rest/product"; ?></h4> </div>
+<div style="margin-top:20px;"><h4>addproduct Input</h4></div>
+<div style="margin-top:20px;">The box below lists all fields that could be included in the call request. To learn more about an individual field scroll down to find it in the table below the box.</div>
+<pre style="background-color:#E0E0E0;  font-size:12px">
+
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+
+&lt;Products&gt;
+	&lt;Product&gt;
+	
+		&lt;name&gt; TEXT &lt;/name&gt;
+		&lt;description&gt; TEXT &lt;/description&gt;
+		&lt;price&gt; DECIMAL &lt;/price&gt;
+		&lt;code&gt; TEXT &lt;/code&gt;
+		&lt;weight&gt; DECIMAL &lt;/weight&gt;
+		&lt;length&gt; DECIMAL &lt;/length&gt;
+		&lt;width&gt; DECIMAL &lt;/width&gt;
+		&lt;depth&gt; DECIMAL &lt;/depth&gt;
+		&lt;weightunit&gt; TEXT &lt;/weightunit&gt;
+		&lt;lengthunit&gt; TEXT &lt;/lengthunit&gt;
+		&lt;start_sales&gt; BOOLEAN &lt;/start_sales&gt;
+		&lt;available_qty&gt; INT &lt;/available_qty&gt;
+		&lt;main_image&gt; URL &lt;/main_image&gt;
+		
+		&lt;categories&gt;
+		  &lt;id&gt; INT &lt;/id&gt;
+		  &lt;!-- ... more id nodes here ... --&gt;
+		&lt;/categories&gt;
+		
+		&lt;images&gt;
+		  &lt;image&gt; URL &lt;/image&gt;
+		  &lt;!-- ... more image nodes here ... --&gt;
+		&lt;/images&gt;
+		
+		&lt;attributes&gt;
+		  &lt;attribute&gt;
+			&lt;name&gt; TEXT &lt;/name&gt;
+			&lt;options&gt;
+				&lt;value&gt; TEXT &lt;/value&gt;
+				&lt;!-- ... more value nodes here ... --&gt;
+			&lt;/options&gt;
+		  &lt;/attribute&gt;
+		  &lt;!-- ... more attribute nodes here ... --&gt;
+		&lt;/attributes&gt;
+		
+	&lt;/Product&gt;
+	&lt;!-- ... more Product nodes here ... --&gt;
+&lt;/Products&gt;
+</pre>
+<div style="margin-top:20px;">
+<h4>Input argument detail</h4>
+</div>
+<table border="1" cellspacing="2" cellpadding="4" width="100%">
+	<tr>
+		<th >Argument</th>
+		<th >Type</th>
+ 		<th>Occurrence</th>
+		<th>Meaning</th>
+	</tr>
+	<tr>
+		<td valign="top">Products</td>
+		<td valign="top">XML Node</td>
+		<td valign="top">Always,Single</td>
+		<td valign="top">It is a compulsary node. It will occur only once. It is an xml node that will contain all product nodes to insert.</td>
+	</tr>
+	<tr>
+		<td valign="top">Product</td>
+		<td valign="top">XML Node</td>
+		<td valign="top">Always,Repeatable</td>
+		<td valign="top">It is a compulsary node. 
+			It will appear atleast once. 
+			You can repeat this node to enter more products. 
+			you can add maximum 10 products at a time.
+			It will contain all inputs necessary to add single product
+		</td>
+	</tr>
+	<tr>
+		<td valign="top">name</td>
+		<td valign="top">TEXT</td>
+		<td valign="top">Always,Single</td>
+		<td valign="top">It will contain product name.</td>
+	</tr>
+	<tr>
+		<td valign="top">description</td>
+		<td valign="top">TEXT</td>
+		<td valign="top">Always,Single</td>
+		<td valign="top">It will contain product description.</td>
+	</tr>
+	<tr>
+		<td valign="top">price</td>
+		<td valign="top">DECIMAL</td>
+		<td valign="top">Always,Single</td>
+		<td valign="top">It will contain product price. Example: 10.50</td>
+	</tr>
+	<tr>
+		<td valign="top">code</td>
+		<td valign="top">TEXT</td>
+		<td valign="top">Optional,Single</td>
+		<td valign="top">It is an optional field. It will contain product code. Example: Product1 or Product_1</td>
+	</tr>
+	<tr>
+		<td valign="top">weight</td>
+		<td valign="top">DECIMAL</td>
+		<td valign="top">Always,Single</td>
+		<td valign="top">It will contain product code. Example: Product1 or Product_1</td>
+	</tr>
+	<tr>
+		<td valign="top">length</td>
+		<td valign="top">DECIMAL</td>
+		<td valign="top">Always,Single</td>
+		<td valign="top">It will contain product length. Example: 10.50</td>
+	</tr>
+	<tr>
+		<td valign="top">width</td>
+		<td valign="top">DECIMAL</td>
+		<td valign="top">Always,Single</td>
+		<td valign="top">It will contain product width. Example: 10.50</td>
+	</tr>
+	<tr>
+		<td valign="top">depth</td>
+		<td valign="top">DECIMAL</td>
+		<td valign="top">Always,Single</td>
+		<td valign="top">It will contain product depth. Example: 10.50</td>
+	</tr>
+	<tr>
+		<td valign="top" >weightunit</td>
+		<td valign="top">TEXT</td>
+		<td valign="top">Always,Single</td>
+		<td >It will contain weight unit for given product.<br />
+			It can be any value from following list<br />
+			Kgs,Lbs
+		</td>
+	</tr>
+	<tr>
+		<td valign="top" >lengthunit</td>
+		<td valign="top">TEXT</td>
+		<td valign="top">Always,Single</td>
+		<td >It will contain length unit for given product.<br />
+			It can be any value from following list<br />
+			Mts,Cms
+		</td>
+	</tr>
+	<tr>
+		<td valign="top" >start_sales</td>
+		<td valign="top">BOOLEAN</td>
+		<td valign="top">Optional,Single</td>
+		<td >It is an optional input. Its value can be 0 or 1. If value 1 than product is eligible to put for sell otherwise product will not be displayed in list of products to sell.
+		</td>
+	</tr>
+	<tr>
+		<td valign="top" >available_qty</td>
+		<td valign="top">INT</td>
+		<td valign="top">Always,Single</td>
+		<td >It will contain product quantity available with product owner.</td>
+	</tr>
+	<tr>
+		<td valign="top" >main_image</td>
+		<td valign="top">URL</td>
+		<td valign="top">Always,Single</td>
+		<td >It will contain URL of main image of product.</td>
+	</tr>
+	<tr>
+		<td valign="top" >categories</td>
+		<td valign="top">XML node</td>
+		<td valign="top">Always,Single</td>
+		<td >It will contain category ids for product.</td>
+	</tr>
+	<tr>
+		<td valign="top" >id</td>
+		<td valign="top">INT</td>
+		<td valign="top">Always,Repeatable</td>
+		<td >It will appear atleast once. It will contain category id available in system. Product will be displayed in associated category.</td>
+	</tr>
+	<tr>
+		<td valign="top">images</td>
+		<td valign="top">XML Node</td>
+		<td valign="top">Optional,Single</td>
+		<td >It is an optional node. It will contain list of images for product</td>
+	</tr>
+	<tr>
+		<td valign="top">image</td>
+		<td valign="top">URL</td>
+		<td valign="top">Conditional,Repeatable</td>
+		<td >It will require if images node is there. It will contain URL of image to associate with product.</td>
+	</tr>
+	<tr>
+		<td valign="top">attributes</td>
+		<td valign="top">XML Node</td>
+		<td valign="top">Optional,Single</td>
+		<td >It is an optional node. It will contain list of product attributes</td>
+	</tr>
+	<tr>
+		<td valign="top">attribute</td>
+		<td valign="top">XML Node</td>
+		<td valign="top">Conditional,Repeatable</td>
+		<td >It will require if attributes node is there. It will contain attribute values to associate with product.</td>
+	</tr>
+	<tr>
+		<td valign="top">name</td>
+		<td valign="top">TEXT</td>
+		<td valign="top">Conditional,Single</td>
+		<td >It will require if attribute node is there. It will contain attribute name.</td>
+	</tr>
+	<tr>
+		<td valign="top">options</td>
+		<td valign="top">XML Node</td>
+		<td valign="top">Conditional,Single</td>
+		<td >It will require if attribute node is there. It will contain attribute values.</td>
+	</tr>
+	<tr>
+		<td valign="top">value</td>
+		<td valign="top">TEXT</td>
+		<td valign="top">Conditional,Repeatable</td>
+		<td >It will require if options node is there. It will appear atleast once. It will contain attribute option value.</td>
+	</tr>
+</table>
+<div style="margin-top:20px;">
+<h4>addproduct Output</h4>
+</div>
+<pre style="background-color:#E0E0E0;  font-size:12px">
+&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+
+&lt;response&gt;
+	&lt;result&gt; TEXT &lt;/result&gt;
+	&lt;error&gt; TEXT &lt;/error&gt;
+	
+	&lt;Products&gt;
+		&lt;Product&gt;
+			&lt;name&gt; TEXT &lt;/name&gt;
+			&lt;id&gt; INT &lt;/id&gt;
+		&lt;/Product&gt;
+	&lt;/Products&gt;
+&lt;/response&gt;
+</pre>
+<div style="margin-top:20px;">
+<h4>Output return values detail</h4>
+</div>
+<table border="1" cellspacing="2" cellpadding="4" width="100%">
+	<tr>
+		<th >Return Value</th>
+		<th >Type</th>
+ 		<th>Occurrence</th>
+		<th>Meaning</th>
+	</tr>
+	<tr>
+		<td >response</td>
+		<td >XML Node</td>
+		<td >Always,Single</td>
+		<td>It is a compulsary node. It will occur only once. It is an xml node that will contain result of the call made.</td>
+	</tr>
+	<tr>
+		<td >result</td>
+		<td >TEXT</td>
+		<td >Always,Single</td>
+		<td>It is a compulsary node. 
+			It will occur only once.<br/> 
+			It can have any of the value below<br />
+			<b>Success</b> = Your call executed successfully.<br />
+			<b>Failure</b> = Your call failed due to some error.
+		</td>
+	</tr>
+	<tr>
+		<td >error</td>
+		<td >TEXT</td>
+		<td >Conditional,Repeatable</td>
+		<td>It will occur only if your call is failed due to some error. It will contain error text. It can repeat for more than 1 errors.</td>
+	</tr>
+	<tr>
+		<td >Products</td>
+		<td >XML Node</td>
+		<td >Conditional,Single</td>
+		<td >It will occur only if your call is successfull. It will contain nodes of inserted products.</td>
+	</tr>
+	<tr>
+		<td >Product</td>
+		<td >XML Node</td>
+		<td >Conditional,Repeatable</td>
+		<td >It will occur atleast once for Products node. It will contain name and id information for single product inserted in system.</td>
+	</tr>
+	<tr>
+		<td >name</td>
+		<td >TEXT</td>
+		<td >Conditional,Single</td>
+		<td >It will occur for each Product node. It will contain inserted product name.</td>
+	</tr>
+	<tr>
+		<td >id</td>
+		<td >INT</td>
+		<td >Conditional,Single</td>
+		<td >It will occur for each Product node. It will contain inserted product id.</td>
+	</tr>
+</table>
+
+<div style="margin-top: 20px;">
+	<h4>PHP Sample Code</h4>
+</div>
+<pre style="background-color:#E0E0E0;  font-size:12px">
+&lt;?php
+
+$rest_url = "<?php echo SITE_URL.'rest/product'; ?>";
+$api_key = "<b>your_api_key</b>";
+
+$data = "&lt;Products&gt;\r\n"
+	. "&lt;Product&gt;\r\n"
+	. "&lt;name&gt;first product&lt;/name&gt;\r\n"
+	. "&lt;description&gt;first product description&lt;/description&gt;\r\n"
+	. "&lt;price&gt;10.10&lt;/price&gt;\r\n"
+	. "&lt;code&gt;first1&lt;/code&gt;\r\n"
+	. "&lt;weight&gt;2&lt;/weight&gt;\r\n"
+	. "&lt;length&gt;10&lt;/length&gt;\r\n"
+	. "&lt;width&gt;5&lt;/width&gt;\r\n"
+	. "&lt;depth&gt;10&lt;/depth&gt;\r\n"
+	. "&lt;weight_unit&gt;Kgs&lt;/weight_unit&gt;\r\n"
+	. "&lt;length_unit&gt;Mt&lt;/length_unit&gt;\r\n"
+	. "&lt;start_sales&gt;0&lt;/start_sales&gt;\r\n"
+	. "&lt;available_qty&gt;10&lt;/available_qty&gt;\r\n"
+	. "&lt;main_image&gt;http://c69282.r82.cf3.rackcdn.com/PALLINE.jpg&lt;/main_image&gt;\r\n"
+	. "&lt;categories&gt;\r\n"
+	. "&lt;id&gt;3&lt;/id&gt;\r\n"
+	. "&lt;id&gt;4&lt;/id&gt;\r\n"
+	. "&lt;/categories&gt;\r\n"
+	. "&lt;images&gt;\r\n"
+	. "&lt;image&gt;http://c69282.r82.cf3.rackcdn.com/business_1.jpg&lt;/image&gt;\r\n"
+	. "&lt;/images&gt;\r\n"
+	. "&lt;attributes&gt;\r\n"
+	. "&lt;attribute&gt;\r\n"
+	. "&lt;name&gt;colors&lt;/name&gt;\r\n"
+	. "&lt;options&gt;\r\n"
+	. "&lt;value&gt;red&lt;/value&gt;\r\n"
+	. "&lt;value&gt;blue&lt;/value&gt;\r\n"
+	. "&lt;value&gt;green&lt;/value&gt;\r\n"
+	. "&lt;/options&gt;\r\n"
+	. "&lt;/attribute&gt;\r\n"
+	. "&lt;/attributes&gt;\r\n"
+	. "&lt;/Product&gt;\r\n"
+	. "&lt;/Products&gt;";
+
+$arr_header = array();
+$arr_header[] = "Content-Type: text/xml;charset=UTF-8";
+$arr_header[] = "Accept: text/xml";
+$arr_header[] = "apikey: " . $api_key;
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $rest_url);
+curl_setopt($ch, CURLOPT_POST, 1);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+curl_setopt($ch, CURLOPT_HTTPHEADER, $arr_header);
+
+$result = curl_exec($ch);
+
+if(!curl_errno($ch)){
+   echo 'Curl error: ' . curl_error($ch);
+}
+
+curl_close($ch);
+echo $result;
+?&gt;
+</pre>
+</div> 
+

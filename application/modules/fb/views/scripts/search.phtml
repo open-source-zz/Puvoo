@@ -1,0 +1,28 @@
+
+<form name="frmSearch" id="frmSearch" method="post" onsubmit="PerformSearch();" >
+	<div id="search">
+		<table cellspacing="0" cellpadding="0" border="0">
+			<tbody>
+				<tr>
+					<td style="padding-right:5px;">
+						<input id="q" class="inputtext" type="text" title="Search the Mall" style="height: 18px; width: 235px;width: 230px\0/; color: rgb(119, 119, 119);" value="Search the Mall" onBlur="if (this.value=='') this.value='Search the Mall'" onFocus="this.value=''" />
+					   
+					</td>
+					<td style="padding-right:5px;">
+						<select id="catid" style="height:26px; width:185px; " name="catid" class="inputtext">
+							<option value="0"><?php echo $this->Translate('AllCategory')?></option>
+							<?php foreach($this->SerchCategoryCombo as $val){ ?>
+							<option value="<?php echo $val['category_id'];?>" <?php if($val['category_id'] == $this->catid){?>selected="selected"<?php }?>><?php echo $val['category_name'];?></option>
+							<?php }?>
+						</select>
+					</td>
+					<td style="" valign="middle">
+						<label class="uiButton">
+							<input id="searchbtn" type="submit" style="width:65px;" value="" class="searchbtn" />
+						</label>
+					</td>
+				</tr>
+			</tbody>
+		 </table>
+	</div>
+</form>

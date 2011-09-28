@@ -58,7 +58,7 @@
 								<?php echo $this->Translate('Language'); ?>:
 							</td>
 							<td>
-								<input type="text" class="Field250" name="language_name" /> 
+								<input type="text" class="Field250" name="name" value="<?php echo $this->data['name']; ?>" /> 
 							</td>
 						</tr>
 						<tr><td height="5"></td></tr>
@@ -67,9 +67,9 @@
 								<?php echo $this->Translate('Is_Active'); ?>:
 							</td>
 							<td>
-								<input type="radio" name="status" class="" value="1" />
+								<input type="radio" name="status" class="" value="1" <?php echo ($this->data['status'] == '1' ? "checked" : ""); ?> />
 								<?php echo $this->Translate('L_Yes'); ?>&nbsp;
-								<input type="radio" name="status"  value="0" />
+								<input type="radio" name="status"  value="0" <?php echo ($this->data['status'] == '0' ? "checked" : ""); ?> />
 								<?php echo $this->Translate('L_No'); ?>
 							</td>
 						</tr>
@@ -168,11 +168,11 @@
 <!--     JS Global Variable for the language    -->
 
 <script language="javascript" type="text/javascript">
-	var siteurl = '<?php echo SITE_URL; ?>';
-	var HIDE = '<?php echo $this->Translate("Hide"); ?>';  
-	var SEARCH = '<?php echo $this->Translate("Search"); ?>';  
-	var ERR_LANGUAGE_NAME = '<?php echo $this->Translate("Err_Language_Name"); ?>';  
-	var ERR_IS_ACTIVE = '<?php echo $this->Translate("Err_Is_Active"); ?>' ; 
+	var siteurl = "<?php echo SITE_URL; ?>";
+	var HIDE = "<?php echo $this->Translate('Hide'); ?>";  
+	var SEARCH = "<?php echo $this->Translate('Search'); ?>";  
+	var ERR_LANGUAGE_NAME = "<?php echo $this->Translate('Err_Language_Name'); ?>";  
+	var ERR_IS_ACTIVE = "<?php echo $this->Translate('Err_Is_Active'); ?>" ; 
 
 </script>
 

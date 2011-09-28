@@ -32,7 +32,8 @@
  *
  * @category	Puvoo
  * @package 	Rest_Controllers
- * @author	    Amar 
+ * @author	    Amar
+ *  
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */  
 class Rest_StoreController extends RestCommonController
@@ -51,6 +52,7 @@ class Rest_StoreController extends RestCommonController
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	public function init(){
@@ -90,6 +92,7 @@ class Rest_StoreController extends RestCommonController
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	public function optionsAction()
@@ -111,6 +114,7 @@ class Rest_StoreController extends RestCommonController
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
     public function indexAction()
@@ -137,6 +141,7 @@ class Rest_StoreController extends RestCommonController
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	public function headAction()
@@ -157,6 +162,7 @@ class Rest_StoreController extends RestCommonController
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
     public function getAction()
@@ -181,6 +187,7 @@ class Rest_StoreController extends RestCommonController
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
     public function postAction()
@@ -205,6 +212,7 @@ class Rest_StoreController extends RestCommonController
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
     public function putAction()
@@ -228,13 +236,15 @@ class Rest_StoreController extends RestCommonController
 			            ->addFilter(new Zend_Filter_Alnum());
 
 			
-			$myparams = $this->getRequest()->getParams();
+			$objparams = $this->getRequest()->getParams();
+			
+			$myparams = $objparams['store_info'];
 			
 			$store_name = $filter->filter(trim($myparams['store_name']));
 			$store_description = $filter->filter(trim($myparams['store_description']));
 			$store_address = $filter->filter(trim($myparams['store_address']));
 			$store_country = $filterChain1->filter(trim($myparams['store_country']));
-			$store_state = $filterChain1->filter(trim($myparams['store_state']));
+			$store_state = $filter->filter(trim($myparams['store_state']));
 			$store_city = $filterChain1->filter(trim($myparams['store_city']));
 			$store_zipcode = $filterChain2->filter(trim($myparams['store_zipcode']));
 			$paypal_address = $filter->filter(trim($myparams['paypal_address']));
@@ -276,7 +286,7 @@ class Rest_StoreController extends RestCommonController
 					if($store_state != "")
 					{
 						//check if state is present for given country
-						$store_state = $State->GetStateId($store_state,$country_id);
+						$store_state = $State->GetStateId($store_state,$store_country);
 						
 						if($store_state == 0)
 						{
@@ -313,6 +323,10 @@ class Rest_StoreController extends RestCommonController
 			//check shipping tables
 			if(isset($myparams['shipping_table']))
 			{
+				if(!isset($myparams['shipping_table'][0]))
+				{
+					$myparams['shipping_table'] = array($myparams['shipping_table']);
+				}
 				if(count($myparams['shipping_table']) > 0)
 				{
 					for($i = 0; $i < count($myparams['shipping_table']); $i++)
@@ -405,8 +419,11 @@ class Rest_StoreController extends RestCommonController
 					$data["currency_id"] = $currency;
 				}
 			
-				//Update store
-				$UserMaster->UpdateStore($data);	
+				if(count($data) > 1)
+				{
+					//Update store
+					$UserMaster->UpdateStore($data);	
+				}
 				
 				//Insert or update shipping method
 				if(count($shipping_table > 0))
@@ -457,6 +474,7 @@ class Rest_StoreController extends RestCommonController
 				}
 				
 				$this->view->result = 'Success';
+				$this->view->message = 'Store information updated successfully';
         		$this->getResponse()->setHttpResponseCode(201);
 					
 			}else{
@@ -482,6 +500,7 @@ class Rest_StoreController extends RestCommonController
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
     public function deleteAction()

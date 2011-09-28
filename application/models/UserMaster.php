@@ -53,6 +53,7 @@ class Models_UserMaster
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	 
@@ -77,6 +78,7 @@ class Models_UserMaster
 	 * @param (array)  - 	$data : This is the reocrds of user
 	 * @return () - True if user register successfully
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -103,6 +105,7 @@ class Models_UserMaster
 	 * @return () - True if password update successfully otherwise false
 	 *
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -144,6 +147,7 @@ class Models_UserMaster
 	 * @param (string)  - 	$email : This is the email id of user
 	 * @return () - True if user account varified successfully
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -179,6 +183,7 @@ class Models_UserMaster
 	 * @return (array)  -	$data : All Records of the table
 	 *
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -207,6 +212,7 @@ class Models_UserMaster
 	 * @return (Boolean)  -	Return ture if store exist otherwise false   
 	 *
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -235,6 +241,7 @@ class Models_UserMaster
 	 * @return (array)  -   $data : Return all record of user's store
 	 *
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -263,6 +270,7 @@ class Models_UserMaster
 	 * @return (Boolean)  -	Return true if store update successfully otherwise false
 	 *
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -300,6 +308,7 @@ class Models_UserMaster
 	 * @return (array)  -	$array : Return all required array
 	 *
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -307,10 +316,12 @@ class Models_UserMaster
 	{
 		global $mysession;
 		
+		$array = array();
+		
 		if (Zend_Registry::isRegistered('Zend_Translate')) {
 			$translate = Zend_Registry::get('Zend_Translate');
 		
-		$array = array();
+		
 		
 		// For return type
 		$return_type = array(
@@ -330,7 +341,14 @@ class Models_UserMaster
 							   "20" => "20 ".$translate->_('STORE_BUSINESS_DAY'),
 							   "30" => "30 ".$translate->_('STORE_BUSINESS_DAY'),	
 						    );
+							
+		$order_status = array(
+							   "0" => $translate->_('Order_Status_Pending'),
+							   "1" => $translate->_('Order_Status_Complete'),
+							   "2" => $translate->_('Order_Status_Cancle'),							   
+						    );
 		
+		$array["order_status"] = $order_status;
 		$array["return_type"] = $return_type;
 		$array["handle_time"] = $handle_time;
 		}
@@ -351,6 +369,7 @@ class Models_UserMaster
 	 * @return (Array) - $data : Return array of all states of country.
 	 *
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -383,6 +402,7 @@ class Models_UserMaster
 	 * @param () (String)  - $where : Other condtion.
 	 * @return (Boolean) - Return true on success
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	

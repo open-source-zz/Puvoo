@@ -53,6 +53,7 @@ class Models_UserShippingMethod
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	 
@@ -74,6 +75,7 @@ class Models_UserShippingMethod
 	 * @param (string)  - 	No parameters
 	 *
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -99,6 +101,7 @@ class Models_UserShippingMethod
 	 * @param (string)  - 	No parameters
 	 *
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -123,6 +126,7 @@ class Models_UserShippingMethod
 	 * @param () (Array)  - $data : Array of search options
 	 * @return (Array) - Return Array of records
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -160,6 +164,7 @@ class Models_UserShippingMethod
 	 * @param () (String)  - $table : Table name 
 	 * @return (Array) - Return all records of the table
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -182,6 +187,7 @@ class Models_UserShippingMethod
 	 * @param () (Array)  - $data : Array of record to insert
 	 * @return (Boolean) - Return true on success
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -206,6 +212,7 @@ class Models_UserShippingMethod
 	 * @param () (String)  - $where : Condition on which update record
 	 * @return (Boolean) - Return true on success
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -228,6 +235,7 @@ class Models_UserShippingMethod
 	 * @param () (String)  - $id : Shipping Method Id
 	 * @return (Boolean) - Return true on success
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -254,6 +262,7 @@ class Models_UserShippingMethod
 	 * @param () (String)  - $ids : String of all Shipping Method Id with comma seprated.
 	 * @return (Boolean) - Return true on success
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -281,6 +290,7 @@ class Models_UserShippingMethod
 	 *
 	 * @return (Boolean) - Return true on success
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	public function ValidateTableField($field,$value,$table,$where)
@@ -317,6 +327,7 @@ class Models_UserShippingMethod
 	 * @return (int) - it will rerun method id
 	 *
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -352,6 +363,7 @@ class Models_UserShippingMethod
 	 * @return (int) - it will rerun shipping method detail id
 	 *
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	

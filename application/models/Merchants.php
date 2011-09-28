@@ -53,6 +53,7 @@ class Models_Merchants
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	function __construct()
@@ -71,6 +72,7 @@ class Models_Merchants
      * @return (Array)  - $result : Array of merchants records
                 
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
  	 
@@ -95,6 +97,7 @@ class Models_Merchants
      * @return (Array)  - $result : Array of merchant's data
                 
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -119,6 +122,7 @@ class Models_Merchants
      * @return (Array)  - $result : Array of merchants records
                 
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -144,6 +148,7 @@ class Models_Merchants
 	 * @return (Array) - Return Array of records
 	 *
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	 
@@ -170,6 +175,7 @@ class Models_Merchants
 	 * @param (Array)  - $data : Array of search options
 	 * @return (Array) - Return Array of records
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -226,6 +232,7 @@ class Models_Merchants
 	 * @return () 		 	- Return true on success
 	 *
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -249,6 +256,7 @@ class Models_Merchants
 	 * @return () 		 	- Return true on success
 	 *
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -271,6 +279,7 @@ class Models_Merchants
 	 * @return () 		 	- Return true on success
 	 *
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -294,6 +303,7 @@ class Models_Merchants
 	 * @return () 		 	- Return true on success
 	 *
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	

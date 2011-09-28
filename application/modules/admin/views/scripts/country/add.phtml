@@ -1,0 +1,85 @@
+<div class="Breadcrumb" id="PageBreadcrumb">
+	<ul>
+	   <li class="Home SecondLast"><a href="#"><?php echo $this->Translate("Administration"); ?></a></li>
+	   <li class="Last"><span><?php echo $this->Translate('Currency'); ?></span></li>
+	</ul>
+</div>
+
+
+<div class="BodyContainer DashboardContainer" style="text-align:left;"> 
+	<div class="Heading1">
+		<?php echo $this->Translate('Manage_Currency'); ?>
+	</div>
+	
+	<?php if(count($this->addErrorMessage) > 0 ) { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
+				<?php foreach($this->addErrorMessage as $key => $val ) { ?>
+					<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+					<strong><?php echo $val; ?></strong></p>
+				<?php } ?>
+			</div>
+		</div>
+	<?php } ?>	
+	
+	<form method="post" name="add_form" id="add_form" >
+		<table class="Panel" style="margin-top:10px;">
+			<tr>
+				<td class="Heading2" colspan="2"><?php echo $this->Translate('Add_Country'); ?></td>
+			</tr>
+			<tr>
+				<td colspan="2">
+				<div id="div0" style="padding-bottom:5px">
+					<table class="Panel" width="100%" cellspacing="0" cellpadding="0">
+						<tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Country_Name'); ?>
+							</td>
+							<td>
+								<input type="text" value="<?php echo $this->data['country_name']; ?>" name="country_name" id="country_name" class="Field250" />
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('ISO2_Code'); ?>
+							</td>
+							<td>
+								<input type="text" value="<?php echo $this->data['country_iso2']; ?>" name="country_iso2" id="country_iso2" class="Field250" maxlength="2" />
+								<span></span>
+							</td>
+						</tr>				
+						<tr><td height="5"></td></tr>
+						<tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('ISO3_Code'); ?>
+							</td>
+							<td>
+								<input type="text" value="<?php echo $this->data['country_iso3']; ?>" name="country_iso3" id="country_iso3" class="Field250" maxlength="3" />
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="15"></td></tr>
+						<tr>
+						   	<td colspan="2">
+								<input type="submit" id="anything" onclick="Javascript: return ValidateAddForm()"  value="<?php echo $this->Translate('Submit'); ?>" />
+								<input type="button" id="anything"  value="<?php echo $this->Translate('Cancle'); ?>" onclick="window.location='<?php echo $this->site_url; ?>'"/>
+						   </td>
+						</tr>
+					</table>
+				</div>
+				</td>
+			</tr>
+		</table>   
+	</form>            
+</div> 
+
+<!--     JS Global Variable for the language    -->
+
+<script language="javascript" type="text/javascript">
+var siteurl = "<?php echo SITE_URL; ?>";
+var ERR_COUNTRY_NAME = "<?php echo $this->Translate('Err_Country_Name'); ?>";  
+var ERR_ISO2_CODE = "<?php echo $this->Translate('Err_Iso2_Code'); ?>";  
+var ERR_ISO3_CODE = "<?php echo $this->Translate('Err_Iso3_Code'); ?>";  
+</script>

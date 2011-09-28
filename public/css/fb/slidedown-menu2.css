@@ -1,0 +1,107 @@
+	
+	/* Active menu item */
+	#dhtmlgoodies_slidedown_menu .dhtmlgoodies_activeItem {
+		font-weight:bold;
+		color: green;
+		background:#f2f2f2;
+	}
+
+	#dhtmlgoodies_slidedown_menu li{
+		list-style-type:none;
+		position:relative;
+	}
+	#dhtmlgoodies_slidedown_menu ul{
+		margin:0px;
+		padding:0px;
+		position:relative;
+		margin-bottom:10px;
+	}
+
+	#dhtmlgoodies_slidedown_menu div{
+		margin:0px;
+		padding:0px;
+	}
+	/* 	Layout CSS */
+	#dhtmlgoodies_slidedown_menu{
+		width:158px;
+	}
+
+	/* All A tags - i.e menu items. */
+	#dhtmlgoodies_slidedown_menu a{
+		
+		text-decoration:none;
+		display:block;
+		clear:both;
+		width:158px;
+		
+	}
+
+	/* Active menu item */
+	#dhtmlgoodies_slidedown_menu .dhtmlgoodies_activeItem {
+		font-weight:bold;
+		color: green;
+		background-color:#f2f2f2;
+	}
+
+	/*
+	A tags
+	*/
+	#dhtmlgoodies_slidedown_menu .slMenuItem_depth1{	/* Main menu items */
+		background:#ffffff url("../../images/fb/brands_marker.gif") no-repeat scroll left 9px;
+		border-bottom:1px solid #e3e3e3;
+		padding-left:10px;
+		line-height:24px;
+	}
+	
+	#dhtmlgoodies_slidedown_menu .slMenuItem_depth1:hover{ 
+		background:#f2f2f2 url("../../images/fb/brands_marker.gif") no-repeat scroll left 9px;
+		border-bottom:1px solid #e3e3e3;
+		padding-left:10px;
+		line-height:24px; }
+		
+	#dhtmlgoodies_slidedown_menu .slMenuItem_depth2{	/* Sub menu items */
+		background: url("../../images/fb/brands_marker.gif") no-repeat scroll left 9px;
+		line-height:22px;
+		border-bottom:1px solid #e3e3e3;
+		margin-left:5px;
+		padding-left:10px;
+	}
+	#dhtmlgoodies_slidedown_menu .slMenuItem_depth3{	/* Sub menu items */
+		margin-top:1px;
+		font-style:italic;
+		color:blue;
+	}
+	#dhtmlgoodies_slidedown_menu .slMenuItem_depth4{	/* Sub menu items */
+		margin-top:1px;
+		color:red;
+	}
+	#dhtmlgoodies_slidedown_menu .slMenuItem_depth5{	/* Sub menu items */
+		margin-top:1px;
+	}
+
+	/* UL tags, i.e group of menu utems.
+	It's important to add style to the UL if you're specifying margins. If not, assign the style directly
+	to the parent DIV, i.e.
+
+	#dhtmlgoodies_slidedown_menu .slideMenuDiv1
+
+	instead of
+
+	#dhtmlgoodies_slidedown_menu .slideMenuDiv1 ul
+	*/
+
+	#dhtmlgoodies_slidedown_menu .slideMenuDiv1 ul{
+		padding:1px;
+	}
+	#dhtmlgoodies_slidedown_menu .slideMenuDiv2 ul{
+		margin-left:5px;
+		padding:1px;
+	}
+	#dhtmlgoodies_slidedown_menu .slideMenuDiv3 ul{
+		margin-left:10px;
+		padding:1px;
+	}
+	#dhtmlgoodies_slidedown_menu .slMenuItem_depth4 ul{
+		margin-left:15px;
+		padding:1px;
+	}

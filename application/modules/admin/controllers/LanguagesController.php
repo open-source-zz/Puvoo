@@ -34,7 +34,7 @@
  * @package 	Admin_Controllers
  * @author	    Amar 
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- **/  
+ **/ 
  class Admin_LanguagesController extends AdminCommonController
 {
 
@@ -51,6 +51,7 @@
 	 * @return (void) - Return void
 	 *
      * @author Amar
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
 	 
@@ -73,6 +74,7 @@
 	 * @return (void) - Return void
 	 *
      * @author Amar
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
    function indexAction() 
@@ -111,10 +113,12 @@
 		if($is_search == "1") {
 		
 			$filter = new Zend_Filter_StripTags();	
-			$data['language_name']=$filter->filter(trim($this->_request->getPost('langage_name'))); 	
+			$data['name']=$filter->filter(trim($this->_request->getPost('name'))); 	
 			$data['status']=$filter->filter(trim($this->_request->getPost('status'))); 			
 			//Get searched Languages
-			$result = $language->SearchLanguage($data);
+			$result = $language->SearchLanguages($data);
+			
+			$this->view->data = $data;
 			
 		} elseif($is_search == "0") {
 			// Clear serch option
@@ -143,7 +147,7 @@
 		$this->view->arr_pagesize = $arr_pagesize;
 		$this->view->paginator = $paginator;
 		$this->view->records = $paginator->getCurrentItems();		
-		
+		$this->view->search = $is_search;
    }
    
    /**
@@ -158,9 +162,9 @@
 	 * @return (void) - Return void
 	 *
      * @author Amar
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
-   
    public function addAction()
    {
    		global $mysession;
@@ -215,6 +219,8 @@
 				$addErrorMessage[] = $translate->_('Err_Language_Thousands');			
 			}
 			
+			$this->view->data = $data;
+			
 			if(count($addErrorMessage) === 0)
 			{
 				$where = "1 = 1";
@@ -252,6 +258,7 @@
 	 * @return (void) - Return void
 	 *
      * @author Amar
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
    
@@ -333,7 +340,7 @@
 					$this->view->editErrorMessage = $editErrorMessage;
 				} 
 			
-				$this->view->records = $Language->getLanguageById($language_id);	
+				$this->view->records = $data; //$Language->getLanguageById($language_id);	
 				$this->view->language_id =  $language_id;	
 				$this->view->editErrorMessage = $editErrorMessage;
 				
@@ -349,15 +356,16 @@
    /**
      * Function deleteAction
 	 *
-	 * This function is used to delete the category
+	 * This function is used to delete the language
 	 *
-     * Date Created: 2011-08-26
+     * Date Created: 2011-09-19
      *
      * @access public
 	 * @param ()  - No parameter
 	 * @return (void) - Return void
 	 *
-     * @author Yogesh
+     * @author Amar
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
    
@@ -375,7 +383,7 @@
 		$language_id = $filter->filter(trim($this->_request->getPost('hidden_primary_id'))); 	
 		
 		if($language_id > 0 && $language_id != "") {
-			if($Language->deleteLannguage($language_id)) {
+			if($Language->deleteLanguage($language_id)) {
 				$mysession->Admin_Message = $translate->_('Success_Delete_Language');
 			} else {
 				$mysession->Admin_Message = "There is some problem in deleting language";	
@@ -388,23 +396,22 @@
    /**
      * Function deleteallAction
 	 *
-	 * This function is used to delete all selected categories.
+	 * This function is used to delete all selected languages.
 	 *
-     * Date Created: 2011-08-26
+     * Date Created: 2011-09-19
      *
      * @access public
 	 * @param ()  - No parameter
 	 * @return (void) - Return void
 	 *
-     * @author Yogesh
+     * @author Amar
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
    
    public function deleteallAction()
    {
-   		//"deletemultipleCategories"
-		
-		global $mysession;
+   		global $mysession;
 		
 		$translate = Zend_Registry::get('Zend_Translate');
 		
@@ -425,7 +432,7 @@
 				$mysession->Admin_Message_Error = "There is some problem in deleting categories";				
 			}	
 			
-		}	else {
+		}else{
 		
 			$mysession->Admin_Message_Error = $translate->_('Err_M_Delete_Language');				
 		}

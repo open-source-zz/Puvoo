@@ -32,7 +32,8 @@
  *
  * @category	Puvoo
  * @package 	Rest_Controllers
- * @author	    Amar 
+ * @author	    Amar
+ *  
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */  
 class Rest_InventoryController extends RestCommonController
@@ -51,6 +52,7 @@ class Rest_InventoryController extends RestCommonController
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	public function init(){
@@ -90,6 +92,7 @@ class Rest_InventoryController extends RestCommonController
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	public function optionsAction()
@@ -111,6 +114,7 @@ class Rest_InventoryController extends RestCommonController
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
     public function indexAction()
@@ -137,6 +141,7 @@ class Rest_InventoryController extends RestCommonController
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	public function headAction()
@@ -157,6 +162,7 @@ class Rest_InventoryController extends RestCommonController
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
     public function getAction()
@@ -181,6 +187,7 @@ class Rest_InventoryController extends RestCommonController
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
     public function postAction()
@@ -204,6 +211,7 @@ class Rest_InventoryController extends RestCommonController
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
     public function putAction()
@@ -238,14 +246,34 @@ class Rest_InventoryController extends RestCommonController
 			$price = 0;
 			$available_qty = 0;
 			
-					
+			$cntProduct = 0;
+			$isProdArray = false;
 			
-			if(count($myparams["Products"]) <= 1)
+			if(isset($myparams["Products"]["Product"][0]))
+			{
+				
+				$cntProduct = count($myparams["Products"]["Product"][0]);
+				$isProdArray = true;	
+			}
+			else
+			{
+				$cntProduct = 1;
+				$isProdArray = false;
+			}
+			
+			if(isset($myparams["Products"]) && $cntProduct <= 50)
 			{
 				$x = 0;
-				for($i = 0; $i < count($myparams["Products"]["Product"]); $i++)
+				for($i = 0; $i < $cntProduct; $i++)
 				{
-					$prod = $myparams["Products"]["Product"][$i];
+					if($isProdArray)
+					{
+						$prod = $myparams["Products"]["Product"][$i];
+					}
+					else
+					{
+						$prod = $myparams["Products"]["Product"];
+					}
 					
 					//filter values
 					if(isset($prod['pid']))
@@ -359,6 +387,7 @@ class Rest_InventoryController extends RestCommonController
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
     public function deleteAction()

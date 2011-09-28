@@ -32,7 +32,8 @@
  *
  * @category	Puvoo
  * @package 	Rest_Controllers
- * @author	    Amar 
+ * @author	    Amar
+ *  
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */  
 class Rest_ProductController extends RestCommonController
@@ -51,6 +52,7 @@ class Rest_ProductController extends RestCommonController
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	public function init(){
@@ -90,6 +92,7 @@ class Rest_ProductController extends RestCommonController
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	public function optionsAction()
@@ -111,6 +114,7 @@ class Rest_ProductController extends RestCommonController
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
     public function indexAction()
@@ -137,6 +141,7 @@ class Rest_ProductController extends RestCommonController
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	public function headAction()
@@ -157,6 +162,7 @@ class Rest_ProductController extends RestCommonController
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
     public function getAction()
@@ -181,6 +187,7 @@ class Rest_ProductController extends RestCommonController
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
     public function postAction()
@@ -208,6 +215,10 @@ class Rest_ProductController extends RestCommonController
 			$url_validator = new UrlValidator();
 			
 			$myparams = $this->getRequest()->getParams();
+			$cntProduct = 0;
+			$isProdArray = false;
+//			print (count($myparams["Products"]));die;
+			
 			
 			/*print "<pre>";
 			print_r($myparams);
@@ -233,12 +244,33 @@ class Rest_ProductController extends RestCommonController
 			$img_height = 0;
 			$img_type = 0;
 			
-			if(count($myparams["Products"]) <= 10)
+			if(isset($myparams["Products"]["Product"][0]))
 			{
+				
+				$cntProduct = count($myparams["Products"]["Product"][0]);
+				$isProdArray = true;	
+			}
+			else
+			{
+				$cntProduct = 1;
+				$isProdArray = false;
+			}
+			
+			if(isset($myparams["Products"]) && $cntProduct <= 10)
+			{
+				
+			
 				$x = 0;
-				for($i = 0; $i < count($myparams["Products"]["Product"]); $i++)
+				for($i = 0; $i < $cntProduct; $i++)
 				{
-					$prod = $myparams["Products"]["Product"][$i];
+					if($isProdArray)
+					{
+						$prod = $myparams["Products"]["Product"][$i];
+					}
+					else
+					{
+						$prod = $myparams["Products"]["Product"];
+					}
 					
 					
 					//filter values
@@ -258,17 +290,38 @@ class Rest_ProductController extends RestCommonController
 					
 					if(isset($prod["categories"]))
 					{
-						$categories = $prod["categories"]["id"];
+						if(is_array($prod["categories"]["id"]))
+						{
+							$categories = $prod["categories"]["id"];
+						}
+						else
+						{
+							$categories = array($prod["categories"]["id"]);
+						}
 					}
 					
 					if(isset($prod["images"]))
 					{
-						$images = $prod["images"]["image"];
+						if(is_array($prod["images"]["image"]))
+						{
+							$images = $prod["images"]["image"];
+						}
+						else
+						{
+							$images = array($prod["images"]["image"]);
+						}
 					}
 					
 					if(isset($prod["attributes"]))
 					{
-						$attributes = $prod["attributes"];
+						if(isset($prod["attributes"]["attribute"][0]))
+						{
+							$attributes = $prod["attributes"]["attribute"];
+						}
+						else
+						{
+							$attributes = array($prod["attributes"]["attribute"]);
+						}
 					}
 					
 					//check values
@@ -399,6 +452,9 @@ class Rest_ProductController extends RestCommonController
 							}
 						}
 						
+					}else{
+					
+						$arr_error[] = "Pruduct " . ($i+1) . " must be associated with atleast 1 category";	
 					}
 					
 					if(count($attributes > 0))
@@ -412,10 +468,13 @@ class Rest_ProductController extends RestCommonController
 								$arr_error[] = "Invalid name provided for attribute " . ($j+1) . " for product " . ($i+1);	
 							}
 							
+							if(!is_array($attributes[$j]["options"]["value"]))
+							{
+								$attributes[$j]["options"]["value"] = array($attributes[$j]["options"]["value"]);
+							}
+							
 							if(count($attributes[$j]["options"]["value"]) > 0)
 							{
-								
-								
 								for($k = 0; $k < count($attributes[$j]["options"]["value"]); $k++)
 								{
 									$attributes[$j]["options"]["value"][$k] = $filter->filter(trim($attributes[$j]["options"]["value"][$k]));
@@ -463,7 +522,14 @@ class Rest_ProductController extends RestCommonController
 			}			
 			else
 			{
-				$arr_error[] = "You can add maximum 10 products at a time";
+				if(!isset($myparams["Products"]))
+				{
+					$arr_error[] = "Invalid request parameters.";
+				}
+				else
+				{
+					$arr_error[] = "You can add maximum 10 products at a time";
+				}
 			}
 			
 			if(count($arr_error) == 0)
@@ -776,6 +842,7 @@ class Rest_ProductController extends RestCommonController
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
     public function putAction()
@@ -843,13 +910,34 @@ class Rest_ProductController extends RestCommonController
 			$available_qty = 0;
 			$main_image = "";
 					
+			$cntProduct = 0;
+			$isProdArray = false;
 			
-			if(count($myparams["Products"]) <= 1)
+			if(isset($myparams["Products"]["Product"][0]))
+			{
+				
+				$cntProduct = count($myparams["Products"]["Product"][0]);
+				$isProdArray = true;	
+			}
+			else
+			{
+				$cntProduct = 1;
+				$isProdArray = false;
+			}
+			
+			if(isset($myparams["Products"]) && $cntProduct <= 1)
 			{
 				$x = 0;
-				for($i = 0; $i < count($myparams["Products"]["Product"]); $i++)
+				for($i = 0; $i < $cntProduct; $i++)
 				{
-					$prod = $myparams["Products"]["Product"][$i];
+					if($isProdArray)
+					{
+						$prod = $myparams["Products"]["Product"][$i];
+					}
+					else
+					{
+						$prod = $myparams["Products"]["Product"];
+					}
 					
 					//filter values
 					if(isset($prod['pid']))
@@ -924,17 +1012,38 @@ class Rest_ProductController extends RestCommonController
 					
 					if(isset($prod["categories"]))
 					{
-						$categories = $prod["categories"]["id"];
+						if(is_array($prod["categories"]["id"]))
+						{
+							$categories = $prod["categories"]["id"];
+						}
+						else
+						{
+							$categories = array($prod["categories"]["id"]);
+						}
 					}
 					
 					if(isset($prod["images"]))
 					{
-						$images = $prod["images"]["image"];
+						if(is_array($prod["images"]["image"]))
+						{
+							$images = $prod["images"]["image"];
+						}
+						else
+						{
+							$images = array($prod["images"]["image"]);
+						}
 					}
 					
 					if(isset($prod["attributes"]))
 					{
-						$attributes = $prod["attributes"];
+						if(isset($prod["attributes"]["attribute"][0]))
+						{
+							$attributes = $prod["attributes"]["attribute"];
+						}
+						else
+						{
+							$attributes = array($prod["attributes"]["attribute"]);
+						}
 					}
 					
 					//check values
@@ -1081,6 +1190,11 @@ class Rest_ProductController extends RestCommonController
 								$arr_error[] = "Invalid name provided for attribute " . ($j+1) . " for product";	
 							}
 							
+							if(!is_array($attributes[$j]["options"]["value"]))
+							{
+								$attributes[$j]["options"]["value"] = array($attributes[$j]["options"]["value"]);
+							}
+							
 							if(count($attributes[$j]["options"]["value"]) > 0)
 							{
 								for($k = 0; $k < count($attributes[$j]["options"]["value"]); $k++)
@@ -1131,7 +1245,15 @@ class Rest_ProductController extends RestCommonController
 			}			
 			else
 			{
-				$arr_error[] = "You can edit maximum 1 product at a time";
+				if(!isset($myparams["Products"]))
+				{
+					$arr_error[] = "Invalid request parameters.";
+				}
+				else
+				{
+					$arr_error[] = "You can edit maximum 1 product at a time";
+				}
+				
 			}
 			
 			if(count($arr_error) == 0)
@@ -1486,6 +1608,7 @@ class Rest_ProductController extends RestCommonController
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
     public function deleteAction()
@@ -1526,12 +1649,34 @@ class Rest_ProductController extends RestCommonController
 			
 					
 			
-			if(count($myparams["Products"]) <= 50)
+			$cntProduct = 0;
+			$isProdArray = false;
+			
+			if(isset($myparams["Products"]["Product"][0]))
+			{
+				
+				$cntProduct = count($myparams["Products"]["Product"][0]);
+				$isProdArray = true;	
+			}
+			else
+			{
+				$cntProduct = 1;
+				$isProdArray = false;
+			}
+			
+			if(isset($myparams["Products"]) && $cntProduct <= 50)
 			{
 				$x = 0;
-				for($i = 0; $i < count($myparams["Products"]["Product"]); $i++)
+				for($i = 0; $i < $cntProduct; $i++)
 				{
-					$prod = $myparams["Products"]["Product"][$i];
+					if($isProdArray)
+					{
+						$prod = $myparams["Products"]["Product"][$i];
+					}
+					else
+					{
+						$prod = $myparams["Products"]["Product"];
+					}
 					
 					//filter values
 					if(isset($prod['pid']))
@@ -1593,7 +1738,7 @@ class Rest_ProductController extends RestCommonController
 					
 					
 					
-					//update product 
+					//delete product 
 					$Product->DeleteProductDetail($products[$i]["pid"]);
 					
 					

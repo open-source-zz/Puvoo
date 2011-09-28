@@ -1,5 +1,104 @@
 
-Coming Soon
+<!--  Crumb  Start -->
+<div class="Breadcrumb" id="PageBreadcrumb">
+	<ul>
+	   <li class="Home"><a href="#"><?php echo $this->Translate("User_Home"); ?></a></li>
+	</ul>
+</div>
+<!--  Crumb  end -->
+
+
+<div class="BodyContainer DashboardContainer" style="text-align:left;">
+	<div class="Heading1"><?php echo $this->Translate('User_Home'); ?></div>
+	
+	<div class="DashboardPanel DashboardLeftColumn" style="margin-top:10px;">
+		<div style="margin-top:10px;padding:5px;">
+			<span class="DashboardActionButton DashboardRecentOrdersAllButton">
+				<a href="<?php echo SITE_URL; ?>user/orders" ><span class="ButtonArrow"></span>
+					<span class="ButtonText ButtonTextWithArrow"><?php echo $this->Translate('Dash_View_All_Order'); ?></span>
+				</a>
+			</span>
+			<h3><?php echo $this->Translate('Dash_Recent_Orders'); ?></h3>
+				<form name="order_search" id="order_search" method="post">
+				<div class="DashboardFilterOptions" style="margin-top: 18px;">
+					<div style="font-size:13px;"><?php echo $this->Translate('Dash_Show'); ?>:</div> 
+					<ul class="DashboardRecentOrdersToggle">
+						<li <?php if($this->active_class === "all") { ?>class="Active" <?php } ?> >
+							<a style="cursor:pointer;" onclick="searchDashOrder('order_search','All',this)" rel="status=recent">Recent Orders</a>
+						</li>
+						<?php	foreach( $this->order_status["order_status"] as $key => $val ) { ?>	
+						<li <?php if($this->active_class === (string)$key ) { ?>class="Active" <?php } ?> >
+							<a style="cursor:pointer;" onclick="searchDashOrder('order_search','<?php echo $key; ?>',this)" rel="status=pending">
+								<?php 	echo $val;  ?>&nbsp;<?php echo $this->Translate('Orders'); ?>
+							</a>
+						</li>
+						<?php 	}  ?>
+					</ul>
+				</div>
+					<input type="hidden" name="order_status" id="order_status" value="">
+				</form>
+			<div style="height:10px"></div>
+			<table width="100%" cellpadding="0" cellspacing="0" style="float:left;">
+				<tr style="" class="trclass">
+					<td  class="tdclasshome"><?php echo $this->Translate('Order_Order_No'); ?></td>
+					<td  class="tdclasshome"><?php echo $this->Translate('Order_Date'); ?></td>
+					<td   class="tdclasshome" align="center">
+						<table width="100%" align="center" cellpadding="0" cellspacing="0" >
+							<tr>
+								<td colspan="2" align="center" height="18px" valign="top"  class="borderbottom" ><?php echo $this->Translate('Order_Client'); ?></td>
+							</tr>
+							<tr>
+								<td width="50%" align="center"  class="tdclasshome"><?php echo $this->Translate('Order_SU'); ?></td>
+								<td width="50%" align="center" class="style10"><?php echo $this->Translate('Order_BU'); ?></td>
+							</tr>
+						</table>
+					</td>
+					<td class="tdclasshome"><?php echo $this->Translate('Order_Amount'); ?></td>
+					<td class="tdclasshome"><?php echo $this->Translate('Order_Status'); ?></td>
+				</tr>
+				
+				<?php if(count($this->records) > 0 ) { ?>
+				<?php 	foreach($this->records as $key => $val) { ?>
+				<tr id="tr100" class="GridRow" onmouseover="this.className='GridRowOver'" onmouseout="this.className='GridRow'">
+					<td class="FieldLabel2">#<?php echo $val["order_id"]; ?></td>
+					<td class="FieldLabel2"><?php echo $val["order_creation_date"]; ?></td>
+					<td class="FieldLabel2">
+					  <table  width="100%" cellpadding="0" cellspacing="0" align="center" >
+							<tr>
+								<td  width="50%" style="border-bottom:none"><?php echo $val["shipping_user_fname"]." ".$val["shipping_user_lname"]; ?></td>
+								<td width="50%" style="border-bottom:none"><?php echo $val["billing_user_fname"]." ".$val["billing_user_lname"]; ?></td>
+							</tr>
+					  </table>
+					</td>
+					<td class="FieldLabel2"><?php echo $val["total_order_amount"]; ?></td>
+					<td align="center" class="FieldLabel2">
+						<?php if($val["order_status"] == 0 ) { ?>
+							<span class="OrderStatus OrderStatus4 OrderDetails">
+								<?php echo $this->Translate('Order_Status_Pending'); ?>
+							</span>
+						<?php } else if($val["order_status"] == 1) { ?>
+							<span class="OrderStatus OrderStatus2 OrderDetails">
+								<?php echo $this->Translate('Order_Status_Complete'); ?>
+							</span>
+						<?php } else { ?>
+							<span class="OrderStatus OrderStatus3 OrderDetails">
+								<?php echo $this->Translate('Order_Status_Cancle'); ?>
+							</span>
+						<?php } ?>
+					</td>
+				</tr>	
+				<?php    }?>			
+				<?php } else {  ?>
+					<tr id="tr100" class="GridRow" onmouseover="this.className='GridRowOver'" onmouseout="this.className='GridRow'">
+						<td class="FieldLabel2" colspan="8" align="center"><?php echo $this->Translate('No_record'); ?></td>
+					</tr>
+				<?php } ?>				
+			</table>
+		</div>
+	</div>
+    <div class="Clear"></div>   
+</div>
+
 
 <script language="javascript" type="text/javascript">
 	

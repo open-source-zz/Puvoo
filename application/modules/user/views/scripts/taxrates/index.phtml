@@ -101,10 +101,10 @@
 					<td class="FieldLabel2" align="center"><?php echo $this->records[$i]['rate']; ?></td>
 					<td class="FieldLabel2" align="center">
 						<ul id="icons" class="ui-widget ui-helper-clearfix" >
-							<li class="ui-state-default ui-corner-all" onclick="Javascript: editRecord(<?php echo $this->records[$i]['tax_rate_id']; ?>,'frmTaxRates','<?php echo $this->edit_action; ?>')" class="ui-state-default ui-corner-all" title="edit">
+							<li class="ui-state-default ui-corner-all" onclick="Javascript: editRecord(<?php echo $this->records[$i]['tax_rate_id']; ?>,'frmTaxRates','<?php echo $this->edit_action; ?>')" title="<?php echo $this->Translate('Edit'); ?>">
 								<span class="ui-icon ui-icon-pencil"></span>
 							</li>
-							<li onclick="Javascript: deleteRecord(<?php echo $this->records[$i]['tax_rate_id']; ?>,'frmTaxRates','<?php echo $this->delete_action; ?>')" class="ui-state-default ui-corner-all" title="delete">
+							<li onclick="Javascript: deleteRecord(<?php echo $this->records[$i]['tax_rate_id']; ?>,'frmTaxRates','<?php echo $this->delete_action; ?>')" class="ui-state-default ui-corner-all" title="<?php echo $this->Translate('Delete'); ?>">
 								<span class="ui-icon ui-icon-close"></span>
 							</li>
 						</ul>
@@ -146,9 +146,9 @@
 <!--     JS Global Variable for the language    -->
 <script language="javascript" type="text/javascript">
 	
-	var siteurl = '<?php echo SITE_URL; ?>';
-	var HIDE = '<?php echo $this->Translate("Hide"); ?>';  
-	var SEARCH = '<?php echo $this->Translate("Search"); ?>';  
+	var siteurl = "<?php echo SITE_URL; ?>";
+	var HIDE = "<?php echo $this->Translate('Hide'); ?>";  
+	var SEARCH = "<?php echo $this->Translate('Search'); ?>";  
 	var ERR_TAX_RATES_CLASS = "<?php echo $this->Translate('Err_Taxes_Class_Title'); ?>";
 	var ERR_TAX_RATES_ZONE = "<?php echo $this->Translate('Err_Taxes_Classes_Description'); ?>";
 	var ERR_TAX_RATES_RATE = "<?php echo $this->Translate('Err_Taxes_Rates_Rate'); ?>";

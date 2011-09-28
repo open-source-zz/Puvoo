@@ -1,0 +1,43 @@
+<script language="javascript" type="text/javascript">
+function loadPopup()
+{
+ $("#backgroundPopup").css({"opacity": "0.1"});
+ $("#backgroundPopup").fadeIn("fast");
+ $("#popupCart").slideDown("slow");
+}
+function disablePopup()
+{
+ $("#backgroundPopup").fadeOut("slow");
+ $("#popupCart").slideUp("slow");
+}
+function centerPopup()
+{
+/* $("#popupContact").height('auto');	*/
+  
+ var windowWidth = document.documentElement.clientWidth;
+ var windowHeight = document.documentElement.clientHeight;
+ //var popupHeight = $("#innerDIV").height();
+ var popupWidth = $("#popupCart").width();
+ $("#popupCart").css({"position": "absolute","top": windowHeight/2 - 400/2,"left": windowWidth/2-popupWidth/2});
+ $("#backgroundPopup").css({"height": windowHeight});
+
+}
+
+$(document).load(function()
+{
+  centerPopup();
+  loadPopup();
+  
+  disablePopup();
+  
+});
+</script>
+
+
+<div id="addtocartpopup">
+<div id="loader" style="display:block; height:50px; visibility:hidden;">
+				
+			</div>
+ 
+</div>
+

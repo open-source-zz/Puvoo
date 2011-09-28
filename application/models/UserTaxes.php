@@ -53,6 +53,7 @@ class Models_UserTaxes
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	 
@@ -76,6 +77,7 @@ class Models_UserTaxes
 	 * @param (string)  - $table : Table name
 	 * @return (Array) 	- $data : One selected row by primary key of table
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -102,6 +104,7 @@ class Models_UserTaxes
 	 * @param (string)  - $table : Table name
 	 * @return (Array) 	- All records of the table
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -125,6 +128,7 @@ class Models_UserTaxes
 	 * @param (string)  - $table : Table name
 	 * @return (Array) 	- All matched records of the table
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -163,6 +167,7 @@ class Models_UserTaxes
 	 * @param (string)  - $table : Table name
 	 * @return (Array) 	- All records of the table
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -186,6 +191,7 @@ class Models_UserTaxes
 	 * @param () (String)  	- $table : Name of table
 	 * @return (Boolean) - Return true on success
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -211,6 +217,7 @@ class Models_UserTaxes
 	 * @param () (String)  - $table : Table name
 	 * @return (Boolean) - Return true on success
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -238,6 +245,7 @@ class Models_UserTaxes
 	 * @param () (String)  	- $table : Table name
 	 * @return (Boolean) - Return true on success
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -266,6 +274,7 @@ class Models_UserTaxes
 	 * @param () (String)  	- $table : Table name
 	 * @return (Boolean) - Return true on success
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -288,6 +297,7 @@ class Models_UserTaxes
 	 * @param ()  -	 No Parameters
 	 * @return (Array) - $data : Array of all records
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -312,6 +322,7 @@ class Models_UserTaxes
 	 * @param (Array)  -	$data: Array of condition
 	 * @return (Array) - 	$data : Array of all records
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	

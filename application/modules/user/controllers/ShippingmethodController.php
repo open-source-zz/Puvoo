@@ -47,6 +47,7 @@ class User_ShippingmethodController extends UserCommonController
 	 * @return (void) - Return void
 	 *
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	public function init()
@@ -68,6 +69,7 @@ class User_ShippingmethodController extends UserCommonController
 	 * @return (void) - Return void
 	 *
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	public function indexAction()
@@ -154,6 +156,7 @@ class User_ShippingmethodController extends UserCommonController
 	 * @return (void) - Return void
 	 *
      * @author Yogesh
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
 	
@@ -233,6 +236,7 @@ class User_ShippingmethodController extends UserCommonController
 	 * @return (void) - Return void
 	 *
      * @author Yogesh
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
 	
@@ -329,6 +333,7 @@ class User_ShippingmethodController extends UserCommonController
 	 * @return (void) - Return void
 	 *
      * @author Yogesh
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
 	
@@ -367,6 +372,7 @@ class User_ShippingmethodController extends UserCommonController
 	 * @return (void) - Return void
 	 *
      * @author Yogesh
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
 	
@@ -414,6 +420,7 @@ class User_ShippingmethodController extends UserCommonController
 	 * @return () - No returns
 	 *
      * @author Yogesh
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
 	

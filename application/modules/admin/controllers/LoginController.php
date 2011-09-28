@@ -50,6 +50,7 @@ class Admin_LoginController  extends AdminCommonController
 	 * @return (void) - Return void
 	 *
      * @author Amar
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/  
     function init()
@@ -69,6 +70,7 @@ class Admin_LoginController  extends AdminCommonController
 	 * @return (void) - Return void
 	 *
      * @author Amar
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/  
 	function indexAction()
@@ -193,6 +195,7 @@ class Admin_LoginController  extends AdminCommonController
 	 * @return (void) - Return void
 	 *
      * @author Yogesh
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/  
 	
@@ -230,8 +233,8 @@ class Admin_LoginController  extends AdminCommonController
 					// Mail new password
 					$to 		= $email; 
 					$to_name 	= $result[0]["user_name"];
-					$from		= "noreply@puvoo.com";
-					$from_name	= "Puvoo";
+					$from		= "admin@puvoo.com";
+					$from_name	= "Admin";
 					$subject	= "Forgot Password Recovery";
 					$body		= "Hello, ".$result[0]["user_name"]."<br /><br />Your new password : ".$result[1];					
 					

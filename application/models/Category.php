@@ -53,6 +53,7 @@ class Models_Category
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	function __construct()
@@ -67,6 +68,7 @@ class Models_Category
 	 *
 	 * Date created: 2011-08-22
 	 *
+	 * @return (Array) - Return Array of records
 	 * @author  Jayesh 
 	 * @param   two parameters / login_id and password.
      * @global  $db Zend_db for database.
@@ -90,6 +92,7 @@ class Models_Category
 	 *
 	 * Date created: 2011-08-22
 	 *
+	 * @return (Array) - Return Array of records
 	 * @author  Jayesh 
 	 * @param   two parameters / login_id and password.
      * @global  $db Zend_db for database.
@@ -106,6 +109,36 @@ class Models_Category
 		return $result;
 	
 	}
+
+	 /*
+	 * GetCategoryID(): To get category id throught product id.
+	 *
+	 * It is used to get category id throught product id.
+	 *
+	 * Date created: 2011-08-22
+	 *
+	 * @param () (Int)  - $Poductid : Product Id
+	 * @return (Array) - Return Array of records
+	 * @author  Jayesh 
+	 * @param   two parameters / login_id and password.
+     * @global  $db Zend_db for database.
+                $mysession Zend_Session_Namespace for session variables.
+	 * 
+	 */
+	
+	public function GetCategoryID($Poductid)
+	{
+		$db = $this->db;
+		
+		$sql = "SELECT cm.* from product_to_categories as ptc 
+				LEFT JOIN category_master as cm ON (cm.category_id = ptc.category_id)
+				WHERE ptc.product_id='".$Poductid."' and cm.parent_id !='0'";
+				
+ 		$result = $db->fetchRow($sql);
+		return $result;
+	
+	}
+
 	
 	/*
 	 * GetCategoryById(): To get data of category by selected category id.
@@ -114,6 +147,8 @@ class Models_Category
 	 *
 	 * Date created: 2011-08-26
 	 *
+	 * @param () (Int)  - $id : Category Id
+	 * @return (Array) - Return Array of records
 	 * @author  Yogesh 
 	 * @param   two parameters / login_id and password.
      * @global  $db Zend_db for database.
@@ -138,6 +173,8 @@ class Models_Category
 	 *
 	 * Date created: 2011-08-22
 	 *
+	 * @param (Int)- $parentid  - Parent id
+	 * @return (Array) - Return Array of records
 	 * @author  Jayesh 
 	 * @param   two parameters / login_id and password.
      * @global  $db Zend_db for database.
@@ -146,7 +183,7 @@ class Models_Category
 	 */
 
 
-	public function GetSubCategory($parentid)
+	public function GetSubCategory($parentid=0)
 	{
 		$db = $this->db;
 		
@@ -169,6 +206,7 @@ class Models_Category
 	 * @param ()  - No parameter
 	 * @return (Array) - Return Array of records
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	public function GetAllCategories()
@@ -189,9 +227,10 @@ class Models_Category
 	 * Date created: 2011-08-25
 	 *
 	 * @access public
-	 * @param ()  - No parameter
+	 * @param () (Int)  - $catid : Category Id
 	 * @return (Array) - Return Array of records
 	 * @author Jayesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	public function GetCategoryDetail($catid)
@@ -217,6 +256,7 @@ class Models_Category
 	 * @param () (Array)  - $data : Array of search options
 	 * @return (Array) - Return Array of records
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -270,6 +310,7 @@ class Models_Category
 	 * @param () (Array)  - $data : Array of record to insert
 	 * @return (Boolean) - Return true on success
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -294,6 +335,7 @@ class Models_Category
 	 * @param () (String)  - $where : Condition on which update record
 	 * @return (Boolean) - Return true on success
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -312,9 +354,10 @@ class Models_Category
 	 * Date created: 2011-08-26
 	 *
 	 * @access public
-	 * @param () (String)  - $id : Category Id
+	 * @param () (Int)  - $id : Category Id
 	 * @return (Boolean) - Return true on success
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -337,6 +380,7 @@ class Models_Category
 	 * @param () (String)  - $ids : Sting of all Category Id with comma seprated.
 	 * @return (Boolean) - Return true on success
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -347,6 +391,43 @@ class Models_Category
 		$db->delete("category_master",$where);	 
 		
 		return true;	
+	}
+	
+	/**
+	 * Function getParentCategories
+	 *
+	 * This function is used to get parent categories of given category
+     *
+	 * Date created: 2011-09-28
+	 *
+	 * @access public
+	 * @param () (int)  - $cid : category id to get parents.
+	 * @param () (array)  - $carray : array to put results in.
+	 * @return (array) - Return array of category ids
+	 * @author Amar
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	
+	public function getParentCategories($cid,$carray = array())
+	{
+		$db = $this->db;	
+		$data = NULL;
+		if($cid > 0)
+		{
+			$sql = "select category_id, parent_id, category_name from category_master where category_id = " . $cid;
+			$data = $db->fetchRow($sql);
+			$x = count($carray);
+			$carray[$x]["category_id"] = $data["category_id"];
+			$carray[$x]["category_name"] = $data["category_name"];
+			
+			return($this->getParentCategories($data["parent_id"],$carray));
+		}
+		else
+		{
+			return $carray;
+		}
+		
 	}
 	
 }

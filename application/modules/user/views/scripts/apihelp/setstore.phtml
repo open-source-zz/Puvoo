@@ -1,0 +1,259 @@
+<!--  Crumb  Start -->
+<div class="Breadcrumb" id="PageBreadcrumb">
+	<ul>
+	   <li class="Home SecondLast"><a href="<?php echo SITE_URL; ?>user/"><?php echo $this->Translate("User_Home"); ?></a></li>
+	   <li class="Last"><a href="<?php echo SITE_URL; ?>user/apihelp/"><?php echo $this->Translate("Api_Help"); ?></a></li>
+	   <li class="Last"><span><?php echo $this->Translate("Set_Store_Api_Help"); ?></span></li>
+	</ul>
+</div>
+<!--  Crumb  end -->
+
+<div class="BodyContainer DashboardContainer" style="text-align:left;"> 
+	<div class="Heading1">
+		<?php echo $this->Translate('Set_Store_Api_Help'); ?>
+	</div>
+<div style="margin-top:20px;"><h4>REST URL : <?php echo SITE_URL."rest/inventory"; ?></h4> </div>
+<div style="margin-top:20px;"><h4>Set Store Input</h4></div>
+<div style="margin-top:20px;">The box below lists all fields that could be included in the call request. To learn more about an individual field or its type scroll down to find it in the table below the box.</div>
+<pre style="background-color:#E0E0E0;  font-size:12px">
+
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+
+&lt;store_info&gt;
+	
+	&lt;store_name&gt; TEXT &lt;/store_name&gt;
+	&lt;store_description&gt; TEXT &lt;/store_description&gt;
+	&lt;store_address&gt; TEXT &lt;/store_address&gt;
+	&lt;store_country&gt; TEXT &lt;/store_country&gt;
+	&lt;store_state&gt; TEXT &lt;/store_state&gt;
+	&lt;store_city&gt; TEXT &lt;/store_city&gt;
+	&lt;store_zipcode&gt; TEXT &lt;/store_zipcode&gt;
+	&lt;paypal_address&gt; TEXT &lt;/paypal_address&gt;
+	&lt;currency&gt; TEXT &lt;/currency&gt;
+	
+	&lt;shipping_table&gt;
+		&lt;shipping_name&gt; TEXT &lt;/shipping_name&gt;	
+		&lt;shipping_zone&gt; TEXT &lt;/shipping_zone&gt;	
+		&lt;shipping_cost&gt; TEXT &lt;/shipping_cost&gt;	
+	&lt;/shipping_table&gt;
+	&lt;!-- ... more shipping table nodes here ... --&gt;
+	
+&lt;/store_info&gt;
+</pre>
+<div style="margin-top:20px;">
+<h4>Input argument detail</h4>
+</div>
+<table border="1" cellspacing="2" cellpadding="4" width="100%">
+	<tr>
+		<th >Argument</th>
+		<th >Type</th>
+ 		<th>Occurrence</th>
+		<th>Meaning</th>
+	</tr>
+	<tr>
+		<td valign="top">store_info</td>
+		<td valign="top">XML Node</td>
+		<td valign="top">Always,Single</td>
+		<td valign="top">It is a compulsary node. It will occur only once. It is an xml node that will contain store information to update in system.</td>
+	</tr>
+	<tr>
+		<td valign="top">store_name</td>
+		<td valign="top">TEXT</td>
+		<td valign="top">Optional,Single</td>
+		<td valign="top">It will contain store name to update.
+		</td>
+	</tr>
+	<tr>
+		<td valign="top">store_description</td>
+		<td valign="top">TEXT</td>
+		<td valign="top">Optional,Single</td>
+		<td valign="top">It will contain store description to update.
+		</td>
+	</tr>
+	<tr>
+		<td valign="top">store_address</td>
+		<td valign="top">TEXT</td>
+		<td valign="top">Optional,Single</td>
+		<td valign="top">It will contain store address to update.
+		</td>
+	</tr>
+	<tr>
+		<td valign="top">store_country</td>
+		<td valign="top">TEXT</td>
+		<td valign="top">Optional,Single</td>
+		<td valign="top">It will contain ISO2 country code to set store country.
+		</td>
+	</tr>
+	<tr>
+		<td valign="top">store_state</td>
+		<td valign="top">TEXT</td>
+		<td valign="top">Optional,Single</td>
+		<td valign="top">It will contain state name for store country.
+		</td>
+	</tr>
+	<tr>
+		<td valign="top">store_city</td>
+		<td valign="top">TEXT</td>
+		<td valign="top">Optional,Single</td>
+		<td valign="top">It will contain store city name to update.
+		</td>
+	</tr>
+	<tr>
+		<td valign="top">store_zipcode</td>
+		<td valign="top">TEXT</td>
+		<td valign="top">Optional,Single</td>
+		<td valign="top">It will contain store zipcode to update.
+		</td>
+	</tr>
+	<tr>
+		<td valign="top">paypal_address</td>
+		<td valign="top">TEXT</td>
+		<td valign="top">Optional,Single</td>
+		<td valign="top">It will contain store paypal_address to update.
+		</td>
+	</tr>
+	<tr>
+		<td valign="top">currency</td>
+		<td valign="top">TEXT</td>
+		<td valign="top">Optional,Single</td>
+		<td valign="top">It will contain currency code to update store currency.
+		</td>
+	</tr>
+	
+	<tr>
+		<td valign="top">shipping_table</td>
+		<td valign="top">XML Node</td>
+		<td valign="top">Optional,Repeatable</td>
+		<td valign="top">It will contain shipping method information for user store.
+		</td>
+	</tr>
+	<tr>
+		<td valign="top">shipping_name</td>
+		<td valign="top">TEXT</td>
+		<td valign="top">Conditional,Single</td>
+		<td valign="top">It will require if shipping_table node is present.It will contain shipping method name to add or update for user store.
+		</td>
+	</tr>
+	<tr>
+		<td valign="top">shipping_zone</td>
+		<td valign="top">TEXT</td>
+		<td valign="top">Conditional,Single</td>
+		<td valign="top">It will require if shipping_table node is present.It will contain shipping zone information to add or update for user store.<br/>
+							It can be provided as "COUNTY_CODE:STATE_CODE,COUNTY_CODE", with ISO2 code of country and code.<br />
+							Example:- "IT,UK" OR "IT:MI:RM,US:NY,UK". 
+		</td>
+	</tr>
+	<tr>
+		<td valign="top">shipping_cost</td>
+		<td valign="top">TEXT</td>
+		<td valign="top">Conditional,Single</td>
+		<td valign="top">It will require if shipping_table node is present.It will contain shipping cost to associate with shipping method.<br />
+							Example:-  5:7.50, 10:9.5, From weight 0-5 pay 7.50, From weight 5-10 pay 9.5, From weight 10 or more pay 9.5
+		</td>
+	</tr>
+</table>
+<div style="margin-top:20px;">
+<h4>Product Inventory Output</h4>
+</div>
+<pre style="background-color:#E0E0E0;  font-size:12px">
+&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+
+&lt;response&gt;
+	&lt;result&gt; TEXT &lt;/result&gt;
+	&lt;error&gt; TEXT &lt;/error&gt;
+	&lt;message&gt; TEXT &lt;/message&gt;
+&lt;/response&gt;
+</pre>
+<div style="margin-top:20px;">
+<h4>Output return values detail</h4>
+</div>
+<table border="1" cellspacing="2" cellpadding="4" width="100%">
+	<tr>
+		<th >Return Value</th>
+		<th >Type</th>
+ 		<th>Occurrence</th>
+		<th>Meaning</th>
+	</tr>
+	<tr>
+		<td >response</td>
+		<td >XML Node</td>
+		<td >Always,Single</td>
+		<td>It is a compulsary node. It will occur only once. It is an xml node that will contain result of the call made.</td>
+	</tr>
+	<tr>
+		<td >result</td>
+		<td >TEXT</td>
+		<td >Always,Single</td>
+		<td>It is a compulsary node. 
+			It will occur only once.<br/> 
+			It can have any of the value below<br />
+			<b>Success</b> = Your call executed successfully.<br />
+			<b>Failure</b> = Your call failed due to some error.
+		</td>
+	</tr>
+	<tr>
+		<td >error</td>
+		<td >TEXT</td>
+		<td >Conditional,Repeatable</td>
+		<td>It will occur only if your call is failed due to some error. It will contain error text. It can repeat for more than 1 errors.</td>
+	</tr>
+	<tr>
+		<td >message</td>
+		<td >TEXT</td>
+		<td >Conditional,Single</td>
+		<td >It will occur only if your call is successfull. It will contain success message.</td>
+	</tr>
+	
+</table>
+
+<div style="margin-top: 20px;">
+	<h4>PHP Sample Code</h4>
+</div>
+<pre style="background-color:#E0E0E0;  font-size:12px">
+&lt;?php
+
+$rest_url = "<?php echo SITE_URL.'rest/inventory'; ?>";
+$api_key = "<b>your_api_key</b>";
+
+$data = "&lt;store_info&gt;\r\n"
+	. "&lt;store_name&gt;Store name&lt;/store_name&gt;\r\n"
+	. "&lt;store_description&gt;Description of store&lt;/store_description&gt;\r\n"
+	. "&lt;store_address&gt;Address of store&lt;/store_address&gt;\r\n"
+	. "&lt;store_country&gt;US&lt;/store_country&gt;\r\n"
+	. "&lt;store_state&gt;New York&lt;/store_state&gt;\r\n"
+	. "&lt;store_city&gt;New York&lt;/store_city&gt;\r\n"
+	. "&lt;store_zipcode&gt;12345&lt;/store_zipcode&gt;\r\n"
+	. "&lt;paypal_address&gt;paypal@xyz.com&lt;/paypal_address&gt;\r\n"
+	. "&lt;currency&gt;USD&lt;/currency&gt;\r\n"
+	. "&lt;shipping_table&gt;\r\n"
+	. "&lt;shipping_name&gt;shipping_method&lt;/shipping_name&gt;\r\n"
+	. "&lt;shipping_zone&gt;US,IT,UK&lt;/shipping_zone&gt;\r\n"
+	. "&lt;shipping_cost&gt;5:5.5,10:11,15:20&lt;/shipping_cost&gt;\r\n"
+	. "&lt;/shipping_table&gt;\r\n"
+	. "&lt;/store_info&gt;";
+
+$arr_header = array();
+$arr_header[] = "Content-Type: text/xml;charset=UTF-8";
+$arr_header[] = "Accept: text/xml";
+$arr_header[] = "apikey: " . $api_key;
+
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $rest_url);
+curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+curl_setopt($ch, CURLOPT_HTTPHEADER, $arr_header);
+
+$result = curl_exec($ch);
+
+if(curl_errno($ch)){
+   echo 'Curl error: ' . curl_error($ch);
+}
+
+curl_close($ch);
+echo $result;
+?&gt;
+</pre>
+</div> 
+

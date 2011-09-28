@@ -1,0 +1,316 @@
+<div class="Breadcrumb" id="PageBreadcrumb">
+	<ul>
+	   <li class="Home SecondLast"><a href="#"><?php echo $this->Translate("Administration"); ?></a></li>
+	   <li class="Last"><span><?php echo $this->Translate('Orders'); ?></span></li>
+	</ul>
+</div>
+
+<!--       Set Record value         -->
+
+<?php  $order_detail = $this->order_detail;  ?>
+
+<div class="BodyContainer DashboardContainer" style="text-align:left;"> 
+	<div class="Heading1">
+		<?php echo $this->Translate('Order_Management'); ?>
+	</div>
+	
+	<div style="text-align:center;">
+		<?php if( count($this->editErrorMessage) > 0 ) { ?>
+		<?php 		foreach($this->editErrorMessage as $key => $val ) { ?>
+		<h5 style='color:#FF0000;margin-bottom:0px;'><?php echo $val; ?></h5>
+		<?php 		} 	?>
+		<?php } ?>
+	</div>
+	
+	<form method="post" name="detail_edit_form" id="detail_edit_form" >
+		<div class="typo">
+			<div style="border:5px solid #ECECEC; margin-top:5px;">
+				<table width="100%" cellspacing="0" >
+					<tr>
+						<td colspan="2" height="30" valign="middle" class="Heading2">
+							<?php echo $this->Translate('Order_Detail'); ?>
+						</td>
+					</tr>
+					<tr>
+						<td width="50%">
+							&nbsp;&nbsp;<strong><?php echo $this->Translate('Order_Order_No'); ?></strong>
+						</td>
+						<td width="50%"> 
+							:&nbsp;#<?php echo $order_detail["order_id"]; ?>
+						</td>
+					</tr>
+					<tr>
+						<td width="50%">
+							&nbsp;&nbsp;<strong><?php echo $this->Translate('Order_Status'); ?></strong>
+						</td>
+						<td width="50%"> :&nbsp;
+							<select name="order_status" id="order_status" class="Field250">
+								<?php  		foreach( $this->order_status["order_status"] as $key => $val ) { ?>	
+								<?php  		   	if ( $key == $order_detail["order_status"] ) { ?>	
+								<option value="<?php echo $key; ?>" selected="selected">
+								<?php 			} else {  ?>
+								<option value="<?php echo $key; ?>">
+								<?php 			}  ?>		
+								<?php 			echo $val;  ?>	
+								</option>
+								<?php 		}  ?>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td width="50%">
+							&nbsp;&nbsp;<strong><?php echo $this->Translate('Order_Payment_Method'); ?></strong>
+						</td>
+						<td width="50%"> :&nbsp;
+							<?php echo $order_detail["payment_method"]; ?>
+						</td>
+					</tr>
+					<tr>
+						<td width="50%">
+							&nbsp;&nbsp;<strong><?php echo $this->Translate('Order_Order_Creation_Date'); ?></strong>
+						</td>
+						<td width="50%"> :&nbsp;
+							<?php echo $order_detail["order_creation_date"]; ?>
+						</td>
+					</tr>
+					<tr>
+						<td width="50%">
+							&nbsp;&nbsp;<strong><?php echo $this->Translate('Order_Total_Product_Amount'); ?></strong>
+						</td>
+						<td width="50%">:&nbsp;
+							<?php echo $order_detail["total_product_amount"]; ?>
+						</td>
+					</tr>
+					<tr>
+						<td width="50%">
+							&nbsp;&nbsp;<strong><?php echo $this->Translate('Order_Shipping_Cost'); ?></strong>
+						</td>
+						<td width="50%">:&nbsp;
+							<?php echo $order_detail["shipping_cost"]; ?>
+						</td>
+					</tr>
+					<tr>
+						<td width="50%">
+							&nbsp;&nbsp;<strong><?php echo $this->Translate('Order_Total_Tax_Cost'); ?></strong>
+						</td>
+						<td width="50%">:&nbsp;
+							<?php echo $order_detail["total_tax_cost"]; ?>
+						</td>
+					</tr>
+					<tr>
+						<td width="50%">
+							&nbsp;&nbsp;<strong><?php echo $this->Translate('Order_Total_Order_Amount'); ?></strong>
+						</td>
+						<td width="50%">:&nbsp;
+							<?php echo $order_detail["total_order_amount"]; ?>
+						</td>
+					</tr>
+					<tr><td colspan="" height="10"></td></tr>
+					<tr>
+						<td width="50%" style="text-align:center;" class="Heading2">
+							&nbsp;&nbsp;<strong><?php echo $this->Translate('Order_Shipping_Detail'); ?></strong>
+						</td>
+						<td  width="50%" style="text-align:center;" class="Heading2">
+							<?php echo $this->Translate('Order_Billing_Detail'); ?>						
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<table width="100%" cellpadding="2">
+								<tr >
+									<td><strong><?php echo $this->Translate('Order_User_Name'); ?></strong></td>
+									<td>:&nbsp;<?php echo $order_detail["shipping_user_fname"]." ".$order_detail["shipping_user_lname"]; ?></td>
+								</tr>
+								<tr >
+									<td><strong><?php echo $this->Translate('Order_User_Email'); ?></strong></td>
+									<td>:&nbsp;<?php echo $order_detail["shipping_user_email"]; ?></td>
+								</tr>
+								<tr>
+									<td><strong><?php echo $this->Translate('Order_User_No'); ?></strong></td>
+									<td>:&nbsp;<?php echo $order_detail["shipping_user_telephone"]; ?></td>
+								</tr>
+								<tr>
+									<td><strong><?php echo $this->Translate('Order_User_Address_Type'); ?></strong></td>
+									<td>:&nbsp;<?php echo $order_detail["shipping_user_address_type"]; ?></td>
+								</tr>
+								<tr>
+									<td><strong><?php echo $this->Translate('Order_User_Country'); ?></strong></td>
+									<td>:&nbsp;<?php echo $order_detail["shipping_country"]; ?></td>
+								</tr>
+								<tr>
+									<td><strong><?php echo $this->Translate('Order_User_Address'); ?></strong></td>
+									<td>:&nbsp;<?php echo $order_detail["shipping_user_address"]; ?></td>
+								</tr>
+								<tr>
+									<td><strong><?php echo $this->Translate('Order_User_City'); ?></strong></td>
+									<td>:&nbsp;<?php echo $order_detail["shipping_user_city"]; ?></td>
+								</tr>
+								<tr>
+									<td><strong><?php echo $this->Translate('Order_User_State'); ?></strong></td>
+									<td>:&nbsp;<?php echo $order_detail["shipping_state_name"]; ?></td>
+								</tr>
+								<tr>
+									<td><strong><?php echo $this->Translate('Order_User_Zipcode'); ?></strong></td>
+									<td>:&nbsp; <?php echo $order_detail["shipping_user_zipcode"]; ?></td>
+								</tr>
+							</table>
+						</td>
+						<td>
+							<table width="100%" cellpadding="2">
+								<tr>
+									<td><strong><?php echo $this->Translate('Order_User_Name'); ?></strong></td>
+									<td>:&nbsp;<?php echo $order_detail["billing_user_fname"]." ".$order_detail["billing_user_lname"]; ?></td>
+								</tr>
+								<tr>
+									<td><strong><?php echo $this->Translate('Order_User_Email'); ?></strong></td>
+									<td>:&nbsp;<?php echo $order_detail["billing_user_email"]; ?></td>
+								</tr>
+								<tr>
+									<td><strong><?php echo $this->Translate('Order_User_No'); ?></strong></td>
+									<td>:&nbsp;<?php echo $order_detail["billing_user_telephone"]; ?></td>
+								</tr>
+								<tr>
+									<td><strong><?php echo $this->Translate('Order_User_Address_Type'); ?></strong></td>
+									<td>:&nbsp;<?php echo $order_detail["billing_user_address_type"]; ?></td>
+								</tr>
+								<tr>
+									<td><strong><?php echo $this->Translate('Order_User_Country'); ?></strong></td>
+									<td>:&nbsp;<?php echo $order_detail["billing_country"]; ?></td>
+								</tr>
+								<tr>
+									<td><strong><?php echo $this->Translate('Order_User_Address'); ?></strong></td>
+									<td>:&nbsp;<?php echo $order_detail["billing_user_address"]; ?></td>
+								</tr>
+								<tr>
+									<td><strong><?php echo $this->Translate('Order_User_City'); ?></strong></td>
+									<td>:&nbsp;<?php echo $order_detail["billing_user_city"]; ?></td>
+								</tr>
+								<tr>
+									<td><strong><?php echo $this->Translate('Order_User_State'); ?></strong></td>
+									<td>:&nbsp;<?php echo $order_detail["billing_state_name"]; ?></td>
+								</tr>
+								<tr>
+									<td><strong><?php echo $this->Translate('Order_User_Zipcode'); ?></strong></td>
+									<td>:&nbsp; <?php echo $order_detail["billing_user_zipcode"]; ?></td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="clear"></div>
+			<?php $order_product_detail = $this->order_product_detail ?>
+			<br />
+			<div class="Heading2" style="height:30px; padding-top:7px;">
+				<?php echo $this->Translate('Order_Product_Detail'); ?>
+			</div>
+			<div id="accordion">
+					<div>
+						<?php $order_id = 0; ?>
+						<?php foreach( $order_product_detail as $key => $val )  {  ?>
+						<?php 	if( $val["order_detail_id"] != $order_id )  {  ?>
+						<h3><a href="#"><?php echo $val["product_name"]; ?></a></h3>
+						<div> 
+							<table width="100%">
+								<tr>
+									<td width="50%" >
+										<div style="border:5px solid #ECECEC;">
+										<table width="100%" cellpadding="2">
+											<tr>
+												<td width="50%"><strong><?php echo $this->Translate('Order_Product_Name'); ?></strong></td>
+												<td width="50%"> :&nbsp;<?php echo $val["product_name"]; ?></td>
+											</tr>
+											<tr>
+												<td><strong><?php echo $this->Translate('Order_Product_Price'); ?></strong></td>
+												<td>:&nbsp;<?php echo $val["product_price"]; ?></td>
+											</tr>
+											<tr>
+												<td><strong><?php echo $this->Translate('Order_Product_Tax_Rate'); ?>(%)</strong></td>
+												<td>:&nbsp;<?php echo $val["tax_rate"]; ?></td>
+											</tr>
+											<tr>
+												<td><strong><?php echo $this->Translate('Order_Product_Shipping_Cost'); ?></strong></td>
+												<td>:&nbsp;<?php echo $val["shipping_cost"]; ?></td>
+											</tr>
+											<tr>
+												<td><strong><?php echo $this->Translate('Order_Product_Quantity'); ?></strong></td>
+												<td>:&nbsp;<?php echo $val["product_qty"]; ?></td>
+											</tr>
+											<tr>
+												<td><strong><?php echo $this->Translate('Order_Product_Total_Cost'); ?></strong></td>
+												<td>:&nbsp;<?php echo $val["product_total_cost"]; ?></td>
+											</tr>
+										</table>
+										</div>
+									</td>
+									<td width="50%" valign="top">
+										<div style="border:5px solid #ECECEC;" >
+										<table width="100%">
+											<tr class="Heading2">
+												<td width="50%"><?php echo $this->Translate('Order_Product_Option'); ?></td>
+												<td width="50%"><?php echo $this->Translate('Order_Product_Option_Value'); ?></td>
+											</tr>
+											<?php foreach( $order_product_detail as $key2 => $val2 ) { ?>
+											<?php 	if($val2["order_detail_id"] == $val["order_detail_id"] ) {?>
+												<tr>
+													<td><?php echo $val2["option_title"]; ?></td>
+													<td><?php echo $val2["option_value"]; ?></td>
+												</tr>
+											<?php 	} ?>
+											<?php } ?>
+										</table>
+										</div>
+									</td>
+								</tr>
+							</table>
+						</div>
+						<?php 	 	$order_id = $val["order_detail_id"]; ?>
+						<?php 	} ?>
+						<?php } ?>
+					</div>				
+				</div>
+			<div class="clear"></div>
+		</div>
+		
+		<!--         Hidden fields                       -->
+		<input type="hidden" name="order_id" id="order_id" value="<?php echo $this->order_id; ?>" />
+		
+		<table>		
+			<tr><td height="15"></td></tr>
+			<tr>
+				<td colspan="2">
+					<input type="submit" onclick="Javascript: return ValidateProductDetailForm()" value="<?php echo $this->Translate('Submit'); ?>" />
+					<input type="button" value="<?php echo $this->Translate('Back'); ?>" onclick="window.location='<?php echo $this->site_url; ?>'"/>
+			   </td>
+			</tr>
+			<tr><td height="15"></td></tr>		
+		</table>
+	</form>
+</div> 
+
+<!--     JS Global Variable for the language    -->
+
+<script language="javascript" type="text/javascript">
+
+var siteurl = "<?php echo SITE_URL; ?>";
+var image_path = "<?php echo IMAGES_PATH; ?>/admin/";
+var product_id = "<?php echo $this->product_id; ?>";
+var EDIT = "<?php echo $this->Translate('Edit'); ?>"; 
+var ADD = "<?php echo $this->Translate('Add'); ?>";  
+var DELETE = "<?php echo $this->Translate('Delete'); ?>"; 
+var UPDATE = "<?php echo $this->Translate('Update'); ?>"; 
+
+$(function(){
+	// Accordion
+	$("#accordion").accordion({ header: "h3", navigation: true });
+});
+
+</script>
+
+
+<div id="dialog-confirm" title="<?php echo $this->Translate('Confirm_Delete_Product_Option_Title'); ?>" style="display:none;">
+	<div style="text-align:left;">
+		<span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
+		<?php echo $this->Translate('Confirm_Delete_Product_Option'); ?>
+	</div>
+</div>

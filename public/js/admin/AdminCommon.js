@@ -70,8 +70,13 @@ function SearchRecords(s,frmname){
 
 
 function editRecord(id,frmname,action){
-	
 	$("#hidden_primary_id").val(id);
+	$("#"+frmname).attr("action",action).submit();		
+}
+
+function editRecord1(id1,id2,frmname,action){
+	$("#hidden_primary_id1").val(id1);
+	$("#hidden_primary_id2").val(id2);
 	$("#"+frmname).attr("action",action).submit();		
 }
 
@@ -107,6 +112,29 @@ function deleteRecord(id,formname,action){
 	
 }
 
+
+function deleteRecord1(id1,id2,formname,action){
+	
+	$( "#dialog-confirm" ).dialog({
+		resizable: false,
+		height:'auto',
+		modal: true,
+		buttons: {
+			"Delete": function() {
+				$("#hidden_primary_id1").val(id1);
+				$("#hidden_primary_id2").val(id2);
+				$("#"+formname).attr("action",action).submit();			
+				$( this ).dialog( "close" );
+			},
+			Cancel: function() {
+				$( this ).dialog( "close" );
+			}
+		}
+	});		
+	
+}
+
+
 //////////////////////////	For Multiple Delete Category ///////////////////
 
 function deleteAllRecords(formname,action)
@@ -125,4 +153,12 @@ function deleteAllRecords(formname,action)
 			}
 		}
 	});
+}
+
+///////////////////////// Admin Orders Search ////////////////////////
+
+function searchDashOrder(frm,value)
+{
+	$("#order_status").val(value);
+	$("#"+frm).submit();
 }

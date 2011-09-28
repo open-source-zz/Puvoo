@@ -23,10 +23,10 @@
 
 
 /**
- * UserCommonController class.To check user login and for assigning constants.
+ * DefaultCommonController class.To assign variables and constants.
  *
  * This class file extends Zend_Controller_Action.
- * It is used to check whether admin is login or not and for assigning path constants,title,etc.
+ * It is used for assigning path constants,title,etc.
  *
  * Date created: 2011-08-26
  *
@@ -38,8 +38,7 @@ class DefaultCommonController extends Zend_Controller_Action
 	/**
 	 * Function init
 	 *
-	 * This is function is used to check whether User is login or not.
-     * It is also used for assigning constants like path,title,etc 
+	 * It is used for assigning constants like path,title,etc 
 	 *
 	 * Date created: 2011-08-26
 	 *
@@ -53,21 +52,6 @@ class DefaultCommonController extends Zend_Controller_Action
 	{
         global $mysession; 
 				   
-		/*if(!in_array(strtolower($this->_request->getControllerName()),array("login","logout")))
-		{
-			
-	
-			if(!Zend_Auth::getInstance()->hasIdentity())  
-         	{
-				header("location: " . SITE_URL . "user/logout");
-				exit();
-			}
-			
-			
-			
-		}*/
-		
-		
 		$db = Zend_Db_Table::getDefaultAdapter();
 		
 		//save database adapter in zend registry

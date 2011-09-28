@@ -45,6 +45,7 @@ class AdminCommonController extends Zend_Controller_Action
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
     public function init() 
@@ -54,8 +55,8 @@ class AdminCommonController extends Zend_Controller_Action
 		if(!in_array(strtolower($this->_request->getControllerName()),array("login","logout")))
 		{
 			
-	
-			if(!Zend_Auth::getInstance()->hasIdentity())  
+			
+			if(!Zend_Auth::getInstance()->hasIdentity() || $mysession->Admin_Login != Zend_Auth::getInstance()->getIdentity() )  
          	{
 				header("location: " . SITE_URL . "admin/logout");
 				exit();
@@ -109,6 +110,7 @@ class AdminCommonController extends Zend_Controller_Action
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	function indexAction()

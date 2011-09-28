@@ -1,0 +1,120 @@
+
+/* Gallery styles */
+
+#gallery{
+	/* CSS3 Box Shadow */
+	
+	/* CSS3 Rounded Corners */
+	
+	
+	
+	
+	background:url(../../images/fb/panel.jpg) repeat-x bottom center #ffffff;
+	
+	/* The width of the gallery */
+	width:547px;
+	overflow:hidden;
+	margin-bottom:10px;
+}
+
+#slides{
+	/* This is the slide area */
+	height:212px;
+	background:#f7f7f7;
+	/* jQuery changes the width later on to the sum of the widths of all the slides. */
+	width:547px;
+	overflow:hidden;
+}
+
+.slide{
+	float:left;
+}
+
+#menu_slide{
+	/* This is the container for the thumbnails */
+	height:35px;
+	margin-top:0px;
+	}
+
+#menu_slide ul{
+	margin:0px;
+	padding:0px;
+}
+
+#menu_slide li{
+	/* Every thumbnail is a li element */
+	width:91px;
+	
+	display:inline-block;
+	list-style:none;
+	height:35px;
+	overflow:hidden;
+}
+
+#menu_slide li.inact:hover{
+	/* The inactive state, highlighted on mouse over */
+	background:url(../../images/fb/pic_bg.png) repeat;
+}
+
+#menu_slide li.act,li.act:hover{
+	/* The active state of the thumb */
+	background:url(../../images/fb/active_bg.png) top center no-repeat #e3e3e3;
+	
+}
+
+#menu_slide li.act a{
+	cursor:pointer;
+	text-align:center;
+	line-height:18px;
+}
+
+#menu_slide .fbar{
+	/* The left-most vertical bar, next to the first thumbnail */
+	width:2px;
+	background:url(../../images/fb/divider1.png) no-repeat right;
+}
+
+#menu_slide li a{
+	display:block;
+	text-align:center;
+	background:url(../../images/fb/divider1.png) no-repeat right;
+	height:25px;
+	line-height:18px;
+	padding-top:10px;
+}
+
+a img{
+	border:none;
+}
+
+
+/* The styles below are only necessary for the demo page */
+
+h1{
+	font-family:"Myriad Pro",Arial,Helvetica,sans-serif;
+	font-size:36px;
+	font-weight:normal;
+	margin-bottom:15px;
+}
+
+h2{
+	font-family:"Myriad Pro",Arial,Helvetica,sans-serif;
+	font-size:12px;
+	font-weight:normal;
+	position:absolute;
+	right:0;
+	text-transform:uppercase;
+	top:15px;
+}
+
+#main{
+	/* The main container */
+	margin:15px auto;
+	text-align:center;
+	width:547px;
+	position:relative;
+}
+
+
+
+

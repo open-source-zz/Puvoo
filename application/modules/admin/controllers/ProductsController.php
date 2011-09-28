@@ -38,7 +38,7 @@ class Admin_ProductsController extends AdminCommonController
  	/**
 	 * Function init
 	 * 
-	 * This function in used for initialization.
+	 * This function in used for initialization. Add javacript file and define constant.
 	 *
 	 * Date created: 2011-09-13
 	 *
@@ -47,6 +47,7 @@ class Admin_ProductsController extends AdminCommonController
 	 * @return (void) - Return void
 	 *
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	public function init()
@@ -65,13 +66,14 @@ class Admin_ProductsController extends AdminCommonController
 	 * 
 	 * This function is used for listing all Products and for searching Products.
 	 *
-	 * Date created: 2011-08-31
+	 * Date created: 2011-09-13
 	 *
 	 * @access public
 	 * @param ()  - No parameter
 	 * @return (void) - Return void
 	 *
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	public function indexAction()
@@ -85,9 +87,9 @@ class Admin_ProductsController extends AdminCommonController
 		$this->view->delete_all_action = SITE_URL."admin/products/deleteall";
 		
 		
-		//Create Object of Category model
+		//Create Object of Product model
 		$product = new Models_Product();
-		//$validator = new Zend_Validate_Float(); new Zend_Validate_Digits();
+		//Create Object of Validator
 		$validator = new Zend_Validate_Float();
 		
 		//set current page number
@@ -115,13 +117,13 @@ class Admin_ProductsController extends AdminCommonController
 		}
 		
 		if($is_search == "1") {
+			// Search product
 			$translate = Zend_Registry::get('Zend_Translate');
 			$filter = new Zend_Filter_StripTags();	
 			$data['product_name']=$filter->filter(trim($this->_request->getPost('product_name'))); 	
 			$data['category_id']=$filter->filter(trim($this->_request->getPost('category_id'))); 	
 			$data['user_id'] = $filter->filter(trim($this->_request->getPost('user_id'))); 			
-			$range = $_POST['range']; 	
-			
+			$range = $_POST['range']; 				
 			$search_error = ''; 
 			$flag = 0; 
 			$range_value = array();
@@ -179,95 +181,20 @@ class Admin_ProductsController extends AdminCommonController
 		
 	}
 	
-	/**
-     * Function addAction
-	 *
-	 * This function is used to add Tax Rates
-	 *
-     * Date Created: 2011-09-01
-     *
-     * @access public
-	 * @param ()  - No parameter
-	 * @return (void) - Return void
-	 *
-     * @author Yogesh
-     * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
-     **/
-	
-	public function addAction()
-	{
-		global $mysession;
-		
-		$this->view->site_url = SITE_URL."admin/products";
-		$this->view->add_action = SITE_URL."admin/products/add";		
-		
-		$translate = Zend_Registry::get('Zend_Translate');
-		$filter = new Zend_Filter_StripTags();	
-		$request = $this->getRequest();
-		$taxes = new Models_UserTaxes();
-		$home = new Models_UserMaster();
-		
-		// Initial values
-		$this->view->country = $taxes->selectAllRecord("country_master");
-		
-		// On Form Submit
-		if($request->isPost())	{
-			
-			// Fetch all record here
-			$data['user_id']=$mysession->User_Id;
-			$data['tax_name']=$filter->filter(trim($this->_request->getPost('tax_name')));
-			$data2['zone']=$filter->filter(trim($this->_request->getPost('tax_zone'))); 	
-			$data2['rate']=$filter->filter(trim($this->_request->getPost('tax_price'))); 
-			
-			$error_message = "";
-			// Validate records and insert
-			if($data['tax_name'] == "" ) {
-				$error_message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Tax_Name')."</h5>";
-			} else if($data2['zone'] == "" ) {
-				$error_message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Tax_Zone')."</h5>";
-			}
-			else if($data2['rate'] == "" ) {
-				$error_message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Tax_Price')."</h5>";
-			} else {
-				
-				$where = "user_id = ".$mysession->User_Id;
-				if($home->ValidateTableField("tax_name",$data['tax_name'],"tax_rate",$where)) {
-									
-					// Insert Records
-					$tax_id = $taxes->insertRecord($data);
-					
-					if($tax_id > 0) {
-					
-						$data2["tax_rate_id"] = $tax_id;
-						$taxes->insertRecord($data2,"tax_rate_detail");
-						$mysession->User_Message = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Success_Add_Taxes_Rates')."</h5>";
-						$this->_redirect('admin/products'); 	
-					} else {
-						$error_message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Add_Taxes_Rates')."</h5>";	
-					}
-				} else {
-					$error_message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Taxe_Exist')."</h5>";
-				}
-			}
-			
-			$this->view->error_message = $error_message;			
-		} 
-	
-	}
-	
 	
 	/**
      * Function editAction
 	 *
-	 * This function is used to update Tax Rates
+	 * This function is used to update product details , images and product properties
 	 *
-     * Date Created: 2011-09-01
+     * Date Created: 2011-09-14
      *
      * @access public
 	 * @param ()  - No parameter
 	 * @return (void) - Return void
 	 *
      * @author Yogesh
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
 	
@@ -295,9 +222,7 @@ class Admin_ProductsController extends AdminCommonController
 		if($product_id > 0 && $product_id != "") {
 			
 			$this->view->product_id = $product_id;
-			$this->view->records = $product->getAllProductDetail($product_id);
-			/*echo "<pre>";
-			print_r($this->view->records); die;*/
+			$this->view->records = $product->getAllProductDetail($product_id);			
 			
 		} else {
 			
@@ -388,7 +313,8 @@ class Admin_ProductsController extends AdminCommonController
 						$editErrorMessage = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Product_Update_Success')."</h5>";
 					}
 					
-					$this->view->editErrorMessage = $editErrorMessage;
+					$mysession->Admin_Message = $editErrorMessage;
+					$this->_redirect('/admin/products'); 
 					$this->view->product_id = $product_id;
 					$this->view->records = $product->getAllProductDetail($product_id);	
 					
@@ -401,15 +327,16 @@ class Admin_ProductsController extends AdminCommonController
 	/**
      * Function viewAction
 	 *
-	 * This function is used to delete Tax Rates
+	 * This function is used to view the all details of product.
 	 *
-     * Date Created: 2011-09-01
+     * Date Created: 2011-09-13
      *
      * @access public
 	 * @param ()  - No parameter
 	 * @return (void) - Return void
 	 *
      * @author Yogesh
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
 	
@@ -444,15 +371,16 @@ class Admin_ProductsController extends AdminCommonController
 	/**
      * Function deleteAction
 	 *
-	 * This function is used to delete Tax Rates
+	 * This function is used to delete product and its all information and images.
 	 *
-     * Date Created: 2011-09-01
+     * Date Created: 2011-09-15
      *
      * @access public
 	 * @param ()  - No parameter
 	 * @return (void) - Return void
 	 *
      * @author Yogesh
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
 	
@@ -482,15 +410,16 @@ class Admin_ProductsController extends AdminCommonController
 	/**
      * Function deleteallAction
 	 *
-	 * This function is used to delete multiple tax rates
+	 * This function is used to delete multiple products.
 	 *
-     * Date Created: 2011-09-01
+     * Date Created: 2011-09-15
      *
      * @access public
 	 * @param ()  - No parameter
 	 * @return (void) - Return void
 	 *
      * @author Yogesh
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
 	
@@ -525,6 +454,22 @@ class Admin_ProductsController extends AdminCommonController
 	
 	}
 	
+	/**
+     * Function deleteimageAction
+	 *
+	 * This function is used to delete images of products.
+	 *
+     * Date Created: 2011-09-15
+     *
+     * @access public
+	 * @param ()  - No parameter
+	 * @return (void) - Return void
+	 *
+     * @author Yogesh
+     *  
+     * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+     **/
+	
 	
 	public function deleteimageAction()
 	{
@@ -550,6 +495,23 @@ class Admin_ProductsController extends AdminCommonController
 		
 	} 
 	
+	/**
+     * Function fillstateAction
+	 *
+	 * This function is used to fill the combo of the state on selection of country.
+	 *
+     * Date Created: 2011-09-13
+     *
+     * @access public
+	 * @param ()  - No parameter
+	 * @return (void) - Return void
+	 *
+     * @author Yogesh
+     *  
+     * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+     **/
+	
+	
 	public function fillstateAction()
 	{
 		$store = new Models_UserMaster();
@@ -572,6 +534,23 @@ class Admin_ProductsController extends AdminCommonController
 		echo $str; die;		
 	}
 	
+	/**
+     * Function updateoptionAction
+	 *
+	 * This function is used to updates the product options and thier values..
+	 *
+     * Date Created: 2011-09-15
+     *
+     * @access public
+	 * @param ()  - No parameter
+	 * @return (void) - Return void
+	 *
+     * @author Yogesh
+     *  
+     * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+     **/
+	
+	
 	public function updateoptionAction()
 	{
 		global $mysession;
@@ -591,6 +570,22 @@ class Admin_ProductsController extends AdminCommonController
 		
 	}
 	
+	/**
+     * Function deleteoptionAction
+	 *
+	 * This function is used to delete the product options and thier values..
+	 *
+     * Date Created: 2011-09-15
+     *
+     * @access public
+	 * @param ()  - No parameter
+	 * @return (void) - Return void
+	 *
+     * @author Yogesh
+     *  
+     * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+     **/	
+	
 	public function deleteoptionAction()
 	{
 		global $mysession;
@@ -607,6 +602,22 @@ class Admin_ProductsController extends AdminCommonController
  		}
 	
 	}
+	
+	/**
+     * Function addoptionAction
+	 *
+	 * This function is used to add new product options and thier values..
+	 *
+     * Date Created: 2011-09-15
+     *
+     * @access public
+	 * @param ()  - No parameter
+	 * @return (void) - Return void
+	 *
+     * @author Yogesh
+     *  
+     * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+     **/	
 	
 	public function addoptionAction()
 	{

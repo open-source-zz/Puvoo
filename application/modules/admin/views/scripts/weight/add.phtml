@@ -11,9 +11,16 @@
 		<?php echo $this->Translate('Manage_Weight'); ?>
 	</div>
 	
-	<div >
-		<?php echo $this->addErrorMessage; ?>
-	</div>
+	<?php if(count($this->addErrorMessage) > 0 ) { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
+				<?php foreach($this->addErrorMessage as $key => $val ) { ?>
+					<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+					<strong><?php echo $val; ?></strong></p>
+				<?php } ?>
+			</div>
+		</div>
+	<?php } ?>	
 	
 	<form method="post" name="add_form" id="add_form" >
 		<table class="Panel" style="margin-top:10px;">
@@ -29,7 +36,7 @@
 								<?php echo $this->Translate('Weight_Unit_Name'); ?>
 							</td>
 							<td>
-								<input type="text" name="weight_unit_name" id="weight_unit_name" class="Field250" />
+								<input type="text" value="<?php echo $this->data['weight_unit_name']; ?>" name="weight_unit_name" id="weight_unit_name" class="Field250" />
 								<span></span>
 							</td>
 						</tr>
@@ -39,7 +46,7 @@
 								<?php echo $this->Translate('Weight_Unit_Key'); ?>
 							</td>
 							<td>
-								<input type="text" name="weight_unit_key" id="weight_unit_key" class="Field250" />
+								<input type="text" value="<?php echo $this->data['weight_unit_key']; ?>" name="weight_unit_key" id="weight_unit_key" class="Field250" />
 								<span></span>
 							</td>
 						</tr>
@@ -61,7 +68,7 @@
 <!--     JS Global Variable for the language    -->
 
 <script language="javascript" type="text/javascript">
-var siteurl = '<?php echo SITE_URL; ?>';
-var ERR_WEIGHT_UNIT_NAME = '<?php echo $this->Translate("Err_Weight_Unit_Name"); ?>';  
-var ERR_WEIGHT_UNIT_KEY = '<?php echo $this->Translate("Err_Weight_Unit_Key"); ?>';  
+var siteurl = "<?php echo SITE_URL; ?>";
+var ERR_WEIGHT_UNIT_NAME = "<?php echo $this->Translate('Err_Weight_Unit_Name'); ?>";  
+var ERR_WEIGHT_UNIT_KEY = "<?php echo $this->Translate('Err_Weight_Unit_Key'); ?>";  
 </script>

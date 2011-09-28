@@ -56,3 +56,11 @@ $(document).ready(function() {
 	});
 	
 });
+
+///////////////////////// User Orders Search ////////////////////////
+
+function searchDashOrder(frm,value)
+{
+	$("#order_status").val(value);
+	$("#"+frm).submit();
+}

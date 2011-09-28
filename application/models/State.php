@@ -53,6 +53,7 @@ class Models_State
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	function __construct()
@@ -73,6 +74,7 @@ class Models_State
 	 * @param (int)  - $country_id: country id.
 	 * @return (int) - Return state id if found else 0
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	function GetStateId($code,$country_id)

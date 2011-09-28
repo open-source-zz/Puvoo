@@ -35,8 +35,6 @@
  * @author	    Yogesh 
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */  
-
-
 class Models_AdminMaster 
 {
 	private $db;
@@ -54,6 +52,7 @@ class Models_AdminMaster
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	function __construct()
@@ -73,6 +72,7 @@ class Models_AdminMaster
 	 * @param (string)  - 	$newP : This is the new password of admin
 	 * @return (Boolean) - True if password update successfully otherwise false
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -114,6 +114,7 @@ class Models_AdminMaster
 	 * @param () (String)  - $where : Other condition.
 	 * @return (Boolean) - Return true on success
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -134,6 +135,29 @@ class Models_AdminMaster
 			return false;
 		}
 	
+	}
+	
+	
+	public function getConstantArray()
+	{
+		global $mysession;
+		
+		if (Zend_Registry::isRegistered('Zend_Translate')) {
+			$translate = Zend_Registry::get('Zend_Translate');
+		
+		$array = array();
+		
+		// For Order Status
+		$order_status = array(
+							   "0" => $translate->_('Order_Status_Pending'),
+							   "1" => $translate->_('Order_Status_Complete'),
+							   "2" => $translate->_('Order_Status_Cancle'),							   
+						    );
+		
+		$array["order_status"] = $order_status;
+		
+		}
+		return $array;
 	}
 	
 }

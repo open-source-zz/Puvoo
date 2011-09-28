@@ -49,11 +49,13 @@ class Admin_IndexController extends AdminCommonController
 	 * @return (void) - Return void
 	 *
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	public function init()
 	{
 		parent::init();
+		$this->view->JS_Files = array('admin/AdminCommon.js');	
 		Zend_Loader::loadClass('Models_AdminMaster');
 		
 	}
@@ -71,11 +73,34 @@ class Admin_IndexController extends AdminCommonController
 	 * @return (void) - Return void
 	 *
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	public function indexAction()
     {
 		global $mysession;
+		
+		$orders = new Models_Orders();
+		$master = new Models_AdminMaster();
+		
+		$this->view->records = $orders->getDashboardOrders();
+		$this->view->order_status = $master->getConstantArray();
+		$this->view->active_class = 'All';
+		if($this->_request->isPost()) {
+			
+			$filter = new Zend_Filter_StripTags();
+			$order_status = $filter->filter(trim($this->_request->getPost('order_status')));
+			
+			$this->view->active_class = $order_status;
+			
+			if($order_status == 'All' ) {
+				$where = " WHERE 1=1 ";
+			} else {
+				$where = " WHERE order_status = '".$order_status."' ";
+			}
+			
+			$this->view->records = $orders->getDashboardOrders($where);
+		}
 		
 	}
 	
@@ -91,12 +116,14 @@ class Admin_IndexController extends AdminCommonController
 	 * @return (void) - Return void
 	 *
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	public function changepasswordAction()
     {
 		global $mysession;
 		$updateError = "";
+		$updateSuccess = "";
 		$this->view->JS_Files = array('admin/home.js');	
 		$translate = Zend_Registry::get('Zend_Translate');
 		if($this->_request->isPost()) { 
@@ -106,26 +133,28 @@ class Admin_IndexController extends AdminCommonController
 			$confirm_password 	= trim($this->_request->getPost('confirm_password'));
 			
 			if($old_password == "") {
-				$updateError = "<h4 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Old_Password')."</h4>";
+				$updateError = $translate->_('Err_Old_Password');
 			} else {
 				if($new_password == "") {
-					$updateError .= "<h4 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_New_Password')."</h4>";
+					$updateError = $translate->_('Err_New_Password');
 				} else {
 				
 					if($confirm_password == "" || $confirm_password != $new_password ) {
-						$updateError .= "<h4 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Conf_Invalid_Password')."</h4>";
+						$updateError = $translate->_('Err_Conf_Invalid_Password');
 					 } else {
 					 	// Update Passwords
 					 	$auth = new Models_AdminMaster();			
 						if($auth->validatePassword($old_password,$new_password)) {
-							$updateError .= "<h4 style='color:#389834;margin-bottom:0px;'>".$translate->_('Suceess_Update_Password')."</h4>";
+							$updateSuccess = $translate->_('Suceess_Update_Password');
+							$updateError = "";
 						} else {
-							$updateError .= "<h4 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Update_Password')."</h4>";
+							$updateError = $translate->_('Err_Update_Password');
 						}
 					 }
 				}
 			} 
 			// Display error or success message
+			$this->view->updateSuccess = $updateSuccess;
 			$this->view->updateError = $updateError;	
 		}		
 	}	

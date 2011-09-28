@@ -1,0 +1,162 @@
+
+<div id="rightColumn">
+             	<div class="mainColumnWidget">
+                	<?php if($this->parentcat_id == '0'){?>
+						<div id="breadCrumb">
+							<ul>
+								<li>
+									<a target="_top" href="<?php echo SITE_FB_URL;?>index">
+										<img title="home" alt="home" src="<?php echo IMAGES_FB_PATH ?>/home.png">
+									</a>
+								</li>
+								<li>
+									<a target="_top" href="<?php echo SITE_FB_URL;?>category/subcat/id/<?php echo $this->cat_id ?>"><?php echo $this->catname?></a>
+								</li>
+							</ul>
+						</div>
+					<?php }else{?>
+						<div id="breadCrumb">
+							<ul>
+								<li>
+									<a target="_top" href="<?php echo SITE_FB_URL;?>index">
+										<img title="home" alt="home" src="<?php echo IMAGES_FB_PATH ?>/home.png">
+									</a>
+								</li>
+								<li>
+									<a target="_top" href="<?php echo SITE_FB_URL;?>category/subcat/id/<?php echo $this->parentcat_id ?>"><?php echo $this->parentcat_name?></a>
+								</li>
+								<li>
+									<a target="_top" href="<?php echo SITE_FB_URL;?>category/subcat/id/<?php echo $this->cat_id ?>"><?php echo $this->catname?></a>
+								</li>
+
+							</ul>
+						</div>
+					<?php }?>
+                	<div class="categoryHeader">
+                        <div class="left">
+                        	<?php echo $this->ProdName?>
+                        </div>
+                        <div class="right">
+							<?php echo '$'.$this->ProdPrice?> 
+                        </div>
+                        <div class="clear"></div>
+                    </div>  
+                    <div class="right" style="width:350px; padding-right: 10px;">
+                        <div id="bigimg1" style="visibility:visible;display:block;"><img src="<?php echo $this->DefaultImagePath; ?>" border="0" alt="" /></div>
+                                                                            
+                        <div class="smallimg_1">
+                             <ul>
+							 	<?php echo $this->imageList; ?>
+                             </ul>
+                          </div>
+                        <div class="clear"></div>
+                        <div class="reportmessage" style="text-align: center">
+							<!--<a href="#"> Report This Item </a>-->
+						</div>
+                     </div>  
+                    <div class="left" style="width:170px; padding-left:10px;">
+                     	<div class="description">
+                            <div class="descriptionHeader">
+                            	<h3><?php echo $this->Translate('Description')?></h3>
+                            </div>
+                            <div id="pfdesc">
+                            	<?php echo $this->ProdDesc?>
+                                <br />
+                                <br />
+                                <span style="font-weight:bold;"><?php echo $this->Translate('Weight')?> - </span><?php echo $this->ProdWeight;?>
+								<br />
+                             
+								<span style="font-weight:bold;"><?php echo $this->Translate('Length')?> - </span><?php echo $this->ProdLength;?>
+                            </div>
+                        </div>
+                        <div id="pd_facepile">
+    						<p><b>Shoppers who liked this item:</b></p>
+                            <div style="clear:both;height:5px;"></div>
+                            <a href="#"><img src="<?php echo IMAGES_FB_PATH ?>/picture_002.jpg" style="padding: 1px;" height="25" width="25" alt="" /></a>
+                            <a href="#"><img src="<?php echo IMAGES_FB_PATH ?>/picture_002.jpg" style="padding: 1px;" height="25" width="25" alt="" /></a>
+                            <a href="#"><img src="<?php echo IMAGES_FB_PATH ?>/picture_002.jpg" style="padding: 1px;" height="25" width="25" alt="" /></a>
+                            <a href="#"><img src="<?php echo IMAGES_FB_PATH ?>/picture.gif" style="padding: 1px;" height="25" width="25" alt="" /></a>
+                            <a href="#"><img src="<?php echo IMAGES_FB_PATH ?>/picture.gif" style="padding: 1px;" height="25" width="25" alt="" /></a>
+                            <a href="#"><img src="<?php echo IMAGES_FB_PATH ?>/picture_002.jpg" style="padding: 1px;" height="25" width="25" alt="" /></a>
+                            <a href="#"><img src="<?php echo IMAGES_FB_PATH ?>/picture_002.jpg" style="padding: 1px;" height="25" width="25" alt="" /></a>
+                            <a href="#"><img src="<?php echo IMAGES_FB_PATH ?>/picture.gif" style="padding: 1px;" height="25" width="25" alt="" /></a>
+                            <a href="#"><img src="<?php echo IMAGES_FB_PATH ?>/picture_002.jpg" style="padding: 1px;" height="25" width="25" alt="" /></a>
+                            <a href="#"><img src="<?php echo IMAGES_FB_PATH ?>/picture.gif" style="padding: 1px;" height="25" width="25" alt="" /></a>
+                        </div>
+                        <div class="productInfoBox">
+                            <form id="productForm" name="productForm" method="post" enctype="multipart/form-data" action="<?php echo SITE_FB_URL;?>product/addtocart" >
+                                <div id="pfitemoptions">
+                                    <table style="width: 100%;">
+                        				<tbody>
+ 											<?php echo $this->OptionCombo;?>
+                                            
+                                            <!--<tr>
+                                            	<td><b>How did you hear about us?:</b><br /><input name="itemOption2" id="itemOption2" size="18" class="optionText inputtext" type="text"></td>
+                                            </tr>-->
+                                        </tbody>
+                                    </table>
+									<input type="hidden" value="<?php echo $this->totalCombo;?>" name="Opt_Combo" id="Opt_Combo" />
+                                </div>
+                                <div id="pfcartbin" style="margin-top:10px;">
+                                    <input type="button" class="add_cartbtn" value="" id="btn" onClick="validateAddToCart('<?php echo SITE_FB_URL;?>product/addtocart')" />
+                                </div>
+									<input id="productId" name="productId" type="hidden" value="<?php echo $this->ProdId;?>"/>
+									<input id="command" name="command" type="hidden" value="addStoreItem"/>
+									 <input id="currencyField" name="itemCurrency" type="hidden" value="USD"/>
+									<input id="itemDiscountPrice" name="itemDiscountPrice" type="hidden" value=""/>
+									<input id="signed_request" name="signed_request" type="hidden" value=""/>
+									<input id="permissionGranted" name="permissionGranted" type="hidden" value="0" />
+									<input id="productPrice" name="productPrice" type="hidden" value="<?php echo $this->ProdPrice;?>" />
+                            </form>
+                        </div>
+                        <div id="backgroundPopup"></div>
+                         
+                     </div>
+                    <div class="clear"></div>
+					<div style="border-top:solid 1px #E2E2E2;background:#F2F2F2; margin-top:10px; padding-bottom:12px;">  
+                    <div class="left" style="padding-left: 10px;">
+                        <div class="productInfoBox">
+                            <div>
+                                <div id="pfshipto">
+                                    <strong><?php echo $this->Translate('ShipTo')?></strong>
+                                    <a href="#">Worldwide</a>
+                                </div>
+                                <div style="clear:both;padding-bottom:5px"></div>
+                                <div id="pfshipmethod">
+                                    Shipping will be calculated at checkout.  
+                                </div>
+                            </div>
+                        </div>
+                        <div class="socialbtn" style="margin-left:0px; margin-top:0px;">
+                            <div class="left" style="width:120px;">
+                                <img src="<?php echo IMAGES_FB_PATH ?>/like_1.jpg" alt="" />
+                            </div>
+                           <div style="text-align: left;">
+                               <div class="share" id="shareLinkContGrid_lls1">
+                                    <a class="shareLinks" rel="Grid_lls1" href="#">Share</a>
+                               </div>
+                                <div style="clear: both;"></div>
+            
+                            </div>
+                            <div style="clear: both"></div>
+                         </div>
+                     </div>
+                    <div class="right">
+                     	<div class="productInfoBox">
+                            <div id="pfseller"><b><?php echo $this->Translate('Seller')?></b> <a  target="_top" href="<?php echo SITE_FB_URL;?>retailer/view/id/<?php echo $this->ProdSellerId;?>" style="color: #3B5998;"><?php echo $this->ProdSeller;?></a></div>
+                            <div style="clear:both;padding-bottom:5px"></div>
+                            <div>
+                                <img class="sellerInfo" src="<?php echo IMAGES_FB_PATH ?>/card_graphic.png" alt="" />
+                                <a id="btn1" href="#" style="color: #3B5998;"><?php echo $this->Translate('SellerInfo')?></a>
+                            </div>
+                            <div style="clear: both; padding-bottom: 5px;"></div>
+                            <div class="retailerPositiveReviewWidget">
+                                <a href="#" class="sellerRatingThumbs ">New Seller (0 reviews)</a>
+                            </div>    
+                        </div>
+                     </div>
+                    <div class="clear"></div>
+                </div>
+            </div>
+			</div>
+			

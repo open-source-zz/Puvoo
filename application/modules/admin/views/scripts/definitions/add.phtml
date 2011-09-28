@@ -1,0 +1,114 @@
+<div class="Breadcrumb" id="PageBreadcrumb">
+	<ul>
+	   <li class="Home SecondLast"><a href="#"><?php echo $this->Translate("Administration"); ?></a></li>
+	   <li class="Last"><span><?php echo $this->Translate('Language_Definitions'); ?></span></li>
+	</ul>
+</div>
+
+
+<div class="BodyContainer DashboardContainer" style="text-align:left;"> 
+	<div class="Heading1">
+		<?php echo $this->Translate('Manage_Language_Definitions'); ?>
+	</div>
+	
+	<div style="text-align:center">
+		<?php 
+			if(count($this->addErrorMessage) > 0){ 
+				for($i = 0; $i < count($this->addErrorMessage); $i++)
+				{
+		
+		?>
+			<h5 style='color:#FF0000;margin-bottom:0px;'><?php echo $this->addErrorMessage[$i]; ?></h5><br />
+		<?php }}?>
+	</div>
+	
+	<form method="post" name="add_form" id="add_form" >
+		<table class="Panel" style="margin-top:10px;">
+			<tr>
+				<td class="Heading2" colspan="2"><?php echo $this->Translate('Add_Language_Definition'); ?></td>
+			</tr>
+			<tr>
+				<td colspan="2">
+				<div id="div0" style="padding-bottom:5px">
+					<table class="Panel" width="100%" cellspacing="0" cellpadding="0">
+						<tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Language'); ?>
+							</td>
+							<td>
+								<select name="language_id" id="language_id">
+									<?php for($i = 0; $i < count($this->languages); $i++){ ?>
+										<option value="<?php echo $this->languages[$i]['language_id'] ?>" <?php echo ($this->data["language_id"] == $this->languages[$i]['language_id'] ? "selected" : ""); ?> ><?php echo $this->languages[$i]['name'] . " - " .  $this->languages[$i]['code']?></option>
+									<?php } ?>
+								</select>
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Group'); ?>:
+							</td>
+							<td>
+								<select name="content_group" id="content_group">
+									<option value="ADMIN" <?php echo ($this->data["content_group"] == 'ADMIN' ? "selected" : ""); ?> >ADMIN</option>
+									<option value="DEFAULT" <?php echo ($this->data["content_group"] == 'DEFAULT' ? "selected" : ""); ?> >DEFAULT</option>
+									<option value="USER" <?php echo ($this->data["content_group"] == 'USER' ? "selected" : ""); ?> >USER</option>
+								</select>
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Key'); ?>:
+							</td>
+							<td>
+								<input type="text" name="definition_key" id="definition_key" class="Field250" value="<?php echo $this->data['definition_key']; ?>" />
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Value'); ?>:
+							</td>
+							<td>
+								<input type="text" name="definition_value" id="definition_value" class="Field250" value="<?php echo $this->data['definition_value']; ?>" />
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Is_Active'); ?>:
+							</td>
+							<td>
+								<input type="radio" name="status" class="" value="1" <?php echo (($this->data["status"] == '1' || $this->data["status"] == '')  ? "checked" : ""); ?> />
+								<?php echo $this->Translate('L_Yes'); ?>&nbsp;
+								<input type="radio" name="status"  value="0" <?php echo (($this->data["status"] == '0')  ? "checked" : ""); ?> />
+								<?php echo $this->Translate('L_No'); ?>
+							</td>
+						</tr>
+						<tr><td height="15"></td></tr>
+						<tr>
+						   	<td colspan="2">
+								<input type="submit" id="anything" onclick="Javascript: return ValidateAddForm()"  value="<?php echo $this->Translate('Submit'); ?>" />
+								<input type="button" id="anything"  value="<?php echo $this->Translate('Cancle'); ?>" onclick="window.location='<?php echo $this->site_url; ?>'"/>
+						   </td>
+						</tr>
+					</table>
+				</div>
+				</td>
+			</tr>
+		</table>   
+	</form>            
+</div> 
+
+<!--     JS Global Variable for the language    -->
+
+<script language="javascript" type="text/javascript">
+var siteurl = "<?php echo SITE_URL; ?>";
+var ERR_DEFINITION_KEY = "<?php echo $this->Translate('Err_Definition_Key'); ?>";  
+var ERR_DEFINITION_VALUE = "<?php echo $this->Translate('Err_Definition_Value'); ?>";  
+</script>

@@ -1,0 +1,104 @@
+ 
+<div id="rightColumn">
+	<div class="mainColumnWidget">
+		<div style="float:left">
+			<img src="<?php echo IMAGES_FB_PATH ?>/Default.gif" alt="" height="50" width="50" style="margin:5px;" />
+		</div>
+		<div class="categoryHeader" style="float:left; width:85%;">
+		  <?php echo $this->StoreName;?> 
+		  <div style="margin-top:5px;">
+		  	<img alt="" src="<?php echo IMAGES_FB_PATH ?>/like_1.jpg" />
+		  </div>
+		  <div style="border-top:1px solid #E2E2E2; margin-top:5px;"></div>
+		  <div>
+			<img alt="" src="/Puvoo/images/fb/card_graphic.png" class="sellerInfo">
+			<a style="color: #000;" href="#" id="btn1">Seller Information</a>
+          </div>
+		</div>
+		<div style="clear:both"></div>
+		<form name="frmRetailerProduct" method="post" id="frmRetailerProduct" action="">
+		<div class="portlet">
+			 <div class="bluewidgetHeader">
+				   <div style="float:left;">
+						<select id="sortBy" style="width:150px;" name="sortBy" onchange="this.form.submit();">
+                                                                        
+							<option value="bestseller" <?php echo $this->bestseller;?>><?php echo $this->Translate('BestSeller')?></option>
+							<option value="most_liked" <?php echo $this->most_liked;?>><?php echo $this->Translate('MostLiked')?></option>
+							<option value="price_asc" <?php echo $this->price_asc;?>><?php echo $this->Translate('LowToHigh')?></option>
+							<option value="price_desc" <?php echo $this->price_desc;?>><?php echo $this->Translate('HighToLow')?></option>
+                         </select>
+					</div>
+					 <?php echo $this->paginationControl($this->paginator, 'Sliding', 'pagination_top.phtml'); ?>
+					<div style="clear:both;"></div>
+			</div>
+		 </div>
+		<div class="portlet" style="border-bottom:1px solid #E2E2E2">
+				<div class="productListingNav">
+				   <?php echo $this->paginationControl($this->paginator, 'Sliding', 'pagination_bottom.phtml'); ?>
+				</div>
+				<div style="clear:both"></div>
+			</div>
+		<div id="productGridView" class="portlet">
+		<?php foreach($this->records as $prodval){?>
+			<div class="productGridItem productGridItemTopRow firstborder">
+				<div class="thumbnailImage" style="margin-top:14px;">
+					<a target="_top" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $prodval['product_id'];?>">
+					
+					<?php if(!$prodval['image_name']){?>
+						<img class="img" src="<?php echo IMAGES_FB_PATH ?>/Default.gif"/>
+					<?}else{?>
+ 						<img class="img" src="<?php echo $prodval['image_path'] ?>/<?php echo $prodval['image_name'] ?>" width="128"/>
+					<?}?>
+					</a>
+				</div>
+				<div class="productTitle">
+					<a target="_top" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $prodval['product_id'];?>"><?php echo $prodval['product_name'];?></a> 
+				</div>
+				<div class="productPrice">
+				   <?php echo "$".$prodval['product_price']." (USD)";?>
+				</div>
+				<div class="socialbtn">
+					<div class="left">
+						<img src="<?php echo IMAGES_FB_PATH ?>/like_1.jpg" alt="" />
+					</div>
+				   <div style="text-align: right;">
+					   <div class="share" id="shareLinkContGrid_lls1">
+							<a class="shareLinks" rel="Grid_lls1" href="#">Share</a>
+					   </div>
+						<div style="clear: both;"></div>
+	
+					</div>
+					<div style="clear: both"></div>
+				 </div>    
+			 </div>
+		  <?php }?>   
+		 </div>   
+	</div>
+	<div class="portlet">
+		<div class="productListingNav">
+		   
+		<?php echo $this->paginationControl($this->paginator, 'Sliding', 'pagination_bottom.phtml'); ?>
+		</div>
+		<input type="hidden" name="page_no" id="page_no" value="<?php echo $this->page_no; ?>" />
+
+		<div style="padding-bottom:10px; clear:both"></div>
+	</div>
+	</form>
+	<!--<script type="text/javascript">
+		$(document).ready(function(){
+			$("#slider1").easySlider({
+				auto: false,
+				continuous: false,
+				nextId: "slidernext",
+				prevId: "sliderprev",
+				prevText: "",
+				nextText: "",
+				controlsShow: false
+			});
+
+			$("#slidernext").show();
+			$("#sliderprev").show();
+		});
+	</script>-->
+   
+</div>

@@ -53,6 +53,7 @@ class Models_Currency
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	function __construct()
@@ -72,6 +73,7 @@ class Models_Currency
 	 * @param (string)  - $code: code of currnency like USD,GBP etc.
 	 * @return (int) - Return currency id if found else 0
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	function GetCurrencyId($code)
@@ -92,7 +94,7 @@ class Models_Currency
 		}
 	}
  	
-		/**
+	/**
 	 * Function GetAllCurrency
 	 *
 	 * This function is used to get all currency available.
@@ -102,7 +104,8 @@ class Models_Currency
 	 * @access public
 	 * @param ()  - No parameter
 	 * @return (Array) - Return Array of records
-	 * @author Vaibhavi Jariwala
+	 * @author Vaibhavi
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	public function GetAllCurrency()
@@ -115,14 +118,14 @@ class Models_Currency
 		return $result;
 	}
 
-		/*
+	/*
 	 * GetCurrencyById(): To get data of currency by selected currency id.
 	 *
 	 * It is used to get the all records of particular currency by currency id.
 	 *
 	 * Date created: 2011-08-26
 	 *
-	 * @author  Vaibhavi Jariwala 
+	 * @author  Vaibhavi 
 	 * @param   two parameters / login_id and password.
      * @global  $db Zend_db for database.
                 $mysession Zend_Session_Namespace for session variables.
@@ -150,7 +153,8 @@ class Models_Currency
 	 * @access public
 	 * @param () (Array)  - $data : Array of search options
 	 * @return (Array) - Return Array of records
-	 * @author Vaibhavi Jariwala
+	 * @author Vaibhavi
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -192,7 +196,7 @@ class Models_Currency
 		return $result;		
 	}
 
-		/**
+	/**
 	 * Function insertCurrency
 	 *
 	 * This function is used to insert currency.
@@ -202,7 +206,8 @@ class Models_Currency
 	 * @access public
 	 * @param () (Array)  - $data : Array of record to insert
 	 * @return (Boolean) - Return true on success
-	 * @author Vaibhavi Jariwala
+	 * @author Vaibhavi
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -226,7 +231,8 @@ class Models_Currency
 	 * @param () (Array)  - $data : Array of record to update
 	 * @param () (String)  - $where : Condition on which update record
 	 * @return (Boolean) - Return true on success
-	 * @author Vaibhavi Jariwala
+	 * @author Vaibhavi
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -247,7 +253,8 @@ class Models_Currency
 	 * @access public
 	 * @param () (String)  - $id : Currency Id
 	 * @return (Boolean) - Return true on success
-	 * @author Vaibhavi Jariwala
+	 * @author Vaibhavi
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -269,7 +276,8 @@ class Models_Currency
 	 * @access public
 	 * @param () (String)  - $ids : Sting of all Currency Id with comma seprated.
 	 * @return (Boolean) - Return true on success
-	 * @author Vaibhavi Jariwala
+	 * @author Vaibhavi
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	

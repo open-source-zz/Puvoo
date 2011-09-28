@@ -54,6 +54,7 @@ class Models_Product
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	function __construct()
@@ -124,11 +125,59 @@ class Models_Product
 	public function GetProductDetails($prodId)
 	{
 		$db = $this->db;
-		$sql = "SELECT * FROM product_master WHERE product_id='".$prodId."'";
+		$sql = "SELECT pm.*,um.*,wm.*,lm.* FROM product_master as pm
+				LEFT JOIN user_master as um ON (pm.user_id = um.user_id)
+ 				LEFT JOIN weight_master as wm ON (pm.weight_unit_id = wm.weight_unit_id)
+				LEFT JOIN length_master as lm ON (pm.length_unit_id = lm.length_unit_id)
+				WHERE pm.product_id='".$prodId."'";
 		//print $sql;die;
  		$result = $db->fetchRow($sql);
 		return $result;
 	}
+	
+	 /*
+	 * GetProductByRetailerId(): To get all product for particular retailer.
+	 *
+	 * It is used to get all the product of particular retailer.
+	 *
+	 * Date created: 2011-09-26
+	 *
+	 * @author  Jayesh 
+	 * @param   two parameters / login_id and password.
+     * @global  $db Zend_db for database.
+                $mysession Zend_Session_Namespace for session variables.
+	 * 
+	 */
+	public function GetProductByRetailerId($ret_id,$sort)
+	{
+		global $mysession;
+		$db = $this->db;
+		
+		$where = '';
+		$where .= "WHERE pm.user_id='".$ret_id."'";
+		//print $sort;die;
+		if($sort == 'price_asc')
+		{
+			 
+			$where .= " order By product_price asc";
+			
+		}elseif($sort == 'price_desc'){
+			 
+			$where .= " order By product_price desc";
+			
+		}else{
+			
+			$where .= " order By product_price asc";
+		}
+ 		
+		$sql = "SELECT DISTINCT pm.*,pi.*,um.store_name FROM product_master as pm 
+				LEFT JOIN product_images as pi ON (pm.product_id = pi.product_id and is_primary_image = 1)
+				LEFT JOIN user_master as um ON (um.user_id = pm.user_id)
+				 ".$where."";
+		//print $sql;die;
+ 		$result = $db->fetchAll($sql);
+		return $result;
+ 	} 
 	
 	 /*
 	 * GetProductImages(): To get product Details.
@@ -146,7 +195,7 @@ class Models_Product
 	public function GetProductImages($prodId)
 	{
 		$db = $this->db;
-		$sql = "SELECT * FROM product_images WHERE product_id='".$prodId."'";
+		$sql = "SELECT * FROM product_images WHERE product_id='".$prodId."' order By is_primary_image desc";
 		//print $sql;die;
  		$result = $db->fetchAll($sql);
 		return $result;
@@ -168,14 +217,59 @@ class Models_Product
 	public function GetProductOption($prodId)
 	{
 		$db = $this->db;
-		$sql = "SELECT po.*,pod.* FROM product_options as po
-				LEFT JOIN product_options_detail as pod ON (po.product_options_id = pod.product_options_id)
-		 		WHERE po.product_id='".$prodId."'";
+		$sql = "SELECT * FROM product_options WHERE product_id='".$prodId."'";
 		 
  		$result = $db->fetchAll($sql);
 		return $result;
 	}
-	
+
+	 /*
+	 * GetProductOptionUsingValue(): To get product Options using value submit by user.
+	 *
+	 * It is used to get product Options using value submit by user.
+	 *
+	 * Date created: 2011-09-27
+	 *
+	 * @author  Jayesh 
+	 * @param   two parameters / login_id and password.
+     * @global  $db Zend_db for database.
+                $mysession Zend_Session_Namespace for session variables.
+	 * 
+	 */
+	public function GetProductOptionUsingValue($prodId,$value)
+	{
+		$db = $this->db;
+		$sql = "SELECT * FROM product_options_detail as pod
+				LEFT JOIN product_options as po ON (pod.product_options_id = po.product_options_id) 		
+				WHERE po.product_id='".$prodId."' and pod.product_options_detail_id = '".$value."'";
+		 //print $sql;die;
+ 		$result = $db->fetchRow($sql);
+		return $result;
+	}
+
+	 /*
+	 * GetProductOptionValue(): To get product Options value.
+	 *
+	 * It is used to get all the details of particular product Options value.
+	 *
+	 * Date created: 2011-09-20
+	 *
+	 * @author  Jayesh 
+	 * @param   two parameters / login_id and password.
+     * @global  $db Zend_db for database.
+                $mysession Zend_Session_Namespace for session variables.
+	 * 
+	 */
+	public function GetProductOptionValue($prodOptId)
+	{
+		$db = $this->db;
+		$sql = "SELECT * FROM product_options_detail WHERE product_options_id='".$prodOptId."'";
+		 
+		//print $sql;die;
+ 		$result = $db->fetchAll($sql);
+		return $result;
+	}
+ 	
 	/**
 	 * Function GetProductSearch
 	 *
@@ -187,6 +281,7 @@ class Models_Product
 	 * @param () (Array)  - $data : Array of search options
 	 * @return (Array) - Return Array of records
 	 * @author Jayesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -205,7 +300,7 @@ class Models_Product
 			if($querystring != '') {
 				$sql.=" WHERE pm.product_name like '".$querystring."%'";
 			} 
-			if($catid != ''){
+			if($catid != 0 && $catid != ''){
 				$sql.=" AND ptc.category_id = ".$catid."";
 			}
 			
@@ -229,6 +324,7 @@ class Models_Product
 	 * @param () (Array)  - $data : Array of search options
 	 * @return (Array) - Return Array of records
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 
@@ -256,6 +352,7 @@ class Models_Product
 	 * @param (Array) - $data : Array of record to insert
 	 * @return (int) - Return product id
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -280,6 +377,7 @@ class Models_Product
 	 *
 	 * @return (int) - Return number of rows updated
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -303,6 +401,7 @@ class Models_Product
 	 * @param () -  No Parameters
 	 * @return (Arrat) - Return All Products
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -312,8 +411,8 @@ class Models_Product
 		
 		$select = "SELECT pm.product_id,
 					(SELECT cm.category_name 
-					 FROM category_master as cm
-					 WHERE cm.category_id = ptc.category_id) as category_name
+					FROM category_master as cm
+					WHERE cm.category_id = ptc.category_id) as category_name
 				   FROM product_master as pm 
 				   LEFT JOIN product_to_categories as ptc
 				   ON (pm.product_id = ptc.product_id)";
@@ -332,6 +431,7 @@ class Models_Product
 	 * @param () -  No Parameters
 	 * @return (Arrat) - Return All Products
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -352,6 +452,22 @@ class Models_Product
 		
 		return $db->fetchAll($select);
 	}
+	
+	/**
+	 * Function SearchProducts
+	 *
+	 * This function is used to search Products on search condition.
+     *
+	 * Date created: 2011-09-13
+	 *  
+	 * @access public
+	 * @param (Array) -  $data: Array of search value.
+	 * @param (Array) -  $range: Range of product price.
+	 * @return (Array) - Return All Products
+	 * @author Yogesh
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
 	
 	public function SearchProducts($data,$range = NULL)
 	{
@@ -386,6 +502,22 @@ class Models_Product
 		return $db->fetchAll($select);	
 	}
 	
+	/**
+	 * Function SearchProducts
+	 *
+	 * This function is used to fetch all records from diffrent table.
+     *
+	 * Date created: 2011-09-13
+	 *  
+	 * @access public
+	 * @param (String) -  $table: Table name.
+	 * @param (String) -  $where: Condition on which records are fetch.
+	 * @return (Array) -  Return All Products
+	 * @author Yogesh
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	
 	public function fetchAllRecords($table,$where = '1=1')
 	{
 		$db = $this->db;
@@ -399,15 +531,16 @@ class Models_Product
 	/**
 	 * Function DeleteProductDetail
 	 *
-	 * This function is used to delete Merchant(User).
+	 * This function is used to delete product details, images and product properties.
      *
-	 * Date created: 2011-08-31
+	 * Date created: 2011-09-14
 	 *
 	 * @access public
-	 * @param (Int)  		- $id : Value of Merchants id
-	 * @return () 		 	- Return true on success
+	 * @param (Int)  		- $id : Value of product id
+	 * @return (Boolean) 	- Return true on success
 	 *
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -446,15 +579,16 @@ class Models_Product
 	/**
 	 * Function DeleteAllProductDetail
 	 *
-	 * This function is used to delete multiple Merchant(User).
+	 * This function is used to delete multiple products.
      *
-	 * Date created: 2011-08-31
+	 * Date created: 2011-09-14
 	 *
 	 * @access public
-	 * @param (String) 		- $ids : String of Merchant's ids with comma seprated 
-	 * @return () 		 	- Return true on success
+	 * @param (Array) 		- $ids : Array of Product id.
+	 * @return (Boolean) 	- Return true on success
 	 *
 	 * @author Yogesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -488,6 +622,7 @@ class Models_Product
 	 *
 	 * @return (Boolean) - Return true if product for given user is present false otherwise
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -507,6 +642,22 @@ class Models_Product
 		
 	}
 	
+	
+	/**
+	 * Function getAllProductDetail
+	 *
+	 * This function is used to fetch all product details , images , categories and product properties.
+     *
+	 * Date created: 2011-09-15
+	 *  
+	 * @access public
+	 * @param (int) - $id : product id
+	 *
+	 * @return (Array) - Return array of all product details.
+	 * @author Yogesh
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
 	
 	public function getAllProductDetail($id)
 	{
@@ -543,6 +694,23 @@ class Models_Product
 		
 	}
 	
+	/**
+	 * Function updateProductCategory
+	 *
+	 * This function is used to update the product categories.
+     *
+	 * Date created: 2011-09-15
+	 *  
+	 * @access public
+	 * @param (Int) - $product_id : product id
+	 * @param (String) - $cate_string : String of category is with comma seprated.
+	 *
+	 * @return (Boolean) - Return true on success.
+	 * @author Yogesh
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	
 	function updateProductCategory($product_id, $cate_string)
 	{
 		$db = $this->db;		
@@ -562,7 +730,27 @@ class Models_Product
 			}
 		}
 		
+		return true;
 	}
+	
+	
+	/**
+	 * Function updateProductOption
+	 *
+	 * This function is used to update the product options and its values.
+     *
+	 * Date created: 2011-09-15
+	 *  
+	 * @access public
+	 * @param (Int) 	- $id : product option id
+	 * @param (String) 	- $title : product option title
+	 * @param (String) 	- $detail : Value of product options with comma seprated.
+	 *
+	 * @return (Boolean) - Return true on success.
+	 * @author Yogesh
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
 	
 	function updateProductOption($id,$title,$detail)
 	{
@@ -592,6 +780,23 @@ class Models_Product
 		return true;
 	}
 	
+	
+	/**
+	 * Function deleteProductOption
+	 *
+	 * This function is used to delete the product options and its values.
+     *
+	 * Date created: 2011-09-15
+	 *  
+	 * @access public
+	 * @param (Int) 	- $id : product option id
+	 *
+	 * @return (Boolean) - Return true on success.
+	 * @author Yogesh
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	
 	function deleteProductOption($id)
 	{
 		$db = $this->db;	
@@ -602,6 +807,24 @@ class Models_Product
 		return true;
 	
 	}
+	
+	/**
+	 * Function insertProductOption
+	 *
+	 * This function is used to insert the product options and its values.
+     *
+	 * Date created: 2011-09-15
+	 *  
+	 * @access public
+	 * @param (Int) 	- $pid : product id
+	 * @param (String) 	- $title : product option title
+	 * @param (String) 	- $detail : Value of product options with comma seprated.
+	 *
+	 * @return (Int) 	- $option_id : Product option id.
+	 * @author Yogesh
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
 	
 	function insertProductOption($pid,$title,$detail) 
 	{
@@ -627,6 +850,33 @@ class Models_Product
 			}
 		}
 		return $option_id;
+	}
+
+	/**
+	 * Function GetSellerInformation
+	 *
+	 * This function is used to get product seller information.
+     *
+	 * Date created: 2011-08-31
+	 *
+	 * @access public
+	 * @param () (Array)  - $data : Array of search options
+	 * @return (Array) - Return Array of records
+	 * @author Yogesh
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+
+	
+	public function GetSellerInformation($Id)
+	{
+		$db = $this->db;
+		$sql = "SELECT * FROM user_master WHERE user_id=".$Id."";
+		
+		//print $sql;die;
+ 		$result = $db->fetchRow($sql);
+		return $result;
+	
 	}
 	
 }

@@ -16,9 +16,24 @@
 	</div>
 	<!--  Page Header End  -->
 	
-	<div style="text-align:center">
-		<?php echo $this->Admin_Message; ?>
-	</div>
+	<!--       Success and Error Message      -->	
+	<?php if($this->Admin_EMessage != '') { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
+				<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+				<strong><?php echo $this->Admin_EMessage; ?></strong></p>
+			</div>
+		</div>
+	<?php } ?>	
+	
+	<?php if($this->Admin_SMessage != '') { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-highlight ui-corner-all" style="margin-top: 20px; padding: 0 .7em;"> 
+				<p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
+				<strong><?php echo $this->Admin_SMessage; ?></strong></p>
+			</div>
+		</div>
+	<?php } ?>
 	
 	
 	<!--   Main Form start     -->
@@ -53,7 +68,7 @@
 								<?php echo $this->Translate('Weight_Unit_Name'); ?>:
 							</td>
 							<td>
-								<input type="text" class="Field250" name="weight_unit_name" class="inputtext" /> 
+								<input type="text" class="Field250" name="weight_unit_name" /> 
 							</td>
 						</tr>
 						<tr><td height="15"></td></tr>
@@ -62,7 +77,7 @@
 								<?php echo $this->Translate('Weight_Unit_Key'); ?>:
 							</td>
 							<td>
-								<input type="text" class="Field250" name="weight_unit_key" class="inputtext" /> 
+								<input type="text" class="Field250" name="weight_unit_key" /> 
 							</td>
 						</tr>
 						<tr><td height="15"></td></tr>
@@ -148,23 +163,23 @@
 <!--     JS Global Variable for the language    -->
 
 <script language="javascript" type="text/javascript">
-	var siteurl = '<?php echo SITE_URL; ?>';
-	var HIDE = '<?php echo $this->Translate("Hide"); ?>';  
-	var SEARCH = '<?php echo $this->Translate("Search"); ?>';  
-	var ERR_WEIGHT_UNIT_NAME = '<?php echo $this->Translate("Err_Weight_Unit_Name"); ?>';  
-	var ERR_WEIGHT_UNIT_KEY = '<?php echo $this->Translate("Err_Weight_Unit_Key"); ?>';  
+	var siteurl = "<?php echo SITE_URL; ?>";
+	var HIDE = "<?php echo $this->Translate('Hide'); ?>";  
+	var SEARCH = "<?php echo $this->Translate('Search'); ?>";  
+	var ERR_WEIGHT_UNIT_NAME = "<?php echo $this->Translate('Err_Weight_Unit_Name'); ?>";  
+	var ERR_WEIGHT_UNIT_KEY = "<?php echo $this->Translate('Err_Weight_Unit_Key'); ?>";  
 </script>
 
 <!--     Dialoag box for the delete and delete all    -->
 
-<div id="dialog-confirm" title="<?php echo $this->Translate('Confirm_Delete_Title'); ?>" style="display:none;">
+<div id="dialog-confirm" title="<?php echo $this->Translate('Confirm_Delete_Weight_Title'); ?>" style="display:none;">
 	<div style="text-align:left;">
 		<span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
 		<?php echo $this->Translate('Confirm_Delete_Weight'); ?>
 	</div>
 </div>
 
-<div id="dialog-confirm2" title="<?php echo $this->Translate('Confirm_Delete_Title'); ?>" style="display:none;">
+<div id="dialog-confirm2" title="<?php echo $this->Translate('Confirm_Delete_Weight_Title'); ?>" style="display:none;">
 	<div style="text-align:left;">
 		<span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
 		<?php echo $this->Translate('Confirm_M_Delete_Weight'); ?>

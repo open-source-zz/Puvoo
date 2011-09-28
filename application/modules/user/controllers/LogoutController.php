@@ -33,7 +33,7 @@
  * @package 	User_Controllers
  * @author	    Amar 
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- **/  
+ **/ 
 class User_LogoutController extends Zend_Controller_Action 
 {
 	
@@ -49,6 +49,7 @@ class User_LogoutController extends Zend_Controller_Action
 	 * @return (void) - Return void
 	 *
      * @author Amar
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/  
    function indexAction() 

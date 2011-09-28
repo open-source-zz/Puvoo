@@ -33,8 +33,7 @@
  * @package 	Models
  * @author	    Jayesh 
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- */  
- 
+ */ 
 class Models_Cart
 {
 	
@@ -53,6 +52,7 @@ class Models_Cart
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Jayesh
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	function __construct()
@@ -66,6 +66,8 @@ class Models_Cart
 	 * It is used to check that the product is already on cart or not.
 	 *
 	 * Date created: 2011-08-29
+	 * @param () (Int)  - $prodId : Product Id
+	 * @return (Array) - Return number of records
 	 *
 	 * @author  Jayesh 
 	 * @param   two parameters / login_id and password.
@@ -99,6 +101,8 @@ class Models_Cart
 	 * It is used to insert the product information in cart table.
 	 *
 	 * Date created: 2011-08-29
+	 * @param () (Array)  - $ProductInfo : Array of records
+	 * @return (Array) - Return true on success
 	 *
 	 * @author  Jayesh 
 	 * @param   two parameters / login_id and password.
@@ -114,7 +118,7 @@ class Models_Cart
 		
 		//Insert information in cart master table
 		$ProductMaster = array(
-				'facebook_user_id' => '123@yahoo.com',
+				'facebook_user_id' => 'xyz@yahoo.com',
 				'cart_status' => '1'
 		);
 		
@@ -128,14 +132,59 @@ class Models_Cart
 		
 		$id = $facebookUser['cart_id'];
 		//Insert information in cart Details table
+		//if($ProductInfo['product_qty'] != '')
+		//{
+			//$productQty = $ProductInfo['product_qty'];
+		//}else{
+			$productQty = '1';
+		//}
 		$ProductDetails = array(
 				'cart_id' => 1,
 				'product_id' => $ProductInfo['product_id'],
 				'product_name' => $ProductInfo['product_name'],
-				'product_price' => $ProductInfo['product_price']
+				'product_price' => $ProductInfo['product_price'],
+				'product_qty' => $productQty,
+				'product_total_cost' => $ProductInfo['product_price']*1
 		);
 		
 		$db->insert('cart_detail', $ProductDetails);
+		
+		return true;
+	}
+	
+	 /*
+	 * Insert_CartOption_Record(): To insert product option record in cart product option table.
+	 *
+	 * It is used to insert product option record in cart product option table.
+	 *
+	 * Date created: 2011-08-29
+	 * @param () (Array)  - $productOptions : Array of records
+	 * @return (Array) - Return true on success
+	 *
+	 * @author  Jayesh 
+	 * @param   two parameters / login_id and password.
+     * @global  $db Zend_db for database.
+                $mysession Zend_Session_Namespace for session variables.
+	 * 
+	 */
+	
+	public function Insert_CartOption_Record($productOptions,$cartDetailId)
+	{
+		global $mysession;
+		$db= $this->db;
+		
+		//Insert information in cart product Option table
+		$ProductOptionDetails = array(
+				'cart_detail_id' => $cartDetailId,
+				'product_options_id' => $productOptions['product_options_id'],
+				'product_options_detail_id' => $productOptions['product_options_detail_id'],
+				'option_title' => $productOptions['option_title'],
+				'option_value' => $productOptions['option_value']
+		);
+		
+		$db->insert('cart_product_options', $ProductOptionDetails);
+		
+		return true;
 	}
 	
 	 /*
@@ -144,6 +193,7 @@ class Models_Cart
 	 * It is used get all the product that are in the cart.
 	 *
 	 * Date created: 2011-09-01
+	 * @return (Array) - Return true on success
 	 *
 	 * @author  Jayesh 
 	 * @param   two parameters / login_id and password.
@@ -156,12 +206,20 @@ class Models_Cart
 		global $mysession;
 		$db= $this->db;
 		
-		$sql = "SELECT cd.*,cm.*,pi.image_path,pm.user_id,um.* FROM cart_detail as cd
+//		$sql = "SELECT cd.*,cm.*,pi.image_path,pi.image_name,pm.user_id,um.*,usm.shipping_method_name,usm.shipping_method_id as ship_method_id,usd.* FROM cart_detail as cd
+//				LEFT JOIN cart_master as cm ON (cd.cart_id = cm.cart_id)
+//				LEFT JOIN product_images as pi ON (cd.product_id = pi.product_id and pi.is_primary_image = 1)
+//				LEFT JOIN product_master as pm ON (pi.product_id = pm.product_id)
+//				LEFT JOIN user_master as um ON (pm.user_id = um.user_id)
+//				LEFT JOIN user_shipping_method usm ON (um.user_id = usm.user_id) 
+//				LEFT JOIN user_shipping_method_detail usd ON (usm.shipping_method_id = usd.shipping_method_id)
+//				WHERE cm.facebook_user_id ='xyz@yahoo.com' ";
+		$sql = "SELECT cd.*,cm.*,pi.image_path,pi.image_name,pm.*,um.* FROM cart_detail as cd
 				LEFT JOIN cart_master as cm ON (cd.cart_id = cm.cart_id)
 				LEFT JOIN product_images as pi ON (cd.product_id = pi.product_id and pi.is_primary_image = 1)
 				LEFT JOIN product_master as pm ON (pi.product_id = pm.product_id)
 				LEFT JOIN user_master as um ON (pm.user_id = um.user_id)
-				WHERE cm.facebook_user_id ='123@yahoo.com' ";
+				WHERE cm.facebook_user_id ='xyz@yahoo.com' ";
 		//print $sql;die;
 		$result = $db->fetchAll($sql);
 		
@@ -175,6 +233,7 @@ class Models_Cart
 	 * It is used find the user that have in the cart.
 	 *
 	 * Date created: 2011-09-02
+	 * @return (Array) - Return true on success
 	 *
 	 * @author  Jayesh 
 	 * @param   two parameters / login_id and password.
@@ -187,7 +246,7 @@ class Models_Cart
 		global $mysession;
 		$db= $this->db;
 		
-		$sql = "SELECT * FROM cart_master WHERE facebook_user_id = '123@yahoo.com'";
+		$sql = "SELECT * FROM cart_master WHERE facebook_user_id = 'xyz@yahoo.com'";
 		//print $sql;die;
 		$result = $db->fetchRow($sql);
 		
@@ -201,6 +260,10 @@ class Models_Cart
 	 * It is used to delete product in to the cart.
 	 *
 	 * Date created: 2011-09-05
+	 * @param () (int)  - $prodId : Product Id
+	 * @param () (int)  - $cartId : Cart Id
+	 * @return (String) - Return true on success
+
 	 *
 	 * @author  Jayesh 
 	 * @param   two parameters / login_id and password.
@@ -208,7 +271,7 @@ class Models_Cart
                 $mysession Zend_Session_Namespace for session variables.
 	 * 
 	 */
-	public function DeleteCartProduct($prodId,$cartId)
+	public function DeleteCartProduct($prodId,$cartId,$cartDetailId)
 	{
 		$db= $this->db;
 		$where = array(
@@ -216,9 +279,12 @@ class Models_Cart
 			'cart_id = ?' => $cartId
 		);
 		
+		$where1 = "cart_detail_id = ".$cartDetailId."";
 		//$sql = "DELETE FROM cart_detail WHERE cart_id = ".$cartId." and product_id = ".$prodId."";
 		//print $sql;die;
+		
 		$db->delete('cart_detail',$where);
+		$db->delete('cart_product_options',$where1);
 		
 		return true;
 	}
@@ -230,6 +296,10 @@ class Models_Cart
 	 * It is used add or edit shipping information of the current facebook user.
 	 *
 	 * Date created: 2011-09-17
+	 * @param () (Array)  - $data : array of records
+	 * @param () (int)  - $cartId : Cart Id
+	 * @return (Array) - Return array of records
+
 	 *
 	 * @author  Jayesh 
 	 * @param   two parameters / login_id and password.
@@ -256,6 +326,8 @@ class Models_Cart
 	 * It is used to get shipping information of the current facebook user.
 	 *
 	 * Date created: 2011-09-17
+	 * @param () (int)  - $cartId : Cart Id
+	 * @return (Array) - Return array of records
 	 *
 	 * @author  Jayesh 
 	 * @param   two parameters / login_id and password.
@@ -268,13 +340,282 @@ class Models_Cart
 	{
 		$db= $this->db;
 		
-		$sql = "SELECT * FROM cart_master WHERE cart_id=".$cartId."";
+		$sql = "SELECT cm.*,sm.* FROM cart_master as cm
+				LEFT JOIN state_master as sm ON (cm.shipping_user_state_id = sm.state_id) 
+				WHERE cart_id=".$cartId."";
 		//print $sql;die;
 		$result = $db->fetchRow($sql);
 		
 		return $result;
 	
 	}
+
+	 /*
+	 * GetCountry(): To get all countries.
+	 *
+	 * It is used to get all countires names.
+	 *
+	 * Date created: 2011-09-17
+	 * @return (Array) - Return array of records
+	 *
+	 * @author  Jayesh 
+	 * @param   two parameters / login_id and password.
+	 * @global  $db Zend_db for database.
+				$mysession Zend_Session_Namespace for session variables.
+	 * 
+	 */
 	
+	public function GetCountry()
+	{
+		$db= $this->db;
+		
+		$sql = "SELECT * FROM country_master";
+		//print $sql;die;
+		$result = $db->fetchAll($sql);
+		
+		return $result;
+	
+	}
+
+	 /*
+	 * GetState(): To get all states of perticular countries.
+	 *
+	 * It is used to get all states of perticular countries.
+	 *
+	 * Date created: 2011-09-17
+	 * @param () (int)  - $id : Country Id
+	 * @return (Array) - Return array of records
+	 *
+	 * @author  Jayesh 
+	 * @param   two parameters / login_id and password.
+	 * @global  $db Zend_db for database.
+				$mysession Zend_Session_Namespace for session variables.
+	 * 
+	 */
+	
+	public function GetState($id)
+	{
+		$db= $this->db;
+		
+		$sql = "SELECT * FROM state_master where country_id = '".$id."'";
+		//print $sql;die;
+		$result = $db->fetchAll($sql);
+		
+		return $result;
+	
+	}
+
+	 /*
+	 * GetCountryCode(): To get country iso code.
+	 *
+	 * It is used to get iso code for that particular country.
+	 *
+	 * Date created: 2011-09-17
+	 * @param () (int)  - $countryId : Country Id
+	 * @return (Array) - Return array of records
+	 *
+	 * @author  Jayesh 
+	 * @param   two parameters / login_id and password.
+	 * @global  $db Zend_db for database.
+				$mysession Zend_Session_Namespace for session variables.
+	 * 
+	 */
+	
+	public function GetCountryCode($countryId)
+	{
+		$db= $this->db;
+		
+		$sql = "SELECT * FROM country_master WHERE country_id=".$countryId."";
+		//print $sql;die;
+		$result = $db->fetchRow($sql);
+		
+		return $result;
+	
+	}
+
+	 /*
+	 * GetShippingMethod(): To get shipping method for particular user or merchant.
+	 *
+	 * It is used to get shipping method for particular user or merchant.
+	 *
+	 * Date created: 2011-09-21
+	 * @param () (int)  - $userId : User Id
+	 * @return (Array) - Return array of records
+	 *
+	 * @author  Jayesh 
+	 * @param   two parameters / login_id and password.
+	 * @global  $db Zend_db for database.
+				$mysession Zend_Session_Namespace for session variables.
+	 * 
+	 */
+	
+	public function GetShippingMethod($userId)
+	{
+		$db= $this->db;
+		
+ 		
+		$sql = "SELECT um.*,usm.*,usd.* FROM user_shipping_method usm
+				LEFT JOIN user_master as um ON (um.user_id = usm.user_id)
+				LEFT JOIN user_shipping_method_detail usd ON (usm.shipping_method_id = usd.shipping_method_id)
+				WHERE usm.user_id =".$userId."";
+		$result = $db->fetchAll($sql);
+		
+		return $result;
+	
+	}
+
+	 /*
+	 * GetTaxName(): To get different tax name or type for particular user or merchant.
+	 *
+	 * It is used to get different tax name or type for particular user or merchant.
+	 *
+	 * Date created: 2011-09-26
+	 * @param () (int)  - $userId : User Id
+	 * @return (Array) - Return array of records
+	 *
+	 * @author  Jayesh 
+	 * @param   two parameters / login_id and password.
+	 * @global  $db Zend_db for database.
+				$mysession Zend_Session_Namespace for session variables.
+	 * 
+	 */
+	
+	public function GetTaxName($userId)
+	{
+		$db= $this->db;
+		
+ 		
+		$sql = "SELECT tr.*,trd.* FROM tax_rate tr
+				LEFT JOIN tax_rate_detail trd ON (tr.tax_rate_id = trd.tax_rate_id)
+				WHERE tr.user_id =".$userId."";
+		$result = $db->fetchAll($sql);
+		
+		return $result;
+	
+	}
+
+
+	 /*
+	 * GetProductShippinmethod(): To get shipping method for cart product.
+	 *
+	 * It is used to get shipping method for cart product.
+	 *
+	 * Date created: 2011-09-21
+	 * @param () (int)  - $prodId : Product Id
+	 * @return (Array) - Return array of records
+	 *
+	 * @author  Jayesh 
+	 * @param   two parameters / login_id and password.
+	 * @global  $db Zend_db for database.
+				$mysession Zend_Session_Namespace for session variables.
+	 * 
+	 */
+	
+	public function GetProductShippingmethod($prodId)
+	{
+		$db= $this->db;
+		
+		$sql = "SELECT cd.*,cm.*,pm.user_id,um.*,usm.shipping_method_name,usm.shipping_method_id as ship_method_id,usd.* FROM cart_detail as cd
+				LEFT JOIN cart_master as cm ON (cd.cart_id = cm.cart_id)
+				LEFT JOIN product_master as pm ON (cd.product_id = pm.product_id)
+				LEFT JOIN user_master as um ON (pm.user_id = um.user_id)
+				LEFT JOIN user_shipping_method usm ON (um.user_id = usm.user_id) 
+				LEFT JOIN user_shipping_method_detail usd ON (usm.shipping_method_id = usd.shipping_method_id)
+				WHERE cd.product_id=".$prodId."";
+		//print $sql;die;
+		$result = $db->fetchAll($sql);
+		
+		return $result;
+	
+	}
+	
+	 /*
+	 * UpdateCart(): To update cart information of current facebook user.
+	 *
+	 * It is used edit cart information of the current facebook user.
+	 *
+	 * Date created: 2011-09-21
+	 * @param () (Array)  - $data : array of records
+	 * @param () (int)  - $cartId : Cart Id
+	 * @param () (int)  - $prodId : Product Id
+	 * @return (Array) - Return array of records
+	 *
+	 * @author  Jayesh 
+	 * @param   two parameters / login_id and password.
+     * @global  $db Zend_db for database.
+                $mysession Zend_Session_Namespace for session variables.
+	 * 
+	 */
+	
+	public function UpdateCart($data,$cartId,$prodId)
+	{
+		$db = $this->db;
+		
+		//print_r($data);die;
+		$where = "cart_id=".$cartId." and product_id=".$prodId."";
+	
+		$result = $db->update('cart_detail', $data, $where);
+		
+		return $result;
+	
+	}
+
+	 /*
+	 * GetShippingCost(): To update Shipping Cost.
+	 *
+	 * It is used to update shipping cost.
+	 *
+	 * Date created: 2011-09-23
+	 * @param () (int)  - $methodId : Shipping Method Id
+	 * @return (Array) - Return array of records
+	 *
+	 * @author  Jayesh 
+	 * @param   two parameters / login_id and password.
+     * @global  $db Zend_db for database.
+                $mysession Zend_Session_Namespace for session variables.
+	 * 
+	 */
+	
+	public function GetShippingCost($methodId)
+	{
+		$db = $this->db;
+		
+		$sql = "SELECT * FROM user_shipping_method_detail WHERE shipping_method_id=".$methodId."";
+		//print $sql;die;
+		$result = $db->fetchRow($sql);
+		
+		return $result;
+	
+	}
+
+	 /*
+	 * GetCartDetailId(): To get cart detail id.
+	 *
+	 * It is used to  get cart detail id.
+	 *
+	 * Date created: 2011-09-28
+	 * @param () (int)  - $prodId : Product Id
+	 * @return (Array) - Return array of records
+	 *
+	 * @author  Jayesh 
+	 * @param   two parameters / login_id and password.
+     * @global  $db Zend_db for database.
+                $mysession Zend_Session_Namespace for session variables.
+	 * 
+	 */
+	
+	public function GetCartDetailId($prodId)
+	{
+		$db = $this->db;
+		
+		$sql = "SELECT cd.cart_detail_id FROM cart_master as cm
+				LEFT JOIN cart_detail as cd ON (cm.cart_id = cd.cart_id)
+				WHERE cd.product_id=".$prodId." and cm.	facebook_user_id = 'xyz@yahoo.com'";
+		//print $sql;die;
+		$result = $db->fetchRow($sql);
+		
+		return $result;
+	
+	}
 }
 ?>

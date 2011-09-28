@@ -53,6 +53,7 @@ class Models_Language
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	function __construct()
@@ -73,6 +74,7 @@ class Models_Language
 	 * @return (array) - Return array or record
      * 
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	public function getLanguageById($id)
@@ -97,6 +99,7 @@ class Models_Language
 	 * @param ()  - No parameter
 	 * @return (Array) - Return Array of records
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	public function getAllLanguages()
@@ -122,6 +125,7 @@ class Models_Language
 	 * @param () (Array)  - $data : Array of search options
 	 * @return (Array) - Return Array of records
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -130,11 +134,20 @@ class Models_Language
 	{
 		$db = $this->db;
 		
-		$sql  = "";
-		$sql .= "SELECT * FROM language_master where 1=1";
+		$sql = "SELECT * FROM language_master where 1=1";
 		
+		if($data["name"] != "")
+		{
+			$sql .= " and name like '%" . $data["name"] . "%'";
+		}
 		
-		$result =  $db->fetchAll($sql);		
+		if($data["status"] == "0" || $data["status"] == "1")
+		{
+			$sql .= " and status = '" . $data["status"] . "'";
+		}
+		
+		$result =  $db->fetchAll($sql);
+		
 		return $result;		
 	}
 	
@@ -150,6 +163,7 @@ class Models_Language
 	 * @param () (Array)  - $data : Array of record to insert
 	 * @return (Boolean) - Return true on success
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -160,6 +174,7 @@ class Models_Language
 		$db->insert("language_master", $data); 	 
 		
 		return true; 
+
 	}
 	
 	/**
@@ -174,6 +189,7 @@ class Models_Language
 	 * @param () (String)  - $where : Condition on which update record
 	 * @return (Boolean) - Return true on success
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -196,11 +212,12 @@ class Models_Language
 	 * @param () (String)  - $id : language id
 	 * @return (Boolean) - Return true on success
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
 	
-	public function deleteLannguage($id)
+	public function deleteLanguage($id)
 	{
 		$db = $this->db;	
 		
@@ -236,6 +253,7 @@ class Models_Language
 	 * @param () (String)  - $ids : String of comma separated language ids.
 	 * @return (Boolean) - Return true on success
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -259,6 +277,7 @@ class Models_Language
 	 * @param ()  - No parameters.
 	 * @return (int) - Return max sort order
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -280,6 +299,29 @@ class Models_Language
 	}
 	
 	
+	/**
+	 * Function getActiveLanguages
+	 *
+	 * This function is used to get all active languages available.
+     *
+	 * Date created: 2011-09-19
+	 *
+	 * @access public
+	 * @param ()  - No parameter
+	 * @return (Array) - Return Array of records
+	 * @author Amar
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	public function getActiveLanguages()
+	{
+		$db = $this->db;
+		
+		$sql = "select * from language_master where status=1 order by sort_order";
+		
+ 		$result = $db->fetchAll($sql);
+		return $result;
+	}
 	
 }
 ?>

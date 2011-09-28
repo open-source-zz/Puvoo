@@ -28,7 +28,8 @@
  *
  * @author Amar
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- **/	 
+ **/
+ 
 
 // Define path to application directory
 defined('APPLICATION_PATH')
@@ -154,4 +155,5 @@ $viewRenderer->view->addHelperPath(GLOBAL_VIEW_HELPERS);
 
 //Run it 
 $application->bootstrap()->run();
+
 ?>

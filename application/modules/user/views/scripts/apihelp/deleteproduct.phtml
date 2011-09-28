@@ -1,0 +1,156 @@
+<!--  Crumb  Start -->
+<div class="Breadcrumb" id="PageBreadcrumb">
+	<ul>
+	   <li class="Home SecondLast"><a href="<?php echo SITE_URL; ?>user/"><?php echo $this->Translate("User_Home"); ?></a></li>
+	   <li class="Last"><a href="<?php echo SITE_URL; ?>user/apihelp/"><?php echo $this->Translate("Api_Help"); ?></a></li>
+	   <li class="Last"><span><?php echo $this->Translate("Delete_Product_Api_Help"); ?></span></li>
+	</ul>
+</div>
+<!--  Crumb  end -->
+
+<div class="BodyContainer DashboardContainer" style="text-align:left;"> 
+	<div class="Heading1">
+		<?php echo $this->Translate('Delete_Product_Api_Help'); ?>
+	</div>
+<div style="margin-top:20px;"><h4>REST URL : <?php echo SITE_URL."rest/product"; ?></h4> </div>
+<div style="margin-top:20px;"><h4>deleteproduct Input</h4></div>
+<div style="margin-top:20px;">The box below lists all fields that could be included in the call request. To learn more about an individual field or its type scroll down to find it in the table below the box.</div>
+<pre style="background-color:#E0E0E0;  font-size:12px">
+
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+
+&lt;Products&gt;
+	&lt;Product&gt;
+		&lt;pid&gt; INT &lt;/pid&gt;
+	&lt;/Product&gt;
+	&lt;!-- ... more Product nodes here ... --&gt;
+&lt;/Products&gt;
+</pre>
+<div style="margin-top:20px;">
+<h4>Input argument detail</h4>
+</div>
+<table border="1" cellspacing="2" cellpadding="4" width="100%">
+	<tr>
+		<th >Argument</th>
+		<th >Type</th>
+ 		<th>Occurrence</th>
+		<th>Meaning</th>
+	</tr>
+	<tr>
+		<td valign="top">Products</td>
+		<td valign="top">XML Node</td>
+		<td valign="top">Always,Single</td>
+		<td valign="top">It is a compulsary node. It will occur only once. It is an xml node that will contain all product nodes to delete.</td>
+	</tr>
+	<tr>
+		<td valign="top">Product</td>
+		<td valign="top">XML Node</td>
+		<td valign="top">Always,Repeatable</td>
+		<td valign="top">It is a compulsary node. 
+			It will appear atleast once. 
+			You can repeat this node to delete more than 1 product. 
+			you can delete maximum 50 products at a time.
+			It will contain all inputs necessary to delete single product
+		</td>
+	</tr>
+	<tr>
+		<td valign="top">pid</td>
+		<td valign="top">INT</td>
+		<td valign="top">Always,Single</td>
+		<td valign="top">It will contain product id to identify product in the system.</td>
+	</tr>
+</table>
+<div style="margin-top:20px;">
+<h4>deleteproduct Output</h4>
+</div>
+<pre style="background-color:#E0E0E0;  font-size:12px">
+&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+
+&lt;response&gt;
+	&lt;result&gt; TEXT &lt;/result&gt;
+	&lt;error&gt; TEXT &lt;/error&gt;
+	&lt;message&gt; TEXT &lt;/message&gt;
+&lt;/response&gt;
+</pre>
+<div style="margin-top:20px;">
+<h4>Output return values detail</h4>
+</div>
+<table border="1" cellspacing="2" cellpadding="4" width="100%">
+	<tr>
+		<th >Return Value</th>
+		<th >Type</th>
+ 		<th>Occurrence</th>
+		<th>Meaning</th>
+	</tr>
+	<tr>
+		<td >response</td>
+		<td >XML Node</td>
+		<td >Always,Single</td>
+		<td>It is a compulsary node. It will occur only once. It is an xml node that will contain result of the call made.</td>
+	</tr>
+	<tr>
+		<td >result</td>
+		<td >TEXT</td>
+		<td >Always,Single</td>
+		<td>It is a compulsary node. 
+			It will occur only once.<br/> 
+			It can have any of the value below<br />
+			<b>Success</b> = Your call executed successfully.<br />
+			<b>Failure</b> = Your call failed due to some error.
+		</td>
+	</tr>
+	<tr>
+		<td >error</td>
+		<td >TEXT</td>
+		<td >Conditional,Repeatable</td>
+		<td>It will occur only if your call is failed due to some error. It will contain error text. It can repeat for more than 1 errors.</td>
+	</tr>
+	<tr>
+		<td >message</td>
+		<td >TEXT</td>
+		<td >Conditional,Single</td>
+		<td >It will occur only if your call is successfull. It will contain success message.</td>
+	</tr>
+	
+</table>
+
+<div style="margin-top: 20px;">
+	<h4>PHP Sample Code</h4>
+</div>
+<pre style="background-color:#E0E0E0;  font-size:12px">
+&lt;?php
+
+$rest_url = "<?php echo SITE_URL.'rest/product'; ?>";
+$api_key = "<b>your_api_key</b>";
+
+$data = "&lt;Products&gt;\r\n"
+	. "&lt;Product&gt;\r\n"
+	. "&lt;pid&gt;46&lt;/pid&gt;\r\n"
+	. "&lt;/Product&gt;\r\n"
+	. "&lt;/Products&gt;";
+
+$arr_header = array();
+$arr_header[] = "Content-Type: text/xml;charset=UTF-8";
+$arr_header[] = "Accept: text/xml";
+$arr_header[] = "apikey: " . $api_key;
+
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $rest_url);
+curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+curl_setopt($ch, CURLOPT_HTTPHEADER, $arr_header);
+
+$result = curl_exec($ch);
+
+if(curl_errno($ch)){
+   echo 'Curl error: ' . curl_error($ch);
+}
+
+curl_close($ch);
+echo $result;
+?&gt;
+</pre>
+</div> 
+

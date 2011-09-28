@@ -49,6 +49,7 @@ class Admin_LogoutController extends Zend_Controller_Action
 	 * @return (void) - Return void
 	 *
      * @author Amar
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/  
    function indexAction() 

@@ -26,7 +26,7 @@
  * UserCommonController class.To check user login and for assigning constants.
  *
  * This class file extends Zend_Controller_Action.
- * It is used to check whether admin is login or not and for assigning path constants,title,etc.
+ * It is used to check whether user is login or not and for assigning path constants,title,etc.
  *
  * Date created: 2011-08-26
  *
@@ -47,6 +47,7 @@ class UserCommonController extends Zend_Controller_Action
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
     public function init() 
@@ -56,12 +57,12 @@ class UserCommonController extends Zend_Controller_Action
 		if(!in_array(strtolower($this->_request->getControllerName()),array("login","logout")))
 		{
 			
-	
-			if(!Zend_Auth::getInstance()->hasIdentity())  
+			if(!Zend_Auth::getInstance()->hasIdentity() || $mysession->User_Login != Zend_Auth::getInstance()->getIdentity() )  
          	{
 				header("location: " . SITE_URL . "user/logout");
 				exit();
 			}
+			
 			
 			
 			
@@ -113,6 +114,7 @@ class UserCommonController extends Zend_Controller_Action
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	function indexAction()

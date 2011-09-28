@@ -1,5 +1,5 @@
 <style>
-	.scroll-pane
+	.scroll-pane,scroll-pane2
 	{
 		height: 270px;
 		overflow: auto;
@@ -143,7 +143,7 @@
 					<h3><a href="#"><?php echo $this->Translate('Product_Images'); ?></a></h3>
 					<?php $images = $product_detail["images"]; ?>
 					<div >
-						<div style="height:280px;">
+						<div style="height:280px; width:395px;">
 							<div class="scroll-pane" style="">
 								<div class="excersice-list">
 									<ul>
@@ -169,8 +169,8 @@
 					<div >
 						<?php $category = $product_detail["category"]; ?>
 						<?php $options = $product_detail["options"]; ?>
-						<div class="box-content" style="height:270px;" >
-						
+						<div class="box-content scroll-pane" style="height:270px; width:395px;" >
+							
 							<table  width="100%" >
 								<tr>
 									<td width="40%" valign="top">
@@ -228,6 +228,7 @@
 									</td>
 								</tr>
 							</table>
+							
 						</div>
 					</div>
 				</div>
@@ -242,9 +243,10 @@
 
 <script type="text/javascript">
 	$(function(){
+		$('.scroll-pane').jScrollPane();
 		// Accordion
 		$("#accordion").accordion({ header: "h3",autoHeight: false, navigation: true });
 		
-		$('.scroll-pane').jScrollPane();$('.scroll-pane2').jScrollPane();
+		
 	});
 </script>

@@ -1,7 +1,22 @@
 <div class="Breadcrumb" id="PageBreadcrumb">
 	<ul>
 	   <li class="Home SecondLast"><a href="#"><?php echo $this->Translate("Administration"); ?></a></li>
+	   <?php if($this->parent_id == 0){ ?>
 	   <li class="Last"><span><?php echo $this->Translate('Category'); ?></span></li>
+	   <?php } ?>
+	   <?php if($this->parent_id > 0){ ?>
+	   <li class="Last"><a href="<?php echo $this->site_url ?>"><?php echo $this->Translate('Category'); ?></a></li>
+	   <?php for($i = count($this->path_array)-1; $i >= 0; $i--){ 
+	   	if($i == 0)
+		{
+	   ?>
+	   <li class="Last"><span><?php echo $this->path_array[$i]['category_name']; ?></span></li>
+	   <?php 
+	   }else{ 
+	   
+	   ?>
+	   <li class="Last"><a href="<?php echo $this->site_url . '/index/parent_id/' . $this->path_array[$i]['category_id']; ?>"><?php echo $this->path_array[$i]['category_name']; ?></a></li>
+	   <?php }}} ?>
 	</ul>
 </div>
 
@@ -23,14 +38,14 @@
 	
 	<!--   Main Form start     -->
 	<form name="frmCategoty" id="frmCategoty" method="post">
-	
+		<input type="hidden" name="parent_id" id="parent_id" value="<?php echo $this->parent_id; ?>" />
 		<!--  Buttons start -->
 		<div>
 			<div style="float:left; margin-top:7px; margin-bottom:10px;">
 				<input type="button" id="search" show='1'  value="<?php echo $this->Translate('Search'); ?>" />
 			</div>
 			<div id="button" style="float:right;">
-				<input type="button" id="anything"  value="<?php echo $this->Translate('Add_New'); ?>" onclick="window.location='<?php echo $this->add_action; ?>'"/>
+				<input type="button" id="anything"  value="<?php echo $this->Translate('Add_New'); ?>" onclick="window.location='<?php echo $this->add_action . '/parent_id/' . $this->parent_id; ?>'"/>
 				<input type="button" id="anything" onclick="Javascript: deleteAllRecords('frmCategoty','<?php echo $this->delete_all_action; ?>')"  value="<?php echo $this->Translate('M_Delete'); ?>"/>	   
 				<select name="pagesize" id="pagesize" onchange="this.form.submit();">
 					<?php
@@ -53,7 +68,7 @@
 								<?php echo $this->Translate('Category'); ?>:
 							</td>
 							<td>
-								<input type="text" class="Field250" name="category_name" class="inputtext" /> 
+								<input type="text" class="Field250" name="category_name"  /> 
 							</td>
 						</tr>
 						<tr><td height="5"></td></tr>
@@ -101,7 +116,7 @@
 				<tr id="tr100" class="GridRow" onmouseover="this.className='GridRowOver'" onmouseout="this.className='GridRow'">
 					<td class="FieldLabel2" style="padding-left:15px;" ><input type="checkbox" name="id[]" id="id[]" value="<?php echo $this->records[$i]['category_id']; ?>"></td>
 					  
-					<td class="FieldLabel2" align="center"><?php echo $this->records[$i]['category_name']; ?></td>
+					<td class="FieldLabel2" align="center"><a href="<?php  echo $this->site_url . '/index/parent_id/' . $this->records[$i]['category_id']; ?>"  ><?php echo $this->records[$i]['category_name']; ?></a></td>
 					<td class="FieldLabel2" align="center">
 	<?php 				if($this->records[$i]['is_active'])
 						{
@@ -115,7 +130,7 @@
 					</td>
 					<td class="FieldLabel2" align="center">
 						<ul id="icons" class="ui-widget ui-helper-clearfix" >
-							<li class="ui-state-default ui-corner-all" onclick="Javascript: editRecord(<?php echo $this->records[$i]['category_id']; ?>,'frmCategoty','<?php echo $this->edit_action; ?>')" title="<?php echo $this->Translate('Edit'); ?>">
+							<li class="ui-state-default ui-corner-all" onclick="Javascript: editRecord(<?php echo $this->records[$i]['category_id']; ?>,'frmCategoty','<?php echo $this->edit_action . '/parent_id/' . $this->parent_id; ?>')" title="<?php echo $this->Translate('Edit'); ?>">
 								<span class="ui-icon ui-icon-pencil"></span>
 							</li>
 							<li onclick="Javascript: deleteRecord(<?php echo $this->records[$i]['category_id']; ?>,'frmCategoty','<?php echo $this->delete_action; ?>')" class="ui-state-default ui-corner-all" title="<?php echo $this->Translate('Delete'); ?>">

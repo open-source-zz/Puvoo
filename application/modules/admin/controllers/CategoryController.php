@@ -51,6 +51,7 @@
 	 * @return (void) - Return void
 	 *
      * @author Amar
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
 	 
@@ -75,6 +76,7 @@
 	 * @return (void) - Return void
 	 *
      * @author Amar
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
    function indexAction() 
@@ -99,33 +101,44 @@
 		//set search param
 		$is_search = "";
 		
+		//set category parent id
+		$parent_id = 0;
+		
 		//Get Request
 		$request = $this->getRequest();
 		
+		if($request->isGet()){
+			$parent_id = (int)$request->getParam('parent_id');
+		}
 		if($request->isPost()){
 		
 			$page_no = $request->getPost('page_no');
 			$pagesize = $request->getPost('pagesize');
 			$mysession->pagesize = $pagesize;
 			$is_search = $request->getPost('is_search');
+			$parent_id = (int)$request->getPost('parent_id');
 		}
 		
 		if($is_search == "1") {
 		
 			$filter = new Zend_Filter_StripTags();	
 			$data['category_name']=$filter->filter(trim($this->_request->getPost('category_name'))); 	
-			$data['is_active']=$filter->filter(trim($this->_request->getPost('is_active'))); 			
+			$data['is_active']=$filter->filter(trim($this->_request->getPost('is_active')));
+			 			
 			//Get search Categories
 			$result = $category->SearchCategories($data);
 			
 		} elseif($is_search == "0") {
 			// Clear serch option
 			$page_no = 1;
-			$result = $category->GetAllCategories();
+			
+			//$result = $category->GetAllCategories();
+			$result = $category->GetSubCategory($parent_id);
 						
 		} else 	{
 			//Get all Categories
-			$result = $category->GetAllCategories();
+			//$result = $category->GetAllCategories();
+			$result = $category->GetSubCategory($parent_id);
 			
 		}		
 		// Success Message
@@ -138,11 +151,19 @@
     	$paginator->setCurrentPageNumber($page_no);
 		
 		//Set View variables
+		$this->view->parent_id = $parent_id;
 		$this->view->pagesize = $pagesize;
 		$this->view->page_no = $page_no;
 		$this->view->arr_pagesize = $arr_pagesize;
 		$this->view->paginator = $paginator;
-		$this->view->records = $paginator->getCurrentItems();		
+		$this->view->records = $paginator->getCurrentItems();
+		
+		if($parent_id > 0)
+		{
+			$this->view->path_array = $category->getParentCategories($parent_id);
+		}else{
+			$this->view->path_array = array();
+		}		
 		
    }
    
@@ -158,6 +179,7 @@
 	 * @return (void) - Return void
 	 *
      * @author yogesh
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
    
@@ -174,11 +196,16 @@
 		
 		$request = $this->getRequest();
 		
+		if($request->isGet()){
+			$parent_id = (int)$request->getParam('parent_id');
+		}
+		
 		if($request->isPost()){
 			
 			$translate = Zend_Registry::get('Zend_Translate');
 			
 			$filter = new Zend_Filter_StripTags();	
+			$parent_id = (int)$request->getPost('parent_id');
 			$data['category_name']=$filter->filter(trim($this->_request->getPost('category_name'))); 	
 			$data['parent_id']=$filter->filter(trim($this->_request->getPost('parent_category'))); 	
 			$data['is_active']=$filter->filter(trim($this->_request->getPost('is_active'))); 	
@@ -194,7 +221,7 @@
 				if( $addErrorMessage == ""){
 					if($category->insertCategory($data)) {
 						$mysession->Admin_Message = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Success_Add_Category')."</h5>";
-						$this->_redirect('/admin/category'); 	
+						$this->_redirect('/admin/category/index/parent_id/'.$parent_id); 	
 					} else {
 						$addErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>There is some problem in adding category</h5>";	
 					}
@@ -206,6 +233,7 @@
 				$this->view->addErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Category_Name_Exists')."</h5>";	
 			}
 		}
+		$this->view->parent_id = $parent_id;
    }
    
    
@@ -221,6 +249,7 @@
 	 * @return (void) - Return void
 	 *
      * @author yogesh
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
    
@@ -239,15 +268,21 @@
 		
 		$filter = new Zend_Filter_StripTags();	
 		$category_id = $filter->filter(trim($this->_request->getPost('hidden_primary_id'))); 	
+		$parent_id = 0;
+		
+		if($request->isGet()){
+			$parent_id = (int)$request->getParam('parent_id');
+		}
 		
 		if($category_id > 0 && $category_id != "") {
 			$this->view->records = $category->GetCategoryById($category_id);	
 			$this->view->category_id =  $category_id;	
-			
+			$this->view->parent_id = (int)$request->getPost('parent_id');
 		} else {
 			
 			if($request->isPost()){
 				
+				$parent_id = (int)$request->getPost('parent_id');
 				$data["category_id"] = $filter->filter(trim($this->_request->getPost('category_id'))); 	
 				$data['category_name']=$filter->filter(trim($this->_request->getPost('category_name'))); 	
 				$data['parent_id']=$filter->filter(trim($this->_request->getPost('parent_category'))); 	
@@ -267,7 +302,7 @@
 						$where = "category_id = ".$data["category_id"];
 						if($category->updateCategory($data,$where)) {
 							$mysession->Admin_Message = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Success_Edit_Category')."</h5>";
-							$this->_redirect('/admin/category'); 	
+							$this->_redirect('/admin/category/index/parent_id/' . $parent_id); 	
 						} else {
 							$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>There is some problem in editing category</h5>";	
 						}
@@ -277,13 +312,14 @@
 					$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Category_Name_Exists')."</h5>";	
 				}
 				
+				$this->view->parent_id = $parent_id;
 				$this->view->records = $category->GetCategoryById($data["category_id"]);	
 				$this->view->category_id =  $data["category_id"];	
 				$this->view->editErrorMessage = $editErrorMessage;
 				
 			} else {
 			
-				$this->_redirect("/admin/category");
+				$this->_redirect("/admin/category/index/parent_id/" . $parent_id);
 			}
 		
 		}
@@ -302,6 +338,7 @@
 	 * @return (void) - Return void
 	 *
      * @author Yogesh
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
    
@@ -317,6 +354,8 @@
 		
 		$request = $this->getRequest();
 		
+		$parent_id = (int)$request->getPost('parent_id');
+		
 		$filter = new Zend_Filter_StripTags();	
 		$category_id = $filter->filter(trim($this->_request->getPost('hidden_primary_id'))); 	
 		
@@ -327,7 +366,7 @@
 				$mysession->Admin_Message = "<h5 style='color:#FF0000;margin-bottom:0px;'>There is some problem in deleting category</h5>";	
 			}		
 		} 
-		$this->_redirect("/admin/category");		
+		$this->_redirect("/admin/category/index/parent_id/" . $parent_id);		
    }  
    
    
@@ -343,6 +382,7 @@
 	 * @return (void) - Return void
 	 *
      * @author Yogesh
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
    
@@ -357,6 +397,8 @@
 		$category = new Models_Category();
 		
 		$request = $this->getRequest();
+		
+		$parent_id = (int)$request->getPost('parent_id');
 		
 		$filter = new Zend_Filter_StripTags();	
 		
@@ -375,7 +417,7 @@
 		
 			$mysession->Admin_Message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_M_Delete_Category')."</h5>";				
 		}
-		$this->_redirect("/admin/category");	
+		$this->_redirect("/admin/category/index/parent_id/" . $parent_id);	
    }
    
 }

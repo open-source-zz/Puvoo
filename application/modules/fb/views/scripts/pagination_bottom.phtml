@@ -1,0 +1,39 @@
+<ul class="pagination">
+		<!-- First page link -->
+        <?php if (isset($this->previous)): ?>
+              <li><a title="<?php echo $this->Translate('First'); ?>"  onclick="javascript: getPage(<?php echo $this->first ?>);"><?php echo $this->Translate('First'); ?></a></li>
+        <?php else: ?>
+              <li><a class="current" title="<?php echo $this->Translate('First'); ?>"><?php echo $this->Translate('First'); ?>
+			  </a></li>
+        <?php endif; ?>
+		
+		<!-- Previous page link -->
+        <?php if (isset($this->previous)): ?>
+              <li><a title="<?php echo $this->Translate('Previous'); ?>"  onclick="javascript: getPage(<?php echo $this->previous ?>);">&lt; <?php echo $this->Translate('Prev'); ?></a></li>
+        <?php else: ?>
+              <li ><a class="current" title="<?php echo $this->Translate('Previous'); ?>" >&lt; <?php echo $this->Translate('Prev'); ?></a></li>
+        <?php endif; ?>
+		
+		 <!-- Numbered page links -->
+        <?php foreach ($this->pagesInRange as $page): ?>
+            <?php if ($page != $this->current): ?>
+                <li><a title="Page <?php echo $page ?>" onclick="javascript: getPage(<?php echo $page ?>);"><?php echo $page ?> &nbsp;|</a></li>
+			<?php else: ?>
+                <li><a class="current" title="Page <?php echo $page ?>"  ><?php echo $page ?>&nbsp;|</a></li>
+            <?php endif; ?>
+        <?php endforeach; ?>
+			
+		<!-- Next page link -->
+        <?php if (isset($this->next)): ?>
+            <li><a title="<?php echo $this->Translate('Next'); ?>"  onclick="javascript: getPage(<?php echo $this->next ?>);"><?php echo $this->Translate('Next'); ?> &gt;</a></li>
+		<?php else: ?>
+            <li><a class="current" title="<?php echo $this->Translate('Next'); ?>"  ><?php echo $this->Translate('Next'); ?> &gt;</a></li>
+        <?php endif; ?>
+        <!-- Last page link -->
+        <?php if (isset($this->next)): ?>
+            <li><a title="<?php echo $this->Translate('Last'); ?>" onclick="javascript: getPage(<?php echo $this->last ?>);"><?php echo $this->Translate('Last'); ?></a></li>
+		<?php else: ?>
+            <li><a class="current" title="<?php echo $this->Translate('Last'); ?>"><?php echo $this->Translate('Last'); ?></a></li>
+        <?php endif; ?>
+	
+</ul>

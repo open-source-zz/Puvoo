@@ -1,0 +1,19 @@
+/* CSS Document */
+
+ div, img, input, td { behavior: url("iefix.htc") }
+* {
+	margin:0;
+	padding:0;
+}
+
+/*p.pos_fixed1
+{ 
+ POSITIon: absolute; 
+ toP: expression(offsetParent.scrolltop + 100); 
+ LEFT: expression(offsetParent.scrollLeft + 100); 
+} */
+
+div#fixme {
+  /* used by Opera 5+, Netscape6+/Mozilla, Konqueror, Safari, OmniWeb 4.5+, iCab, ICEbrowser */
+
+  }

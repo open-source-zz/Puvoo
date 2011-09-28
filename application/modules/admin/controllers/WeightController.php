@@ -32,7 +32,7 @@
  *
  * @weight	Puvoo
  * @package 	Admin_Controllers
- * @author      Vaibhavi Jariwala 
+ * @author      Vaibhavi
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  **/  
  class Admin_WeightController extends AdminCommonController
@@ -50,7 +50,8 @@
 	 * @param ()  - No parameter
 	 * @return (void) - Return void
 	 *
-     * @author Vaibhavi Jariwala
+     * @author Vaibhavi
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
 	 
@@ -74,7 +75,8 @@
 	 * @param ()  - No parameter
 	 * @return (void) - Return void
 	 *
-     * @author Vaibhavi Jariwala
+     * @author Vaibhavi
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
    function indexAction() 
@@ -129,8 +131,11 @@
 			
 		}		
 		// Success Message
-		$this->view->Admin_Message = $mysession->Admin_Message;
-		$mysession->Admin_Message = "";
+		$this->view->Admin_SMessage = $mysession->Admin_SMessage;
+		$this->view->Admin_EMessage = $mysession->Admin_EMessage;
+		
+		$mysession->Admin_SMessage = "";
+		$mysession->Admin_EMessage = "";
 		
 		//Set Pagination
 		$paginator = Zend_Paginator::factory($result);
@@ -158,6 +163,7 @@
 	 * @return (void) - Return void
 	 *
      * @author vaibhavi
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
    
@@ -180,29 +186,32 @@
 			$data['weight_unit_name']=$filter->filter(trim($this->_request->getPost('weight_unit_name'))); 	
 			$data['weight_unit_key']=$filter->filter(trim($this->_request->getPost('weight_unit_key'))); 	
 			 	
-			$addErrorMessage = "";
+			$addErrorMessage = array();
 			if($data['weight_unit_name'] == "") {
-				$addErrorMessage .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Weight_Unit_Name')."</h5><br />";			
+				$addErrorMessage[] = $translate->_('Err_Weight_Unit_Name');			
 			}
 			if($data['weight_unit_key'] == "") {
-				$addErrorMessage .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Weight_Unit_Key')."</h5><br />";			
+				$addErrorMessage[] = $translate->_('Err_Weight_Unit_Key');			
 			}
+			
+			$this->view->data = $data;
+			
 			$where = "1 = 1";
 			if($home->ValidateTableField("weight_unit_name",$data['weight_unit_name'],"weight_master",$where)) {
-				if( $addErrorMessage == ""){
+				if( count($addErrorMessage) == 0 || $addErrorMessage == '' ){
 					if($weight->insertWeight($data)) {
-						$mysession->Admin_Message = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Success_Add_Weight')."</h5>";
+						$mysession->Admin_SMessage = $translate->_('Success_Add_Weight');
 						$this->_redirect('/admin/weight'); 	
 					} else {
-						$addErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>There is some problem in adding weight</h5>";	
+						$addErrorMessage[] = $translate->_('Err_Add_Weight');	
 					}
 				} else { 
 					$this->view->addErrorMessage = $addErrorMessage;
 				} 
 			} else {
-			
-				$this->view->addErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Weight_Unit_Name_Exists')."</h5>";	
+				$addErrorMessage[] = $translate->_('Err_Weight_Unit_Name_Exists');	
 			}
+			$this->view->addErrorMessage = $addErrorMessage;
 		}
    }
    
@@ -219,6 +228,7 @@
 	 * @return (void) - Return void
 	 *
      * @author vaibhavi
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
    
@@ -248,31 +258,31 @@
 				$data['weight_unit_name']=$filter->filter(trim($this->_request->getPost('weight_unit_name'))); 	
 				$data['weight_unit_key']=$filter->filter(trim($this->_request->getPost('weight_unit_key'))); 	
 				
-				$editErrorMessage = "";
+				$editErrorMessage = array();
 				if($data['weight_unit_name'] == "") {
-					$editErrorMessage .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Weight_Unit_Name')."</h5>";			
+					$editErrorMessage[] = $translate->_('Err_Weight_Unit_Name');			
 				}
 				if($data['weight_unit_key'] == "") {
-					$editErrorMessage .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Weight_Unit_Key')."</h5>";			
+					$editErrorMessage[] = $translate->_('Err_Weight_Unit_Key');			
 				}
 				
 				$where = "weight_unit_id != ".$data["weight_unit_id"];
 				if($home->ValidateTableField("weight_unit_name",$data['weight_unit_name'],"weight_master",$where)) {
-					if( $editErrorMessage == ""){
+					if( count($editErrorMessage) == 0 || $editErrorMessage == ''){
 						$where = "weight_unit_id = ".$data["weight_unit_id"];
 						if($weight->updateWeight($data,$where)) {
-							$mysession->Admin_Message = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Success_Edit_Weight')."</h5>";
+							$mysession->Admin_SMessage = $translate->_('Success_Edit_Weight');
 							$this->_redirect('/admin/weight'); 	
 						} else {
-							$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>There is some problem in editing weight</h5>";	
+							$editErrorMessage[] = $translate->_('Err_Edit_Weight');
 						}
 					} 
 				} else {			
 					
-					$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Weight_Name_Exists')."</h5>";	
+					$editErrorMessage[] = $translate->_('Err_Weight_Name_Exists');
 				}
 				
-				$this->view->records = $weight->GetWeightById($data["weight_unit_id"]);	
+				$this->view->records = $data;	
 				$this->view->weight_unit_id =  $data["weight_unit_id"];	
 				$this->view->editErrorMessage = $editErrorMessage;
 				
@@ -297,6 +307,7 @@
 	 * @return (void) - Return void
 	 *
      * @author Yogesh
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
    
@@ -315,9 +326,9 @@
 		
 		if($weight_unit_id > 0 && $weight_unit_id != "") {
 			if($weight->deleteWeight($weight_unit_id)) {
-				$mysession->Admin_Message = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Success_Delete_Weight')."</h5>";
+				$mysession->Admin_SMessage = $translate->_('Success_Delete_Weight');
 			} else {
-				$mysession->Admin_Message = "<h5 style='color:#FF0000;margin-bottom:0px;'>There is some problem in deleting weight</h5>";	
+				$mysession->Admin_EMessage = $translate->_('Err_Delete_Weight'); 
 			}		
 		} 
 		$this->_redirect("/admin/weight");		
@@ -336,6 +347,7 @@
 	 * @return (void) - Return void
 	 *
      * @author Yogesh
+     *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
    
@@ -346,11 +358,8 @@
 		global $mysession;
 		
 		$translate = Zend_Registry::get('Zend_Translate');
-		
 		$weight = new Models_Weight();
-		
 		$request = $this->getRequest();
-		
 		$filter = new Zend_Filter_StripTags();	
 		
    		if(isset($_POST["id"])) {
@@ -359,14 +368,14 @@
 			$ids = implode($weight_unit_ids,",");
 			
 			if($weight->deletemultipleWeight($ids)) {
-				$mysession->Admin_Message = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Success_M_Delete_Weight')."</h5>";	
+				$mysession->Admin_SMessage = $translate->_('Success_M_Delete_Weight');	
 			} else {
-				$mysession->Admin_Message = "<h5 style='color:#FF0000;margin-bottom:0px;'>There is some problem in deleting weight</h5>";				
+				$mysession->Admin_EMessage = $translate->_('Err_Delete_Weight');
 			}	
 			
 		}	else {
 		
-			$mysession->Admin_Message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_M_Delete_Weight')."</h5>";				
+			$mysession->Admin_EMessage = $translate->_('Err_M_Delete_Weight');				
 		}
 		$this->_redirect("/admin/weight");	
    }

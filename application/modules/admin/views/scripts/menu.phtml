@@ -30,7 +30,12 @@
 					<?php echo $this->Translate("Products"); ?>
 				</a>
 			</li>
-		</ul>
+			<li>
+				<a href="<?php echo SITE_URL . 'admin/orders' ?>" class="">
+					<?php echo $this->Translate("Orders"); ?>
+				</a>
+			</li>
+			</ul>
 	</li>
 	
 	<li><a href="#"><img src="<?php echo IMAGES_PATH; ?>/admin/article.png" style="vertical-align:middle; padding-bottom:6px;" />&nbsp;<?php echo $this->Translate("Settings"); ?></a>
@@ -45,7 +50,30 @@
 					<?php echo $this->Translate("Manage_Languages"); ?>
 				</a>
 			</li>
-			<li><a href="#" class=""><?php echo $this->Translate("Language_Definitions"); ?></a></li>
+			<li><a href="<?php echo SITE_URL . 'admin/definitions'; ?>" >
+				<?php echo $this->Translate("Language_Definitions"); ?>
+				</a>
+			</li>
+			<li><a href="<?php echo SITE_URL . 'admin/country'; ?>" >
+				<?php echo $this->Translate("Country_And_State"); ?>
+				</a>
+			</li>
+			<li><a href="<?php echo SITE_URL . 'admin/weight'; ?>" >
+				<?php echo $this->Translate("Manage_Weight"); ?>
+				</a>
+			</li>
+			<li><a href="<?php echo SITE_URL . 'admin/weightunit'; ?>" >
+				<?php echo $this->Translate("Weight_Conversion"); ?>
+				</a>
+			</li>
+			<li><a href="<?php echo SITE_URL . 'admin/length'; ?>" >
+				<?php echo $this->Translate("Manage_Length"); ?>
+				</a>
+			</li>
+			<li><a href="<?php echo SITE_URL . 'admin/lengthunit'; ?>" >
+				<?php echo $this->Translate("Length_Conversion"); ?>
+				</a>
+			</li>
 		</ul>
 	</li>
 	

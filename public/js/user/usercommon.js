@@ -68,6 +68,14 @@ function SearchRecords(s,frmname){
 	
 }
 
+////////////////////// For View Record ////////////////////////////////
+
+function viewRecord(id,frmname,action)
+{
+	$("#hidden_primary_id").val(id);
+	$("#"+frmname).attr("action",action).submit();		
+}
+
 /////////////////////  For Record Searching  //////////////////////////
 
 

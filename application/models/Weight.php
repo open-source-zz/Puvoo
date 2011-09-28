@@ -33,7 +33,7 @@
  * @package 	Models
  * @author	    Amar 
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- */  
+ */   
  
 class Models_Weight
 {
@@ -53,6 +53,7 @@ class Models_Weight
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	function __construct()
@@ -73,6 +74,7 @@ class Models_Weight
 	 *
 	 * @return (int) - Return weight unit id if found else 0
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	function getWeightIdFromKey($unit_key)
@@ -93,19 +95,20 @@ class Models_Weight
 		}
 	}
  	
-			/**
-	 * Function GetAllWeight
-	 *
-	 * This function is used to get all currency available.
-     *
-	 * Date created: 2011-08-24
-	 *
-	 * @access public
-	 * @param ()  - No parameter
-	 * @return (Array) - Return Array of records
-	 * @author Vaibhavi Jariwala
-	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
-	 **/
+	/**
+	* Function GetAllWeight
+	*
+	* This function is used to get all currency available.
+    *
+	* Date created: 2011-08-24
+	*
+	* @access public
+    * @param ()  - No parameter
+	* @return (Array) - Return Array of records
+	* @author Vaibhavi
+	*  
+	* @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	**/
 	public function GetAllWeight()
 	{
 		$db = $this->db;
@@ -116,14 +119,14 @@ class Models_Weight
 		return $result;
 	}
 
-		/*
+	/*
 	 * GetWeightById(): To get data of currency by selected currency id.
 	 *
 	 * It is used to get the all records of particular currency by currency id.
 	 *
 	 * Date created: 2011-08-26
 	 *
-	 * @author  Vaibhavi Jariwala 
+	 * @author  Vaibhavi 
 	 * @param   two parameters / login_id and password.
      * @global  $db Zend_db for database.
                 $mysession Zend_Session_Namespace for session variables.
@@ -141,7 +144,7 @@ class Models_Weight
 	}
 
 
-		/**
+	/**
 	 * Function SearchWeight
 	 *
 	 * This function is used to search the currency from weight_master on search array.
@@ -151,7 +154,8 @@ class Models_Weight
 	 * @access public
 	 * @param () (Array)  - $data : Array of search options
 	 * @return (Array) - Return Array of records
-	 * @author Vaibhavi Jariwala
+	 * @author Vaibhavi
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -193,7 +197,7 @@ class Models_Weight
 		return $result;		
 	}
 
-		/**
+	/**
 	 * Function insertWeight
 	 *
 	 * This function is used to insert currency.
@@ -203,7 +207,8 @@ class Models_Weight
 	 * @access public
 	 * @param () (Array)  - $data : Array of record to insert
 	 * @return (Boolean) - Return true on success
-	 * @author Vaibhavi Jariwala
+	 * @author Vaibhavi
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -227,7 +232,8 @@ class Models_Weight
 	 * @param () (Array)  - $data : Array of record to update
 	 * @param () (String)  - $where : Condition on which update record
 	 * @return (Boolean) - Return true on success
-	 * @author Vaibhavi Jariwala
+	 * @author Vaibhavi
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -248,7 +254,8 @@ class Models_Weight
 	 * @access public
 	 * @param () (String)  - $id : Weight Id
 	 * @return (Boolean) - Return true on success
-	 * @author Vaibhavi Jariwala
+	 * @author Vaibhavi
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -270,7 +277,8 @@ class Models_Weight
 	 * @access public
 	 * @param () (String)  - $ids : Sting of all Weight Id with comma seprated.
 	 * @return (Boolean) - Return true on success
-	 * @author Vaibhavi Jariwala
+	 * @author Vaibhavi
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -282,7 +290,30 @@ class Models_Weight
 		
 		return true;	
 	}
-
 	
+	/**
+	* Function GetWeightName
+	*
+	* This function is used to get all currency available.
+    *
+	* Date created: 2011-08-24
+	*
+	* @access public
+    * @param ()  - No parameter
+	* @return (Array) - Return Array of records
+	* @author Vaibhavi
+	*  
+	* @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	**/
+	public function GetWeightName($id)
+	{
+		$db = $this->db;
+		
+		$sql = "select * from weight_master where weight_unit_id = ".$id;
+		
+ 		$result = $db->fetchAll($sql);
+		return $result["weight_unit_name"];
+	}
+
 }
 ?>

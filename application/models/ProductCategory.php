@@ -53,6 +53,7 @@ class Models_ProductCategory
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	function __construct()
@@ -73,6 +74,7 @@ class Models_ProductCategory
 	 * @param (Array) - $data : Array of record to insert
 	 * @return (void) - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -96,6 +98,7 @@ class Models_ProductCategory
 	 * @param (int) - $id : id of product
 	 * @return (void) - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
