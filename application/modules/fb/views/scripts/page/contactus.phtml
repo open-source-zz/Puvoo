@@ -3,18 +3,18 @@
                         <div id="breadCrumb">
                             <ul>
                                 <li>
-                                    <a href="<?php echo SITE_FB_URL ?>index" target="_top">
+                                    <a href="<?php echo SITE_FB_URL ?>" target="_top">
                                         <img src="<?php echo IMAGES_FB_PATH ?>/home.png" alt="home" title="home">
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo SITE_FB_URL ?>page/contactus/" target="_top">Contact Us</a>
+                                    <a href="<?php echo SITE_FB_URL ?>page/contactus/" target="_top"><?php echo $this->Translate('ContactUs')?></a>
                                 </li>
                             </ul>
                         </div>
                         <div class="portlet">
                              <div class="bluewidgetHeader">
-                                 Contact Us
+                                 <?php echo $this->Translate('ContactUs')?>
                             </div>
                         </div>
                         <div class="content">

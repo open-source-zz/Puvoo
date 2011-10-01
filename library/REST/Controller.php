@@ -30,7 +30,8 @@
  *
  * @category	Puvoo
  * @package 	REST
- * @author	    Amar 
+ * @author	    Amar
+ *  
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */  
 
@@ -50,6 +51,7 @@ abstract class REST_Controller extends Zend_Rest_Controller
 	 * @param ()  - No Parameter
 	 * @return (void) - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
     public function headAction()
@@ -71,6 +73,7 @@ abstract class REST_Controller extends Zend_Rest_Controller
 	 * @param ()  - No Parameter
 	 * @return (void) - Return void
 	 * @author Amar
+	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
     public function optionsAction()

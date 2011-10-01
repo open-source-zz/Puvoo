@@ -223,9 +223,9 @@
 				
 					$this->view->addErrorMessage = array($translate->_('Err_Country_Exists'));	
 				}
-			} else {
-				$this->view->addErrorMessage = $addErrorMessage;
-			}
+			} 
+			
+			$this->view->addErrorMessage = $addErrorMessage;
 		}
    }
    

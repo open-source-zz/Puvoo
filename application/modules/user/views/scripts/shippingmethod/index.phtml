@@ -16,11 +16,24 @@
 	</div>
 	<!--  Page Header End  -->
 
-	<!--       Error or Success Messages          -->
-	<div style="text-align:center">
-		<?php echo $this->User_Message; ?>
-	</div>
-	<!--       End Messages           -->
+	<!--       Success and Error Message      -->	
+	<?php if($this->User_EMessage != '') { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
+				<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+				<strong><?php echo $this->User_EMessage; ?></strong></p>
+			</div>
+		</div>
+	<?php } ?>	
+	
+	<?php if($this->User_SMessage != '') { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-highlight ui-corner-all" style="margin-top: 20px; padding: 0 .7em;"> 
+				<p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
+				<strong><?php echo $this->User_SMessage; ?></strong></p>
+			</div>
+		</div>
+	<?php } ?>
 
 
 	<!--   Main Form start     -->

@@ -119,6 +119,7 @@ class User_IndexController extends UserCommonController
     {
 		global $mysession;
 		$updateError = "";
+		$updateSuccess = "";
 		$translate = Zend_Registry::get('Zend_Translate');
 		if($this->_request->isPost()) { 
 			// Validate Passwords
@@ -126,27 +127,33 @@ class User_IndexController extends UserCommonController
 			$new_password 		= trim($this->_request->getPost('new_password'));
 			$confirm_password 	= trim($this->_request->getPost('confirm_password'));
 			
+			$this->view->old_password = $old_password;
+			$this->view->new_password = $new_password;
+			$this->view->confirm_password = $confirm_password;
+			
 			if($old_password == "") {
-				$updateError = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Old_Password')."</h5>";
+				$updateError = $translate->_('Err_Old_Password');
 			} else {
 				if($new_password == "") {
-					$updateError .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_New_Password')."</h5>";
+					$updateError = $translate->_('Err_New_Password');
 				} else {
 				
 					if($confirm_password == "" && $confirm_password != $new_password ) {
-						$updateError .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Confirm_Password')."</h5>";
+						$updateError = $translate->_('Err_Confirm_Password');
 					 } else {
 					 	// Update Passwords
 					 	$auth = new Models_UserLogin();			
 						if($auth->validatePassword($old_password,$new_password)) {
-							$updateError .= "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Suceess_Update_Password')."</h5>";
+							$updateSuccess = $translate->_('Suceess_Update_Password');
+							$updateError = "";
 						} else {
-							$updateError .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Update_Password')."</h5>";
+							$updateError = $translate->_('Err_Update_Password');
 						}
 					 }
 				}
 			} 
 			// Display error or success message
+			$this->view->updateSuccess = $updateSuccess;
 			$this->view->updateError = $updateError;	
 		}		
 	}	

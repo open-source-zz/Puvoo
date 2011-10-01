@@ -13,9 +13,16 @@
 		<?php echo $this->Translate('Merchant_Management'); ?>
 	</div>
 	
-	<div>
-		<?php echo $this->editErrorMessage; ?>
-	</div>
+	<?php if(count($this->editErrorMessage) > 0 ) { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
+				<?php foreach($this->editErrorMessage as $key => $val ) { ?>
+					<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+					<strong><?php echo $val; ?></strong></p>
+				<?php } ?>
+			</div>
+		</div>
+	<?php } ?>	
 	
 	<form method="post" name="edit_form" id="edit_form" >
 		<table class="Panel" style="margin-top:10px;">
@@ -114,13 +121,13 @@
 <!--     JS Global Variable for the language    -->
 
 <script language="javascript" type="text/javascript">
-var siteurl = '<?php echo SITE_URL; ?>';
-var ERR_MERCHANTS_FNAME = '<?php echo $this->Translate("Err_Merchant_FName"); ?>';  
-var ERR_MERCHANTS_LNAME = '<?php echo $this->Translate("Err_Merchant_LName"); ?>';  
-var ERR_MERCHANTS_EMAIL = '<?php echo $this->Translate("Err_Merchant_Email"); ?>';
-var ERR_MERCHANTS_INVALID_EMAIL = '<?php echo $this->Translate("Err_Merchant_Invalid_Email"); ?>';
-var ERR_MERCHANTS_PASSWORD = '<?php echo $this->Translate("Err_Merchant_Password"); ?>';
-var ERR_MERCHANTS_PASSWORD_MIN_MAX = '<?php echo $this->Translate("Err_Merchant_Password_Min_Max"); ?>';
-var ERR_MERCHANTS_FB = '<?php echo $this->Translate("Err_Merchant_FB"); ?>';
-var ERR_USER_STATUS = '<?php echo $this->Translate("Err_user_status"); ?>' ; 
+var siteurl = "<?php echo SITE_URL; ?>";
+var ERR_MERCHANTS_FNAME = "<?php echo $this->Translate('Err_Merchant_FName'); ?>";  
+var ERR_MERCHANTS_LNAME = "<?php echo $this->Translate('Err_Merchant_LName'); ?>";  
+var ERR_MERCHANTS_EMAIL = "<?php echo $this->Translate('Err_Merchant_Email'); ?>";
+var ERR_MERCHANTS_INVALID_EMAIL = "<?php echo $this->Translate('Err_Merchant_Invalid_Email'); ?>";
+var ERR_MERCHANTS_PASSWORD = "<?php echo $this->Translate('Err_Merchant_Password'); ?>";
+var ERR_MERCHANTS_PASSWORD_MIN_MAX = "<?php echo $this->Translate('Err_Merchant_Password_Min_Max'); ?>";
+var ERR_MERCHANTS_FB = "<?php echo $this->Translate('Err_Merchant_FB'); ?>";
+var ERR_USER_STATUS = "<?php echo $this->Translate('Err_user_status'); ?>" ; 
 </script>

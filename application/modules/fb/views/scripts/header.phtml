@@ -3,9 +3,14 @@
 <script language="javascript" type="text/javascript">
 function loadPopup()
 {
+	ShowTab(1);
 	$('#sellerarea').hide();
 	$('#cartarea').show();
-	ShowTab(1);
+	$('#order_review').show();
+	$('#shipping_li').show();
+	$('#billing_li').hide();
+	$('#div8').hide();
+ 	$('#buttonArea').show();
  $("#backgroundPopup").css({"opacity": "0.1"});
  $("#backgroundPopup").fadeIn("fast");
  $("#popupContact").slideDown("slow");
@@ -72,7 +77,7 @@ $(document).ready(function()
 		
 <div id="header">
         	<div class="left" style="width:250px;">
-            	<a href="<?php echo SITE_FB_URL ?>index/"><img src="<?php echo IMAGES_FB_PATH ?>/logo.png" width="239" height="79" alt="" /></a>
+            	<a href="<?php echo SITE_FB_URL ?>"><img src="<?php echo IMAGES_FB_PATH ?>/logo.png" width="239" height="79" alt="" /></a>
             </div>
             <div class="right">
             	<div align="right" style="margin-bottom:10px; margin-top:10px;">

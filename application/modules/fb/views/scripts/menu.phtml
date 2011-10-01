@@ -1,13 +1,13 @@
 <div id="menu">
             <div class="topNav">
                 <ul>
-                    <li><a href="<?php echo SITE_FB_URL ?>index/"><?php echo $this->Translate('Home')?></a></li>
+                    <li><a href="<?php echo SITE_FB_URL ?>"><?php echo $this->Translate('Home')?></a></li>
                     <li class="brands"><a href="<?php echo SITE_FB_URL ?>category/"><?php echo $this->Translate('AllCategory')?></a>
                     	<div class="shadow">
                             <div>
 								<?php $record = $this->Mycategory; ?>
 								<?php for($i = 0; $i<count($record); $i++ ) { ?>
-									<ul class="noLeftBorder">
+									<ul>
 										<?php foreach($record[$i] as $key => $val ) { ?>
 											<li>
 												<a href="#"><?php echo $val["category_name"]; ?></a>

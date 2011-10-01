@@ -14,9 +14,25 @@
 	</div>
 	
 	<!--       Error or Success Messages          -->
-	<div style="text-align:center">
-		<?php echo $this->StoreMessage; ?>
-	</div>
+	<?php if(count($this->User_EMessage) > 0 ) { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
+				<?php foreach($this->User_EMessage as $key => $val ) { ?>
+					<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+					<strong><?php echo $val; ?></strong></p>
+				<?php } ?>
+			</div>
+		</div>
+	<?php } ?>	
+	
+	<?php if($this->User_SMessage != '') { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-highlight ui-corner-all" style="margin-top: 20px; padding: 0 .7em;"> 
+				<p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
+				<strong><?php echo $this->User_SMessage; ?></strong></p>
+			</div>
+		</div>
+	<?php } ?>
 	<!--       End Messages           -->
 	
 	<?php $array_records = $this->constant_array; ?>
@@ -67,7 +83,7 @@
 							</td>
 						  	<td>
 								<select name="story_currency" id="story_currency" class="Field250">
-									  <option value="" selected="selected">Select language</option>
+									  <option value="" selected="selected"><?php echo $this->Translate('User_Select_Currency'); ?></option>
 									  <?php if(count($this->currency) > 0) {  ?>
 									  <?php 	if($records['currency_id'] != "") {  ?>
 									  <?php  		foreach($this->currency as $key => $val) { ?>	

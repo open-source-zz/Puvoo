@@ -60,7 +60,6 @@
     {
         parent::init();
         $this->view->JS_Files = array('admin/lengthunit.js','admin/AdminCommon.js');	
-		//$this->view->JS_Files = array('admin/AdminCommon.js');	
 		Zend_Loader::loadClass('Models_Lengthunit');
 		Zend_Loader::loadClass('Models_Length');
 		Zend_Loader::loadClass('Models_AdminMaster');
@@ -200,10 +199,10 @@
 			$data['value']=$filter->filter(trim($this->_request->getPost('value'))); 	
 			 	
 			$addErrorMessage = array();
-			if($data['from_id'] == "0") {
+			if($data['from_id'] == "") {
 				$addErrorMessage[] = $translate->_('Err_Lengthunit_Id');			
 			}
-			if($data['to_id'] == "0") {
+			if($data['to_id'] == "") {
 				$addErrorMessage[] = $translate->_('Err_Lengthunit_Id');			
 			}
 			if($data['value'] == "") {
@@ -218,8 +217,9 @@
 			$this->view->data = $data;
 			
 			$where = "1 = 1";
-			if($lengthunit->ValidateLengthunit($data['from_id'],$data['to_id']) == 0) {
-				if( count($addErrorMessage) == 0 || $addErrorMessage  == "" ){
+			
+			if( count($addErrorMessage) == 0 || $addErrorMessage  == "" ){
+				if($lengthunit->ValidateLengthunit($data['from_id'],$data['to_id']) == 0) {
 					if($lengthunit->insertLengthunit($data)) {
 						$mysession->Admin_SMessage = $translate->_('Success_Add_Lengthunit');
 						$this->_redirect('/admin/lengthunit'); 	
@@ -227,11 +227,10 @@
 						$addErrorMessage[] = $translate->_('Err_Add_Lengthunit'); 
 					}
 				} else { 
-					$this->view->addErrorMessage = $addErrorMessage;
+					$addErrorMessage[] = $translate->_('Err_Lengthunit_From_Id_Exists');	
 				} 
 			} else {
-			
-				$addErrorMessage[] = $translate->_('Err_Lengthunit_From_Id_Exists');	
+				$this->view->addErrorMessage = $addErrorMessage;
 			}
 			$this->view->addErrorMessage = $addErrorMessage;
 		}
@@ -291,37 +290,42 @@
 				
 				$editErrorMessage = array();
 				if($data['from_id'] == "0") {
-					$editErrorMessage = $translate->_('Err_Lengthunit_Id');			
+					$editErrorMessage[] = $translate->_('Err_Lengthunit_Id');			
 				}
 				if($data['to_id'] == "0") {
-					$editErrorMessage = $translate->_('Err_Lengthunit_Id');			
+					$editErrorMessage[] = $translate->_('Err_Lengthunit_Id');			
 				}
 				if($data['value'] == "") {
-					$editErrorMessage = $translate->_('Err_Lengthunit_Value');			
+					$editErrorMessage[] = $translate->_('Err_Lengthunit_Value');			
 				} else if(!$float_validator->isValid($data['value'])) {
 					$editErrorMessage[] = $translate->_('Err_Lengthunit_Invalid_Value');		
 				}
 				if($data['from_id'] == $data['to_id']) {
-					$editErrorMessage .= $translate->_('Err_Lengthunit_Unit_Same');			
+					$editErrorMessage[] = $translate->_('Err_Lengthunit_Unit_Same');			
 				}
 				
 				$where = "from_id = ".$this->_request->getPost('from_id_p')." and to_id = ".$this->_request->getPost('to_id_p');
-				if($lengthunit->ValidateLengthunit($data['from_id'],$data['to_id']) == 0) {
-					if( count($editErrorMessage) == 0 || $editErrorMessage == ''){
+				
+				if( count($editErrorMessage) == 0 || $editErrorMessage == ''){
+					
+					if($lengthunit->ValidateLengthunit($data['from_id'],$data['to_id']) == 0) {
+					
 						$where = "from_id = ".$this->_request->getPost('from_id_p')." and to_id = ".$this->_request->getPost('to_id_p') ;
-						
 						if($lengthunit->updateLengthunit($data,$where)) {
+					
 							$mysession->Admin_SMessage = $translate->_('Success_Edit_Lengthunit');
 							$this->_redirect('/admin/lengthunit'); 	
+					
 						} else {
+					
 							$editErrorMessage[] = $translate->_('Err_Edit_Lengthunit'); 
 						}
-					} 
-				} else {			
+					}  else {
 					
-					$editErrorMessage[] = $translate->_('Err_Lengthunit_From_Id_Exists');	
-				}	
-
+						$editErrorMessage[] = $translate->_('Err_Lengthunit_From_Id_Exists');	
+					}
+				} 
+				
 				$this->view->records = $data;
 				$this->view->from_id_p =  $this->_request->getPost('from_id_p');
 				$this->view->to_id_p =  $this->_request->getPost('to_id_p');	

@@ -144,6 +144,11 @@ class Fb_CategoryController extends FbCommonController
 		$this->view->cat_id = $id;
 		$Category = new Models_Category();
 		
+		if(!$id)
+		{
+			$this->_redirect("fb/");
+		}
+		
 		//set current page number
 		$page_no = 1;
 		

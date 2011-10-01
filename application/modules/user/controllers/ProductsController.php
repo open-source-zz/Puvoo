@@ -136,14 +136,14 @@ class User_ProductsController extends UserCommonController
 						if($range[1] > $range[0]) { 
 							$flag = 1;
 						} else {
-							$search_error = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Search_Range_Invalid')."</h5>";
+							$search_error = $translate->_('Err_Product_Search_Range_Invalid');
 							
 						}
 					} else {
-						$search_error = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Search_Price_Invalid')."</h5>"; 
+						$search_error = $translate->_('Err_Product_Search_Price_Invalid'); 
 					}
 				} else {
-					$search_error = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Search_Price_Invalid')."</h5>";			
+					$search_error = $translate->_('Err_Product_Search_Price_Invalid');			
 				}
 			}
 			
@@ -166,8 +166,12 @@ class User_ProductsController extends UserCommonController
 		}		
 		// Success Message
 		$this->view->products = $product->GetAllProdCate();
-		$this->view->User_Message = $mysession->User_Message;
-		$mysession->User_Message = "";
+		
+		$this->view->User_SMessage = $mysession->User_SMessage;
+		$this->view->User_EMessage = $mysession->User_EMessage;
+		
+		$mysession->User_SMessage = "";
+		$mysession->User_EMessage = "";
 		
 		//Set Pagination
 		$paginator = Zend_Paginator::factory($result);
@@ -212,12 +216,21 @@ class User_ProductsController extends UserCommonController
 		$request = $this->getRequest();
 		
 		$product = new Models_UserProduct();
+		$product_master = new Models_Product();
 		$product_image = new Models_ProductImages();
 		
 		// Initial values
 		$this->view->weight = $product->fetchAllRecords("weight_master");
 		$this->view->length = $product->fetchAllRecords("length_master");
-		$this->view->category = $product->fetchAllRecords("category_master");
+		$category = $product->fetchAllRecords("category_master");
+		
+		$category = array();
+		foreach( $category as $key => $val )
+		{
+			$category[] = $val["category_id"];
+		}
+		
+		$this->view->cateTree = $product_master->getCateTree($category);
 		
 		// On Form Submit
 		if($request->isPost())	{
@@ -242,6 +255,8 @@ class User_ProductsController extends UserCommonController
 			$data['start_sales']=$filter->filter(trim($this->_request->getPost('start_sales')));
 			$product_category = $filter->filter(trim($this->_request->getPost('multiselect_product_category_value')));
 			
+			$addErrorMessage = array();
+			
 			if($data['product_name'] == '') {
 				$addErrorMessage[] = $translate->_('Err_Product_Name');	
 			} 
@@ -249,71 +264,84 @@ class User_ProductsController extends UserCommonController
 				$addErrorMessage[] = $translate->_('Err_Product_Desc');								
 			}
 			if($data['product_price'] == '') {
+				
 				$addErrorMessage[] = $translate->_('Err_Product_Price');	
-			}
-			if(!$float_validator->isValid($data['product_price'])) {					
+				
+			}else if(!$float_validator->isValid($data['product_price'])) {					
+			
 				$addErrorMessage[] = $translate->_('Err_Product_Invalid_Price');		
 			}
 			if($data['product_code'] == '') {
 				$addErrorMessage[] = $translate->_('Err_Product_Code');		
 			}
 			if($data['product_weight'] == '') {
+				
 				$addErrorMessage[] = $translate->_('Err_Product_Weight');	
-			} 
-			if(!$float_validator->isValid($data['product_weight'])) {
+				
+			} else if(!$float_validator->isValid($data['product_weight'])) {
+			
 				$addErrorMessage[] = $translate->_('Err_Product_Invalid_Weight');								
 			}
 			if($data['weight_unit_id'] == '') {
 				$addErrorMessage[] = $translate->_('Err_Product_Weight_Unit');								
 			} 
 			if($data['length'] == '') {
+			
 				$addErrorMessage[] = $translate->_('Err_Product_Length');	
-			}
-			if(!$float_validator->isValid($data['length'])) {
+				
+			} else if(!$float_validator->isValid($data['length'])) {
+			
 				$addErrorMessage[] = $translate->_('Err_Product_Invalid_Length');	
 			} 
 			if($data['length_unit_id'] == '') {
 				$addErrorMessage[] = $translate->_('Err_Product_Length_Unit');		
 			}
 			if($data['width'] == '') {
+			
 				$addErrorMessage[] = $translate->_('Err_Product_Width');		
-			} 
-			if(!$float_validator->isValid($data['width'])) {
+				
+			} else if(!$float_validator->isValid($data['width'])) {
+			
 				$addErrorMessage[] = $translate->_('Err_Product_Invalid_Width');	
 			} 
 			if($data['depth'] == '') {
+			
 				$addErrorMessage[] = $translate->_('Err_Product_Depth');		
-			} 
-			if(!$float_validator->isValid($data['depth'])) {
+				
+			} else if(!$float_validator->isValid($data['depth'])) {
+			
 				$addErrorMessage[] = $translate->_('Err_Product_Invalid_Depth');	
 			} 
 			if($data['available_qty'] == '') {
+			
 				$addErrorMessage[] = $translate->_('Err_Product_Quantity');								
-			}
-			if(!$number_validator->isValid($data['available_qty'])) {
+				
+			} else if(!$number_validator->isValid($data['available_qty'])) {
+			
 				$addErrorMessage[] = $translate->_('Err_Product_Invalid_Quantity');	
 			} 
 			if($data['start_sales'] == '' ) {			
 				$addErrorMessage[] = $translate->_('Err_Product_Start_Sales');	
 			}  
 					
-			if($addErrorMessage == NULL && $addErrorMessage == '') {					
+			$this->view->data = $data;		
+			
+			if( count($addErrorMessage) == 0 || $addErrorMessage == '') {					
 				
 				$product_id = $product->insertProduct($data);
 				if($product_id > 0 && $product_id != '' ) {
+				
 						$product->updateProductCategory($product_id, $product_category);
 						$mysession->Product_Id = $product_id;
-						$mysession->User_Message = $translate->_('Product_Add_Success');
+						$mysession->User_SMessage = $translate->_('Product_Add_Success');
 						$this->_redirect('user/products/addimage'); 	
 						
 					} else {
 						$addErrorMessage[] = $translate->_('Err_Add_Product');							
-				}
-				$this->view->addErrorMessage = $addErrorMessage;	
-				
-			} else {
-				$this->view->addErrorMessage = $addErrorMessage;			
-			}
+						
+					}
+			} 
+			$this->view->addErrorMessage = $addErrorMessage;		
 		}	
 	} 
 	
@@ -396,6 +424,7 @@ class User_ProductsController extends UserCommonController
 		$filter = new Zend_Filter_StripTags();
 		
 		$product = new Models_UserProduct();
+		$product_master = new Models_Product();
 		$product_image = new Models_ProductImages();
 		$request = $this->getRequest();
 		
@@ -410,7 +439,21 @@ class User_ProductsController extends UserCommonController
 		if($product_id > 0 && $product_id != "") {
 			
 			$this->view->product_id = $product_id;
-			$this->view->records = $product->getAllProductDetail($product_id);			
+			$records = $product->getAllProductDetail($product_id);	
+					
+			$category = array();
+			foreach( $records["category"] as $key => $val )
+			{
+				$category[] = $val["category_id"];
+			}
+			
+			$this->view->cateTree = $product_master->getCateTree($category);
+			
+			$this->view->detail = $records["detail"];
+			$this->view->images = $records["images"];
+			$this->view->sub_category = $records["category"];
+			$this->view->options = $records["options"];
+			
 			
 		} else {
 			
@@ -443,52 +486,87 @@ class User_ProductsController extends UserCommonController
 					
 					$product_category = $filter->filter(trim($this->_request->getPost('multiselect_product_category_value')));
 					
-					$editErrorMessage = ''; 
+					$editErrorMessage = array(); 
 					$product_primary_image = $filter->filter(trim($this->_request->getPost('product_primary_image')));
 					
 					if($data['product_name'] == '') {
-						$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Name')."</h5>";		
-					} else if($data['product_description'] == '') {
-						$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Desc')."</h5>";		
-					} else if($data['product_price'] == '') {
-						$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Price')."</h5>";		
+						$editErrorMessage[] = $translate->_('Err_Product_Name');		
+					} 
+					if($data['product_description'] == '') {
+						$editErrorMessage[] = $translate->_('Err_Product_Desc');		
+					} 
+					if($data['product_price'] == '') {
+					
+						$editErrorMessage[] = $translate->_('Err_Product_Price');		
+					
 					}else if(!$float_validator->isValid($data['product_price'])) {
-						$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Invalid_Price')."</h5>";		
-					} else if($data['product_code'] == '') {
-						$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Code')."</h5>";		
-					} else if($data['product_weight'] == '') {
-						$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Weight')."</h5>";		
+					
+						$editErrorMessage[] = $translate->_('Err_Product_Invalid_Price');		
+					}
+					if($data['product_code'] == '') {
+					
+						$editErrorMessage[] = $translate->_('Err_Product_Code');		
+					
+					}
+					if($data['product_weight'] == '') {
+						
+						$editErrorMessage[] = $translate->_('Err_Product_Weight');		
+					
 					} else if(!$float_validator->isValid($data['product_weight'])) {
-						$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Invalid_Weight')."</h5>";		
-					} else if($data['weight_unit_id'] == '') {
-						$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Weight_Unit')."</h5>";		
-					} else if($data['length'] == '') {
-						$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Length')."</h5>";		
+						
+						$editErrorMessage[] = $translate->_('Err_Product_Invalid_Weight');	
+							
+					} 
+					if($data['weight_unit_id'] == '') {
+						$editErrorMessage[] = $translate->_('Err_Product_Weight_Unit');		
+					} 
+					if($data['length'] == '') {
+				
+						$editErrorMessage[] = $translate->_('Err_Product_Length');		
+					
 					} else if(!$float_validator->isValid($data['length'])) {
-						$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Invalid_Length')."</h5>";		
+						
+						$editErrorMessage[] = $translate->_('Err_Product_Invalid_Length');
+								
 					} else if($data['length_unit_id'] == '') {
-						$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Length_Unit')."</h5>";		
+						
+						$editErrorMessage[] = $translate->_('Err_Product_Length_Unit');
+								
 					} else if($data['width'] == '') {
-						$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Width')."</h5>";		
+					
+						$editErrorMessage[] = $translate->_('Err_Product_Width');		
+					
 					} else if(!$float_validator->isValid($data['width'])) {
-						$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Invalid_Width')."</h5>";		
-					} else if($data['depth'] == '') {
-						$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Depth')."</h5>";		
+					
+						$editErrorMessage[] = $translate->_('Err_Product_Invalid_Width');		
+					} 
+					if($data['depth'] == '') {
+					
+						$editErrorMessage[] = $translate->_('Err_Product_Depth');		
+					
 					} else if(!$float_validator->isValid($data['depth'])) {
-						$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Invalid_Depth')."</h5>";		
-					} else if($data['available_qty'] == '') {
-						$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Quantity')."</h5>";		
+					
+						$editErrorMessage[] = $translate->_('Err_Product_Invalid_Depth');		
+						
+					} 
+					if($data['available_qty'] == '') {
+					
+						$editErrorMessage[] = $translate->_('Err_Product_Quantity');
+								
 					} else if(!$number_validator->isValid($data['available_qty'])) {
-						$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Invalid_Quantity')."</h5>";		
+					
+						$editErrorMessage[] = $translate->_('Err_Product_Invalid_Quantity');
+								
 					} else if($product_primary_image == '' ) {					
-						$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Primary_Image')."</h5>";
+					
+						$editErrorMessage[] = $translate->_('Err_Product_Primary_Image');
 					} 
 					
-					if($editErrorMessage == '') {
+					if(count($editErrorMessage) == 0 || $editErrorMessage == '') {
 					
 						if($product->updateProduct($data)) {
 						
-							$editErrorMessage = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Product_Update_Success')."</h5>";
+							$mysession->User_SMessage = $translate->_('Product_Update_Success');
 						} 
 						
 						$product->updateProductCategory($product_id, $product_category);
@@ -498,14 +576,18 @@ class User_ProductsController extends UserCommonController
 						
 						$product_image->updateProductImage($data2);
 						
-						$editErrorMessage = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Product_Update_Success')."</h5>";
+						$mysession->User_SMessage  = $translate->_('Product_Update_Success');
+						$this->_redirect('/user/products');
 					}
 					
-					$mysession->User_Message = $editErrorMessage;
-					$this->_redirect('/user/products');
-					$this->view->product_id = $product_id;
-					$this->view->records = $product->getAllProductDetail($product_id);	
+					$this->view->editErrorMessage = $editErrorMessage;
 					
+					$this->view->product_id = $product_id;
+					$records = $product->getAllProductDetail($product_id);			
+					$this->view->detail = $data;
+					$this->view->images = $records["images"];
+					$this->view->sub_category = $records["category"];
+					$this->view->options = $records["options"];	
 				} 
 			}  
 		}
@@ -548,7 +630,7 @@ class User_ProductsController extends UserCommonController
 			
 		} else {
 			
-			$mysession->User_Message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_View_Products')."</h5>";	
+			$mysession->User_EMessage = $translate->_('Err_View_Products');	
 			$this->_redirect('/user/products'); 	
 		}
 		
@@ -587,9 +669,9 @@ class User_ProductsController extends UserCommonController
 		if($product_id > 0 && $product_id != "") {
 			if($product->DeleteProductDetail($product_id)) {
 				
-				$mysession->User_Message = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Products_Success_Delete')."</h5>";
+				$mysession->User_SMessage = $translate->_('Products_Success_Delete');
 			} else {
-				$mysession->User_Message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Products_Delete')."</h5>";	
+				$mysession->User_EMessage = $translate->_('Err_Products_Delete');	
 			}		
 		} 
 		$this->_redirect('/user/products'); 	
@@ -629,14 +711,14 @@ class User_ProductsController extends UserCommonController
 			
 			if($product->DeleteAllProductDetail($product_id)) {
 				
-				$mysession->User_Message = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Product_Success_M_Delete')."</h5>";	
+				$mysession->User_SMessage = $translate->_('Product_Success_M_Delete');	
 			} else {
-				$mysession->User_Message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Products_Delete')."</h5>";				
+				$mysession->User_EMessage = $translate->_('Err_Products_Delete');				
 			}	
 			
 		}	else {
 		
-			$mysession->User_Message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Product_Err_M_Delete')."</h5>";				
+			$mysession->User_EMessage = $translate->_('Product_Err_M_Delete');				
 		}
 		$this->_redirect('/user/products'); 	
 	

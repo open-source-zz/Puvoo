@@ -30,7 +30,10 @@
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  **/
  
-
+// Puvoo Version 
+defined('PUVOO_VERSION')
+    || define('PUVOO_VERSION', "Puvoo&trade; v. 1.0.0 ALPHA");
+	
 // Define path to application directory
 defined('APPLICATION_PATH')
     || define('APPLICATION_PATH', realpath(dirname(__FILE__) . '/../application'));
@@ -42,7 +45,7 @@ defined('APPLICATION_ENV')
 
 // Define Path for Site Root
 define('SITE_ROOT_PATH',realpath(dirname(__FILE__))); 
- 
+
 // Define Path for library folder
 define('LIBRARY_PATH',realpath(SITE_ROOT_PATH."/../library"));
 
@@ -60,13 +63,13 @@ define('SITE_URL', 'http://'. $_SERVER['HTTP_HOST']. INSTALL_DIR);
  
  
 // Define Path for css folder
-define('CSS_PATH', INSTALL_DIR."css" );
+define('CSS_PATH', INSTALL_DIR."public/css" );
 
  // Define Path for js folder
-define('JS_PATH', INSTALL_DIR."js");
+define('JS_PATH', INSTALL_DIR."public/js");
 
 // Define Path for images folder
-define('IMAGES_PATH', INSTALL_DIR."images");
+define('IMAGES_PATH', INSTALL_DIR."public/images");
 
  // Define Path for languages folder
 define('LANGUAGE_PATH', realpath(SITE_ROOT_PATH."/../languages"));
@@ -80,8 +83,11 @@ define('SITE_UPLOAD_FOLDER', realpath(SITE_ROOT_PATH . "/upload"));
 //Site Product Images folder path
 define('SITE_PRODUCT_IMAGES_FOLDER', realpath(SITE_UPLOAD_FOLDER . "/products"));
 
+//Site upload folder relative path
+define('SITE_UPLOAD_FOLDER_PATH', INSTALL_DIR . "public/upload");
+
 //Site Product Images relative path
-define('SITE_PRODUCT_IMAGES_PATH', INSTALL_DIR . "upload/products");
+define('SITE_PRODUCT_IMAGES_PATH', INSTALL_DIR . "public/upload/products");
 
 // set include_path
 set_include_path(implode(PATH_SEPARATOR, array(

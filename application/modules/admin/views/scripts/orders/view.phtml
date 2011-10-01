@@ -73,7 +73,7 @@
 						&nbsp;&nbsp;<strong><?php echo $this->Translate('Order_Total_Product_Amount'); ?></strong>
 					</td>
 					<td width="50%">:&nbsp;
-						<?php echo $order_detail["total_product_amount"]; ?>
+						<?php echo $order_detail["currency_symbol"]." ".$order_detail["total_product_amount"]; ?>
 					</td>
 				</tr>
 				<tr>
@@ -81,7 +81,7 @@
 						&nbsp;&nbsp;<strong><?php echo $this->Translate('Order_Shipping_Cost'); ?></strong>
 					</td>
 					<td width="50%">:&nbsp;
-						<?php echo $order_detail["shipping_cost"]; ?>
+						<?php echo $order_detail["currency_symbol"]." ".$order_detail["shipping_cost"]; ?>
 					</td>
 				</tr>
 				<tr>
@@ -89,7 +89,7 @@
 						&nbsp;&nbsp;<strong><?php echo $this->Translate('Order_Total_Tax_Cost'); ?></strong>
 					</td>
 					<td width="50%">:&nbsp;
-						<?php echo $order_detail["total_tax_cost"]; ?>
+						<?php echo $order_detail["currency_symbol"]." ".$order_detail["total_tax_cost"]; ?>
 					</td>
 				</tr>
 				<tr>
@@ -97,7 +97,7 @@
 						&nbsp;&nbsp;<strong><?php echo $this->Translate('Order_Total_Order_Amount'); ?></strong>
 					</td>
 					<td width="50%">:&nbsp;
-						<?php echo $order_detail["total_order_amount"]; ?>
+						<?php echo $order_detail["currency_symbol"]." ".$order_detail["total_order_amount"]; ?>
 					</td>
 				</tr>
 				<tr><td colspan="" height="10"></td></tr>

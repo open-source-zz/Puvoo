@@ -23,9 +23,14 @@
 		<?php echo $this->Translate("Products_Management");  ?>
 	</div>
 	
-	<div style="text-align:center;" >
-		<h5 style='color:#389834;margin-bottom:0px;'><?php echo $this->addMessage; ?></h5>
-	</div>
+	<?php if($this->addErrorMessage != '') { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
+				<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+				<strong><?php echo $this->addErrorMessage; ?></strong></p>
+			</div>
+		</div>
+	<?php } ?>
 	
 	<form name="add_image_form" id="add_image_form" method="post" enctype="multipart/form-data">
 		<?php if($this->product_id > 0) { ?>

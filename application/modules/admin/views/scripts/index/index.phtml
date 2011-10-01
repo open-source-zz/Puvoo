@@ -22,7 +22,7 @@
 				<div class="DashboardFilterOptions" style="margin-top: 18px;">
 					<div style="font-size:13px;"><?php echo $this->Translate('Dash_Show'); ?>:</div> 
 					<ul class="DashboardRecentOrdersToggle">
-						<li <?php if($this->active_class === "all") { ?>class="Active" <?php } ?> >
+						<li <?php if($this->active_class === "All") { ?>class="Active" <?php } ?> >
 							<a style="cursor:pointer;" onclick="searchDashOrder('order_search','All',this)" rel="status=recent">Recent Orders</a>
 						</li>
 						<?php	foreach( $this->order_status["order_status"] as $key => $val ) { ?>	
@@ -59,8 +59,11 @@
 				<?php if(count($this->records) > 0 ) { ?>
 				<?php 	foreach($this->records as $key => $val) { ?>
 				<tr id="tr100" class="GridRow" onmouseover="this.className='GridRowOver'" onmouseout="this.className='GridRow'">
+				
 					<td class="FieldLabel2">#<?php echo $val["order_id"]; ?></td>
+					
 					<td class="FieldLabel2"><?php echo $val["order_creation_date"]; ?></td>
+					
 					<td class="FieldLabel2">
 					  <table  width="100%" cellpadding="0" cellspacing="0" align="center" >
 							<tr>
@@ -69,7 +72,9 @@
 							</tr>
 					  </table>
 					</td>
-					<td class="FieldLabel2"><?php echo $val["total_order_amount"]; ?></td>
+					
+					<td class="FieldLabel2"><?php echo $val["currency_symbol"]." ".$val["total_order_amount"]; ?></td>
+					
 					<td align="center" class="FieldLabel2">
 						<?php if($val["order_status"] == 0 ) { ?>
 							<span class="OrderStatus OrderStatus4 OrderDetails">

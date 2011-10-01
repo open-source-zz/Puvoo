@@ -68,6 +68,7 @@ class Fb_ProductController extends FbCommonController
 	 {
 		global $mysession;
 		// action body
+		$this->_redirect("fb/");
 	 }
 
 	/**
@@ -92,7 +93,11 @@ class Fb_ProductController extends FbCommonController
 		$db = Zend_Registry::get('Db_Adapter');
 		 
  		$Poductid = $this->_request->getParam('id');
-		
+			
+		if(!$Poductid)
+		{
+			$this->_redirect("fb/");
+		}
 		$this->view->ProdId = $Poductid;
 				
  		$Product = new Models_Product();
@@ -169,9 +174,9 @@ class Fb_ProductController extends FbCommonController
 					$Opt .= "<tr>";
 					$Opt .= "<td><b>".ucfirst($option['option_title'])." Choice:</b><br />";
 					$Opt .= "<select class='optionText inputtext' name='OptionCombo".$key."' id='OptionCombo".$key."'>";
-					$Opt .= "<option value='0'>&nbsp;Choose ".$option['option_title']."</option>";
+					$Opt .= "<option value='0'>Choose ".$option['option_title']."</option>";
 					foreach($OptionsValue as $val){
-						$Opt .= "<option value='".$val['product_options_detail_id']."'>&nbsp;".$val['option_value']."</option>";
+						$Opt .= "<option value='".$val['product_options_detail_id']."'>".$val['option_value']."</option>";
 					}
 					$Opt .= "</select></td></tr>";
 					$Opt .= "<tr><td height='8'></td></tr>";
@@ -318,6 +323,7 @@ class Fb_ProductController extends FbCommonController
 				{	
 					// Insert Record in cart
 					$ins_crt = $Cart->Insert_Record($ProductInfo);
+					//print $ins_crt;die;
 					if ($ins_crt = true)
 					{
 						$CartDetails = $Cart->GetCartDetailId($prodId);
@@ -334,10 +340,11 @@ class Fb_ProductController extends FbCommonController
 							//$ProductInfo['options'] = $optionInfo;
 							
 						}
+						echo json_encode("Yout product add successfully in your cart");die;
 					}
  					//echo json_encode($CartCnt);die;
 					//echo SITE_FB_URL.$_SERVER['REQUEST_URI'];die;
-					echo json_encode(" Yout product add successfully in your cart");die;
+					
 				}
 				else
 				{

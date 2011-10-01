@@ -164,9 +164,12 @@ class Admin_OrdersController extends AdminCommonController
 			$result = $orders->GetAllOrders();
 			
 		}		
-		// Success Message
-		$this->view->Admin_Message = $mysession->Admin_Message;
-		$mysession->Admin_Message = "";
+		// Success and Error Message
+		$this->view->Admin_SMessage = $mysession->Admin_SMessage;
+		$this->view->Admin_EMessage = $mysession->Admin_EMessage;
+		
+		$mysession->Admin_SMessage = "";
+		$mysession->Admin_EMessage = "";
 		
 		//Set Pagination
 		$paginator = Zend_Paginator::factory($result);
@@ -234,13 +237,13 @@ class Admin_OrdersController extends AdminCommonController
 					
 				$data['order_id'] = $order_id;
 				$data['order_status']=$filter->filter(trim($this->_request->getPost('order_status')));
-					
+				
 				if($orders->updateOrder($data)) {
-					$editErrorMessage = $translate->_('Order_Update_Success');
+					$mysession->Admin_SMessage = $translate->_('Order_Update_Success');
 				} else {
-					$editErrorMessage = $translate->_('Err_Update_Order');
+					$mysession->Admin_EMessage = $translate->_('Err_Update_Order');
 				}
-				$mysession->Admin_Message = $editErrorMessage;
+				
 				$this->_redirect('/admin/orders'); 
 			}  
 		}
@@ -287,7 +290,7 @@ class Admin_OrdersController extends AdminCommonController
 			
 		} else {
 			
-			$mysession->Admin_Message = $translate->_('Err_View_Products');	
+			$mysession->Admin_EMessage = $translate->_('Err_View_Products');	
 			$this->_redirect('/admin/orders'); 	
 		}
 		
@@ -323,9 +326,9 @@ class Admin_OrdersController extends AdminCommonController
 		
 		if($order_id > 0 && $order_id != "") {
 			if($orders->DeleteOrder($order_id)) {
-				$mysession->Admin_Message = $translate->_('Order_Success_Delete');
+				$mysession->Admin_SMessage = $translate->_('Order_Success_Delete');
 			} else {
-				$mysession->Admin_Message = $translate->_('Err_Order_Delete');	
+				$mysession->Admin_EMessage = $translate->_('Err_Order_Delete');	
 			}		
 		} 
 		$this->_redirect('/admin/orders'); 	
@@ -365,14 +368,14 @@ class Admin_OrdersController extends AdminCommonController
 			
 			if($orders->DeleteAllOrderDetail($order_id)) {
 				
-				$mysession->Admin_Message = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Order_Success_M_Delete')."</h5>";	
+				$mysession->Admin_SMessage = $translate->_('Order_Success_M_Delete');	
 			} else {
-				$mysession->Admin_Message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Order_Delete')."</h5>";				
+				$mysession->Admin_EMessage = $translate->_('Err_Order_Delete');				
 			}	
 			
 		}	else {
 		
-			$mysession->Admin_Message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Order_Err_M_Delete')."</h5>";				
+			$mysession->Admin_EMessage = $translate->_('Order_Err_M_Delete');				
 		}
 		$this->_redirect('/admin/orders'); 	
 	

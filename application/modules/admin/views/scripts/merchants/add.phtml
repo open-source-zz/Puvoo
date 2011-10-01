@@ -11,9 +11,16 @@
 		<?php echo $this->Translate('Merchant_Management'); ?>
 	</div>
 	
-	<div >
-		<?php echo $this->addErrorMessage; ?>
-	</div>
+	<?php if(count($this->addErrorMessage) > 0 ) { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
+				<?php foreach($this->addErrorMessage as $key => $val ) { ?>
+					<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+					<strong><?php echo $val; ?></strong></p>
+				<?php } ?>
+			</div>
+		</div>
+	<?php } ?>	
 	
 	<form method="post" name="add_form" id="add_form" >
 		<table class="Panel" style="margin-top:10px;">
@@ -29,7 +36,7 @@
 								<?php echo $this->Translate('Merchant_FName'); ?>:
 							</td>
 							<td>
-								<input type="text" name="user_fname" id="user_fname" class="Field250" />
+								<input type="text" value="<?php echo $this->data['user_fname']; ?>" name="user_fname" id="user_fname"  class="Field250" />
 								<span></span>
 							</td>
 						</tr>
@@ -39,7 +46,7 @@
 								<?php echo $this->Translate('Merchant_LName'); ?>:
 							</td>
 							<td>
-								<input type="text" name="user_lname" id="user_lname" class="Field250" />
+								<input type="text" name="user_lname" id="user_lname" value="<?php echo $this->data['user_lname']; ?>" class="Field250" />
 								<span></span>
 							</td>
 						</tr>
@@ -49,7 +56,7 @@
 								<?php echo $this->Translate('Merchant_Email'); ?>:
 							</td>
 						  <td>
-							  <input type="text" name="user_email" id="user_email" class="Field250" />
+							  <input type="text" name="user_email" id="user_email" value="<?php echo $this->data['user_email']; ?>" class="Field250" />
 							  <span></span>
 						  </td>
 						</tr>
@@ -59,7 +66,7 @@
 								<?php echo $this->Translate('Merchant_Password'); ?>:
 							</td>
 							<td>
-								<input type="password" name="user_password" id="user_password" class="Field250" />
+								<input type="password" name="user_password" id="user_password" value="<?php echo $this->data['user_password']; ?>" class="Field250" />
 								<span></span>
 							</td>
 						</tr>
@@ -69,7 +76,7 @@
 								<?php echo $this->Translate('Merchant_FB_Id'); ?>:
 							</td>
 							<td>
-								<input type="text" name="user_facebook_id" id="user_facebook_id" class="Field250" />
+								<input type="text" name="user_facebook_id" id="user_facebook_id" value="<?php echo $this->data['user_facebook_id']; ?>" class="Field250" />
 								<span></span>
 							</td>
 						</tr>
@@ -106,13 +113,13 @@
 <!--     JS Global Variable for the language    -->
 
 <script language="javascript" type="text/javascript">
-var siteurl = '<?php echo SITE_URL; ?>';
-var ERR_MERCHANTS_FNAME = '<?php echo $this->Translate("Err_Merchant_FName"); ?>';  
-var ERR_MERCHANTS_LNAME = '<?php echo $this->Translate("Err_Merchant_LName"); ?>';  
-var ERR_MERCHANTS_EMAIL = '<?php echo $this->Translate("Err_Merchant_Email"); ?>';
-var ERR_MERCHANTS_INVALID_EMAIL = '<?php echo $this->Translate("Err_Merchant_Invalid_Email"); ?>';
-var ERR_MERCHANTS_PASSWORD = '<?php echo $this->Translate("Err_Merchant_Password"); ?>';
-var ERR_MERCHANTS_PASSWORD_MIN_MAX = '<?php echo $this->Translate("Err_Merchant_Password_Min_Max"); ?>';
-var ERR_MERCHANTS_FB = '<?php echo $this->Translate("Err_Merchant_FB"); ?>';
-var ERR_USER_STATUS = '<?php echo $this->Translate("Err_user_status"); ?>' ; 
+var siteurl = "<?php echo SITE_URL; ?>";
+var ERR_MERCHANTS_FNAME = "<?php echo $this->Translate('Err_Merchant_FName'); ?>";  
+var ERR_MERCHANTS_LNAME = "<?php echo $this->Translate('Err_Merchant_LName'); ?>";  
+var ERR_MERCHANTS_EMAIL = "<?php echo $this->Translate('Err_Merchant_Email'); ?>";
+var ERR_MERCHANTS_INVALID_EMAIL = "<?php echo $this->Translate('Err_Merchant_Invalid_Email'); ?>";
+var ERR_MERCHANTS_PASSWORD = "<?php echo $this->Translate('Err_Merchant_Password'); ?>";
+var ERR_MERCHANTS_PASSWORD_MIN_MAX = "<?php echo $this->Translate('Err_Merchant_Password_Min_Max'); ?>";
+var ERR_MERCHANTS_FB = "<?php echo $this->Translate('Err_Merchant_FB'); ?>";
+var ERR_USER_STATUS = "<?php echo $this->Translate('Err_user_status'); ?>" ; 
 </script>

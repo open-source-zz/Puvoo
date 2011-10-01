@@ -17,9 +17,26 @@
 	</div>
 	<!--  Page Header End  -->
 	
-	<div style="text-align:center">
-		<?php echo $this->Admin_Message; ?>
-	</div>
+	
+	<!--       Success and Error Message      -->	
+	<?php if($this->Admin_EMessage != '') { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
+				<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+				<strong><?php echo $this->Admin_EMessage; ?></strong></p>
+			</div>
+		</div>
+	<?php } ?>	
+	
+	<?php if($this->Admin_SMessage != '') { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-highlight ui-corner-all" style="margin-top: 20px; padding: 0 .7em;"> 
+				<p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
+				<strong><?php echo $this->Admin_SMessage; ?></strong></p>
+			</div>
+		</div>
+	<?php } ?>
+	
 	
 	<!--   Main Form start     -->
 	<form name="frmMerchants" id="frmMerchants" method="post">
@@ -87,11 +104,14 @@
 		<div style="margin-top:-10px;" id="table1">		
 			<table width="100%" cellpadding="0" cellspacing="0" style="float:left;">
 				<tr class="trclass1">
-					<td width="5%" class="tdclasshome" style="text-align:left; padding-left:15px;" >All</td>
-					<td width="30%" align="center" class="tdclasshome">Name</td>
-					<td width="30%" align="center" class="tdclasshome">Email</td>
-					<td width="20%" align="center" class="tdclasshome">Active</td>
-					<td width="15%" align="center" class="tdclasshome bordernone">Actions</td>
+					<td width="5%" class="tdclasshome" style="text-align:left; padding-left:15px;" >
+						<?php echo $this->Translate('All'); ?>
+					</td>
+					<td width="30%" align="center" class="tdclasshome"><?php echo $this->Translate('Merchant_Name'); ?></td>
+					<td width="15%" align="center" class="tdclasshome"><?php echo $this->Translate('Merchant_Email'); ?></td>
+					<td width="15%" align="center" class="tdclasshome"><?php echo $this->Translate('Merchant_Creation_Date'); ?></td>
+					<td width="20%" align="center" class="tdclasshome"><?php echo $this->Translate('Active'); ?></td>
+					<td width="15%" align="center" class="tdclasshome bordernone"><?php echo $this->Translate('Action'); ?></td>
 				</tr>	
 	<?php 
 				if(count($this->records) > 0) 	{ 
@@ -104,6 +124,7 @@
 					  
 					<td class="FieldLabel2" align="center"><?php echo $this->records[$i]['user_fname']; ?></td>
 					<td class="FieldLabel2" align="center"><?php echo $this->records[$i]['user_email']; ?></td>
+					<td class="FieldLabel2" align="center"><?php echo date('d/m/Y',strtotime($this->records[$i]['registration_date'])); ?></td>
 					<td class="FieldLabel2" align="center">
 	<?php 				if($this->records[$i]['user_status'])
 						{
@@ -161,17 +182,17 @@
 <!--     JS Global Variable for the language    -->
 
 <script language="javascript" type="text/javascript">
-	var siteurl = '<?php echo SITE_URL; ?>';
-	var HIDE = '<?php echo $this->Translate("Hide"); ?>';  
-	var SEARCH = '<?php echo $this->Translate("Search"); ?>';  
-	var ERR_MERCHANTS_FNAME = '<?php echo $this->Translate("Err_Merchant_FName"); ?>';  
-	var ERR_MERCHANTS_LNAME = '<?php echo $this->Translate("Err_Merchant_LName"); ?>';  
-	var ERR_MERCHANTS_EMAIL = '<?php echo $this->Translate("Err_Merchant_Email"); ?>';
-	var ERR_MERCHANTS_INVALID_EMAIL = '<?php echo $this->Translate("Err_Merchant_Invalid_Email"); ?>';
-	var ERR_MERCHANTS_PASSWORD = '<?php echo $this->Translate("Err_Merchant_Password"); ?>';
-	var ERR_MERCHANTS_PASSWORD_MIN_MAX = '<?php echo $this->Translate("Err_Merchant_Password_Min_Max"); ?>';
-	var ERR_MERCHANTS_FB = '<?php echo $this->Translate("Err_Merchant_FB"); ?>';
-	var ERR_USER_STATUS = '<?php echo $this->Translate("Err_user_status"); ?>' ; 
+	var siteurl = "<?php echo SITE_URL; ?>";
+	var HIDE = "<?php echo $this->Translate('Hide'); ?>";  
+	var SEARCH = "<?php echo $this->Translate('Search'); ?>";  
+	var ERR_MERCHANTS_FNAME = "<?php echo $this->Translate('Err_Merchant_FName'); ?>";  
+	var ERR_MERCHANTS_LNAME = "<?php echo $this->Translate('Err_Merchant_LName'); ?>";  
+	var ERR_MERCHANTS_EMAIL = "<?php echo $this->Translate('Err_Merchant_Email'); ?>";
+	var ERR_MERCHANTS_INVALID_EMAIL = "<?php echo $this->Translate('Err_Merchant_Invalid_Email'); ?>";
+	var ERR_MERCHANTS_PASSWORD = "<?php echo $this->Translate('Err_Merchant_Password'); ?>";
+	var ERR_MERCHANTS_PASSWORD_MIN_MAX = "<?php echo $this->Translate('Err_Merchant_Password_Min_Max'); ?>";
+	var ERR_MERCHANTS_FB = "<?php echo $this->Translate('Err_Merchant_FB'); ?>";
+	var ERR_USER_STATUS = "<?php echo $this->Translate('Err_user_status'); ?>" ; 
 </script>
 
 <!--     Dialoag box for the delete and delete all    -->

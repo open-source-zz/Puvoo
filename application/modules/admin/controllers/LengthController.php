@@ -197,9 +197,8 @@
 			$this->view->data = $data;
 			
 			$where = "1 = 1";
-			
-			if($home->ValidateTableField("length_unit_name",$data['length_unit_name'],TABLE,$where)) {
-				if( count($addErrorMessage) == 0 || $addErrorMessage == '' ){
+			if( count($addErrorMessage) == 0 || $addErrorMessage == '' ){
+				if($home->ValidateTableField("length_unit_name",$data['length_unit_name'],TABLE,$where)) {
 					if($length->insertRecord($data)) {
 						$mysession->Admin_SMessage = $translate->_('Success_Add_Weight');
 						$this->_redirect('/admin/length'); 	
@@ -207,10 +206,8 @@
 						$addErrorMessage[] = $translate->_('Err_Add_Length');	
 					}
 				} else { 
-					$this->view->addErrorMessage = $addErrorMessage;
+					$addErrorMessage[] = $translate->_('Err_Length_Unit_Name_Exists');	
 				} 
-			} else {
-				$addErrorMessage[] = $translate->_('Err_Length_Unit_Name_Exists');	
 			}
 			
 			$this->view->addErrorMessage = $addErrorMessage;
@@ -270,8 +267,8 @@
 				}	
 				
 				$where = "length_unit_id != ".$data["length_unit_id"];
-				if($home->ValidateTableField("length_unit_name",$data['length_unit_name'],TABLE,$where)) {
-					if( count($editErrorMessage) == 0 || $editErrorMessage == '' ){
+				if( count($editErrorMessage) == 0 || $editErrorMessage == '' ){
+					if($home->ValidateTableField("length_unit_name",$data['length_unit_name'],TABLE,$where)) {
 						$where = "length_unit_id = ".$data["length_unit_id"];
 						if($length->updateRecord($data,$where)) {
 							$mysession->Admin_SMessage = $translate->_('Success_Edit_Length');
@@ -279,11 +276,11 @@
 						} else {
 							$editErrorMessage[] = $translate->_('Err_Edit_Length');	
 						}
-					} 
-				} else {			
+					} else {			
 					
-					$editErrorMessage[] = $translate->_('Err_Length_Unit_Name_Exists');	
-				}
+						$editErrorMessage[] = $translate->_('Err_Length_Unit_Name_Exists');	
+					}
+				} 
 				
 				$this->view->records = $data;	
 				$this->view->length_unit_id =  $data["length_unit_id"];	

@@ -363,7 +363,7 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, $arr_header);
 
 $result = curl_exec($ch);
 
-if(!curl_errno($ch)){
+if(curl_errno($ch)){
    echo 'Curl error: ' . curl_error($ch);
 }
 

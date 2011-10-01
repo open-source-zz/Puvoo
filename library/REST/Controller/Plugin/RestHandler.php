@@ -69,13 +69,13 @@ class REST_Controller_Plugin_RestHandler extends Zend_Controller_Plugin_Abstract
                     switch ($contentType)
                     {
                         case 'application/json':
-                            $params = Zend_Json::decode($rawBody, Zend_Json::TYPE_OBJECT);
+                            $params = Zend_Json::decode($rawBody, Zend_Json::TYPE_ARRAY);
                             break;
 
                         case 'text/xml':
                         case 'application/xml':
                             $json = @Zend_Json::fromXml($rawBody);
-                            $params = Zend_Json::decode($json, Zend_Json::TYPE_OBJECT)->request;
+                            $params = Zend_Json::decode($json, Zend_Json::TYPE_ARRAY);
                             break;
 
                         case 'application/octet-stream':

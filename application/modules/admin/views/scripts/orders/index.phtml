@@ -17,15 +17,24 @@
 	</div>
 	<!--  Page Header End  -->
 	
-	<div style="text-align:center">
-		<?php 
-			echo $this->Admin_Message; 
-			if($this->Search_Message != '')
-			{
-				echo $this->Search_Message;
-			}
-		?>
-	</div>
+	<!--       Success and Error Message      -->	
+	<?php if($this->Admin_EMessage != '') { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
+				<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+				<strong><?php echo $this->Admin_EMessage; ?></strong></p>
+			</div>
+		</div>
+	<?php } ?>	
+	
+	<?php if($this->Admin_SMessage != '') { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-highlight ui-corner-all" style="margin-top: 20px; padding: 0 .7em;"> 
+				<p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
+				<strong><?php echo $this->Admin_SMessage; ?></strong></p>
+			</div>
+		</div>
+	<?php } ?>
 	
 	<!--   Main Form start     -->
 	<form name="frmOrders" id="frmOrders" method="post">
@@ -150,7 +159,7 @@
 							</tr>
 					  </table>
 					</td>
-				   	<td class="FieldLabel2"><?php echo $val["total_order_amount"]; ?></td>
+				   	<td class="FieldLabel2"><?php echo $val["currency_symbol"]." ".$val["total_order_amount"]; ?></td>
 				   	<td align="center" class="FieldLabel2">
 						<?php if($val["order_status"] == 0 ) { ?>
 							<span class="OrderStatus OrderStatus4 OrderDetails">

@@ -27,7 +27,7 @@ function ValidateAddFrom()
 				
 			} else {
 				
-				error.appendTo( element.next().next() ); 
+				error.appendTo( element.next() ); 
 				
 			}
 		}

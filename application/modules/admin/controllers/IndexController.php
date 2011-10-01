@@ -132,6 +132,10 @@ class Admin_IndexController extends AdminCommonController
 			$new_password 		= trim($this->_request->getPost('new_password'));
 			$confirm_password 	= trim($this->_request->getPost('confirm_password'));
 			
+			$this->view->old_password = $old_password;
+			$this->view->new_password = $new_password;
+			$this->view->confirm_password = $confirm_password;
+			
 			if($old_password == "") {
 				$updateError = $translate->_('Err_Old_Password');
 			} else {

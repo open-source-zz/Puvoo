@@ -44,7 +44,7 @@ class Models_Category
 	/**
 	 * Function __construct
 	 *
-	 * This is a constructor functions.
+	 * This is a constructor function.
      * It will set db adapter for the model 
 	 *
 	 * Date created: 2011-08-24
@@ -53,7 +53,6 @@ class Models_Category
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
-	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	function __construct()
@@ -61,22 +60,19 @@ class Models_Category
 		$this->db = Zend_Registry::get('Db_Adapter');
 	}
  	
-	 /*
-	 * getMainCategory(): To get the main category of the store.
+	/**
+	 * function getMainCategory()
 	 *
-	 * It is used to get the main category from the database and display in left menu all ca.
+	 * It is used to get the main category from the database and display in left menu.
 	 *
 	 * Date created: 2011-08-22
 	 *
+	 * @param () - No parameter
 	 * @return (Array) - Return Array of records
-	 * @author  Jayesh 
-	 * @param   two parameters / login_id and password.
-     * @global  $db Zend_db for database.
-                $mysession Zend_Session_Namespace for session variables.
-	 * 
-	 */
- 	 
-	public function GetMainCategory()
+	 * @author Jayesh 
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+ 	public function GetMainCategory()
 	{
 		$db = $this->db;
 		
@@ -85,21 +81,18 @@ class Models_Category
 		return $result;
  	} 
 	
-	 /*
-	 * GetCategory(): To get category that have be shown in left menu.
+	/**
+	 * function GetCategory
 	 *
 	 * It is used to get the category from the database and display in left menu.
 	 *
 	 * Date created: 2011-08-22
 	 *
+	 * @param () - No parameter
 	 * @return (Array) - Return Array of records
-	 * @author  Jayesh 
-	 * @param   two parameters / login_id and password.
-     * @global  $db Zend_db for database.
-                $mysession Zend_Session_Namespace for session variables.
-	 * 
-	 */
-	
+	 * @author Jayesh 
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
 	public function GetCategory()
 	{
 		$db = $this->db;
@@ -110,8 +103,8 @@ class Models_Category
 	
 	}
 
-	 /*
-	 * GetCategoryID(): To get category id throught product id.
+	/**
+	 * function GetCategoryID
 	 *
 	 * It is used to get category id throught product id.
 	 *
@@ -428,6 +421,104 @@ class Models_Category
 			return $carray;
 		}
 		
+	}
+	
+	/**
+	 * Function getAllCateTree
+	 *
+	 * This function is used to get category tree 
+     *
+	 * Date created: 2011-09-30
+	 *
+	 * @access public
+	 * @param () (int)  - $cid : category id 
+	 * @param () (array)  - $carray : array to put results in.
+	 * @return (array) - Return array of category ids
+	 * @author Yogesh
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	
+	
+	function getCateTree( $cid = 0 )
+	{	
+		global $exclude;
+		$db = $this->db;	
+		$tree = "";                         // Clear the directory tree
+		$depth = 1;                         // Child level depth.
+		$top_level_on = 1;               // What top-level category are we on?
+		$exclude = array();               // Define the exclusion array
+		array_push($exclude, 0);     // Put a starting value in it
+		
+		
+		$sql = "SELECT * FROM category_master WHERE is_active = 1";
+		$data = $db->fetchAll($sql);
+ 	
+		foreach ( $data as $key => $nav_row  )
+		{
+     		$goOn = 1;               // Resets variable to allow us to continue building out the tree.
+			for($x = 0; $x < count($exclude); $x++ )          // Check to see if the new item has been used
+			{
+				  if ( $exclude[$x] == $nav_row['category_id'] )
+				  {
+					   $goOn = 0;
+					   break;         // Stop looking b/c we already found that it's in the exclusion list and we can't continue to process this node
+				  }
+			 }
+			 if ( $goOn == 1 )
+			 {
+				  if($cid == $nav_row['category_id'] ) {
+				    $tree .= "<option selected='selected' value='".$nav_row['category_id']."' >";
+				  } else {
+					$tree .= "<option value='".$nav_row['category_id']."' >";				
+				  }
+				  $tree .= $nav_row['category_name'];                    // Process the main tree node
+				  $tree .= "</option>";
+				  array_push($exclude, $nav_row['category_id']);          // Add to the exclusion list
+				  if ( $nav_row['category_id'] < 6 )
+				  { $top_level_on = $nav_row['category_id']; }
+		 
+				  $tree .= $this->build_child($nav_row['category_id'],$cid);          // Start the recursive function of building the child tree
+			 }
+		}
+		
+		return $tree; 
+ 	}
+	
+	function build_child($oldID,$cid)               // Recursive function to get all of the children...unlimited depth
+	{	
+		 global $exclude, $depth;               // Refer to the global array defined at the top of this script
+		 $db = $this->db;	
+		 $tempTree = "";
+		 $child_query = "SELECT * FROM category_master WHERE is_active = 1 AND parent_id=" . $oldID;
+		 
+		 $row = $db->fetchAll($child_query);
+		 
+		foreach ( $row as $key => $child )
+		{
+			if ( $child['category_id'] != $child['parent_id'] )
+			{		
+			
+				if($cid == $child['category_id'] ) {
+					$tempTree .= "<option selected='selected' value='".$child['category_id']."' >";
+				} else {
+					$tempTree .= "<option value='".$child['category_id']."' >";				
+				}
+				for ( $c=0; $c < $depth; $c++ )               // Indent over so that there is distinction between levels
+				{ 
+					$tempTree .= "&nbsp;&nbsp;-"; 
+				}
+			   
+				$tempTree .=  "&nbsp;&nbsp;-&nbsp;&nbsp;".$child['category_name'] . "<br>";
+				$tempTree .= "</option>";
+				$depth++;          // Incriment depth b/c we're building this child's child tree  (complicated yet???)
+				$tempTree .= $this->build_child($child['category_id'],$cid);          // Add to the temporary local tree
+				$depth--;          // Decrement depth b/c we're done building the child's child tree.
+				array_push($exclude, $child['category_id']);               // Add the item to the exclusion list
+			}
+		}
+	 
+		 return $tempTree;          // Return the entire child tree
 	}
 	
 }

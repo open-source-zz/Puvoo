@@ -84,8 +84,10 @@ class Models_Orders
 	 {
 	 	$db = $this->db;
 	 	
-		$select = $db->select()
-					 ->from("order_master");
+		$select = " SELECT om.*,cm.currency_symbol,cm.currency_code
+					FROM `order_master` as om
+					JOIN currency_master as cm ON (cm.currency_id = om.currency_id)
+					ORDER BY `order_id` DESC";
 		
 		return $db->fetchAll($select);
 	 
@@ -111,12 +113,13 @@ class Models_Orders
 	 {
 	 	$db = $this->db;
 	 	
-		$select = "SELECT om.*, scm.country_name as shipping_country, bcm.country_name as billing_country, ssm.state_name as shipping_state_name, bsm.state_name as billing_state_name 
+		$select = "SELECT om.*, scm.country_name as shipping_country, bcm.country_name as billing_country, ssm.state_name as shipping_state_name, bsm.state_name as billing_state_name,cm.currency_symbol,cm.currency_code 
 				   FROM order_master as om
 				   LEFT JOIN country_master as scm ON ( scm.country_id = om.shipping_user_country_id)
 				   LEFT JOIN country_master as bcm ON ( bcm.country_id = om.billing_user_country_id )
 				   LEFT JOIN state_master as ssm ON ( ssm.state_id = om.shipping_user_state_id )
 				   LEFT JOIN state_master as bsm ON ( bsm.state_id = om.billing_user_state_id )
+				   LEFT JOIN currency_master as cm ON (cm.currency_id = om.currency_id)
 				   WHERE om.order_id = ".$id;
 		
 		return $db->fetchRow($select);
@@ -352,8 +355,9 @@ class Models_Orders
 	 {
 	 	$db = $this->db;
 		
-		$select = " SELECT *
-					FROM `order_master`
+		$select = " SELECT om.*,cm.currency_symbol,cm.currency_code
+					FROM `order_master` as om
+					JOIN currency_master as cm ON (cm.currency_id = om.currency_id)
 					".$where."
 					ORDER BY `order_id` DESC
 					LIMIT 0 , 10 ";

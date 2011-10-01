@@ -16,14 +16,24 @@
 	</div>
 	<!--  Page Header End  -->
 	
-	<div style="text-align:center">
-		<?php if($this->Admin_Message != "") { ?>
-		<h5 style='color:#389834;margin-bottom:0px;'><?php echo $this->Admin_Message; ?></h5>
-		<?php }?>
-		<?php if($this->Admin_Message_Error != "") { ?>
-		<h5 style='color:#FF0000;margin-bottom:0px;'><?php echo $this->Admin_Message_Error; ?></h5>
-		<?php }?>
-	</div>
+	<!--       Success and Error Message      -->	
+	<?php if($this->Admin_EMessage != '') { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
+				<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+				<strong><?php echo $this->Admin_EMessage; ?></strong></p>
+			</div>
+		</div>
+	<?php } ?>	
+	
+	<?php if($this->Admin_SMessage != '') { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-highlight ui-corner-all" style="margin-top: 20px; padding: 0 .7em;"> 
+				<p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
+				<strong><?php echo $this->Admin_SMessage; ?></strong></p>
+			</div>
+		</div>
+	<?php } ?>
 	
 	
 	<!--   Main Form start     -->
@@ -35,6 +45,8 @@
 				<input type="button" id="search" show='1'  value="<?php echo $this->Translate('Search'); ?>"  />
 			</div>
 			<div id="button" style="float:right;">
+				<input type="button" id="anything"  value="<?php echo $this->Translate('Import'); ?>" onclick="window.location='<?php echo $this->import_action; ?>'"/>
+				<input type="button" id="anything"  value="<?php echo $this->Translate('Export'); ?>" onclick="window.location='<?php echo $this->export_action; ?>'"/>
 				<input type="button" id="anything"  value="<?php echo $this->Translate('Add_New'); ?>" onclick="window.location='<?php echo $this->add_action; ?>'"/>
 				<input type="button" id="anything" onclick="Javascript: deleteAllRecords('frmLanguage','<?php echo $this->delete_all_action; ?>')"  value="<?php echo $this->Translate('M_Delete'); ?>"/>	   
 				<select name="pagesize" id="pagesize" onchange="this.form.submit();">
@@ -78,7 +90,17 @@
 									<option value="ADMIN" <?php echo ( $this->data['content_group'] == 'ADMIN' ? "selected" : "" ); ?>>ADMIN</option>
 									<option value="DEFAULT" <?php echo ( $this->data['content_group'] == 'DEFAULT' ? "selected" : "" ); ?> >DEFAULT</option>
 									<option value="USER" <?php echo ( $this->data['content_group'] == 'USER' ? "selected" : "" ); ?> >USER</option>
+									<option value="FB" <?php echo ( $this->data['content_group'] == 'FB' ? "selected" : "" ); ?> >FB STORE</option>
 								</select>
+							</td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						<tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Key'); ?>:
+							</td>
+							<td>
+								<input type="text" name="definition_key" id="definition_key" value="<?php echo $this->data['definition_key'] ?>" />
 							</td>
 						</tr>
 						<tr><td height="5"></td></tr>

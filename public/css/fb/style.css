@@ -800,6 +800,17 @@ textarea,.inputtext,.inputpassword{border:1px solid #bdc7d8;font-family:"lucida 
 	
 }
 
+.continuecheckout
+{
+	background:url(../../images/fb/conti_checkout.png) no-repeat;
+	height:28px;
+	width:115px;
+	cursor:pointer;
+	border:none;
+	
+}
+
+
 .close
 {
 	background:url(../../images/fb/close.png) no-repeat;
@@ -1127,6 +1138,7 @@ cursor:pointer;
 color:#CCCCCC;
 }
 .ui-widget-loading { background:  url(../../images/fb/ajax-loader.gif) 50% no-repeat; top }
+.ui-widget2-loading { background:  url(../../images/fb/ajax-loader1.gif) 50% no-repeat; left}
 .topNav {z-index:1;	margin: 0px 10px; margin-left:0px;}
 .topNav ul {list-style: none;margin: 0;padding: 0;height: 30px;background: #17649e;font-family: arial;z-index:2;} 
 .topNav ul li {float: left;position: relative;z-index:1500;}

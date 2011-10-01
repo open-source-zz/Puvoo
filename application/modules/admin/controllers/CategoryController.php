@@ -58,7 +58,7 @@
     function init()
     {
         parent::init();
-        $this->view->JS_Files = array('admin/category.js','admin/AdminCommon.js');	
+        $this->view->JS_Files = array('admin/category.js','admin/AdminCommon.js');			
 		Zend_Loader::loadClass('Models_Category');
 		Zend_Loader::loadClass('Models_AdminMaster');
         
@@ -142,8 +142,11 @@
 			
 		}		
 		// Success Message
-		$this->view->Admin_Message = $mysession->Admin_Message;
-		$mysession->Admin_Message = "";
+		$this->view->Admin_SMessage = $mysession->Admin_SMessage;
+		$this->view->Admin_EMessage = $mysession->Admin_EMessage;
+		
+		$mysession->Admin_SMessage = "";
+		$mysession->Admin_EMessage = "";
 		
 		//Set Pagination
 		$paginator = Zend_Paginator::factory($result);
@@ -194,11 +197,21 @@
    		
 		$this->view->categories = $category->GetMainCategory();
 		
-		$request = $this->getRequest();
 		
+		$request = $this->getRequest();
+		$parent_id = 0;
 		if($request->isGet()){
 			$parent_id = (int)$request->getParam('parent_id');
 		}
+		
+		if($parent_id > 0)
+		{
+			$this->view->path_array = $category->getParentCategories($parent_id);
+		}else{
+			$this->view->path_array = array();
+		}
+		
+		$this->view->cateTree = $category->getCateTree($parent_id);
 		
 		if($request->isPost()){
 			
@@ -209,29 +222,28 @@
 			$data['category_name']=$filter->filter(trim($this->_request->getPost('category_name'))); 	
 			$data['parent_id']=$filter->filter(trim($this->_request->getPost('parent_category'))); 	
 			$data['is_active']=$filter->filter(trim($this->_request->getPost('is_active'))); 	
-			$addErrorMessage = "";
+			$addErrorMessage = array();
 			if($data['category_name'] == "") {
-				$addErrorMessage .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Category_Name')."</h5><br />";			
+				$addErrorMessage[] = $translate->_('Err_Category_Name');			
 			}
 			if($data['is_active'] == "") {
-				$addErrorMessage .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Is_Active')."</h5><br />";			
+				$addErrorMessage[] = $translate->_('Err_Is_Active');			
 			}
 			$where = "1 = 1";
-			if($home->ValidateTableField("category_name",$data['category_name'],"category_master",$where)) {
-				if( $addErrorMessage == ""){
+			if( count($addErrorMessage) == 0 || $addErrorMessage == ""){
+				if($home->ValidateTableField("category_name",$data['category_name'],"category_master",$where)) {
 					if($category->insertCategory($data)) {
-						$mysession->Admin_Message = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Success_Add_Category')."</h5>";
+						$mysession->Admin_SMessage = $translate->_('Success_Add_Category');
 						$this->_redirect('/admin/category/index/parent_id/'.$parent_id); 	
 					} else {
-						$addErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>There is some problem in adding category</h5>";	
+						$addErrorMessage[] = $translate->_('Err_Add_Category');
 					}
 				} else {
-					$this->view->addErrorMessage = $addErrorMessage;
-				} 
-			} else {
 			
-				$this->view->addErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Category_Name_Exists')."</h5>";	
-			}
+					$addErrorMessage[] = $translate->_('Err_Category_Name_Exists');	
+				}
+			} 
+			$this->view->addErrorMessage = $addErrorMessage;
 		}
 		$this->view->parent_id = $parent_id;
    }
@@ -268,11 +280,10 @@
 		
 		$filter = new Zend_Filter_StripTags();	
 		$category_id = $filter->filter(trim($this->_request->getPost('hidden_primary_id'))); 	
-		$parent_id = 0;
 		
-		if($request->isGet()){
-			$parent_id = (int)$request->getParam('parent_id');
-		}
+		$parent_id = $this->_request->getParam('parent_id');
+		
+		$this->view->cateTree = $category->getCateTree($parent_id);
 		
 		if($category_id > 0 && $category_id != "") {
 			$this->view->records = $category->GetCategoryById($category_id);	
@@ -288,32 +299,34 @@
 				$data['parent_id']=$filter->filter(trim($this->_request->getPost('parent_category'))); 	
 				$data['is_active']=$filter->filter(trim($this->_request->getPost('is_active'))); 
 				
-				$editErrorMessage = "";
+				$editErrorMessage = array();
 				if($data['category_name'] == "") {
-					$editErrorMessage .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Category_Name')."</h5>";			
+					$editErrorMessage[] = $translate->_('Err_Category_Name');			
 				}
 				if($data['is_active'] == "") {
-					$editErrorMessage .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Is_Active')."</h5>";			
+					$editErrorMessage[] = $translate->_('Err_Is_Active');			
 				}
 				
 				$where = "category_id != ".$data["category_id"];
-				if($home->ValidateTableField("category_name",$data['category_name'],"category_master",$where)) {
-					if( $editErrorMessage == ""){
+				if( count($editErrorMessage) == 0 || $editErrorMessage == ""){
+					if($home->ValidateTableField("category_name",$data['category_name'],"category_master",$where)) {
+					
 						$where = "category_id = ".$data["category_id"];
 						if($category->updateCategory($data,$where)) {
-							$mysession->Admin_Message = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Success_Edit_Category')."</h5>";
+							$mysession->Admin_SMessage = $translate->_('Success_Edit_Category');
 							$this->_redirect('/admin/category/index/parent_id/' . $parent_id); 	
 						} else {
-							$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>There is some problem in editing category</h5>";	
+							$editErrorMessage[] = $translate->_('Err_Edit_Category'); 
 						}
-					} 
-				} else {			
 					
-					$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Category_Name_Exists')."</h5>";	
+					} else {			
+						
+						$editErrorMessage[] = $translate->_('Err_Category_Name_Exists');	
+					}
 				}
 				
 				$this->view->parent_id = $parent_id;
-				$this->view->records = $category->GetCategoryById($data["category_id"]);	
+				$this->view->records = $data;	
 				$this->view->category_id =  $data["category_id"];	
 				$this->view->editErrorMessage = $editErrorMessage;
 				
@@ -324,6 +337,12 @@
 		
 		}
 		
+		if($parent_id > 0)
+		{
+			$this->view->path_array = $category->getParentCategories($parent_id);
+		}else{
+			$this->view->path_array = array();
+		}
    }
    
    /**
@@ -361,9 +380,9 @@
 		
 		if($category_id > 0 && $category_id != "") {
 			if($category->deleteCategory($category_id)) {
-				$mysession->Admin_Message = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Success_Delete_Category')."</h5>";
+				$mysession->Admin_SMessage = $translate->_('Success_Delete_Category');
 			} else {
-				$mysession->Admin_Message = "<h5 style='color:#FF0000;margin-bottom:0px;'>There is some problem in deleting category</h5>";	
+				$mysession->Admin_EMessage = $translate->_('Err_Delete_Category'); 
 			}		
 		} 
 		$this->_redirect("/admin/category/index/parent_id/" . $parent_id);		
@@ -408,14 +427,14 @@
 			$ids = implode($category_ids,",");
 			
 			if($category->deletemultipleCategories($ids)) {
-				$mysession->Admin_Message = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Success_M_Delete_Category')."</h5>";	
+				$mysession->Admin_SMessage = $translate->_('Success_M_Delete_Category');	
 			} else {
-				$mysession->Admin_Message = "<h5 style='color:#FF0000;margin-bottom:0px;'>There is some problem in deleting categories</h5>";				
+				$mysession->Admin_EMessage = $translate->_('Err_Delete_Category'); 				
 			}	
 			
 		}	else {
 		
-			$mysession->Admin_Message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_M_Delete_Category')."</h5>";				
+			$mysession->Admin_EMessage = $translate->_('Err_M_Delete_Category');				
 		}
 		$this->_redirect("/admin/category/index/parent_id/" . $parent_id);	
    }

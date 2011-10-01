@@ -86,6 +86,8 @@
 		$this->view->edit_action = SITE_URL."admin/definitions/edit";
 		$this->view->delete_action = SITE_URL."admin/definitions/delete";
 		$this->view->delete_all_action = SITE_URL."admin/definitions/deleteall";
+		$this->view->import_action = SITE_URL."admin/definitions/import";
+		$this->view->export_action = SITE_URL."admin/definitions/export";
 		
 		
 		//Create Object of Langage model
@@ -119,6 +121,7 @@
 		if($is_search == "1") {
 		
 			$filter = new Zend_Filter_StripTags();	
+			$data['definition_key']=$filter->filter(trim($this->_request->getPost('definition_key'))); 	
 			$data['definition_value']=$filter->filter(trim($this->_request->getPost('definition_value'))); 	
 			$data['language_id']= (int)$filter->filter(trim($this->_request->getPost('language_id')));
 			$data['content_group']= $filter->filter(trim($this->_request->getPost('content_group')));
@@ -141,10 +144,11 @@
 			
 		}		
 		// Success Message
-		$this->view->Admin_Message = $mysession->Admin_Message;
-		$this->view->Admin_Message_Error = $mysession->Admin_Message_Error;
-		$mysession->Admin_Message = "";
-		$mysession->Admin_Message_Error = "";
+		$this->view->Admin_SMessage = $mysession->Admin_SMessage;
+		$this->view->Admin_EMessage = $mysession->Admin_EMessage;
+		
+		$mysession->Admin_SMessage = "";
+		$mysession->Admin_EMessage = "";
 		
 		//Set Pagination
 		$paginator = Zend_Paginator::factory($result);
@@ -229,10 +233,10 @@
 				$where = " language_id = " . $data["language_id"] . " and content_group = '" . $data['content_group']. "' ";
 				if($home->ValidateTableField("definition_key",$data['definition_key'],"language_definitions",$where)) {
 					if($Definitions->insertDefinition($data)) {
-						$mysession->Admin_Message = $translate->_('Success_Add_Definition');
+						$mysession->Admin_SMessage = $translate->_('Success_Add_Definition');
 						$this->_redirect('/admin/definitions'); 	
 					} else {
-						$addErrorMessage[] = "There is some problem in adding definition";	
+						$addErrorMessage[] = $translate->_('Err_Add_Definition');			
 					}
 					
 				} else {
@@ -322,10 +326,10 @@
 					if($home->ValidateTableField("definition_key",$data['definition_key'],"language_definitions",$where)) {
 						$where = " id = " . $definition_id;
 						if($Definitions->updateDefinition($data,$where)) {
-							$mysession->Admin_Message = $translate->_('Success_Edit_Definition');
+							$mysession->Admin_SMessage = $translate->_('Success_Edit_Definition');
 							$this->_redirect('/admin/definitions'); 	
 						} else {
-							$editErrorMessage[] = "There is some problem in editing definition";	
+							$editErrorMessage[] =  $translate->_('Err_Edit_Definition');
 						}
 						
 					} else {
@@ -380,9 +384,9 @@
 		
 		if($definition_id > 0 && $definition_id != "") {
 			if($Definitions->deleteDefinition($definition_id)) {
-				$mysession->Admin_Message = $translate->_('Success_Delete_Definition');
+				$mysession->Admin_SMessage = $translate->_('Success_Delete_Definition');
 			} else {
-				$mysession->Admin_Message = "There is some problem in deleting language";	
+				$mysession->Admin_EMessage =  $translate->_('Err_Delete_Definition');
 			}		
 		} 
 		$this->_redirect("/admin/definitions");		
@@ -423,17 +427,254 @@
 			$ids = implode($definition_ids,",");
 			
 			if($Definitions->deleteMultipleDefinitions($ids)) {
-				$mysession->Admin_Message = $translate->_('Success_M_Delete_Definition');	
+				$mysession->Admin_SMessage = $translate->_('Success_M_Delete_Definition');	
 			} else {
-				$mysession->Admin_Message_Error = "There is some problem in deleting definitions";				
+				$mysession->Admin_EMessage = $translate->_('Err_Delete_Definition');			
 			}	
 			
 		}	else {
 		
-			$mysession->Admin_Message_Error = $translate->_('Err_M_Delete_Definition');				
+			$mysession->Admin_EMessage = $translate->_('Err_M_Delete_Definition');				
 		}
 		$this->_redirect("/admin/definitions");	
    }
    
+   /**
+     * Function importAction
+	 *
+	 * This function is used to import language definition
+	 *
+     * Date Created: 2011-09-30
+     *
+     * @access public
+	 * @param ()  - No parameter
+	 * @return (void) - Return void
+	 * @author Amar
+     * @license http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+     **/
+   public function importAction()
+   {
+   		
+		$translate = Zend_Registry::get('Zend_Translate');
+		
+		$this->view->site_url = SITE_URL."admin/definitions";
+		$this->view->import_action = SITE_URL."admin/definitions/import";		
+		
+		$Definitions = new Models_LanguageDefinitions();
+		
+		$Language = new Models_Language();
+   		
+		$filter = new Zend_Filter_StripTags();	
+		
+		$validator = new Zend_Validate_Regex(array('pattern' => '/^[a-zA-Z0-9_]+$/'));
+		
+		//Get available languages
+		$this->view->languages = $Language->getActiveLanguages();
+		
+		$request = $this->getRequest();
+		
+		if($request->isPost()){
+			
+			$allowedExtensions = array("txt");
+			$maxsize = 2097152;
+			$data['language_id']=(int)$filter->filter(trim($request->getPost('language_id')));
+			
+			$ErrorMessage = array();
+			$dfile = array();
+			
+			//Check if file is uploaded or not
+			if(count($_FILES) == 0)
+			{
+				$ErrorMessage[] = $translate->_('Err_Definition_File');
+			}
+			else
+			{
+				$dfile = $_FILES['definition_file'];
+			}	
+			
+			//Check if file extension for supported extensions
+			if(!in_array(substr($dfile['name'],strpos($dfile['name'],".")+1), $allowedExtensions))
+			{
+				$ErrorMessage[] = $translate->_('Err_Invalid_File_Ext');
+			}
+			
+			//Check if file type for allowed file type
+			if($dfile['type'] != "text/plain")
+			{
+				$ErrorMessage[] = $translate->_('Err_Invalid_File_Type');
+			}
+			
+			//Check if file size for maximum size allowed
+			if($dfile['size'] > $maxsize)
+			{
+				$ErrorMessage[] = $translate->_('Err_Max_File_Size');
+			}
+			
+			if(count($ErrorMessage) == 0)
+			{
+				$sql = "Insert ignore into language_definitions (language_id, content_group, definition_key, definition_value, status) values ";
+				
+				$fh = fopen($dfile['tmp_name'], 'r');
+				
+				$arr_group = array("ADMIN","USER","DEFAULT","FB STORE","FB");
+				
+				$current_group = "";
+				
+				$x = 0;
+				while($str = fgets($fh))
+				{
+					$str = trim($str);
+					
+					if($str == "")
+					{
+						continue;
+					}
+					
+					if($str != "" && strpos($str,"=") === false && in_array(strtoupper($str),$arr_group))
+					{
+						$current_group = strtoupper($str);
+						if($current_group === "FB STORE")
+						{
+							$current_group = "FB";
+						}
+					}
+					
+					if($str != "" && $current_group != "")
+					{
+						if(strpos($str,"=") !== false)
+						{
+							$arr_str = explode("=",$str);
+							
+							if($validator->isValid(trim($arr_str[0])) === false)
+							{
+								continue;
+							}
+							else
+							{
+								$sql .= "(" . $data['language_id'] . ", '".$current_group."', '".trim($arr_str[0])."', '".mysql_real_escape_string(trim($arr_str[1]))."', 1),";	
+								$x++;
+							}
+						}
+					}
+					else
+					{
+						continue;
+					}
+					
+					
+					if($x == 100)
+					{
+						$sql = rtrim($sql,",");
+						$Definitions->executeQuery($sql);
+						$x = 0;
+						$sql = "Insert ignore into language_definitions (language_id, content_group, definition_key, definition_value, status) values ";
+					}			
+					
+						
+				}
+				fclose($fh);
+				@unlink($dfile['tmp_name']);
+				
+				if($x > 0)
+				{
+					$sql = rtrim($sql,",");
+					
+					$Definitions->executeQuery($sql);
+				}
+				
+				if($current_group == "")
+				{
+					$ErrorMessage[] = $translate->_('Err_No_Group_In_File');
+				}
+				else
+				{
+					$this->view->SuccessMessage = $translate->_('Succ_Import_Language_Definitions');
+				}
+
+			}
+			
+			if(count($ErrorMessage) > 0)
+			{
+				$this->view->data = $data;
+				$this->view->ErrorMessage = $ErrorMessage;
+			}
+				
+			
+		}
+		
+   }
+   
+   /**
+     * Function exportAction
+	 *
+	 * This function is used to export language definition
+	 *
+     * Date Created: 2011-10-01
+     *
+     * @access public
+	 * @param ()  - No parameter
+	 * @return (void) - Return void
+	 * @author Amar
+     * @license http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+     **/
+   public function exportAction()
+   {
+   		$translate = Zend_Registry::get('Zend_Translate');
+		
+		$this->view->site_url = SITE_URL."admin/definitions";
+		$this->view->import_action = SITE_URL."admin/definitions/export";		
+		
+		$Definitions = new Models_LanguageDefinitions();
+		
+		$Language = new Models_Language();
+   		
+		//Get available languages
+		$this->view->languages = $Language->getActiveLanguages();
+		
+		$request = $this->getRequest();
+		
+		if($request->isPost()){
+			
+			$language_id=(int)trim($request->getPost('language_id'));
+			
+			$arr_definition = $Definitions->getDefinitionsByLanguageId($language_id);
+			
+			$str = "";
+			$content_group = "";
+			
+			if(count($arr_definition) > 0)
+			{
+				
+				for($i = 0; $i < count($arr_definition); $i++)
+				{
+					if($content_group != $arr_definition[$i]['content_group'])
+					{
+						$content_group = $arr_definition[$i]['content_group'];
+						$str .= PHP_EOL . $content_group . PHP_EOL;	
+					}
+					
+					$str .= $arr_definition[$i]['definition_key'] . " = " . $arr_definition[$i]['definition_value'] . PHP_EOL;	
+				}
+				
+				//Download code for created string
+				if($str != "")
+				{
+					header("Expires: 0");
+					header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+					header("Cache-Control: no-store, no-cache, must-revalidate");
+					header("Cache-Control: post-check=0, pre-check=0", false);
+					header("Pragma: no-cache");
+					header("Content-type: text/plain");
+					// tell file size
+					//header('Content-length: '.strlen($file));
+					// set file name
+					header('Content-disposition: attachment; filename=language.txt');
+					echo $str;
+					// Exit script. So that no useless data is output-ed.
+					exit;
+				}
+			}
+		}
+   }
 }
 ?>

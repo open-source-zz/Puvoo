@@ -197,8 +197,9 @@
 			$this->view->data = $data;
 			
 			$where = "1 = 1";
-			if($home->ValidateTableField("weight_unit_name",$data['weight_unit_name'],"weight_master",$where)) {
-				if( count($addErrorMessage) == 0 || $addErrorMessage == '' ){
+			if( count($addErrorMessage) == 0 || $addErrorMessage == '' ){
+				if($home->ValidateTableField("weight_unit_name",$data['weight_unit_name'],"weight_master",$where)) {
+				
 					if($weight->insertWeight($data)) {
 						$mysession->Admin_SMessage = $translate->_('Success_Add_Weight');
 						$this->_redirect('/admin/weight'); 	
@@ -206,11 +207,9 @@
 						$addErrorMessage[] = $translate->_('Err_Add_Weight');	
 					}
 				} else { 
-					$this->view->addErrorMessage = $addErrorMessage;
+					$addErrorMessage[] = $translate->_('Err_Weight_Unit_Name_Exists');	
 				} 
-			} else {
-				$addErrorMessage[] = $translate->_('Err_Weight_Unit_Name_Exists');	
-			}
+			} 
 			$this->view->addErrorMessage = $addErrorMessage;
 		}
    }
@@ -267,8 +266,8 @@
 				}
 				
 				$where = "weight_unit_id != ".$data["weight_unit_id"];
-				if($home->ValidateTableField("weight_unit_name",$data['weight_unit_name'],"weight_master",$where)) {
-					if( count($editErrorMessage) == 0 || $editErrorMessage == ''){
+				if( count($editErrorMessage) == 0 || $editErrorMessage == ''){	
+					if($home->ValidateTableField("weight_unit_name",$data['weight_unit_name'],"weight_master",$where)) {					
 						$where = "weight_unit_id = ".$data["weight_unit_id"];
 						if($weight->updateWeight($data,$where)) {
 							$mysession->Admin_SMessage = $translate->_('Success_Edit_Weight');
@@ -276,11 +275,12 @@
 						} else {
 							$editErrorMessage[] = $translate->_('Err_Edit_Weight');
 						}
-					} 
-				} else {			
+						
+					} else {			
 					
-					$editErrorMessage[] = $translate->_('Err_Weight_Name_Exists');
-				}
+						$editErrorMessage[] = $translate->_('Err_Weight_Name_Exists');
+					}
+				} 
 				
 				$this->view->records = $data;	
 				$this->view->weight_unit_id =  $data["weight_unit_id"];	

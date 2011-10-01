@@ -88,9 +88,11 @@ class Models_UserOrders
 					SUM(od.product_price * product_qty ) as product_cost, 
 					SUM(od.shipping_cost) as shipping_cost,
 					SUM(od.tax_rate) as tax_rate,
-					SUM(od.product_total_cost) as order_total_cost
+					SUM(od.product_total_cost) as order_total_cost,
+					cm.currency_symbol,cm.currency_code
 					FROM order_master as om
 					JOIN order_detail as od ON (om.order_id = od.order_id)
+					JOIN currency_master as cm ON (cm.currency_id = om.currency_id)
 					WHERE od.product_id 
 					IN( SELECT pm.product_id 
 						FROM product_master as pm
@@ -164,13 +166,15 @@ class Models_UserOrders
 					SUM(od.product_price * product_qty ) as product_cost, 
 					SUM(od.shipping_cost) as shipping_cost,
 					SUM(od.tax_rate) as tax_cost,
-					SUM(od.product_total_cost) as order_total_cost
+					SUM(od.product_total_cost) as order_total_cost,
+					cm.currency_symbol,cm.currency_code
 					FROM order_master as om
 					JOIN order_detail as od ON (om.order_id = od.order_id)
 					LEFT JOIN country_master as scm ON ( scm.country_id = om.shipping_user_country_id)
 				    LEFT JOIN country_master as bcm ON ( bcm.country_id = om.billing_user_country_id )
 				    LEFT JOIN state_master as ssm ON ( ssm.state_id = om.shipping_user_state_id )
 				    LEFT JOIN state_master as bsm ON ( bsm.state_id = om.billing_user_state_id )
+					JOIN currency_master as cm ON (cm.currency_id = om.currency_id)
 					WHERE od.product_id 
 					IN( SELECT pm.product_id 
 						FROM product_master as pm
@@ -393,13 +397,16 @@ class Models_UserOrders
 					SUM(od.product_price * product_qty ) as product_cost, 
 					SUM(od.shipping_cost) as shipping_cost,
 					SUM(od.tax_rate) as tax_rate,
-					SUM(od.product_total_cost) as order_total_cost
+					SUM(od.product_total_cost) as order_total_cost,
+					cm.currency_symbol,cm.currency_code
 					FROM order_master as om
 					JOIN order_detail as od ON (om.order_id = od.order_id)
+					JOIN currency_master as cm ON (cm.currency_id = om.currency_id)
 					WHERE od.product_id 
 					IN( SELECT pm.product_id 
 						FROM product_master as pm
 						WHERE pm.user_id = '".$this->user_id."' ) ";
+		
 					
 		if( $where != '' ){
 		 	$select .= $where;
@@ -407,7 +414,7 @@ class Models_UserOrders
 		$select .=" GROUP BY om.order_id
 					ORDER BY om.order_id DESC
 					LIMIT 0 , 10";
-					
+	
 		return $db->fetchAll($select);
 	 
 	 }

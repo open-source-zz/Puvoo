@@ -123,7 +123,7 @@ class REST_Controller_Action_Helper_ContextSwitch extends Zend_Controller_Action
 
                         if ($stylesheet !== false and !empty($stylesheet))
                         {
-                            $body = str_replace('<?xml version="1.0"?>', sprintf('<?xml version="1.0"?><?xml-stylesheet type="text/xsl" href="%s"?>', $stylesheet), $body);
+                            $body = str_replace('<?xml version="1.0" encoding="utf-8"?>', sprintf('<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xsl" href="%s"?>', $stylesheet), $body);
                         }
                     }
 

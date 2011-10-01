@@ -165,8 +165,11 @@ class User_OrdersController extends UserCommonController
 			
 		}		
 		// Success Message
-		$this->view->User_Message = $mysession->User_Message;
-		$mysession->User_Message = "";
+		$this->view->User_SMessage = $mysession->User_SMessage;
+		$this->view->User_EMessage = $mysession->User_EMessage;
+		
+		$mysession->User_SMessage = "";
+		$mysession->User_EMessage = "";
 		
 		//Set Pagination
 		$paginator = Zend_Paginator::factory($result);
@@ -236,11 +239,11 @@ class User_OrdersController extends UserCommonController
 				$data['order_status']= $this->_request->getPost('order_status');
 									
 				if($orders->updateOrder($data)) {
-					$editErrorMessage = $translate->_('Order_Update_Success');
+					$mysession->User_SMessage = $translate->_('Order_Update_Success');
 				} else {
-					$editErrorMessage = $translate->_('Err_Update_Order');
+					$mysession->User_EMessage = $translate->_('Err_Update_Order');
 				}
-				$mysession->User_Message = $editErrorMessage;
+				
 				$this->_redirect('/user/orders'); 
 			}  
 		}
@@ -287,7 +290,7 @@ class User_OrdersController extends UserCommonController
 			
 		} else {
 			
-			$mysession->User_Message = $translate->_('Err_View_Products');	
+			$mysession->User_EMessage = $translate->_('Err_View_Products');	
 			$this->_redirect('/user/orders'); 	
 		}
 		

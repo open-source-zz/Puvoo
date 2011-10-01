@@ -14,13 +14,16 @@
 		<?php echo $this->Translate('Order_Management'); ?>
 	</div>
 	
-	<div style="text-align:center;">
-		<?php if( count($this->editErrorMessage) > 0 ) { ?>
-		<?php 		foreach($this->editErrorMessage as $key => $val ) { ?>
-		<h5 style='color:#FF0000;margin-bottom:0px;'><?php echo $val; ?></h5>
-		<?php 		} 	?>
-		<?php } ?>
-	</div>
+	<?php if(count($this->editErrorMessage) > 0 ) { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
+				<?php foreach($this->editErrorMessage as $key => $val ) { ?>
+					<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+					<strong><?php echo $val; ?></strong></p>
+				<?php } ?>
+			</div>
+		</div>
+	<?php } ?>	
 	
 	<form method="post" name="detail_edit_form" id="detail_edit_form" >
 		<div class="typo">
@@ -78,7 +81,7 @@
 							&nbsp;&nbsp;<strong><?php echo $this->Translate('Order_Total_Product_Amount'); ?></strong>
 						</td>
 						<td width="50%">:&nbsp;
-							<?php echo $order_detail["total_product_amount"]; ?>
+							<?php echo $order_detail["currency_symbol"]." ".$order_detail["total_product_amount"]; ?>
 						</td>
 					</tr>
 					<tr>
@@ -86,7 +89,7 @@
 							&nbsp;&nbsp;<strong><?php echo $this->Translate('Order_Shipping_Cost'); ?></strong>
 						</td>
 						<td width="50%">:&nbsp;
-							<?php echo $order_detail["shipping_cost"]; ?>
+							<?php echo $order_detail["currency_symbol"]." ".$order_detail["shipping_cost"]; ?>
 						</td>
 					</tr>
 					<tr>
@@ -94,7 +97,7 @@
 							&nbsp;&nbsp;<strong><?php echo $this->Translate('Order_Total_Tax_Cost'); ?></strong>
 						</td>
 						<td width="50%">:&nbsp;
-							<?php echo $order_detail["total_tax_cost"]; ?>
+							<?php echo $order_detail["currency_symbol"]." ".$order_detail["total_tax_cost"]; ?>
 						</td>
 					</tr>
 					<tr>
@@ -102,7 +105,7 @@
 							&nbsp;&nbsp;<strong><?php echo $this->Translate('Order_Total_Order_Amount'); ?></strong>
 						</td>
 						<td width="50%">:&nbsp;
-							<?php echo $order_detail["total_order_amount"]; ?>
+							<?php echo $order_detail["currency_symbol"]." ".$order_detail["total_order_amount"]; ?>
 						</td>
 					</tr>
 					<tr><td colspan="" height="10"></td></tr>
