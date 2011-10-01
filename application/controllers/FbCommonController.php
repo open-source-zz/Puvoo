@@ -123,47 +123,56 @@ class FbCommonController extends Zend_Controller_Action
 		// Left Maenu
 		//to get all main category
 		$Allcategory = $Category->GetMainCategory();
-		
+		//print "<pre>";
+		//print_r($Allcategory);die;
 		$No_category = count($Allcategory);
 		
-		$Modulo_category = $No_category % 4;
-		
-		$final_cal = ($No_category - $Modulo_category ) / 4;
-		
-		$cat_array = array();
-		
-		$cat_array[0] = $final_cal;
-		$cat_array[1] = $final_cal;
-		$cat_array[2] = $final_cal;
-		$cat_array[3] = $final_cal;
-		
-		
-		for($i=0; $i< $final_cal; $i++) 
+		if($No_category > 4)
 		{
-			$cat_array[$i] += 1; 	
-		}
-		
-		$new_no = $cat_array[0];
-		// i m here
-		// loop the array by $new_no
-		 
-		$menu_array = array();
-		$increment_no = 0;
-		foreach( $cat_array as $key => $val )
-		{
-			$row = array();
-			$limit_no = $increment_no + $new_no; 
-			$other_no = 0;
-			for( $j = $increment_no; $j < (int)$limit_no; $j++ )
+			$Modulo_category = $No_category % 4;
+			
+			$final_cal = ($No_category - $Modulo_category ) / 4;
+			
+			$cat_array = array();
+			
+			$cat_array[0] = $final_cal;
+			$cat_array[1] = $final_cal;
+			$cat_array[2] = $final_cal;
+			$cat_array[3] = $final_cal;
+			
+			//print_r($cat_array);die;
+			for($i=0; $i< $final_cal; $i++) 
 			{
-				if(isset($Allcategory[$j])) {
-					$row[] = $Allcategory[$j];
-				}
+				$cat_array[$i] += 1; 	
 			}
-			$increment_no = $increment_no + $new_no; 
-			$menu_array[] = $row;
+			
+			$new_no = $cat_array[0];
+			// i m here
+			// loop the array by $new_no
+			 
+			$menu_array = array();
+			$increment_no = 0;
+			foreach( $cat_array as $key => $val )
+			{
+				//print_r($val);
+				$row = array();
+				$limit_no = $increment_no + $new_no; 
+				$other_no = 0;
+				for( $j = $increment_no; $j < (int)$limit_no; $j++ )
+				{
+					if(isset($Allcategory[$j])) {
+						$row[] = $Allcategory[$j];
+					}
+				}
+				$increment_no = $increment_no + $new_no; 
+				$menu_array[] = $row;
+			}
+		}else{
+		
+			$menu_array[] = $Allcategory;
 		}
-		//print_r(menu_array);die;
+		//print "<pre>";
+		//print_r($menu_array);die;
 		$this->view->Mycategory = $menu_array;
 		$this->view->Allcategory = $Allcategory;
 		

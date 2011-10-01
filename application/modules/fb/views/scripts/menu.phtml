@@ -10,7 +10,7 @@
 									<ul>
 										<?php foreach($record[$i] as $key => $val ) { ?>
 											<li>
-												<a href="#"><?php echo $val["category_name"]; ?></a>
+												<a href="<?php echo SITE_FB_URL ?>category/subcat/id/<?php echo $val['category_id']; ?>"><?php echo $val["category_name"]; ?></a>
 											</li>	
 										<?php } ?>
 									</ul>

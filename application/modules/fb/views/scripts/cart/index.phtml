@@ -32,7 +32,7 @@
  					<?php foreach($this->cartItems as $Item){?>
 						<div id="cartRow_<?php echo $Item['product_id'];?>" class="itemAvailable">
 							<div class="cartItemProductImageCell">
-								<img class="cartItemProductImage" src="<?php echo $Item['image_path'] ?>/<?php echo $Item['image_name'] ?>" alt="" />
+								<img class="cartItemProductImage" src="<?php echo SITE_PRODUCT_IMAGES_PATH.$Item['image_path'] ?>/<?php echo $Item['image_name'] ?>" alt="" />
 							</div>
 							<div class="cartItemDivider cartItemMainContent">
 								<span class="cartItemProductTitle">
@@ -604,8 +604,9 @@
 									<table cellpadding="0" cellspacing="0">
 										<tr>
 											<td>
+												<?php echo SITE_PRODUCT_IMAGES_PATH; ?>
 												<div class="cartItemProductImageCell">
-													<img class="cartItemProductImage" src="<?php echo $Item['image_path'] ?>/<?php echo $Item['image_name'] ?>" alt="" />
+													<img class="cartItemProductImage" src="<?php echo SITE_PRODUCT_IMAGES_PATH.$Item['image_path'] ?>/<?php echo $Item['image_name'] ?>" alt="" />
 												</div>
 												<div class="cartItemDivider cartItemMainContent">
 													<span class="cartItemProductTitle">

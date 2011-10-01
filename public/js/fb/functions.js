@@ -1,4 +1,5 @@
 
+
 function getPage(page)
 {
 	$('#page_no').val(page);
@@ -618,7 +619,9 @@ function showProductThumbImage(ThumbIndex,ImagePath,Imagename) {
 	$(id).removeClass("otherimg");
 	$(id).addClass("active");
 	
-	var ThumbURLs = ImagePath+"/"+Imagename;
+	var ThumbURLs = produImagePath+ImagePath+"/"+Imagename;
+	
+	//alert(ThumbURLs);
  	
 	$('#bigimg1 img').attr('src', ThumbURLs);
  

@@ -138,10 +138,10 @@ class Fb_ProductController extends FbCommonController
 		foreach($productImages as $key=>$img)
 		{
 			$SmallImg = explode('_',$img['image_name']);
-			$tinyImage = $img['image_path']."/".$SmallImg[0]."_th2.jpg";
+			$tinyImage = SITE_PRODUCT_IMAGES_PATH.$img['image_path']."/".$SmallImg[0]."_th2.jpg";
 			if($key == 0)
 			{
-				$this->view->DefaultImagePath = $img['image_path']."/".$img['image_name']."";
+				$this->view->DefaultImagePath = SITE_PRODUCT_IMAGES_PATH.$img['image_path']."/".$img['image_name']."";
  			}
 
 			if(count($productImages) > 1){

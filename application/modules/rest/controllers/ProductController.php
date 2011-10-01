@@ -630,7 +630,7 @@ class Rest_ProductController extends RestCommonController
 					
 					$ext = "";
 					$imgname = "p".$this->user_id;
-					$filepath = SITE_PRODUCT_IMAGES_PATH . "/p".$arr_msg[$i]["id"];
+					$filepath = "/p".$arr_msg[$i]["id"];
 					$arr_imgname = array();
 					$img_data = array();
 					$filename = "";	
@@ -1399,7 +1399,7 @@ class Rest_ProductController extends RestCommonController
 					
 					$ext = "";
 					$imgname = "p".$this->user_id;
-					$filepath = SITE_PRODUCT_IMAGES_PATH . "/p".$products[$i]['pid'];
+					$filepath = "/p".$products[$i]['pid'];
 					$arr_imgname = array();
 					$img_data = array();
 					$filename = "";	

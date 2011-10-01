@@ -92,7 +92,7 @@ class User_ImageController extends UserCommonController
 			
 			$ext = "";
 			//$imgname = "p".$this->user_id;
-			$filepath = SITE_PRODUCT_IMAGES_PATH . "/p".$_GET['id'];
+			$filepath = "/p".$_GET['id'];
 			$arr_imgname = array();
 			$img_data = array();
 			$filename = "";	
