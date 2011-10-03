@@ -222,8 +222,8 @@
 			$this->view->data = $data;
 			
 			$where = "1 = 1";
-			if($home->ValidateTableField("user_email",$data['user_email'],"user_master",$where)) {
-				if( $addErrorMessage == NULL && $addErrorMessage == ''){
+			if( count($addErrorMessage) == 0 || $addErrorMessage == ''){
+				if($home->ValidateTableField("user_email",$data['user_email'],"user_master",$where)) {
 					$data['user_password'] = md5($data['user_password']);
 					if($merchants->insertMerchants($data)) {
 						$mysession->Admin_SMessage = $translate->_('Success_Add_Merchant'); 
@@ -232,10 +232,10 @@
 						$addErrorMessage[] = $translate->_('Err_Add_Merchants');	
 					}
 				} else {
-					$this->view->addErrorMessage = $addErrorMessage;
+					$addErrorMessage[] = $translate->_('Err_Merchants_Exists');	
 				} 
 			} else {
-				$addErrorMessage[] = $translate->_('Err_Merchants_Exists');	
+				$this->view->addErrorMessage = $addErrorMessage;
 			}
 			$this->view->addErrorMessage = $addErrorMessage;			
 		}
@@ -307,20 +307,27 @@
 				}
 				
 				$cond = "user_id != ".$data["user_id"];
-				if($home->ValidateTableField("user_email",$data['user_email'],"user_master",$cond)) {
-					if( count($editErrorMessage) ==  0 || $editErrorMessage == ''){
+				
+				if( count($editErrorMessage) ==  0 || $editErrorMessage == ''){
+				
+					if($home->ValidateTableField("user_email",$data['user_email'],"user_master",$cond)) {
+					
 						$where = "user_id = ".$data["user_id"];
 						if($merchants->updateMerchants($data,$where)) {
+							
 							$mysession->Admin_SMessage = $translate->_('Success_Edit_Merchant');
 							$this->_redirect('/admin/merchants'); 	
+							
 						} else {
+							
 							$editErrorMessage[] = $translate->_('Err_Edit_Merchants');	 
 						}
-					} 
 					
-				} else {
-					$editErrorMessage[] = $translate->_('Err_Merchants_Exists');	
-				}
+					} else {
+					
+						$editErrorMessage[] = $translate->_('Err_Merchants_Exists');	
+					}
+				} 
 				
 				$this->view->records = $data;	
 				$this->view->merchant_id =  $data["user_id"];

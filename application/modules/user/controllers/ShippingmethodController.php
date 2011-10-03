@@ -127,8 +127,11 @@ class User_ShippingmethodController extends UserCommonController
 		}	
 		
 		// Success Message
-		$this->view->User_Message = $mysession->User_Message;
-		$mysession->User_Message = "";
+		$this->view->User_SMessage = $mysession->User_SMessage;
+		$this->view->User_EMessage = $mysession->User_EMessage;
+		
+		$mysession->User_SMessage = "";
+		$mysession->User_EMessage = "";
 		
 		//Set Pagination
 		$paginator = Zend_Paginator::factory($result);
@@ -186,40 +189,50 @@ class User_ShippingmethodController extends UserCommonController
 			$data2['zone']=$filter->filter(trim($this->_request->getPost('shipping_zone'))); 	
 			$data2['price']=$filter->filter(trim($this->_request->getPost('shipping_price'))); 
 			
-			$error_message = "";
+			$row = array_merge($data, $data2);
+			$this->view->data = $row;
+			
+			$addErrorMessage = array();
 			// Validate records and insert
 			if($data['shipping_method_name'] == "" ) {
-				$error_message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Shipping_Method_Name')."</h5>";
-			} else if($data2['zone'] == "" ) {
-				$error_message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Shipping_Zone')."</h5>";
+				$addErrorMessage[] = $translate->_('Err_Shipping_Method_Name');
 			}
-			else if($data2['price'] == "" ) {
-				$error_message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Shipping_Method_Rate')."</h5>";
-			} else {
+			if($data2['zone'] == "" ) {
+				$addErrorMessage[] = $translate->_('Err_Shipping_Zone');
+			}
+			if($data2['price'] == "" ) {
+				$addErrorMessage[] = $translate->_('Err_Shipping_Method_Rate');
+			} 
+			
+			if( count($addErrorMessage) == 0 || $addErrorMessage == "" ) {
 				
 				$where = "user_id = ".$mysession->User_Id;
+				
 				if($home->ValidateTableField("shipping_method_name",$data['shipping_method_name'],"user_shipping_method",$where)) {
 					// Insert Records
 					$shipping_method_id = $shipping_method->insertShippingMethod($data);
 					
 					if($shipping_method_id > 0) {
+					
 						$data2["shipping_method_id"] = $shipping_method_id;
 						$shipping_method->insertShippingMethod($data2,"user_shipping_method_detail");
-						$mysession->User_Message = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Success_Add_Shipping_Method')."</h5>";
+						$mysession->User_SMessage = $translate->_('Success_Add_Shipping_Method');
 						$this->_redirect('/user/shippingmethod'); 	
+					
 					} else {
-						$error_message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Add_Shipping_Method')."</h5>";	
+					
+						$addErrorMessage[] = $translate->_('Err_Add_Shipping_Method');	
 					}
 					
 				} else {
 					
-					$error_message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Shipping_Method_Exists')."</h5>";
+					$addErrorMessage[] = $translate->_('Err_Shipping_Method_Exists');
 					
 				}
 			
 			}
 			
-			$this->view->error_message = $error_message;			
+			$this->view->addErrorMessage = $addErrorMessage;			
 		} 
 	
 	}
@@ -278,44 +291,50 @@ class User_ShippingmethodController extends UserCommonController
 				$data2['zone']=$filter->filter(trim($this->_request->getPost('shipping_zone'))); 	
 				$data2['price']=$filter->filter(trim($this->_request->getPost('shipping_price'))); 
 				
-				$error_message = "";
+				$row = array_merge($data, $data2);
+				$editErrorMessage = array();
 				// Validate records and insert
 				if($data['shipping_method_name'] == "" ) {
-					$error_message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Shipping_Method_Name')."</h5>";
-				} else if($data2['zone'] == "" ) {
-					$error_message .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Shipping_Zone')."</h5>";
+					$editErrorMessage[] = $translate->_('Err_Shipping_Method_Name');
+				} 
+				if($data2['zone'] == "" ) {
+					$editErrorMessage[] = $translate->_('Err_Shipping_Zone');
 				}
-				else if($data2['price'] == "" ) {
-					$error_message .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Shipping_Method_Rate')."</h5>";
-				} else {
+				if($data2['price'] == "" ) {
+					$editErrorMessage[] = $translate->_('Err_Shipping_Method_Rate');
+				} 
+				
+				
+				if( count($editErrorMessage) == 0 || $editErrorMessage == "") {
 					// Update Records
 					$cond = "shipping_method_id != '".$primary_id."' AND user_id = ".$mysession->User_Id;
-					if($home->ValidateTableField("shipping_method_name",$data['shipping_method_name'],"user_shipping_method",$cond)) {
-						if($error_message == "" )	{
-							$where = "shipping_method_id = ".$primary_id;		
-							$update1 = $shipping_method->updateShippingMethod($data,$where);
-							$update2 = $shipping_method->updateShippingMethod($data2,$where,"user_shipping_method_detail");			
-							if($update1 = TRUE || $update2 = TRUE) {
-								$shipping_method->updateShippingMethod($data2,$where,"user_shipping_method_detail");
-								$mysession->User_Message = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Success_Edit_Shipping_Method')."</h5>";
-								$this->_redirect('/user/shippingmethod'); 	
-							} else {
-								$error_message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Edit_Shipping_Method')."</h5>";	
-							}					
-						}
+					if($home->ValidateTableField("shipping_method_name",$data['shipping_method_name'],"user_shipping_method",$cond)) 					{
+						
+						$where = "shipping_method_id = ".$primary_id;		
+						$update1 = $shipping_method->updateShippingMethod($data,$where);
+						$update2 = $shipping_method->updateShippingMethod($data2,$where,"user_shipping_method_detail");			
+
+						if($update1 = TRUE || $update2 = TRUE) {
+
+							$shipping_method->updateShippingMethod($data2,$where,"user_shipping_method_detail");
+							$mysession->User_SMessage = $translate->_('Success_Edit_Shipping_Method');
+							$this->_redirect('/user/shippingmethod'); 	
+
+						} else {
+
+							$editErrorMessage[] = $translate->_('Err_Edit_Shipping_Method');	
+						}					
+						
 					} else {
 					
-						$error_message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Shipping_Method_Exists')."</h5>";
+						$editErrorMessage[] = $translate->_('Err_Shipping_Method_Exists');
 					}
 				
 				}
 				
-				$this->view->error_message = $error_message;	
-				
-				if($primary_id != "") {
-					$this->view->records = $shipping_method->GetShippingMethodById($primary_id);	
-					$this->view->shipping_method_id =  $primary_id;						
-				}
+				$this->view->editErrorMessage = $editErrorMessage;	
+				$this->view->records = $row;	
+				$this->view->shipping_method_id =  $primary_id;		
 			}  
 		}
 		
@@ -352,9 +371,9 @@ class User_ShippingmethodController extends UserCommonController
 		if($shipping_method_id > 0 && $shipping_method_id != "") {
 			if($shipping_method->deleteShippingMethod($shipping_method_id)) {			
 				$shipping_method->deleteShippingMethod($shipping_method_id,"shipping_method_id","user_shipping_method_detail");
-				$mysession->User_Message = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Shipping_Method_Success_Delete')."</h5>";
+				$mysession->User_SMessage = $translate->_('Shipping_Method_Success_Delete');
 			} else {
-				$mysession->User_Message = "<h5 style='color:#FF0000;margin-bottom:0px;'>There is some problem in deleting shipping methods</h5>";	
+				$mysession->User_EMessage = $translate->_('Err_Delete_Shipping_Method');
 			}		
 		} 
 		$this->_redirect('/user/shippingmethod'); 	
@@ -394,14 +413,14 @@ class User_ShippingmethodController extends UserCommonController
 			
 			if($shipping_method->deletemultipleShippingMethod($ids)) {
 				$shipping_method->deletemultipleShippingMethod($ids,"shipping_method_id","user_shipping_method_detail");
-				$mysession->User_Message = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Shipping_Method_Success_M_Delete')."</h5>";	
+				$mysession->User_SMessage = $translate->_('Shipping_Method_Success_M_Delete');	
 			} else {
-				$mysession->User_Message = "<h5 style='color:#FF0000;margin-bottom:0px;'>There is some problem in deleting shipping methods</h5>";				
+				$mysession->User_EMessage = $translate->_('Err_Delete_Shipping_Method');			
 			}	
 			
 		}	else {
 		
-			$mysession->User_Message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Shipping_Method_Err_M_Delete')."</h5>";				
+			$mysession->User_EMessage = $translate->_('Shipping_Method_Err_M_Delete');				
 		}
 		$this->_redirect('/user/shippingmethod'); 	
 	

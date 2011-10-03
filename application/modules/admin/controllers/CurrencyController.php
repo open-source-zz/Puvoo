@@ -211,8 +211,10 @@
 			$this->view->data = $data;
 			
 			$where = "1 = 1";
-			if($home->ValidateTableField("currency_name",$data['currency_name'],"currency_master",$where)) {
-				if( count($addErrorMessage) == 0 || $addErrorMessage == "" ){
+			if( count($addErrorMessage) == 0 || $addErrorMessage == "" ){
+			
+				if($home->ValidateTableField("currency_name",$data['currency_name'],"currency_master",$where)) {
+				
 					if($currency->insertCurrency($data)) {
 						$mysession->Admin_SMessage = $translate->_('Success_Add_Currency');
 						$this->_redirect('/admin/currency'); 	
@@ -220,12 +222,9 @@
 						$addErrorMessage[] = $translate->_('Err_Add_Currency'); 
 					}
 				} else { 
-					$this->view->addErrorMessage = $addErrorMessage;
+					$addErrorMessage[] = $translate->_('Err_Currency_Name_Exists');	
 				} 
-			} else {
-			
-				$addErrorMessage[] = $translate->_('Err_Currency_Name_Exists');	
-			}
+			} 
 			
 			$this->view->addErrorMessage = $addErrorMessage;
 		}
@@ -298,8 +297,10 @@
 				}
 				
 				$where = "currency_id != ".$data["currency_id"];
-				if($home->ValidateTableField("currency_name",$data['currency_name'],"currency_master",$where)) {
-					if( count($editErrorMessage) == 0 || $editErrorMessage == '' ){
+				if( count($editErrorMessage) == 0 || $editErrorMessage == '' ){
+				
+					if($home->ValidateTableField("currency_name",$data['currency_name'],"currency_master",$where)) {
+					
 						$where = "currency_id = ".$data["currency_id"];
 						if($currency->updateCurrency($data,$where)) {
 							$mysession->Admin_SMessage = $translate->_('Success_Edit_Currency');
@@ -307,12 +308,11 @@
 						} else {
 							$editErrorMessage[] =  $translate->_('Err_Edit_Currency'); 
 						}
-					} 
-				} else {			
-					
-					$editErrorMessage[] = $translate->_('Err_Currency_Name_Exists');	
-				}
-				
+					} else {			
+						
+						$editErrorMessage[] = $translate->_('Err_Currency_Name_Exists');	
+					}
+				}				
 				$this->view->records = $data;	
 				$this->view->currency_id =  $data["currency_id"];	
 				$this->view->editErrorMessage = $editErrorMessage;
@@ -459,7 +459,6 @@
 				
 				for($i=0; $i < $total_rec; $i++)
 				{
-					
 					if($data[$i]['currency_name'] == "") {
 						$editErrorMessage[] = $translate->_('Err_Currency_Name');			
 					}
@@ -504,9 +503,6 @@
 							
 							$editErrorMessage[] = $translate->_('Err_Currency_Name_Exists');	
 						}
-						
-						
-				
 					}
 					
 					if(count($editErrorMessage) == 0)
@@ -520,19 +516,12 @@
 					}
 					
 				}
-				
-				
 			}			
 		}
 		else
 		{
 			$this->view->records = $currency->GetAllCurrency();
 		}
-		
-		
-		
-			
-		
    }
 }
 ?>

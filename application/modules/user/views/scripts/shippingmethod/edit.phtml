@@ -17,9 +17,16 @@
 
 
 	<!--       Error or Success Messages          -->
-	<div style="text-align:center">
-		<?php echo $this->error_message; ?>
-	</div>
+	<?php if(count($this->editErrorMessage) > 0 ) { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
+				<?php foreach($this->editErrorMessage as $key => $val ) { ?>
+					<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+					<strong><?php echo $val; ?></strong></p>
+				<?php } ?>
+			</div>
+		</div>
+	<?php } ?>	
 	<!--       End Messages           -->
 
 
@@ -109,7 +116,7 @@
 			<tr>
 				<td>Country : &nbsp;&nbsp;</td>
 				<td>
-					<select name="store_country" id="store_country" class="Field250"  >
+					<select name="store_country" onchange="BlinckLink(this.value,'CountryAddLink')" id="store_country" class="Field250"  >
 						<option value="" >Select Country</option>
 						<?php  		foreach($this->country as $key => $val) { ?>
 						<option value="<?php echo $val['country_id'].'/'.$val['country_iso2']; ?>"><?php echo $val["country_name"];  ?></option>
@@ -117,20 +124,20 @@
 					</select>
 				</td>
 				<td>
-					<a href="#" style="text-decoration:none; cursor:pointer;" onclick="AddCountry()" ><?php echo $this->Translate('Add'); ?></a>
+					<a href="#" id="CountryAddLink" style="text-decoration:none; cursor:pointer;" onclick="AddCountry()" ><?php echo $this->Translate('Add'); ?></a>
 				</td>
 			</tr>
 			<tr><td colspan="2" height="10" ></td></tr>
 			<tr>
 				<td>State : &nbsp;&nbsp;</td>
 				<td>
-					<select name="store_country_state" id="store_country_state"  class="Field250" >
+					<select name="store_country_state" id="store_country_state" onchange="BlinckLink(this.value,'StateAddLink')"  class="Field250" >
 						<option value="" selected="selected">Select state</option>
 					</select>
 					<span>(<?php echo $this->Translate('Shipping_State_Optional'); ?>)</span>
 				</td>
 				<td>	
-					<a href="#" onclick="AddCountryState()" style="text-decoration:none; cursor:pointer;"><?php echo $this->Translate('Add'); ?></a>
+					<a href="#" id="StateAddLink" onclick="AddCountryState()" style="text-decoration:none; cursor:pointer;"><?php echo $this->Translate('Add'); ?></a>
 				</td>
 			</tr>
 			<tr><td colspan="2" height="10" style="border-bottom:2px solid #CCCCCC; "></td></tr>

@@ -131,10 +131,11 @@
 			
 		}		
 		// Success Message
-		$this->view->Admin_Message = $mysession->Admin_Message;
-		$this->view->Admin_Message_Error = $mysession->Admin_Message_Error;
-		$mysession->Admin_Message = "";
-		$mysession->Admin_Message_Error = "";
+		$this->view->Admin_SMessage = $mysession->Admin_SMessage;
+		$this->view->Admin_EMessage = $mysession->Admin_EMessage;
+		
+		$mysession->Admin_SMessage = "";
+		$mysession->Admin_EMessage = "";
 		
 		//Set Pagination
 		$paginator = Zend_Paginator::factory($result);
@@ -229,10 +230,10 @@
 					$data['sort_order'] = $Language->getMaxOrder() + 1;
 					
 					if($Language->insertLanguage($data)) {
-						$mysession->Admin_Message = $translate->_('Success_Add_Language');
+						$mysession->Admin_SMessage = $translate->_('Success_Add_Language');
 						$this->_redirect('/admin/languages'); 	
 					} else {
-						$addErrorMessage[] = "There is some problem in adding language";	
+						$addErrorMessage[] =  $translate->_('Err_Add_Language');	
 					}
 					
 				} else {
@@ -326,10 +327,10 @@
 						$data['locale'] = $data['code'] . "," . $data['charset'] . "," . $data["code"] . "," . strtolower($data["name"]);
 						$where = "language_id = " . $language_id;
 						if($Language->updateLanguage($data,$where)) {
-							$mysession->Admin_Message = $translate->_('Success_Edit_Language');
+							$mysession->Admin_SMessage = $translate->_('Success_Edit_Language');
 							$this->_redirect('/admin/languages'); 	
 						} else {
-							$editErrorMessage[] = "There is some problem in editing language";	
+							$editErrorMessage[] = $translate->_('Err_Edit_Language');
 						}
 						
 					} else {
@@ -340,7 +341,7 @@
 					$this->view->editErrorMessage = $editErrorMessage;
 				} 
 			
-				$this->view->records = $data; //$Language->getLanguageById($language_id);	
+				$this->view->records = $data; 
 				$this->view->language_id =  $language_id;	
 				$this->view->editErrorMessage = $editErrorMessage;
 				
@@ -384,9 +385,9 @@
 		
 		if($language_id > 0 && $language_id != "") {
 			if($Language->deleteLanguage($language_id)) {
-				$mysession->Admin_Message = $translate->_('Success_Delete_Language');
+				$mysession->Admin_SMessage = $translate->_('Success_Delete_Language');
 			} else {
-				$mysession->Admin_Message = "There is some problem in deleting language";	
+				$mysession->Admin_EMessage = $translate->_('Err_Delete_Language');
 			}		
 		} 
 		$this->_redirect("/admin/languages");		
@@ -427,14 +428,14 @@
 			$ids = implode($language_ids,",");
 			
 			if($Language->deleteMultipleLanguages($ids)) {
-				$mysession->Admin_Message = $translate->_('Success_M_Delete_Language');	
+				$mysession->Admin_SMessage = $translate->_('Success_M_Delete_Language');	
 			} else {
-				$mysession->Admin_Message_Error = "There is some problem in deleting categories";				
+				$mysession->Admin_EMessage = $translate->_('Err_Delete_Language');				
 			}	
 			
 		}else{
 		
-			$mysession->Admin_Message_Error = $translate->_('Err_M_Delete_Language');				
+			$mysession->Admin_EMessage = $translate->_('Err_M_Delete_Language');				
 		}
 		$this->_redirect("/admin/languages");	
    }

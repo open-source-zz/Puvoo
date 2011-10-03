@@ -171,7 +171,19 @@ class Models_Language
 	{
 		$db = $this->db;
 		
+		$id = 0;
+		
 		$db->insert("language_master", $data); 	 
+		
+		$id = $db->lastInsertId();
+		
+		//Insert definitions for latest added language
+		$sql = "INSERT into language_definitions (language_id, content_group,definition_key,definition_value, status) 
+				(SELECT '".$id."', content_group, definition_key, definition_value,status from language_definitions  
+				where language_definitions.language_id = 1)";
+		
+		$db->query($sql);	
+		
 		
 		return true; 
 

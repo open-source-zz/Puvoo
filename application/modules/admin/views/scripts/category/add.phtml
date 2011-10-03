@@ -1,7 +1,22 @@
 <div class="Breadcrumb" id="PageBreadcrumb">
 	<ul>
 	   <li class="Home SecondLast"><a href="#"><?php echo $this->Translate("Administration"); ?></a></li>
+	   <?php if($this->parent_id == 0){ ?>
 	   <li class="Last"><span><?php echo $this->Translate('Category'); ?></span></li>
+	   <?php } ?>
+	   <?php if($this->parent_id > 0){ ?>
+	   <li class="Last"><a href="<?php echo $this->site_url ?>"><?php echo $this->Translate('Category'); ?></a></li>
+	   <?php for($i = count($this->path_array)-1; $i >= 0; $i--){ 
+	   	if($i == 0)
+		{
+	   ?>
+	   <li class="Last"><span><?php echo $this->path_array[$i]['category_name']; ?></span></li>
+	   <?php 
+	   }else{ 
+	   
+	   ?>
+	   <li class="Last"><a href="<?php echo $this->site_url . '/index/parent_id/' . $this->path_array[$i]['category_id']; ?>"><?php echo $this->path_array[$i]['category_name']; ?></a></li>
+	   <?php }}} ?>
 	</ul>
 </div>
 
@@ -11,9 +26,16 @@
 		<?php echo $this->Translate('Manage_Categories'); ?>
 	</div>
 	
-	<div >
-		<?php echo $this->addErrorMessage; ?>
-	</div>
+	<?php if(count($this->addErrorMessage) > 0 ) { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
+				<?php foreach($this->addErrorMessage as $key => $val ) { ?>
+					<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+					<strong><?php echo $val; ?></strong></p>
+				<?php } ?>
+			</div>
+		</div>
+	<?php } ?>	
 	
 	<form method="post" name="add_form" id="add_form" >
 		<table class="Panel" style="margin-top:10px;">
@@ -29,7 +51,7 @@
 								<?php echo $this->Translate('Category_Name'); ?>
 							</td>
 							<td>
-								<input type="text" name="category_name" id="category_name" class="Field250" />
+								<input  type="text" value="<?php echo $this->data['category_name']; ?>" name="category_name" id="category_name" class="Field250" />
 								<span></span>
 							</td>
 						</tr>
@@ -40,17 +62,23 @@
 							</td>
 							<td>
 								<select name="parent_category" id="parent_category" class="comboField">
-									<option value="0" selected="selected">Select parent category</option>
-									<?php if(count($this->categories) > 0) {  ?>
+									<option value="0" selected="selected"><?php echo $this->Translate('Admin_Select_Parent_Category'); ?></option>
+									<?php echo $this->cateTree; ?>
+								</select>
+								<span></span>
+								
+								<!--<?php if(count($this->categories) > 0) {  ?>
 									<?php  		foreach($this->categories as $key => $val) { ?>	
+									<?php 			if($val['category_id'] == $this->data['parent_category']) { ?>
+									<option selected="selected" value="<?php echo $val['category_id']; ?>">
+									<?php 			} else { ?>
 									<option value="<?php echo $val['category_id']; ?>">
+									<?php 			}?>
 									<?php 			echo $val["category_name"];  ?>	
 									</option>
 									<?php 		}  ?>
 									<?php } else {  ?>
-									<?php }  ?>
-								</select>
-								<span></span>
+									<?php }  ?>-->
 							</td>
 						</tr>						
 						<tr><td height="15"></td></tr>
@@ -60,10 +88,22 @@
 							</td>
 							<td>
 								<span>
-									<input type="radio" name="is_active" id="is_active" class="" value="1" />
-									<?php echo $this->Translate('Admin_User_Status_Active'); ?>&nbsp;
-									<input type="radio" name="is_active"  value="0" />
-									<?php echo $this->Translate('Admin_User_Status_Inactive'); ?>
+									<?php if($this->data['is_active'] == "1") { ?>
+										<input type="radio" name="is_active" checked="checked" id="is_active" class="" value="1" />
+										<?php echo $this->Translate('Admin_User_Status_Active'); ?>&nbsp;
+										<input type="radio" name="is_active"  value="0" />
+										<?php echo $this->Translate('Admin_User_Status_Inactive'); ?>
+									<?php } elseif($this->data['is_active'] == "0") {  ?>
+										<input type="radio" name="is_active" id="is_active" class="" value="1" />
+										<?php echo $this->Translate('Admin_User_Status_Active'); ?>&nbsp;
+										<input type="radio" checked="checked" name="is_active"  value="0" />
+										<?php echo $this->Translate('Admin_User_Status_Inactive'); ?>
+									<?php } else { ?>
+										<input type="radio" name="is_active" id="is_active" class="" value="1" />
+										<?php echo $this->Translate('Admin_User_Status_Active'); ?>&nbsp;
+										<input type="radio" name="is_active"  value="0" />
+										<?php echo $this->Translate('Admin_User_Status_Inactive'); ?>
+									<?php } ?> 
 								</span>
 								<span></span>
 							</td>
@@ -84,10 +124,16 @@
 	</form>            
 </div> 
 
+
+
+
 <!--     JS Global Variable for the language    -->
 
 <script language="javascript" type="text/javascript">
 var siteurl = '<?php echo SITE_URL; ?>';
 var ERR_CATEGORY_NAME = '<?php echo $this->Translate("Err_Category_Name"); ?>';  
 var ERR_IS_ACTIVE = '<?php echo $this->Translate("Err_Is_Active"); ?>' ; 
+
+
+
 </script>

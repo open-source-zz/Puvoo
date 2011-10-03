@@ -216,19 +216,24 @@
 			$this->view->data = $data;
 			
 			$where = "1 = 1";
-			if($weightunit->ValidateWeightunit($data['from_id'],$data['to_id']) == 0) {
-				if( count($addErrorMessage) == 0 || $addErrorMessage == '' ){
+			if( count($addErrorMessage) == 0 || $addErrorMessage == '' ){
+			
+				if($weightunit->ValidateWeightunit($data['from_id'],$data['to_id']) == 0) {
+				
 					if($weightunit->insertWeightunit($data)) {
+					
 						$mysession->Admin_SMessage = $translate->_('Success_Add_Weightunit');
 						$this->_redirect('/admin/weightunit'); 	
+					
 					} else {
+					
 						$addErrorMessage[] =  $translate->_('Err_Add_Weight_Unit'); 
 					}
-				} else { 
-					$this->view->addErrorMessage = $addErrorMessage;
-				} 
-			} else {
-				$addErrorMessage[] = $translate->_('Err_Weight_From_Id_Exists');	
+					
+				}  else {
+					
+					$addErrorMessage[] = $translate->_('Err_Weight_From_Id_Exists');	
+				}
 			}
 			
 			$this->view->addErrorMessage = $addErrorMessage;
@@ -304,8 +309,10 @@
 			  
 				$where = "from_id = ".$this->_request->getPost('from_id_p')." and to_id = ".$this->_request->getPost('to_id_p') ;
 				
-				if($weightunit->ValidateWeightunit($data['from_id'],$data['to_id']) == 0) {
-					if( count($editErrorMessage) == 0 || $editErrorMessage == '' ){
+				if( count($editErrorMessage) == 0 || $editErrorMessage == '' ){
+				
+					if($weightunit->ValidateWeightunit($data['from_id'],$data['to_id']) == 0) {
+					
 						$where = "from_id = ".$this->_request->getPost('from_id_p')." and to_id = ".$this->_request->getPost('to_id_p') ;
 						
 						if($weightunit->updateWeightunit($data,$where)) {
@@ -314,11 +321,12 @@
 						} else {
 							$editErrorMessage[] = $translate->_('Err_Edit_Weight_Unit');
 						}
-					} 
-				} else {			
+					} else {			
 					
-					$editErrorMessage[] = $translate->_('Err_Weight_From_Id_Exists');	
-				}	
+						$editErrorMessage[] = $translate->_('Err_Weight_From_Id_Exists');	
+					}	
+					
+				} 
 
 				$this->view->records = $data;
 				$this->view->from_id_p =  $this->_request->getPost('from_id_p');

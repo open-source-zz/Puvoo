@@ -164,8 +164,12 @@ class Admin_ProductsController extends AdminCommonController
 		}		
 		// Success Message
 		$this->view->products = $product->GetAllProdCate();
-		$this->view->Admin_Message = $mysession->Admin_Message;
-		$mysession->Admin_Message = "";
+		
+		$this->view->Admin_SMessage = $mysession->Admin_SMessage;
+		$this->view->Admin_EMessage = $mysession->Admin_EMessage;
+		
+		$mysession->Admin_SMessage = "";
+		$mysession->Admin_EMessage = "";
 		
 		//Set Pagination
 		$paginator = Zend_Paginator::factory($result);
@@ -222,7 +226,21 @@ class Admin_ProductsController extends AdminCommonController
 		if($product_id > 0 && $product_id != "") {
 			
 			$this->view->product_id = $product_id;
-			$this->view->records = $product->getAllProductDetail($product_id);			
+			$records = $product->getAllProductDetail($product_id);			
+			
+			
+			$category = array();
+			foreach( $records["category"] as $key => $val )
+			{
+				$category[] = $val["category_id"];
+			}
+			
+			$this->view->cateTree = $product->getCateTree($category);
+			
+			$this->view->detail = $records["detail"];
+			$this->view->images = $records["images"];
+			$this->view->sub_category = $records["category"];
+			$this->view->options = $records["options"];
 			
 		} else {
 			
@@ -255,52 +273,69 @@ class Admin_ProductsController extends AdminCommonController
 					
 					$product_category = $filter->filter(trim($this->_request->getPost('multiselect_product_category_value')));
 					
-					$editErrorMessage = ''; 
+					$editErrorMessage = array(); 
 					$product_primary_image = $filter->filter(trim($this->_request->getPost('product_primary_image')));
 					
 					if($data['product_name'] == '') {
-						$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Name')."</h5>";		
-					} else if($data['product_description'] == '') {
-						$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Desc')."</h5>";		
-					} else if($data['product_price'] == '') {
-						$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Price')."</h5>";		
-					}else if(!$float_validator->isValid($data['product_price'])) {
-						$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Invalid_Price')."</h5>";		
-					} else if($data['product_code'] == '') {
-						$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Code')."</h5>";		
-					} else if($data['product_weight'] == '') {
-						$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Weight')."</h5>";		
-					} else if(!$float_validator->isValid($data['product_weight'])) {
-						$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Invalid_Weight')."</h5>";		
-					} else if($data['weight_unit_id'] == '') {
-						$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Weight_Unit')."</h5>";		
-					} else if($data['length'] == '') {
-						$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Length')."</h5>";		
-					} else if(!$float_validator->isValid($data['length'])) {
-						$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Invalid_Length')."</h5>";		
-					} else if($data['length_unit_id'] == '') {
-						$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Length_Unit')."</h5>";		
-					} else if($data['width'] == '') {
-						$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Width')."</h5>";		
-					} else if(!$float_validator->isValid($data['width'])) {
-						$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Invalid_Width')."</h5>";		
-					} else if($data['depth'] == '') {
-						$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Depth')."</h5>";		
-					} else if(!$float_validator->isValid($data['depth'])) {
-						$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Invalid_Depth')."</h5>";		
-					} else if($data['available_qty'] == '') {
-						$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Quantity')."</h5>";		
-					} else if(!$number_validator->isValid($data['available_qty'])) {
-						$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Invalid_Quantity')."</h5>";		
-					} else if($product_primary_image == '' ) {					
-						$editErrorMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Product_Primary_Image')."</h5>";
+						$editErrorMessage[] = $translate->_('Err_Product_Name');		
+					} 
+					if($data['product_description'] == '') {
+						$editErrorMessage[] = $translate->_('Err_Product_Desc');		
+					} 
+					if($data['product_price'] == '') {
+						$editErrorMessage[] = $translate->_('Err_Product_Price');		
+					}
+					if(!$float_validator->isValid($data['product_price'])) {
+						$editErrorMessage[] = $translate->_('Err_Product_Invalid_Price');		
+					}
+					if($data['product_code'] == '') {
+						$editErrorMessage[] = $translate->_('Err_Product_Code');		
+					}
+					if($data['product_weight'] == '') {
+						$editErrorMessage[] = $translate->_('Err_Product_Weight');		
+					}
+					if(!$float_validator->isValid($data['product_weight'])) {
+						$editErrorMessage[] = $translate->_('Err_Product_Invalid_Weight');		
+					}
+					if($data['weight_unit_id'] == '') {
+						$editErrorMessage[] = $translate->_('Err_Product_Weight_Unit');		
+					}
+					if($data['length'] == '') {
+						$editErrorMessage[] = $translate->_('Err_Product_Length');		
+					}
+					if(!$float_validator->isValid($data['length'])) {
+						$editErrorMessage[] = $translate->_('Err_Product_Invalid_Length');		
+					}
+					if($data['length_unit_id'] == '') {
+						$editErrorMessage[] = $translate->_('Err_Product_Length_Unit');		
+					}
+					if($data['width'] == '') {
+						$editErrorMessage[] = $translate->_('Err_Product_Width');		
+					}
+					if(!$float_validator->isValid($data['width'])) {
+						$editErrorMessage[] = $translate->_('Err_Product_Invalid_Width');		
+					}
+					if($data['depth'] == '') {
+						$editErrorMessage[] = $translate->_('Err_Product_Depth');		
+					}
+					if(!$float_validator->isValid($data['depth'])) {
+						$editErrorMessage[] = $translate->_('Err_Product_Invalid_Depth');		
+					}
+					if($data['available_qty'] == '') {
+						$editErrorMessage[] = $translate->_('Err_Product_Quantity');		
+					}
+					if(!$number_validator->isValid($data['available_qty'])) {
+						$editErrorMessage[] = $translate->_('Err_Product_Invalid_Quantity');		
+					}
+					if($product_primary_image == '' ) {					
+						$editErrorMessage[] = $translate->_('Err_Product_Primary_Image');
 					} 
 					
-					if($editErrorMessage == '') {
+					if( count($editErrorMessage) == 0 || $editErrorMessage == "" ) {
 					
 						if($product->updateProduct($data)) {
 						
-							$editErrorMessage = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Product_Update_Success')."</h5>";
+							$mysession->Admin_SMessage = $translate->_('Product_Update_Success');
 						} 
 						
 						$product->updateProductCategory($product_id, $product_category);
@@ -310,13 +345,18 @@ class Admin_ProductsController extends AdminCommonController
 						
 						$product_image->updateProductImage($data2);
 						
-						$editErrorMessage = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Product_Update_Success')."</h5>";
+						$mysession->Admin_SMessage = $translate->_('Product_Update_Success');
+						$this->_redirect('/admin/products'); 
 					}
 					
-					$mysession->Admin_Message = $editErrorMessage;
-					$this->_redirect('/admin/products'); 
+					$this->view->editErrorMessage = $editErrorMessage;
+					
 					$this->view->product_id = $product_id;
-					$this->view->records = $product->getAllProductDetail($product_id);	
+					$records = $product->getAllProductDetail($product_id);			
+					$this->view->detail = $data;
+					$this->view->images = $records["images"];
+					$this->view->sub_category = $records["category"];
+					$this->view->options = $records["options"];	
 					
 				} 
 			}  
@@ -360,7 +400,7 @@ class Admin_ProductsController extends AdminCommonController
 			
 		} else {
 			
-			$mysession->Admin_Message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_View_Products')."</h5>";	
+			$mysession->Admin_EMessage = $translate->_('Err_View_Products');	
 			$this->_redirect('/admin/products'); 	
 		}
 		
@@ -399,9 +439,9 @@ class Admin_ProductsController extends AdminCommonController
 		if($product_id > 0 && $product_id != "") {
 			if($product->DeleteProductDetail($product_id)) {
 				
-				$mysession->Admin_Message = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Products_Success_Delete')."</h5>";
+				$mysession->Admin_SMessage = $translate->_('Products_Success_Delete');
 			} else {
-				$mysession->Admin_Message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Products_Delete')."</h5>";	
+				$mysession->Admin_EMessage = $translate->_('Err_Products_Delete');	
 			}		
 		} 
 		$this->_redirect('/admin/products'); 	
@@ -441,14 +481,14 @@ class Admin_ProductsController extends AdminCommonController
 			
 			if($product->DeleteAllProductDetail($product_id)) {
 				
-				$mysession->Admin_Message = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Product_Success_M_Delete')."</h5>";	
+				$mysession->Admin_SMessage = $translate->_('Product_Success_M_Delete');	
 			} else {
-				$mysession->Admin_Message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Products_Delete')."</h5>";				
+				$mysession->Admin_EMessage = $translate->_('Err_Products_Delete');				
 			}	
 			
 		}	else {
 		
-			$mysession->Admin_Message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Product_Err_M_Delete')."</h5>";				
+			$mysession->Admin_EMessage = $translate->_('Product_Err_M_Delete');				
 		}
 		$this->_redirect('/admin/products'); 	
 	

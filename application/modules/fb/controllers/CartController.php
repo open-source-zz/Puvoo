@@ -68,7 +68,7 @@ class Fb_CartController extends FbCommonController
     public function indexAction()
 	{
 		global $mysession;
- 		
+ 		$this->_redirect("fb/");
 	}
 	 
 	/**
@@ -122,8 +122,12 @@ class Fb_CartController extends FbCommonController
 	**/  
 	public function updateshippingAction()
 	{
-	
+		
 		global $mysession;
+		
+		//Disable layout
+		$this->_helper->layout()->disableLayout();
+		
 		$Cart = new Models_Cart();
 		
 		//$prodId = $_POST['prodid'];
@@ -140,8 +144,8 @@ class Fb_CartController extends FbCommonController
 		$State = $_POST['state'];
 		$PostCode = $_POST['postcode'];
 		$IsBilling = $_POST['isbilling'];
-		
-		if($IsBilling = 'on')
+		//print $_POST['isbilling'];die;
+		if($IsBilling = 'true')
 		{
 			$ShippingDetail = array(
 				'shipping_user_fname' 		 => $FirstName,
@@ -186,7 +190,207 @@ class Fb_CartController extends FbCommonController
 		
 		$ShippingInfo = $Cart->GetShippingInfo($CartId);
 		
-			echo json_encode($ShippingInfo);die;
+		$CartDetails = $Cart->GetProductInCart();
+		
+		$CountryCode = $Cart->GetCountryCode($ShippingInfo['shipping_user_country_id']);
+		
+		$this->view->CountryCode = $CountryCode['country_iso2'];
+		$Ship_Method_Combo = array();
+		$Ship_Handel_Day = array();
+		
+		$this->view->cartItems = $CartDetails;
+		
+		$cartId = '';
+		$Price = 0;
+		$CartTotal = '';
+
+		for($j=0; $j < count($CartDetails); $j++)
+		{
+		
+			$Price += $CartDetails[$j]['product_price']*$CartDetails[$j]['product_qty'];
+			$cartId = $CartDetails[$j]['cart_id'];
+			$CartTotal += $CartDetails[$j]['product_qty'];
+			//print $Price;die;
+			$this->view->CartCnt = $CartTotal;
+ 			$this->view->TotalPrice = $Price;
+			$this->view->cartId = $cartId;
+			$mysession->cartId = $cartId;
+
+			// For Shipping Method for each product
+			$ShippingMetodInfo = $Cart->GetShippingMethod($CartDetails[$j]['user_id']);
+			
+			$start = 0;
+			$Ship_Method_Combo_Str = array();
+			
+			foreach($ShippingMetodInfo as $ship)
+			{
+				//print "<pre>";
+				//print_r($ship);
+				
+				$shippingZone = explode(',',$ship['zone']);
+				//print (count($shippingZone))."<br>";
+				for($k=0; $k < count($shippingZone); $k++)
+				{
+					//print_r($shippingZone[$k])."<br>";
+					$shippingState = explode(':',$shippingZone[$k]);
+					
+					foreach($shippingState as $key => $val )
+					{
+						if($key == 0 ) {
+							
+							if($val == $CountryCode['country_iso2']) {
+								
+								$Ship_Method_Combo_Str[$ship['shipping_method_id']] = $ship['shipping_method_name'];
+								
+							}
+							
+						} else {
+						
+							if( $val == $ShippingInfo['state_name'] ) {
+						
+								$Ship_Method_Combo_Str[$ship['shipping_method_id']] = $ship['shipping_method_name'];
+							}
+						
+						}
+						
+					}//die;
+				}
+				$Ship_handling_day = $ship['shipping_handling_time'];
+			}
+			
+			$Ship_Handel_Day[$CartDetails[$j]['product_id']] = $Ship_handling_day;
+			
+			$Ship_Method_Combo[$CartDetails[$j]['product_id']] = $Ship_Method_Combo_Str;
+			
+			// For Tax rate for each product
+			$TaxInfo = $Cart->GetTaxName($CartDetails[$j]['user_id']);
+			
+			//print "<pre>";
+			//print_r($TaxInfo);
+			
+			$tax_rate = array();
+			foreach($TaxInfo as $tax)
+			{
+				//print "<pre>";
+				//print_r($ship);
+				//$taxName[] = $tax['tax_name'];
+				$taxZone = explode(',',$tax['zone']);
+				//print (count($shippingZone))."<br>";
+				for($k=0; $k < count($taxZone); $k++)
+				{
+					//print_r($shippingZone[$k])."<br>";
+					$taxState = explode(':',$taxZone[$k]);
+					//print "<pre>";
+					//print_r($taxState);
+					foreach($taxState as $key => $val )
+					{
+						if($key == 0 ) {
+							
+							if($val == $CountryCode['country_iso2']) {
+								
+								$tax_rate[$tax['tax_rate_id']] = $tax['rate'];
+								
+							}
+							
+						} else {
+						
+							if( $val == $ShippingInfo['state_name'] ) {
+						
+								$tax_rate[$tax['tax_rate_id']] = $tax['rate'];
+							}
+						
+						}
+						
+					}//die;
+				}//die;
+			}
+			//die;
+			//print_r($tax_rate);
+			$taxe_rate_value[$CartDetails[$j]['product_id']] = $tax_rate;
+	
+		}
+		
+		$combo_array = array();
+		foreach( $Ship_Method_Combo as $key => $val ) 
+		{
+			$str = '';
+			foreach( $val as $key2 => $val2 ) 
+			{
+				$str .= "<option name='' value='".$key2."' onclick='GetShippingCost(".$key2.",".$key.")'>".$val2."</option>";
+				
+			}
+			$combo_array[$key] = $str;
+		}
+		
+		//print "<pre>";
+		//print_r($taxe_rate_value);die;
+		$this->view->taxRate = $taxe_rate_value;
+		$this->view->ship_handel_day = $Ship_Handel_Day;
+		$this->view->Ship_Method_Combo = $combo_array;
+
+		//echo json_encode($IsBilling);die;
+		
+		
+	}	
+
+	/**
+	* Function updatebillingAction
+	*
+	* This function is used for update billing information in cart_maste table. 
+	*
+	* Date Created: 2011-09-29
+	*
+	* @access public
+	* @param ()  - No parameter
+	* @return (void) - Return void
+	*
+	* @author Jayesh
+	*  
+	* @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	**/  
+	public function updatebillingAction()
+	{
+	
+		global $mysession;
+		$Cart = new Models_Cart();
+		
+		//$prodId = $_POST['prodid'];
+		$CartId = $_POST['Bill_cartid'];
+		$FirstName = $_POST['Bill_fname'];
+		$LastName = $_POST['Bill_lname'];
+		$Email = $_POST['Bill_email'];
+		$Phone = $_POST['Bill_telephone'];
+		//$CarrEmail = $_POST['carr_email'];
+		$AddressType = $_POST['Bill_add_type'];
+		$Country = $_POST['Bill_country'];
+		$Address = $_POST['Bill_add'];
+		$City = $_POST['Bill_city'];
+		$State = $_POST['Bill_state'];
+		$PostCode = $_POST['Bill_postcode'];
+		
+			$BillingDetail = array(
+				'billing_user_fname' 		 => $FirstName,
+				'billing_user_lname'  		 => $LastName, 
+				'billing_user_email' 		 => $Email,
+				'billing_user_telephone'	 => $Phone,
+				'billing_user_address_type'  => $AddressType,
+				'billing_user_country_id'    => $Country,
+				'billing_user_address'		 => $Address,
+				'billing_user_city' 		 => $City,	
+				'billing_user_state_id'  	 => $State,
+				'billing_user_zipcode'		 => $PostCode	
+			);
+		
+		//Delete Product
+		//print $CartId;die;
+		$result = $Cart->UpdateShippingInfo($BillingDetail,$CartId);
+  		
+		if($result == true)
+		{
+			echo json_encode("Success");die;
+		}else{
+			echo json_encode("Fail");die;
+		}
 		
 		
 	}	
@@ -282,7 +486,7 @@ class Fb_CartController extends FbCommonController
 		$prodData = $Product->GetProductDetails($prodId);
 		//print_r($prodData['product_weight']);
 		$ShippingCostDetails = $Cart->GetShippingCost($methodId);
-		
+		//print_r($ShippingCostDetails);die;
 		
 		$shippingPriceArray = explode(',',$ShippingCostDetails['price']);
 		
@@ -301,7 +505,13 @@ class Fb_CartController extends FbCommonController
 			$start = $shippingRangeArray[0];
 			
  		}
- 		echo json_encode($ship_Price);die;
+		if($ShippingCostDetails)
+		{
+			$ShippingValue = $ship_Price;
+		}else{
+			$ShippingValue = 0;
+		}
+ 		echo json_encode($ShippingValue);die;
   	} 
 
 
@@ -342,7 +552,6 @@ class Fb_CartController extends FbCommonController
 		//print_r($CartData);die;
 		echo json_encode($CartData);die;
   	} 
-	
 	
 }
 

@@ -86,10 +86,6 @@ class User_TaxratesController extends UserCommonController
 		
 		$taxes = new Models_UserTaxes();
 		
-		//$this->view->taxclass = $taxes->getAllRecors("tax_class");
-		//$this->view->taxzone = $taxes->getAllRecors("tax_zone");
-		
-		
 		//set current page number
 		$page_no = 1;
 		
@@ -128,8 +124,11 @@ class User_TaxratesController extends UserCommonController
 		}	
 		
 		// Success Message
-		$this->view->User_Message = $mysession->User_Message;
-		$mysession->User_Message = "";
+		$this->view->User_SMessage = $mysession->User_SMessage;
+		$this->view->User_EMessage = $mysession->User_EMessage;
+		
+		$mysession->User_SMessage = "";
+		$mysession->User_EMessage = "";
 		
 		//Set Pagination
 		$paginator = Zend_Paginator::factory($result);
@@ -179,6 +178,8 @@ class User_TaxratesController extends UserCommonController
 		
 		// On Form Submit
 		if($request->isPost())	{
+		
+			$float_validator = new Zend_Validate_Float();
 			
 			// Fetch all record here
 			$data['user_id']=$mysession->User_Id;
@@ -186,16 +187,25 @@ class User_TaxratesController extends UserCommonController
 			$data2['zone']=$filter->filter(trim($this->_request->getPost('tax_zone'))); 	
 			$data2['rate']=$filter->filter(trim($this->_request->getPost('tax_price'))); 
 			
-			$error_message = "";
+			$row = array_merge($data, $data2);
+			$this->view->data = $row;
+		
+			$addErrorMessage = array();
 			// Validate records and insert
 			if($data['tax_name'] == "" ) {
-				$error_message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Tax_Name')."</h5>";
-			} else if($data2['zone'] == "" ) {
-				$error_message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Tax_Zone')."</h5>";
+				$addErrorMessage[] = $translate->_('Err_Tax_Name');
 			}
-			else if($data2['rate'] == "" ) {
-				$error_message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Tax_Price')."</h5>";
-			} else {
+			if($data2['zone'] == "" ) {
+				$addErrorMessage[] = $translate->_('Err_Tax_Zone');
+			}
+			if($data2['rate'] == "" ) {
+				$addErrorMessage[] = $translate->_('Err_Tax_Price');
+			} else if(!$float_validator->isValid($data2['rate'])) {
+				$addErrorMessage[] = $translate->_('Err_Taxrate_Invalid_Value');		
+			}
+			
+			
+			if( count($addErrorMessage) == 0 || $addErrorMessage == "" ) {
 				
 				$where = "user_id = ".$mysession->User_Id;
 				if($home->ValidateTableField("tax_name",$data['tax_name'],"tax_rate",$where)) {
@@ -207,17 +217,20 @@ class User_TaxratesController extends UserCommonController
 					
 						$data2["tax_rate_id"] = $tax_id;
 						$taxes->insertRecord($data2,"tax_rate_detail");
-						$mysession->User_Message = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Success_Add_Taxes_Rates')."</h5>";
+						$mysession->User_SMessage = $translate->_('Success_Add_Taxes_Rates');
 						$this->_redirect('/user/taxrates'); 	
+					
 					} else {
-						$error_message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Add_Taxes_Rates')."</h5>";	
+						$addErrorMessage[] = $translate->_('Err_Add_Taxes_Rates');	
+					
 					}
 				} else {
-					$error_message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Taxe_Exist')."</h5>";
+					
+					$addErrorMessage[] = $translate->_('Err_Taxe_Exist');
 				}
 			}
 			
-			$this->view->error_message = $error_message;			
+			$this->view->addErrorMessage = $addErrorMessage;			
 		} 
 	
 	}
@@ -268,6 +281,7 @@ class User_TaxratesController extends UserCommonController
 			// On Form Submit
 			if($request->isPost()){
 				
+				$float_validator = new Zend_Validate_Float();
 				// Primary key
 				$primary_id = $filter->filter(trim($this->_request->getPost('tax_rate_id')));
 				
@@ -277,44 +291,51 @@ class User_TaxratesController extends UserCommonController
 				$data2['zone']=$filter->filter(trim($this->_request->getPost('tax_zone'))); 	
 				$data2['rate']=$filter->filter(trim($this->_request->getPost('tax_price'))); 
 			
-				$error_message = "";
+				$editErrorMessage = array();
 				// Validate records 
 				if($data['tax_name'] == "" ) {
-					$error_message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Tax_Name')."</h5>";
-				} else if($data2['zone'] == "" ) {
-					$error_message .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Tax_Zone')."</h5>";
+					$editErrorMessage[] = $translate->_('Err_Tax_Name');
+				} 
+				if($data2['zone'] == "" ) {
+					$editErrorMessage[] = $translate->_('Err_Tax_Zone');
 				}
-				else if($data2['rate'] == "" ) {
-					$error_message .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Tax_Price')."</h5>";
-				} else {		
+				if($data2['rate'] == "" ) {
+					$editErrorMessage[] = $translate->_('Err_Tax_Price');
+				} else if(!$float_validator->isValid($data2['rate'])) {
+					$editErrorMessage[] = $translate->_('Err_Taxrate_Invalid_Value');		
+				}
+				
+				$row = array_merge($data, $data2);
+				
+				 if( count($editErrorMessage) == 0 || $editErrorMessage == "" ) {		
 				
 					// Update Records
 					$cond = "tax_rate_id != '".$primary_id."' AND user_id = ".$mysession->User_Id;
 					if($home->ValidateTableField("tax_name",$data['tax_name'],"tax_rate",$cond)) {
 					
-						if($error_message == "") {
 						$where = "tax_rate_id = ".$primary_id;
-							$update1 = $taxes->updateRecord($data,$where);
-							$update2 = $taxes->updateRecord($data2,$where,"tax_rate_detail");
-							if($update1 == TRUE || $update2 == TRUE) {
-								
-								$mysession->User_Message = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Success_Edit_Taxes_Rates')."</h5>";
-								$this->_redirect('/user/taxrates'); 	
-							} else {
-								$error_message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Tax_Rate_Update')."</h5>";	
-							}	
-						} 
+						$update1 = $taxes->updateRecord($data,$where);
+						$update2 = $taxes->updateRecord($data2,$where,"tax_rate_detail");
+						
+						if($update1 == TRUE || $update2 == TRUE) {
+							
+							$mysession->User_SMessage = $translate->_('Success_Edit_Taxes_Rates');
+							$this->_redirect('/user/taxrates'); 	
+							
+						} else {
+						
+							$editErrorMessage[] = $translate->_('Err_Tax_Rate_Update');	
+						}	
+						
 						
 					} else {
-						$error_message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Taxe_Exist')."</h5>";
+						$editErrorMessage[] = $translate->_('Err_Taxe_Exist');
 					}
 				}
 				
-				$this->view->error_message = $error_message;	
-				if($primary_id != "") {
-					$this->view->records = $taxes->getRecordsById($primary_id);	
-					$this->view->tax_rate_id =  $primary_id;						
-				}
+				$this->view->editErrorMessage = $editErrorMessage;	
+				$this->view->records = $row;	
+				$this->view->tax_rate_id =  $primary_id;	
 			}  
 		}
 		
@@ -351,9 +372,9 @@ class User_TaxratesController extends UserCommonController
 		if($tax_rates_id > 0 && $tax_rates_id != "") {
 			if($taxes->deleteRecord($tax_rates_id)) {
 				$taxes->deleteRecord($tax_rates_id,"tax_rate_id","tax_rate_detail");
-				$mysession->User_Message = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Taxes_Rates_Success_Delete')."</h5>";
+				$mysession->User_SMessage = $translate->_('Taxes_Rates_Success_Delete');
 			} else {
-				$mysession->User_Message = "<h5 style='color:#FF0000;margin-bottom:0px;'>There is some problem in deleting tax rates</h5>";	
+				$mysession->User_EMessage = $translate->_('Err_Delete_Taxrate'); 
 			}		
 		} 
 		$this->_redirect('/user/taxrates'); 	
@@ -394,14 +415,14 @@ class User_TaxratesController extends UserCommonController
 			
 			if($taxes->deleteAllRecords($ids)) {
 				$taxes->deleteAllRecords($ids,"tax_rate_id","tax_rate_detail");
-				$mysession->User_Message = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Taxes_Rates_Success_M_Delete')."</h5>";	
+				$mysession->User_Message = $translate->_('Taxes_Rates_Success_M_Delete');	
 			} else {
-				$mysession->User_Message = "<h5 style='color:#FF0000;margin-bottom:0px;'>There is some problem in deleting tax rates</h5>";				
+				$mysession->User_EMessage = $translate->_('Err_Delete_Taxrate'); 	
 			}	
 			
 		}	else {
 		
-			$mysession->User_Message = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Taxes_Rates_Err_M_Delete')."</h5>";				
+			$mysession->User_EMessage = $translate->_('Taxes_Rates_Err_M_Delete');				
 		}
 		$this->_redirect('/user/taxrates'); 	
 	

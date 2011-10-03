@@ -13,9 +13,16 @@
 		<?php echo $this->Translate('Taxes_Management'); ?>
 	</div>
 	
-	<div >
-		<?php echo $this->error_message; ?>
-	</div>
+	<?php if(count($this->addErrorMessage) > 0 ) { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
+				<?php foreach($this->addErrorMessage as $key => $val ) { ?>
+					<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+					<strong><?php echo $val; ?></strong></p>
+				<?php } ?>
+			</div>
+		</div>
+	<?php } ?>	
 	
 	<form method="post" name="add_form" id="add_form" >
 		<table class="Panel" style="margin-top:10px;">
@@ -31,7 +38,7 @@
 								<?php echo $this->Translate('Taxe_Name'); ?>:
 							</td>
 							<td>
-								<input type="text" name="tax_name" id="tax_name" class="Field250" />
+								<input value="<?php echo $this->data['tax_name']; ?>" type="text" name="tax_name" id="tax_name" class="Field250" />
 								<span></span>
 							</td>
 						</tr>
@@ -41,7 +48,7 @@
 								<?php echo $this->Translate('Tax_Zone'); ?>:
 							</td>
 							<td>
-								<textarea cols="33" rows="3" name="tax_zone" id="tax_zone" ></textarea>
+								<textarea cols="33" rows="3" name="tax_zone" id="tax_zone" ><?php echo $this->data['zone']; ?></textarea>
 								<span></span>
 								<div>
 									<input type="button" onclick="ShowCountryDialog()" value="<?php echo $this->Translate('Shipping_Method_Add_Country_Btn'); ?>" />
@@ -54,7 +61,7 @@
 								<?php echo $this->Translate('Tax_Rate'); ?>:
 							</td>
 						  <td>
-							  <input type="text" name="tax_price" id="tax_price" class="Field250" />(%)
+							  <input value="<?php echo $this->data['rate']; ?>" type="text" name="tax_price" id="tax_price" class="Field250" />(%)
 							  <span></span>
 						  </td>
 						</tr>
@@ -98,7 +105,7 @@
 			<tr>
 				<td><?php echo $this->Translate('Zone_Country'); ?> : &nbsp;&nbsp;</td>
 				<td>
-					<select name="store_country" id="store_country" class="Field250"   >
+					<select name="store_country" id="store_country" onchange="BlinckLink(this.value,'CountryAddLink')" class="Field250"   >
 						<option value="" ><?php echo $this->Translate('Shipping_Select_Country'); ?></option>
 						<?php  		foreach($this->country as $key => $val) { ?>
 						<option value="<?php echo $val['country_id'].'/'.$val['country_iso2']; ?>"><?php echo $val["country_name"];  ?></option>
@@ -106,7 +113,7 @@
 					</select>
 				</td>
 				<td>
-					<a href="#" style="text-decoration:none; cursor:pointer;" onclick="AddCountry()" ><?php echo $this->Translate('Add'); ?></a>
+					<a href="#" id="CountryAddLink" style="text-decoration:none; cursor:pointer;" onclick="AddCountry()" ><?php echo $this->Translate('Add'); ?></a>
 
 				</td>
 			</tr>
@@ -114,13 +121,13 @@
 			<tr>
 				<td><?php echo $this->Translate('Zone_Country_State'); ?> : &nbsp;&nbsp;</td>
 				<td>
-					<select name="store_country_state" id="store_country_state"  class="Field250" >
+					<select name="store_country_state" id="store_country_state" onchange="BlinckLink(this.value,'StateAddLink')"  class="Field250" >
 						<option value="" selected="selected"><?php echo $this->Translate('Shipping_Select_State'); ?></option>
 					</select>
 					<span>(<?php echo $this->Translate('Shipping_State_Optional'); ?>)</span>
 				</td>
 				<td>	
-					<a href="#" onclick="AddCountryState()" style="text-decoration:none; cursor:pointer;"><?php echo $this->Translate('Add'); ?> </a>
+					<a href="#" id="StateAddLink" onclick="AddCountryState()" style="text-decoration:none; cursor:pointer;"><?php echo $this->Translate('Add'); ?> </a>
 				</td>
 			</tr>
 			<tr><td colspan="2" height="10" style="border-bottom:2px solid #CCCCCC; "></td></tr>

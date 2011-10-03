@@ -52,7 +52,6 @@ class Models_Cart
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Jayesh
-	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	function __construct()
@@ -60,22 +59,18 @@ class Models_Cart
 		$this->db = Zend_Registry::get('Db_Adapter');
 	}
 
-	 /*
-	 * ProductExist(): To check that the product is already on cart or not.
+	/**
+	 * function ProductExist 
 	 *
 	 * It is used to check that the product is already on cart or not.
 	 *
 	 * Date created: 2011-08-29
-	 * @param () (Int)  - $prodId : Product Id
-	 * @return (Array) - Return number of records
 	 *
-	 * @author  Jayesh 
-	 * @param   two parameters / login_id and password.
-     * @global  $db Zend_db for database.
-                $mysession Zend_Session_Namespace for session variables.
-	 * 
-	 */
-	
+	 * @param (Int) - $prodId : Product Id
+	 * @return (Array) - Return number of records
+	 * @author Jayesh 
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
 	public function ProductExist($prodId)
 	{
 		$db= $this->db;
@@ -92,25 +87,20 @@ class Models_Cart
  		$count = $db->fetchRow($sql);
 		 
  		return($count['cnt1']);
-	
 	}
 
-	 /*
-	 * Insert_Record(): To insert product record in cart.
+	/**
+	 * function Insert_Record()
 	 *
 	 * It is used to insert the product information in cart table.
 	 *
 	 * Date created: 2011-08-29
-	 * @param () (Array)  - $ProductInfo : Array of records
-	 * @return (Array) - Return true on success
 	 *
-	 * @author  Jayesh 
-	 * @param   two parameters / login_id and password.
-     * @global  $db Zend_db for database.
-                $mysession Zend_Session_Namespace for session variables.
-	 * 
-	 */
-	
+	 * @param (Array)  - $ProductInfo : Array of records
+	 * @return (Boolean) - Return true on success
+	 * @author Jayesh 
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
 	public function Insert_Record($ProductInfo)
 	{
 		global $mysession;
@@ -152,25 +142,20 @@ class Models_Cart
 		return true;
 	}
 	
-	 /*
-	 * Insert_CartOption_Record(): To insert product option record in cart product option table.
+	/**
+	 * function Insert_CartOption_Record
 	 *
 	 * It is used to insert product option record in cart product option table.
 	 *
 	 * Date created: 2011-08-29
-	 * @param () (Array)  - $productOptions : Array of records
+	 * @param (Array) - $productOptions : Array of records
+	 * @param (Int) - $cartDetailId : cart detail id
 	 * @return (Array) - Return true on success
-	 *
-	 * @author  Jayesh 
-	 * @param   two parameters / login_id and password.
-     * @global  $db Zend_db for database.
-                $mysession Zend_Session_Namespace for session variables.
-	 * 
-	 */
-	
+	 * @author Jayesh 
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
 	public function Insert_CartOption_Record($productOptions,$cartDetailId)
 	{
-		global $mysession;
 		$db= $this->db;
 		
 		//Insert information in cart product Option table
@@ -187,23 +172,19 @@ class Models_Cart
 		return true;
 	}
 	
-	 /*
-	 * GetProductInCart(): To get cart product.
+	/**
+	 * function GetProductInCart
 	 *
 	 * It is used get all the product that are in the cart.
 	 *
 	 * Date created: 2011-09-01
-	 * @return (Array) - Return true on success
-	 *
+	 * @param () - No parameter
+	 * @return (Array) - Return array of result
 	 * @author  Jayesh 
-	 * @param   two parameters / login_id and password.
-     * @global  $db Zend_db for database.
-                $mysession Zend_Session_Namespace for session variables.
-	 * 
-	 */
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
 	public function GetProductInCart()
 	{
-		global $mysession;
 		$db= $this->db;
 		
 //		$sql = "SELECT cd.*,cm.*,pi.image_path,pi.image_name,pm.user_id,um.*,usm.shipping_method_name,usm.shipping_method_id as ship_method_id,usd.* FROM cart_detail as cd
@@ -227,23 +208,20 @@ class Models_Cart
 		return $result;
 	}	
 	
-	 /*
-	 * UserExist(): To find that user have a cart id or not.
+	/**
+	 * function UserExist
 	 *
 	 * It is used find the user that have in the cart.
 	 *
 	 * Date created: 2011-09-02
-	 * @return (Array) - Return true on success
 	 *
+	 * @param () - No parameter.
+	 * @return (Array) - Return true on success
 	 * @author  Jayesh 
-	 * @param   two parameters / login_id and password.
-     * @global  $db Zend_db for database.
-                $mysession Zend_Session_Namespace for session variables.
-	 * 
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 */
 	public function UserExist()
 	{
-		global $mysession;
 		$db= $this->db;
 		
 		$sql = "SELECT * FROM cart_master WHERE facebook_user_id = 'xyz@yahoo.com'";
@@ -254,23 +232,20 @@ class Models_Cart
 	
 	}
 	
-	 /*
-	 * DeleteCartProduct(): To delete product in to the cart.
+	/**
+	 * function DeleteCartProduct
 	 *
 	 * It is used to delete product in to the cart.
 	 *
 	 * Date created: 2011-09-05
-	 * @param () (int)  - $prodId : Product Id
-	 * @param () (int)  - $cartId : Cart Id
-	 * @return (String) - Return true on success
-
 	 *
-	 * @author  Jayesh 
-	 * @param   two parameters / login_id and password.
-     * @global  $db Zend_db for database.
-                $mysession Zend_Session_Namespace for session variables.
-	 * 
-	 */
+	 * @param (int) - $prodId : Product Id
+	 * @param (int) - $cartId : Cart Id
+	 * @param (int) - $cartDetailId : Cart Detail Id
+	 * @return (Boolean) - Return true on success
+	 * @author Jayesh 
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
 	public function DeleteCartProduct($prodId,$cartId,$cartDetailId)
 	{
 		$db= $this->db;
@@ -290,24 +265,19 @@ class Models_Cart
 	}
 
 
-	 /*
-	 * UpdateShippingInfo(): To update shipping information of current facebook user.
+	/**
+	 * function UpdateShippingInfo
 	 *
 	 * It is used add or edit shipping information of the current facebook user.
 	 *
 	 * Date created: 2011-09-17
-	 * @param () (Array)  - $data : array of records
-	 * @param () (int)  - $cartId : Cart Id
-	 * @return (Array) - Return array of records
-
 	 *
-	 * @author  Jayesh 
-	 * @param   two parameters / login_id and password.
-     * @global  $db Zend_db for database.
-                $mysession Zend_Session_Namespace for session variables.
-	 * 
+	 * @param (Array) - $data : array of records
+	 * @param (int) - $cartId : Cart Id
+	 * @return (Array) - Return array of records
+	 * @author Jayesh 
+     * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 */
-	
 	public function UpdateShippingInfo($data,$cartId)
 	{
 		$db= $this->db;
@@ -320,22 +290,18 @@ class Models_Cart
 	
 	}
 
-	 /*
-	 * GetShippingInfo(): To get shipping information of current facebook user.
+	/**
+	 * function GetShippingInfo
 	 *
 	 * It is used to get shipping information of the current facebook user.
 	 *
 	 * Date created: 2011-09-17
-	 * @param () (int)  - $cartId : Cart Id
-	 * @return (Array) - Return array of records
 	 *
+	 * @param (int) - $cartId : Cart Id
+	 * @return (Array) - Return array of records
 	 * @author  Jayesh 
-	 * @param   two parameters / login_id and password.
-	 * @global  $db Zend_db for database.
-				$mysession Zend_Session_Namespace for session variables.
-	 * 
-	 */
-	
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
 	public function GetShippingInfo($cartId)
 	{
 		$db= $this->db;
@@ -350,21 +316,44 @@ class Models_Cart
 	
 	}
 
-	 /*
-	 * GetCountry(): To get all countries.
+	/**
+	 * function GetBillingInfo
+	 *
+	 * It is used to get billing information of the current facebook user.
+	 *
+	 * Date created: 2011-09-29
+	 *
+	 * @param (int) - $cartId : Cart Id
+	 * @return (Array) - Return array of records
+	 * @author  Jayesh 
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	public function GetBillingInfo($cartId)
+	{
+		$db= $this->db;
+		
+		$sql = "SELECT cm.*,sm.* FROM cart_master as cm
+				LEFT JOIN state_master as sm ON (cm.billing_user_state_id = sm.state_id) 
+				WHERE cart_id=".$cartId."";
+		//print $sql;die;
+		$result = $db->fetchRow($sql);
+		
+		return $result;
+	
+	}
+
+	/**
+	 * function GetCountry
 	 *
 	 * It is used to get all countires names.
 	 *
 	 * Date created: 2011-09-17
-	 * @return (Array) - Return array of records
 	 *
+	 * @param () - No parameter
+	 * @return (Array) - Return array of records
 	 * @author  Jayesh 
-	 * @param   two parameters / login_id and password.
-	 * @global  $db Zend_db for database.
-				$mysession Zend_Session_Namespace for session variables.
-	 * 
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 */
-	
 	public function GetCountry()
 	{
 		$db= $this->db;
@@ -377,20 +366,17 @@ class Models_Cart
 	
 	}
 
-	 /*
-	 * GetState(): To get all states of perticular countries.
+	/**
+	 * function GetState
 	 *
-	 * It is used to get all states of perticular countries.
+	 * It is used to get all states of perticular country.
 	 *
 	 * Date created: 2011-09-17
-	 * @param () (int)  - $id : Country Id
-	 * @return (Array) - Return array of records
 	 *
-	 * @author  Jayesh 
-	 * @param   two parameters / login_id and password.
-	 * @global  $db Zend_db for database.
-				$mysession Zend_Session_Namespace for session variables.
-	 * 
+	 * @param (int) - $id : Country Id
+	 * @return (Array) - Return array of records
+	 * @author Jayesh 
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 */
 	
 	public function GetState($id)
@@ -405,22 +391,18 @@ class Models_Cart
 	
 	}
 
-	 /*
-	 * GetCountryCode(): To get country iso code.
+	/**
+	 * function GetCountryCode
 	 *
 	 * It is used to get iso code for that particular country.
 	 *
 	 * Date created: 2011-09-17
-	 * @param () (int)  - $countryId : Country Id
-	 * @return (Array) - Return array of records
 	 *
+	 * @param (int) - $countryId : Country Id
+	 * @return (Array) - Return array of records
 	 * @author  Jayesh 
-	 * @param   two parameters / login_id and password.
-	 * @global  $db Zend_db for database.
-				$mysession Zend_Session_Namespace for session variables.
-	 * 
-	 */
-	
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
 	public function GetCountryCode($countryId)
 	{
 		$db= $this->db;
@@ -433,22 +415,18 @@ class Models_Cart
 	
 	}
 
-	 /*
-	 * GetShippingMethod(): To get shipping method for particular user or merchant.
+	/**
+	 * function GetShippingMethod
 	 *
 	 * It is used to get shipping method for particular user or merchant.
 	 *
 	 * Date created: 2011-09-21
-	 * @param () (int)  - $userId : User Id
-	 * @return (Array) - Return array of records
 	 *
-	 * @author  Jayesh 
-	 * @param   two parameters / login_id and password.
-	 * @global  $db Zend_db for database.
-				$mysession Zend_Session_Namespace for session variables.
-	 * 
-	 */
-	
+	 * @param (int) - $userId : User Id
+	 * @return (Array) - Return array of records
+	 * @author Jayesh 
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
 	public function GetShippingMethod($userId)
 	{
 		$db= $this->db;
@@ -464,22 +442,18 @@ class Models_Cart
 	
 	}
 
-	 /*
-	 * GetTaxName(): To get different tax name or type for particular user or merchant.
+	/**
+	 * function GetTaxName
 	 *
 	 * It is used to get different tax name or type for particular user or merchant.
 	 *
 	 * Date created: 2011-09-26
-	 * @param () (int)  - $userId : User Id
-	 * @return (Array) - Return array of records
 	 *
+	 * @param (int) - $userId : User Id
+	 * @return (Array) - Return array of records
 	 * @author  Jayesh 
-	 * @param   two parameters / login_id and password.
-	 * @global  $db Zend_db for database.
-				$mysession Zend_Session_Namespace for session variables.
-	 * 
-	 */
-	
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
 	public function GetTaxName($userId)
 	{
 		$db= $this->db;
@@ -488,6 +462,7 @@ class Models_Cart
 		$sql = "SELECT tr.*,trd.* FROM tax_rate tr
 				LEFT JOIN tax_rate_detail trd ON (tr.tax_rate_id = trd.tax_rate_id)
 				WHERE tr.user_id =".$userId."";
+		//print $sql;die;
 		$result = $db->fetchAll($sql);
 		
 		return $result;
@@ -495,22 +470,18 @@ class Models_Cart
 	}
 
 
-	 /*
-	 * GetProductShippinmethod(): To get shipping method for cart product.
+	/**
+	 * function GetProductShippingmethod
 	 *
 	 * It is used to get shipping method for cart product.
 	 *
 	 * Date created: 2011-09-21
-	 * @param () (int)  - $prodId : Product Id
-	 * @return (Array) - Return array of records
 	 *
+	 * @param (int) - $prodId : Product Id
+	 * @return (Array) - Return array of records
 	 * @author  Jayesh 
-	 * @param   two parameters / login_id and password.
-	 * @global  $db Zend_db for database.
-				$mysession Zend_Session_Namespace for session variables.
-	 * 
-	 */
-	
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
 	public function GetProductShippingmethod($prodId)
 	{
 		$db= $this->db;
@@ -529,24 +500,20 @@ class Models_Cart
 	
 	}
 	
-	 /*
-	 * UpdateCart(): To update cart information of current facebook user.
+	/**
+	 * function UpdateCart
 	 *
 	 * It is used edit cart information of the current facebook user.
 	 *
 	 * Date created: 2011-09-21
-	 * @param () (Array)  - $data : array of records
-	 * @param () (int)  - $cartId : Cart Id
-	 * @param () (int)  - $prodId : Product Id
-	 * @return (Array) - Return array of records
 	 *
+	 * @param (Array) - $data : array of records
+	 * @param (int) - $cartId : Cart Id
+	 * @param (int) - $prodId : Product Id
+	 * @return (Array) - Return array of records
 	 * @author  Jayesh 
-	 * @param   two parameters / login_id and password.
-     * @global  $db Zend_db for database.
-                $mysession Zend_Session_Namespace for session variables.
-	 * 
-	 */
-	
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
 	public function UpdateCart($data,$cartId,$prodId)
 	{
 		$db = $this->db;
@@ -560,22 +527,18 @@ class Models_Cart
 	
 	}
 
-	 /*
-	 * GetShippingCost(): To update Shipping Cost.
+	/**
+	 * function GetShippingCost
 	 *
-	 * It is used to update shipping cost.
+	 * It is used to get shipping cost.
 	 *
 	 * Date created: 2011-09-23
-	 * @param () (int)  - $methodId : Shipping Method Id
-	 * @return (Array) - Return array of records
 	 *
-	 * @author  Jayesh 
-	 * @param   two parameters / login_id and password.
-     * @global  $db Zend_db for database.
-                $mysession Zend_Session_Namespace for session variables.
-	 * 
-	 */
-	
+	 * @param (int) - $methodId : Shipping Method Id
+	 * @return (Array) - Return array of records
+	 * @author Jayesh 
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
 	public function GetShippingCost($methodId)
 	{
 		$db = $this->db;
@@ -588,22 +551,18 @@ class Models_Cart
 	
 	}
 
-	 /*
-	 * GetCartDetailId(): To get cart detail id.
+	/**
+	 * function GetCartDetailId
 	 *
-	 * It is used to  get cart detail id.
+	 * It is used to get cart detail id.
 	 *
 	 * Date created: 2011-09-28
-	 * @param () (int)  - $prodId : Product Id
-	 * @return (Array) - Return array of records
 	 *
-	 * @author  Jayesh 
-	 * @param   two parameters / login_id and password.
-     * @global  $db Zend_db for database.
-                $mysession Zend_Session_Namespace for session variables.
-	 * 
-	 */
-	
+	 * @param (int) - $prodId : Product Id
+	 * @return (Array) - Return array of records
+	 * @author Jayesh 
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
 	public function GetCartDetailId($prodId)
 	{
 		$db = $this->db;

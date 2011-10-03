@@ -74,29 +74,6 @@ class Fb_CategoryController extends FbCommonController
 		//to get all main category
 		$Allcategory = $Category->GetMainCategory();
 		$this->view->Allcategory = $Category->GetMainCategory();
-		//to get selected category
-		$selectCat = $Category->GetCategory();
-		 
-		//for display category list on left menu 
-		foreach($selectCat as $val)
-		{
-		 	$SubCatList = "";
- 		  	$SubCat = $Category->GetSubCategory($val['category_id']);
-			$this->view->SubCat = $SubCat;
-			$SubCatList .= "<li class=''>";
-			$SubCatList .= "<a class='sf-with-ul' href='".SITE_FB_URL."category/subcat/id/".$val['category_id']."' target='_top'>".$val['category_name']."				                            <span class='sf-sub-indicator'> »</span></a>";
-			$SubCatList .= "<div><ul class='submenu'>";
- 				for($i=0; $i < count($SubCat); $i++)
-				{
- 					$SubCatList .= "<li>";
-					$SubCatList .= "<a href='".SITE_FB_URL."category/subcat/id/".$SubCat[$i]['category_id']."' target='_top'><img src='".IMAGES_FB_PATH."/2d30f5a834021d7887e1712062d0ed055283edc5_th.jpg' alt='' />".$SubCat[$i]['category_name']."</a>";
-					$SubCatList .="</li>";
-  					
- 				}
-										
-   			$SubCatList .="</ul></div></li>";
- 			$this->view->Category .= $SubCatList;
-  		} 
 		 
 		//for display category list on all categories page.
 		foreach($Allcategory as $val)
@@ -143,6 +120,11 @@ class Fb_CategoryController extends FbCommonController
  		$id = $this->_request->getParam('id');
 		$this->view->cat_id = $id;
 		$Category = new Models_Category();
+		
+		if(!$id)
+		{
+			$this->_redirect("fb/");
+		}
 		
 		//set current page number
 		$page_no = 1;

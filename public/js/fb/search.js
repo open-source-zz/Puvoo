@@ -14,6 +14,8 @@ function PerformSearch()
 		$('#frmSearch').attr('action',''+site_url+'product/search?q='+searchtext+'&Search=1&cid='+catid+'');
 		$('#frmSearch').submit();
 		//$('#frmcatproduct').submit();
-		
+		$('#loader').hide();
+		$('#loader').removeClass('ui-widget-loading');
+
 	}
 }

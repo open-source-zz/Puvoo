@@ -11,9 +11,16 @@
 		<?php echo $this->Translate('Manage_Currency'); ?>
 	</div>
 	
-	<div >
-		<?php echo $this->addErrorMessage; ?>
-	</div>
+	<?php if(count($this->addErrorMessage) > 0 ) { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
+				<?php foreach($this->addErrorMessage as $key => $val ) { ?>
+					<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+					<strong><?php echo $val; ?></strong></p>
+				<?php } ?>
+			</div>
+		</div>
+	<?php } ?>	
 	
 	<form method="post" name="add_form" id="add_form" >
 		<table class="Panel" style="margin-top:10px;">
@@ -29,7 +36,7 @@
 								<?php echo $this->Translate('Currency_Name'); ?>
 							</td>
 							<td>
-								<input type="text" name="currency_name" id="currency_name" class="Field250" />
+								<input value="<?php echo $this->data['currency_name']; ?>" type="text" name="currency_name" id="currency_name" class="Field250" />
 								<span></span>
 							</td>
 						</tr>
@@ -39,7 +46,7 @@
 								<?php echo $this->Translate('Currency_Code'); ?>
 							</td>
 							<td>
-								<input type="text" name="currency_code" id="currency_code" class="Field250" />
+								<input value="<?php echo $this->data['currency_code']; ?>" type="text" name="currency_code" id="currency_code" class="Field250" />
 								<span></span>
 							</td>
 						</tr>				
@@ -49,7 +56,7 @@
 								<?php echo $this->Translate('Currency_Symbol'); ?>
 							</td>
 							<td>
-								<input type="text" name="currency_symbol" id="currency_symbol" class="Field250" />
+								<input value="<?php echo $this->data['currency_symbol']; ?>" type="text" name="currency_symbol" id="currency_symbol" class="Field250" />
 								<span></span>
 							</td>
 						</tr>
@@ -59,7 +66,7 @@
 								<?php echo $this->Translate('Currency_Value'); ?>
 							</td>
 							<td>
-								<input type="text" name="currency_value" id="currency_value" class="Field250" />
+								<input value="<?php echo $this->data['currency_value']; ?>" type="text" name="currency_value" id="currency_value" class="Field250" />
 								<span></span>
 							</td>
 						</tr>

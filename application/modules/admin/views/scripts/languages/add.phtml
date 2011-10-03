@@ -11,16 +11,16 @@
 		<?php echo $this->Translate('Manage_Languages'); ?>
 	</div>
 	
-	<div style="text-align:center;">
-		<?php 
-			if(count($this->addErrorMessage) > 0){ 
-				for($i = 0; $i < count($this->addErrorMessage); $i++)
-				{
-		
-		?>
-			<h5 style='color:#FF0000;margin-bottom:0px;'><?php echo $this->addErrorMessage[$i]; ?></h5><br />
-		<?php }}?>
-	</div>
+	<?php if(count($this->addErrorMessage) > 0 ) { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
+				<?php foreach($this->addErrorMessage as $key => $val ) { ?>
+					<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+					<strong><?php echo $val; ?></strong></p>
+				<?php } ?>
+			</div>
+		</div>
+	<?php } ?>	
 	
 	<form method="post" name="add_form" id="add_form" >
 		<table class="Panel" style="margin-top:10px;">

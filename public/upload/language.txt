@@ -1,0 +1,15 @@
+ADMIN
+test_value = value
+test_value1 = value1
+
+USER
+user_value = User value
+Merchant_Name = Merchant Name
+
+FB STORE
+FB_Store_Value = FB Store value
+Store = Store
+
+DEFAULT
+DEFAULT_Value = Default value
+DEFAULT_Value1 = Default value1

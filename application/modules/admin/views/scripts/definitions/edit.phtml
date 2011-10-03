@@ -13,16 +13,16 @@
 		<?php echo $this->Translate('Manage_Language_Definitions'); ?>
 	</div>
 	
-	<div style="text-align:center">
-		<?php 
-			if(count($this->editErrorMessage) > 0){ 
-				for($i = 0; $i < count($this->editErrorMessage); $i++)
-				{
-		
-		?>
-			<h5 style='color:#FF0000;margin-bottom:0px;'><?php echo $this->editErrorMessage[$i]; ?></h5><br />
-		<?php }}?>
-	</div>
+	<?php if(count($this->editErrorMessage) > 0 ) { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
+				<?php foreach($this->editErrorMessage as $key => $val ) { ?>
+					<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+					<strong><?php echo $val; ?></strong></p>
+				<?php } ?>
+			</div>
+		</div>
+	<?php } ?>	
 	
 	<form method="post" name="edit_form" id="edit_form" >
 		<table class="Panel" style="margin-top:10px;">
@@ -56,6 +56,7 @@
 									<option value="ADMIN" <?php echo ($this->records["content_group"] == 'ADMIN' ? "selected" : ""); ?> >ADMIN</option>
 									<option value="DEFAULT" <?php echo ($this->records["content_group"] == 'DEFAULT' ? "selected" : ""); ?> >DEFAULT</option>
 									<option value="USER" <?php echo ($this->records["content_group"] == 'USER' ? "selected" : ""); ?> >USER</option>
+									<option value="FB" <?php echo ( $this->records['content_group'] == 'FB' ? "selected" : "" ); ?> >FB STORE</option>
 								</select>
 								<span></span>
 							</td>

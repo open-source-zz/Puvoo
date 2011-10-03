@@ -59,13 +59,13 @@ class FbCommonController extends Zend_Controller_Action
 		define('SITE_FB_URL', 'http://'. $_SERVER['HTTP_HOST']. INSTALL_DIR."fb/");
 
 		// Define Path for images folder FB
-		define('IMAGES_FB_PATH', INSTALL_DIR."images/fb");
+		define('IMAGES_FB_PATH', INSTALL_DIR."public/images/fb");
 
 		// Define Path for css folder for FB
-		define('CSS_FB_PATH', INSTALL_DIR."css/fb" );
+		define('CSS_FB_PATH', INSTALL_DIR."public/css/fb" );
 
 		// Define Path for css folder for FB
-		define('JS_FB_PATH', INSTALL_DIR."js/fb" );
+		define('JS_FB_PATH', INSTALL_DIR."public/js/fb" );
 		
 		//Get Language array
 		$lang = array();
@@ -92,78 +92,91 @@ class FbCommonController extends Zend_Controller_Action
  		$Category = new Models_Category();
 		$Product = new Models_Product();
 		$catid = $this->_request->getParam('id');
- 		$Url = explode('/',$_SERVER['REQUEST_URI']);
 		
- 		if($Url[3]!='category' && $catid != '')
-		{
- 			$this->view->SerchCategoryCombo = $Category->GetMainCategory();
- 		}
-		else
-		{
-			$CatCombo = $Category->GetSubCategory($catid);
- 			if($CatCombo)
+		//Get Request
+		$request = $this->getRequest();
+		
+		$cur_controller = $request->getControllerName();
+ 		
+			if($cur_controller!='category' && $catid != '')
 			{
-				$this->view->SerchCategoryCombo = $CatCombo;
-			}else{
 				$this->view->SerchCategoryCombo = $Category->GetMainCategory();
 			}
-		}
+			else
+			{
+				$CatCombo = $Category->GetSubCategory($catid);
+				if($CatCombo)
+				{
+					$this->view->SerchCategoryCombo = $CatCombo;
+				}else{
+					$this->view->SerchCategoryCombo = $Category->GetMainCategory();
+				}
+			}
 		
 		//set default pagesize for admin section
 	
-		if(isset($mysession->pagesize)){
+		if(!isset($mysession->pagesize1)){
 			
 			$mysession->pagesize1 = 6;
 		}
+		//print $mysession->pagesize1;die;
 		// Left Maenu
 		//to get all main category
 		$Allcategory = $Category->GetMainCategory();
+		//print "<pre>";
+		//print_r($Allcategory);die;
+		$No_category = count($Allcategory);
 		
-		$tno = count($Allcategory);
-		
-		$eno = $tno % 4;
-		
-		$fno = ($tno - $eno ) / 4;
-		
-		$no_array = array();
-		
-		$no_array[0] = $fno;
-		$no_array[1] = $fno;
-		$no_array[2] = $fno;
-		$no_array[3] = $fno;
-		
-		
-		for($i=0; $i< $eno; $i++) 
+		if($No_category > 4)
 		{
-			$no_array[$i] += 1; 	
-		}
-		
-		$new_no = $no_array[0];
-		// i m here
-		// loop the array by $new_no
-		 
-		$menu_array = array();
-		$increment_no = 0;
-		foreach( $no_array as $key => $val )
-		{
-			$row = array();
-			$limit_no = $increment_no + $new_no; 
-			$other_no = 0;
-			for( $j = $increment_no; $j < (int)$limit_no; $j++ )
+			$Modulo_category = $No_category % 4;
+			
+			$final_cal = ($No_category - $Modulo_category ) / 4;
+			
+			$cat_array = array();
+			
+			$cat_array[0] = $final_cal;
+			$cat_array[1] = $final_cal;
+			$cat_array[2] = $final_cal;
+			$cat_array[3] = $final_cal;
+			
+			//print_r($cat_array);die;
+			for($i=0; $i< $final_cal; $i++) 
 			{
-				if(isset($Allcategory[$j])) {
-					$row[] = $Allcategory[$j];
-				}
+				$cat_array[$i] += 1; 	
 			}
-			$increment_no = $increment_no + $new_no; 
-			$menu_array[] = $row;
+			
+			$new_no = $cat_array[0];
+			// i m here
+			// loop the array by $new_no
+			 
+			$menu_array = array();
+			$increment_no = 0;
+			foreach( $cat_array as $key => $val )
+			{
+				//print_r($val);
+				$row = array();
+				$limit_no = $increment_no + $new_no; 
+				$other_no = 0;
+				for( $j = $increment_no; $j < (int)$limit_no; $j++ )
+				{
+					if(isset($Allcategory[$j])) {
+						$row[] = $Allcategory[$j];
+					}
+				}
+				$increment_no = $increment_no + $new_no; 
+				$menu_array[] = $row;
+			}
+		}else{
+		
+			$menu_array[] = $Allcategory;
 		}
-		
-		
+		//print "<pre>";
+		//print_r($menu_array);die;
 		$this->view->Mycategory = $menu_array;
 		$this->view->Allcategory = $Allcategory;
 		
-		$cat = array();
+		//$cat = array();
 
 		//print_r($cat);die;
 		//to get selected category
@@ -218,7 +231,7 @@ class FbCommonController extends Zend_Controller_Action
 			$mysession->cartId = $cartId;
 			
 			// Get Shipping Information
-			if($cartId){
+			if($cartId) {
 				
 				$ShippingInfo = $Cart->GetShippingInfo($cartId);
 				//print_r($ShippingInfo);die;
@@ -236,6 +249,24 @@ class FbCommonController extends Zend_Controller_Action
 				$this->view->city = $ShippingInfo['shipping_user_city'];
 				$this->view->state = $ShippingInfo['shipping_user_state_id'];
 				$this->view->zip = $ShippingInfo['shipping_user_zipcode'];
+				
+				$BillingInfo = $Cart->GetBillingInfo($cartId);
+				//print_r($ShippingInfo);die;
+				$this->view->bill_firstName = $BillingInfo['billing_user_fname'];
+				$this->view->bill_lastName = $BillingInfo['billing_user_lname'];
+				$this->view->bill_email = $BillingInfo['billing_user_email'];
+				$this->view->bill_phone = $BillingInfo['billing_user_telephone'];
+				$this->view->bill_addType = $BillingInfo['billing_user_address_type'];
+				$this->view->bill_stateID = $BillingInfo['billing_user_state_id'];
+				$this->view->bill_stateName = $BillingInfo['state_name'];
+				$this->view->bill_countryId = $BillingInfo['billing_user_country_id'];
+				$Billaddress = explode('@',$BillingInfo['billing_user_address']);
+ 				$this->view->bill_address = $Billaddress[0];
+				$this->view->bill_address1 = $Billaddress[1];
+				$this->view->bill_city = $BillingInfo['billing_user_city'];
+				$this->view->bill_state = $BillingInfo['billing_user_state_id'];
+				$this->view->bill_zip = $BillingInfo['billing_user_zipcode'];
+				
 			}
 			
 			// Country combo
@@ -243,154 +274,40 @@ class FbCommonController extends Zend_Controller_Action
 			// State combo
 			$this->view->StateCombo = $Cart->GetState($this->view->countryId);
 			
-			// get country code
-			$CountryCode = $Cart->GetCountryCode($this->view->countryId);
-			
-			$this->view->CountryCode = $CountryCode['country_iso2'];
-			$Ship_Method_Combo = array();
-			$Ship_Handel_Day = array();
-			
-			for($j=0; $j < count($CartDetails); $j++)
-			{
-				// For Shipping Method for each product
- 				$ShippingMetodInfo = $Cart->GetShippingMethod($CartDetails[$j]['user_id']);
-				
-				$start = 0;
-				$Ship_Method_Combo_Str = array();
-				
-				foreach($ShippingMetodInfo as $ship)
-				{
-					//print "<pre>";
-					//print_r($ship);
-					
-					$shippingZone = explode(',',$ship['zone']);
-					//print (count($shippingZone))."<br>";
-					for($k=0; $k < count($shippingZone); $k++)
-					{
-						//print_r($shippingZone[$k])."<br>";
-						$shippingState = explode(':',$shippingZone[$k]);
-						
-						foreach($shippingState as $key => $val )
-						{
-							if($key == 0 ) {
-								
-								if($val == $CountryCode['country_iso2']) {
-								 	
-									$Ship_Method_Combo_Str[$ship['shipping_method_id']] = $ship['shipping_method_name'];
-									
-								}
-								
-							} else {
-							
-								if( $val == $this->view->stateName ) {
-							
-									$Ship_Method_Combo_Str[$ship['shipping_method_id']] = $ship['shipping_method_name'];
-								}
-							
-							}
-							
-						}//die;
-					}
-					$Ship_handling_day = $ship['shipping_handling_time'];
-				}
-				
-				$Ship_Handel_Day[$CartDetails[$j]['product_id']] = $Ship_handling_day;
-				
-				$Ship_Method_Combo[$CartDetails[$j]['product_id']] = $Ship_Method_Combo_Str;
-				
-				// For Tax rate for each product
-				$TaxInfo = $Cart->GetTaxName($CartDetails[$j]['user_id']);
-				
-				//print "<pre>";
-				//print_r($TaxInfo);
-				$tax_rate = array();
-				foreach($TaxInfo as $tax)
-				{
-					//print "<pre>";
-					//print_r($ship);
-					//$taxName[] = $tax['tax_name'];
-					$taxZone = explode(',',$tax['zone']);
-					//print (count($shippingZone))."<br>";
-					for($k=0; $k < count($taxZone); $k++)
-					{
-						//print_r($shippingZone[$k])."<br>";
-						$taxState = explode(':',$taxZone[$k]);
-						//print "<pre>";
-						//print_r($taxState);
-						foreach($taxState as $key => $val )
-						{
-							if($key == 0 ) {
-								
-								if($val == $CountryCode['country_iso2']) {
-								 	
-									$tax_rate[$tax['tax_rate_id']] = $tax['rate'];
-									
-								}
-								
-							} else {
-							
-								if( $val == $this->view->stateName ) {
-							
-									$tax_rate[$tax['tax_rate_id']] = $tax['rate'];
-								}
-							
-							}
-							
-						}//die;
-					}
-				}
-				//die;
-				//print_r($tax_rate);
-				$taxe_rate_value[$CartDetails[$j]['product_id']] = $tax_rate;
-
- 			}
-			
-			$combo_array = array();
-			foreach( $Ship_Method_Combo as $key => $val ) 
-			{
-				$str = '';
-				foreach( $val as $key2 => $val2 ) 
-				{
-					$str .= "<option name='' value='".$key2."' onclick='GetShippingCost(".$key2.",".$key.")'>".$val2."</option>";
-					
-				}
-				$combo_array[$key] = $str;
-			}
-			
-			//print "<pre>";
-			//print_r($combo_array);die;
-			$this->view->taxRate = $taxe_rate_value;
- 			$this->view->ship_handel_day = $Ship_Handel_Day;
-			$this->view->Ship_Method_Combo = $combo_array;
 			
 			$_SESSION['Payment_Amount'] = '1000';
 			
 			
 			
 		}
-		
+		$Id = $this->_request->getParam('id');
 		//print_r($Url);
-//		if($Url[3] == 'product' || $Url[3] == 'retailer')
-//		{
-//			$userId = '';
-//			$Id = $this->_request->getParam('id');
-//			if($Url[3] == 'product')
-//			{
-//				$productDetails = $Product->GetProductDetails($Id);
-//				$userId = $productDetails['user_id'];
-//			}
-//			if($Url[3] == 'retailer')
-//			{
-//				$userId = $Id;
-//			}
-//			//print $userId;die;
-//			$sellerInfo = $Product->GetSellerInformation($userId);
-//			
-//			//print_r($sellerInfo);die;
-//			$this->view->terms = $sellerInfo['store_terms_policy'];
-//			$this->view->returnPolicy = $sellerInfo['return_policy'];
-//			$this->view->storeDescription = $sellerInfo['store_description'];
-//		}
+		if($Id)
+		{
+			
+				if($cur_controller == 'product' || $cur_controller == 'retailer')
+				{
+					$userId = '';
+					
+					if($cur_controller == 'product' && $Id!='')
+					{
+						$productDetails = $Product->GetProductDetails($Id);
+						$userId = $productDetails['user_id'];
+					}
+					if($cur_controller == 'retailer' && $Id!='')
+					{
+						$userId = $Id;
+					}
+					//print $userId;die;
+					$sellerInfo = $Product->GetSellerInformation($userId);
+					
+					//print_r($sellerInfo);die;
+					$this->view->terms = $sellerInfo['store_terms_policy'];
+					$this->view->returnPolicy = $sellerInfo['return_policy'];
+					$this->view->storeDescription = $sellerInfo['store_description'];
+				}
+			
+		}
   	} 
 
 	/**

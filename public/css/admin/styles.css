@@ -78,8 +78,10 @@ body {
 {
 	width:960px;
 	margin:auto;
-	line-height:25px;
+	
 }
+.footer a{font-size:.95em;}
+
 /* HEADER & FOOTER
 *******************************************************************************/
 

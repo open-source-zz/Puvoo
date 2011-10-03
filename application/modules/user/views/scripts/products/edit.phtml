@@ -6,26 +6,35 @@
 </div>
 
 <!--       Set Record value         -->
-<?php  $edit_record = $this->records;  ?>
-<?php  $detail = $edit_record["detail"];  ?>
-<?php  $images = $edit_record["images"];  ?>
-<?php  $category = $edit_record["category"];  
-	//$category_id = new array();
+
+<?php  $detail = $this->detail;  ?>
+<?php  $images = $this->images;  ?>
+<?php  $category = $this->sub_category; 
+	
 	foreach($category as $key => $val)
 	{
 		$category_id[] = $val["category_id"];	
+		
 	}
+	
 ?>
-<?php  $options = $edit_record["options"];  ?>
+<?php  $options = $this->options;  ?>
 
 <div class="BodyContainer DashboardContainer" style="text-align:left;"> 
 	<div class="Heading1">
 		<?php echo $this->Translate("Products_Management"); ?>
 	</div>
 	
-	<div style="text-align:center;">
-		<?php echo $this->editErrorMessage; ?>
-	</div>
+	<?php if(count($this->editErrorMessage) > 0 ) { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
+				<?php foreach($this->editErrorMessage as $key => $val ) { ?>
+					<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+					<strong><?php echo $val; ?></strong></p>
+				<?php } ?>
+			</div>
+		</div>
+	<?php } ?>	
 	
 	<form method="post" name="detail_edit_form" id="detail_edit_form" enctype="multipart/form-data" >
 		<table class="Panel" style="margin-top:10px;">
@@ -82,16 +91,16 @@
 							</td>
 							<td>
 								<select name="product_category" id="product_category" multiple="multiple"  >
-									<?php $category_array = $this->category; ?>
+									<!--<?php $category_array = $this->category; ?>-->
+									<?php echo $this->cateTree; ?>
 									
-									
-<?php if(count($category_array) > 0) {  
+<!--<?php if(count($category_array) > 0) {  
 		for( $i = 0; $i < count($category_array); $i++) { 
 		
 			if ($category_array[$i]["parent_id"] == 0 ) {
 				
 				echo "<optgroup label='".$category_array[$i]["category_name"]."'>";
-				
+					$increment = 0;
 					for( $j = 0; $j < count($category_array); $j++)
 					{
 						if($category_array[$j]["parent_id"] == $category_array[$i]["category_id"]) 	
@@ -105,7 +114,11 @@
 								echo "<option value='".$category_array[$j]["category_id"]."'>".$category_array[$j]["category_name"]."</option>";
 								
 							}
+							$increment++;
 						}
+					}
+					if($increment == 0 ) {
+						echo "<option value=''></option>";
 					}
 				
 				echo "</optgroup>";
@@ -113,7 +126,7 @@
 			}
 		 }  
 	}
-?>
+?>-->
 									
 								</select>
 								<input type="hidden" name="multiselect_product_category_value" id="multiselect_product_category_value" value="">

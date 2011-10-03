@@ -20,21 +20,15 @@
  * versions in the future. If you wish to customize Puvoo for your
  * needs please refer to http://www.puvoo.com for more information.
  */
-?>
-<?php
-/*
- * Bootstrap class is used for configuring zend environment
- *
- * Date created: 2011-08-18
- *
- * @category	Puvoo
- * @package 	Bootstrap
- * @author Amar
- * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0) * 
- */
 
-class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
-{    
-   
-}
+/** 
+ * index page of site 
+ *
+ * Date created: 2011-10-01
+ *
+ * @author Amar
+ * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ **/
+ 
+require_once 'public/index.php';
 ?>

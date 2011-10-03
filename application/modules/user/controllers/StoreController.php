@@ -53,7 +53,7 @@ class User_StoreController extends UserCommonController
 	public function init()
 	{
 		parent::init();		
-		 $this->view->JS_Files = array('/user/store.js');
+		//$this->view->JS_Files = array('/user/store.js');
 	}
 	
 	
@@ -109,73 +109,77 @@ class User_StoreController extends UserCommonController
 			$data["shipping_handling_time"] = $filter->filter(trim($this->_request->getPost('ship_handling_time'))); 	
 			$data["store_terms_policy"] = $filter->filter(trim($this->_request->getPost('store_terms'))); 	
 			
-			$addStoreError = "";	
+			$addErrorMessage = array();	
+			$addSuccessMessage = "";
 			if($data['store_name'] == "" ) {
-				$addStoreError .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Store_Name')."</h5>";			
+				$addErrorMessage[] = $translate->_('Err_Store_Name');			
 			}
 			if($data['store_description'] == "" ) {
-				$addStoreError .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Store_Description')."</h5>";			
+				$addErrorMessage[] = $translate->_('Err_Store_Description');			
 			}
 			if($data['paypal_email'] == "" ) {
-				$addStoreError .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Store_Paypal_Email')."</h5>";			
+				$addErrorMessage[] = $translate->_('Err_Store_Paypal_Email');			
 			}
 			$validator = new Zend_Validate_EmailAddress();
 			if ($validator->isValid($data['paypal_email'])) { } else {
-				$addStoreError .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Store_Paypal_Email_Invalid')."</h5>";
+				$addErrorMessage[] = $translate->_('Err_Store_Paypal_Email_Invalid');
 			}
 			if($data['currency_id'] == "" ) {
-				$addStoreError .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Store_Currency')."</h5>";
+				$addErrorMessage[] = $translate->_('Err_Store_Currency');
 			}		
 			if($data['country_id'] == "" ) {
-				$addStoreError .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Store_Country')."</h5>";
+				$addErrorMessage[] = $translate->_('Err_Store_Country');
 			}		
 			if($data['store_address'] == "") {
-				$addStoreError .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Store_Address')."</h5>";			
+				$addErrorMessage[] = $translate->_('Err_Store_Address');			
 			}
 			if($data['store_city'] == "") {
-				$addStoreError .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Store_City')."</h5>";			
+				$addErrorMessage[] = $translate->_('Err_Store_City');			
 			}
 			if($data['state_id'] == "") {
-				$addStoreError .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Store_State')."</h5>";			
+				$addErrorMessage[] = $translate->_('Err_Store_State');			
 			}
 			if($data['store_zipcode'] == "") {
-				$addStoreError .= "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Store_zipcode')."</h5>";			
+				$addErrorMessage[] = $translate->_('Err_Store_zipcode');			
 			}
 			
 			$where = "user_id != ".$User_id;
+			if(count($addErrorMessage) == 0 || $addErrorMessage == "") {
 			
-			if($home->ValidateTableField("store_name",$data['store_name'],"user_master",$where)) {
+				if($home->ValidateTableField("store_name",$data['store_name'],"user_master",$where)) {
 			
-				if($addStoreError == "") {
-					
 					if($store->UpdateStore($data)) {
 						
-						$this->view->StoreMessage = "<h5 style='color:#389834;margin-bottom:0px;'>".$translate->_('Success_Store_Update')."</h5>";
+						$addSuccessMessage = $translate->_('Success_Store_Update');
 					} else { 
 						
-						$this->view->StoreMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Store_Update')."</h5>";
+						$addErrorMessage[] = $translate->_('Err_Store_Update');
 					} 
-					$this->view->records = $store->getUserStore($User_id);
 					
 				} else {
 					
-					$this->view->records = $store->getUserStore($User_id);
-					$this->view->StoreMessage ="<h5 style='color:#FF0000;margin-bottom:0px;'>".$addStoreError."</h5>";
+					$addErrorMessage[] = $translate->_('Err_Store_Exists');	
 				} 
 				
-			} else {
-				
-				$this->view->records = $store->getUserStore($User_id);
-				$this->view->StoreMessage = "<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Store_Exists')."</h5>";	;
 			}
 			
+			$this->view->records = $data;
+			$this->view->User_EMessage = $addErrorMessage;
+			$this->view->User_SMessage = $addSuccessMessage;
+			
 		} else {
+		
+			$addErrorMessage = array();
 			if($store->Check_UserStore($User_id)) {
+		
 				$this->view->records = $store->getUserStore($User_id);
 				
 			} else {
-				$this->view->StoreMessage ="<h5 style='color:#FF0000;margin-bottom:0px;'>".$translate->_('Err_Store_Found')."</h5>";
+		
+				$addErrorMessage = $translate->_('Err_Store_Found');
 			}	
+			
+			$this->view->User_EMessage = $addErrorMessage;
 		
 		}
 		

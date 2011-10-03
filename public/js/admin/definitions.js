@@ -64,3 +64,34 @@ function ValidateEditForm()
 	
 	
 }
+
+
+/////////////////////  Validate Add Definition form      ///////////////////////////
+
+function ValidateImportForm()
+{
+	$("#import_form").validate({
+							
+		rules: {
+					definition_file: { required: true },
+			   },
+			   
+		messages:{
+					definition_file: { required: ERR_DEFINITION_FILE },
+				 },
+				 
+		errorPlacement: function(error, element) 
+		{ 
+			if ( element.is(":radio") ) { 
+			
+				error.appendTo (element.parent().next() ); 
+				
+			} else {
+				
+				error.appendTo( element.next() ); 
+				
+			}
+		}
+	});
+	
+}

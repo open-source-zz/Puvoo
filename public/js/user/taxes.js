@@ -74,6 +74,7 @@ var country_array = new Array();
 var current_country = null; 
 function ShowCountryDialog()
 {	
+	
 	var zone_value = $("#tax_zone").val();
 	if (zone_value != '') { 
 		var country_str = zone_value.split(",");
@@ -102,13 +103,20 @@ function ShowCountryDialog()
 			'Save': function() {
 				$("#tax_zone").val($("#Zone_Result").html());
 				$( this ).dialog( "close" );
+				StopBlink();
+				document.getElementById("store_country").options.selectedIndex = 0;
 			},
 			Cancel: function() {
 				$("#Zone_Result").html("");
 				$( this ).dialog( "close" );
+				StopBlink();
+				document.getElementById("store_country").options.selectedIndex = 0;
 			},
 			'Clear': function() {
 				$("#Zone_Result").html("");
+				country_array = new Array();
+				StopBlink();
+				document.getElementById("store_country").options.selectedIndex = 0;
 			}
 		}
 	});	
@@ -117,6 +125,7 @@ function ShowCountryDialog()
 
 function AddCountry()
 {
+	StopBlink();
 	var array = $("#store_country").val().split("/");
 	var flag = 0;
 		
@@ -166,6 +175,7 @@ function AddCountry()
 
 function AddCountryState()
 {
+	StopBlink();
 	var state = $("#store_country_state").val();
 	var string = '';
 	var flag = 0;
@@ -212,4 +222,19 @@ function AddCountryState()
 	}
 	
 	document.getElementById("store_country_state").options.selectedIndex = 0;
+}
+
+
+var BlickID = '';
+function BlinckLink(val,id)
+{
+	BlickID = id;
+	if( val != "" )	{
+		$("#"+BlickID).css({'text-decoration' : 'blink', 'color' : 'red'});		
+	}
+}
+
+function StopBlink()
+{
+	$("#"+BlickID).css({'text-decoration' : 'none', 'color' : '#333333'});	
 }

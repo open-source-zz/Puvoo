@@ -26,7 +26,7 @@
 /**
  * Class Models_AdminMaster
  *
- * Class Models_AdminMaster contains methods that handles dashboard, admin account other common functionality.
+ * Class Models_AdminMaster contains methods that handles dashboard, admin account and other common functionality.
  *
  * Date created: 2011-09-04
  *
@@ -52,7 +52,6 @@ class Models_AdminMaster
 	 * @param ()  - No parameter
 	 * @return () - Return void
 	 * @author Amar
-	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	function __construct()
@@ -72,7 +71,6 @@ class Models_AdminMaster
 	 * @param (string)  - 	$newP : This is the new password of admin
 	 * @return (Boolean) - True if password update successfully otherwise false
 	 * @author Yogesh
-	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -114,7 +112,6 @@ class Models_AdminMaster
 	 * @param () (String)  - $where : Other condition.
 	 * @return (Boolean) - Return true on success
 	 * @author Yogesh
-	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
@@ -138,6 +135,19 @@ class Models_AdminMaster
 	}
 	
 	
+	/**
+	 * Function getConstantArray
+	 *
+	 * This function is used to get constant array for order status
+     *
+	 * Date created: 2011-09-02
+	 *
+	 * @access public
+	 * @param () - No parameter.
+	 * @return (array) - Return array of status values
+	 * @author Yogesh
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
 	public function getConstantArray()
 	{
 		global $mysession;

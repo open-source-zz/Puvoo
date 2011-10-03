@@ -165,6 +165,11 @@ class Models_LanguageDefinitions
 			$sql .= " and language_definitions.status = '" . $data["status"] . "'";
 		}
 		
+		if($data["definition_key"] != "")
+		{
+			$sql .= " and language_definitions.definition_key like '%" . $data["definition_key"] . "%'";
+		}
+		
 		if($data["definition_value"] != "")
 		{
 			$sql .= " and language_definitions.definition_value like '%" . $data["definition_value"] . "%'";
@@ -251,7 +256,6 @@ class Models_LanguageDefinitions
 		return true; 
 	}
 	
-	
 	/**
 	 * Function updateDefinition
 	 *
@@ -289,8 +293,6 @@ class Models_LanguageDefinitions
 	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
-	
-	
 	public function deleteDefinition($id)
 	{
 		$db = $this->db;	
@@ -299,6 +301,7 @@ class Models_LanguageDefinitions
 		
 		return true;		
 	}
+	
 	
 	/**
 	 * Function deleteMultipleDefinitions
@@ -314,7 +317,6 @@ class Models_LanguageDefinitions
 	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
-	
 	public function deleteMultipleDefinitions($ids)
 	{
 		$db = $this->db;	
@@ -323,5 +325,57 @@ class Models_LanguageDefinitions
 		
 		return true;
 	}
+	
+	
+	/**
+	 * Function executeQuery
+	 *
+	 * This function is used to execute query.
+     *
+	 * Date created: 2011-09-30
+	 *
+	 * @access public
+	 * @param () (String)  - $sql : sql query to execute.
+	 * @return (Boolean) - Return true on success
+	 * @author Amar
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	public function executeQuery($sql)
+	{
+		$db = $this->db;	
+		
+		$db->query($sql);
+		
+		return true;
+	}
+	
+	
+	/**
+	 * Function getDefinitionsByLanguageId
+	 *
+	 * This function is used to get definitions from language id.
+     *
+	 * Date created: 2011-10-01
+	 *
+	 * @access public
+	 * @param (int)  - $language_id: Language Id
+	 * @return (Array) - Return Array of records
+	 * @author Amar
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	public function getDefinitionsByLanguageId($language_id)
+	{
+		$db = $this->db;
+		
+		$sql = "select * from language_definitions 
+				where language_id = " . $language_id .  "
+				order by language_definitions.language_id, content_group asc";
+		
+ 		$result = $db->fetchAll($sql);
+		return $result;
+	}
+	
 }
 ?>
