@@ -276,6 +276,8 @@ select {
     overflow: hidden;
 	background:#f7f7f7;
     width: 547px;
+	/*border-right:none;*/
+	border-bottom:none;
 }
 
 .mainColumnWidget p {padding-bottom:12px; }

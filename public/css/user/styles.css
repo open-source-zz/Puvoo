@@ -159,6 +159,10 @@ body {
 	text-decoration: none;
 }
 
+.Breadcrumb li.Last1 {
+		background: #f4f5f7 url('../../images/user/breadcrumb_sep3.gif') no-repeat right;
+}
+
 .Breadcrumb li.Last a, .Breadcrumb li.Last span {
 		text-decoration: none;
 		color: #444;;

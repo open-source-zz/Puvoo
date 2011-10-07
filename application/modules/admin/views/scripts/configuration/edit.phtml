@@ -1,0 +1,83 @@
+<div class="Breadcrumb" id="PageBreadcrumb">
+	<ul>
+	   <li class="Home SecondLast"><a href="<?php echo SITE_URL; ?>admin/"><?php echo $this->Translate("Administration"); ?></a></li>
+	   <li class="Last1"><a href="<?php echo SITE_URL; ?>admin/configuration"><?php echo $this->Translate('Configuration_Group'); ?></a></li>
+	   <li class="Last"><span><?php echo $this->Translate('Edit_Configuration_Group'); ?></span></li>
+	</ul>
+</div>
+
+<!--       Set Record value         -->
+<?php  $edit_record = $this->records;  ?>
+
+<div class="BodyContainer DashboardContainer" style="text-align:left;"> 
+	<div class="Heading1">
+		<?php echo $this->Translate('Manage_Configuration_Group'); ?>
+	</div>
+	
+	<?php if(count($this->editErrorMessage) > 0 ) { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
+				<?php foreach($this->editErrorMessage as $key => $val ) { ?>
+					<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+					<strong><?php echo $val; ?></strong></p>
+				<?php } ?>
+			</div>
+		</div>
+	<?php } ?>	
+	
+	<form method="post" name="edit_form" id="edit_form" >
+		<table class="Panel" style="margin-top:10px;">
+			<tr>
+				<td class="Heading2" colspan="2"><?php echo $this->Translate('Edit_Configuration_Group'); ?></td>
+			</tr>
+			<tr>
+				<td colspan="2">
+				<div id="div0" style="padding-bottom:5px">
+					<table class="Panel" width="100%" cellspacing="0" cellpadding="0">
+						<tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Configuration_Group_Key'); ?>
+							</td>
+							<td>
+								<input type="text" name="configuration_group_key" id="configuration_group_key" class="Field250" value="<?php echo $this->records['configuration_group_key']; ?>" />
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="15"></td></tr>
+						<tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Visible'); ?>:
+							</td>
+							<td>
+								<span>
+									<input type="radio" name="visible" id="visible" class="" value="1" <?php echo ($this->records["visible"] == 1 ? "checked" : ""); ?> />
+									<?php echo $this->Translate('L_Yes'); ?>&nbsp;
+									<input type="radio" name="visible"  value="0" <?php echo ($this->records["visible"] == 0 ? "checked" : ""); ?> />
+									<?php echo $this->Translate('L_No'); ?>
+								</span>
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="15"></td></tr>
+						<tr>
+						   	<td colspan="2">
+								<input type="submit" onclick="Javascript: return ValidateEditFrom()" value="<?php echo $this->Translate('Submit'); ?>" />
+								<input type="button" value="<?php echo $this->Translate('Cancle'); ?>" onclick="window.location='<?php echo $this->site_url; ?>'"/>
+						   </td>
+						</tr>
+					</table>
+				</div>
+				</td>
+			</tr>
+		</table>   
+		
+		<!--         Hidden fields                       -->
+		<input type="hidden" name="configuration_group_id" id="configuration_group_id" value="<?php echo $this->configuration_group_id; ?>" />
+		
+	</form>            
+</div> 
+
+<script language="javascript" type="text/javascript">
+var siteurl = "<?php echo SITE_URL; ?>";
+var ERR_CONFIGURATION_GROUP_KEY = "<?php echo $this->Translate('Err_Configuration_Group_Key'); ?>";  
+</script>

@@ -242,7 +242,7 @@ class Models_Product
 		$sql = "SELECT * FROM product_options_detail as pod
 				LEFT JOIN product_options as po ON (pod.product_options_id = po.product_options_id) 		
 				WHERE po.product_id='".$prodId."' and pod.product_options_detail_id = '".$value."'";
-		 //print $sql;die;
+		
  		$result = $db->fetchRow($sql);
 		return $result;
 	}
@@ -262,6 +262,7 @@ class Models_Product
 	 */
 	public function GetProductOptionValue($prodOptId)
 	{
+		//print $prodOptId;die;
 		$db = $this->db;
 		$sql = "SELECT * FROM product_options_detail WHERE product_options_id='".$prodOptId."'";
 		 
@@ -270,6 +271,30 @@ class Models_Product
 		return $result;
 	}
  	
+	 /*
+	 * getProductOptPrice(): To get product Options price using its detail id.
+	 *
+	 * It is used to get price of the product option.
+	 *
+	 * Date created: 2011-09-20
+	 *
+	 * @author  Jayesh 
+	 * @param   two parameters / login_id and password.
+     * @global  $db Zend_db for database.
+                $mysession Zend_Session_Namespace for session variables.
+	 * 
+	 */
+	public function getProductOptPrice($Opt_DetailId)
+	{
+		//print $prodOptId;die;
+		$db = $this->db;
+		$sql = "SELECT * FROM product_options_detail WHERE product_options_detail_id='".$Opt_DetailId."'";
+		 
+		//print $sql;die;
+ 		$result = $db->fetchRow($sql);
+		return $result;
+	}
+	
 	/**
 	 * Function GetProductSearch
 	 *
@@ -286,7 +311,7 @@ class Models_Product
 	 **/
 	
 	
-	public function GetProductSearch($querystring,$search,$catid)
+	public function GetProductSearch($querystring,$search,$catid,$sort)
 	{
 		$db = $this->db;
 	 	 
@@ -307,6 +332,20 @@ class Models_Product
 		} else {
 		
 			$sql .= " WHERE 1=1";
+		}
+		
+		if($sort == 'price_asc')
+		{
+			 
+			$sql .= " order By product_price asc";
+			
+		}elseif($sort == 'price_desc'){
+			 
+			$sql .= " order By product_price desc";
+			
+		}else{
+			
+			$sql .= " order By product_price asc";
 		}
 		//print $sql;die;
 		$result =  $db->fetchAll($sql);		
@@ -419,6 +458,36 @@ class Models_Product
 		
 		return $db->fetchAll($select);
 	}
+
+	/**
+	 * function ProductExist
+	 *
+	 * It is used to check that product is exist or not.
+	 *
+	 * Date created: 2011-09-02
+	 *
+	 * @param (int) $prodId- Product Id.
+	 * @return (Array) - Return true on success
+	 * @author  Jayesh 
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 */
+	public function ProductExist($prodId)
+	{
+		$db= $this->db;
+		
+		$sql = "SELECT * FROM product_master WHERE product_id = ".$prodId."";
+		
+		$result = $db->fetchRow($sql);
+		if($result == NULL || $result == "")
+		{
+			return false;
+		
+		}else{ 
+			return true;
+		}
+	
+	}
+
 	
 	/**
 	 * Function GetAllDistinctProducts
@@ -683,9 +752,9 @@ class Models_Product
 				 JOIN category_master as cm ON(cm.category_id = ptc.category_id)
 				 WHERE cm.is_active = 1 
 				 AND ptc.product_id =".$id;
-	 	$sql4 =" SELECT po.*,pod.option_value,pod.product_options_id as LNK_options_id
+	 	$sql4 =" SELECT po.*,pod.option_name,pod.product_options_id as LNK_options_id, pod.option_code ,pod.product_options_detail_id
 				 FROM product_options as po
-				 JOIN product_options_detail as pod ON(po.product_options_id = pod.product_options_id)
+				 LEFT JOIN product_options_detail as pod ON(po.product_options_id = pod.product_options_id)
 				 WHERE po.product_id = ".$id;
 		
 		$product["detail"] = $db->fetchRow($sql);
@@ -773,7 +842,7 @@ class Models_Product
 			if( $val != '' )
 			{
 				$data2["product_options_id"] = $id;
-				$data2["option_value"] = $val;
+				$data2["option_name"] = $val;
 				
 				$db->insert("product_options_detail", $data2); 	 
 				
@@ -829,7 +898,7 @@ class Models_Product
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
-	function insertProductOption($pid,$title,$detail) 
+	function insertProductOption($pid,$title) 
 	{
 		$db = $this->db;	
 		
@@ -839,19 +908,6 @@ class Models_Product
 		$db->insert("product_options", $data); 	 
 		$option_id =  $db->lastInsertId(); 
 	
-		$detail_array = explode(",",$detail);
-		 
-		foreach($detail_array as $key => $val )
-		{
-			if( $val != '' )
-			{
-				$data2["product_options_id"] = $option_id;
-				$data2["option_value"] = $val;
-				
-				$db->insert("product_options_detail", $data2); 	 
-				
-			}
-		}
 		return $option_id;
 	}
 
@@ -981,5 +1037,211 @@ class Models_Product
 		 return $tempTree;          // Return the entire child tree
 	}
 	
+	
+	/*
+	 * GetProductOptionValueById(): To get product Options value.
+	 *
+	 * It is used to get all the details of particular product Options value.
+	 *
+	 * Date created: 2011-10-05
+	 *
+	 * @author  	Yogesh
+	 * @param  (Int)   : $prodOptValId - Product option deatail id.
+	 * @return (Array) : Array of product option value
+     * @global  $db Zend_db for database.
+                $mysession Zend_Session_Namespace for session variables.
+	 * 
+	 */
+	public function GetProductOptionValueById($prodOptValId)
+	{
+		//print $prodOptId;die;
+		$db = $this->db;
+		
+		$sql = "SELECT pod.*, po.option_title, po.product_id  
+				FROM product_options_detail as pod
+				LEFT JOIN product_options as po ON ( po.product_options_id = pod.product_options_id ) 
+				WHERE pod.product_options_detail_id='".$prodOptValId."'";
+		
+		$result = $db->fetchRow($sql);
+		return $result;
+	}
+	
+	/*
+	 * updateProductOptionValue(): To update product Options value.
+	 *
+	 * It is used to update the details of particular product Options value and product option.
+	 *
+	 * Date created: 2011-10-06
+	 *
+	 * @author  	Yogesh
+	 * @return (Array) 	: $data1 - Array of product option value
+	 * @param  (Array)  : $data2 - Array of Product option data.
+	 * @return (Boolean): True on success.
+     * @global  $db Zend_db for database.
+                $mysession Zend_Session_Namespace for session variables.
+	 * 
+	 */
+	
+	public function updateProductOptionValue($data1, $data2)
+	{
+		$db = $this->db;
+				
+		$where1 ="product_options_detail_id = ".$data1["product_options_detail_id"];		
+		
+		$db->update("product_options_detail", $data1, $where1); 	
+		
+		$where2 ="product_options_id = ".$data2["product_options_id"];		
+		
+		$db->update("product_options", $data2, $where2); 
+		
+		return true;	
+	
+	}
+	
+	/*
+	 * insertProductOptionValue(): To insert product Options value.
+	 *
+	 * It is used to add the product Options value.
+	 *
+	 * Date created: 2011-10-06
+	 *
+	 * @author  	Yogesh
+	 * @return (Array) 	: $data - Array of product option value
+	 * @return (Boolean): True on success.
+     * @global  $db Zend_db for database.
+                $mysession Zend_Session_Namespace for session variables.
+	 * 
+	 */
+	
+	public function insertProductOptionValue($data)
+	{
+		$db = $this->db;	
+				
+		$db->insert("product_options_detail", $data); 	 
+		
+		$product_options_detail_id = $db->lastInsertId();
+		
+		if($product_options_detail_id > 0 ) {
+		
+			$select = $db->select()
+						 ->from("product_options_detail")
+						 ->where("product_options_detail_id = ".$product_options_detail_id);
+			$record = $db->fetchRow($select);
+			return $record;
+		
+		} else {
+			return false;
+		}
+	}
+	
+	/*
+	 * DeleteProductOptionValue(): To delete product Options value.
+	 *
+	 * It is used to delete the product Options value.
+	 *
+	 * Date created: 2011-10-06
+	 *
+	 * @author  	Yogesh
+	 * @return (Int) 	: $id - product option value id
+	 * @return (Boolean): True on success.
+     * @global  $db Zend_db for database.
+                $mysession Zend_Session_Namespace for session variables.
+	 * 
+	 */
+	
+	public function DeleteProductOptionValue($id)
+	{
+	
+		$db = $this->db;	
+		
+		$db->delete("product_options_detail","product_options_detail_id = ".$id);	
+		
+		return true;
+	
+	} 
+
+
+	/*
+	 * GetBestSelllerProduct(): To get best seller product in store.
+	 *
+	 * It is used to get best seller product in store.
+	 *
+	 * Date created: 2011-11-06
+	 *
+	 * @author  	Jayesh
+	 * @return (Array) : Array of best seller product
+     * @global  $db Zend_db for database.
+                $mysession Zend_Session_Namespace for session variables.
+	 * 
+	 */
+	
+	public function GetBestSelllerProduct()
+	{
+		$db = $this->db;
+		
+		$sql = "SELECT pm.*,pi.* FROM product_master as pm 
+				LEFT JOIN product_images as pi ON (pm.product_id = pi.product_id and is_primary_image = 1)
+				order By sold_count desc limit 0,3";
+		//print $sql;die;
+		$result = $db->fetchAll($sql);
+		return $result;
+	
+	}
+	
+	/*
+	 * GetFrndsLikeProduct(): To get friends like product in store.
+	 *
+	 * It is used to get friends like product in store.
+	 *
+	 * Date created: 2011-11-06
+	 *
+	 * @author  	Jayesh
+	 * @return (Array) : Array of best seller product
+     * @global  $db Zend_db for database.
+                $mysession Zend_Session_Namespace for session variables.
+	 * 
+	 */
+	
+	public function GetFrndsLikeProduct()
+	{
+		$db = $this->db;
+		
+		$sql = "SELECT pm.*,pi.* FROM product_master as pm 
+				LEFT JOIN product_images as pi ON (pm.product_id = pi.product_id and is_primary_image = 1)
+				order By like_count desc limit 0,3";
+		//print $sql;die;
+		$result = $db->fetchAll($sql);
+		return $result;
+	
+	}
+
+
+	/*
+	 * GetTopFrndsLikeProduct(): To get top friends like product in store.
+	 *
+	 * It is used to get top friends like product in store.
+	 *
+	 * Date created: 2011-11-06
+	 *
+	 * @author  	Jayesh
+	 * @return (Array) : Array of best seller product
+     * @global  $db Zend_db for database.
+                $mysession Zend_Session_Namespace for session variables.
+	 * 
+	 */
+	
+	public function GetTopFrndsLikeProduct()
+	{
+		$db = $this->db;
+		
+		$sql = "SELECT pm.*,pi.* FROM product_master as pm 
+				LEFT JOIN product_images as pi ON (pm.product_id = pi.product_id and is_primary_image = 1)
+				order By like_count desc limit 0,5";
+		//print $sql;die;
+		$result = $db->fetchAll($sql);
+		return $result;
+	
+	}
+
 }
 ?>

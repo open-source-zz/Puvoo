@@ -19,23 +19,21 @@
                         </div>
                         <div class="content">
                         	<table cellspacing="0" cellpadding="0">
-                                <tbody><tr>
+                                <tbody>
+								<tr>
                                     <td><img alt="" src="<?php echo IMAGES_FB_PATH ?>/home_contact.png"></td>
                                     <td width="12"></td>
                                     <td>
                                         <table cellspacing="0" cellpadding="0">
-                                            <tbody><tr>
-                                                <td class="style2">
-                                                    PO Box 782368,
-                                                </td>
-                                            </tr>
-                                            <tr><td height="2"></td></tr>
-                                            <tr>
-                                                <td class="style2">
-                                                    Sandton, South Africa 2146
-                                                </td>
-                                            </tr>
-                                        </tbody></table>
+                                            <tbody>
+												<tr>
+													<td class="style2">
+														<?php echo $this->ContactAddress;?>
+													</td>
+												</tr>
+												
+                                       		</tbody>
+										</table>
                                     </td>
                                 </tr>
                                 <tr><td height="12"></td></tr>
@@ -44,12 +42,14 @@
                                     <td width="12"></td>
                                     <td>
                                         <table cellspacing="0" cellpadding="0">
-                                            <tbody><tr>
-                                                <td class="style2">
-                                                    +2782-960-0922
-                                                </td>
-                                            </tr>
-                                        </tbody></table>
+                                            <tbody>
+												<tr>
+													<td class="style2">
+														<?php echo $this->ContactPhone;?>
+													</td>
+												</tr>
+                                       		</tbody>
+										</table>
                                     </td>
                                 </tr>
                                 <tr><td height="12"></td></tr>
@@ -60,9 +60,7 @@
                                         <table cellspacing="0" cellpadding="0">
                                             <tbody><tr>
                                                 <td class="style2">
-                                                    <a href="#">coo@puvoo.com</a><br>
-                                                    <a href="mailto:marketing@puvoo.com">marketing@puvoo.com</a><br>
-                                                    <a href="mailto:sales@puvoo.com">sales@puvoo.com</a>
+                                                    <?php echo $this->ContactEmail;?>
                                                 </td>
                                             </tr>
                                         </tbody></table>

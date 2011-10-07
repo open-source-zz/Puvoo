@@ -224,15 +224,11 @@ class Fb_CartController extends FbCommonController
 			
 			foreach($ShippingMetodInfo as $ship)
 			{
-				//print "<pre>";
-				//print_r($ship);
-				
+ 				
 				$shippingZone = explode(',',$ship['zone']);
-				//print (count($shippingZone))."<br>";
-				for($k=0; $k < count($shippingZone); $k++)
+ 				for($k=0; $k < count($shippingZone); $k++)
 				{
-					//print_r($shippingZone[$k])."<br>";
-					$shippingState = explode(':',$shippingZone[$k]);
+ 					$shippingState = explode(':',$shippingZone[$k]);
 					
 					foreach($shippingState as $key => $val )
 					{
@@ -253,7 +249,7 @@ class Fb_CartController extends FbCommonController
 						
 						}
 						
-					}//die;
+					}
 				}
 				$Ship_handling_day = $ship['shipping_handling_time'];
 			}
@@ -265,24 +261,14 @@ class Fb_CartController extends FbCommonController
 			// For Tax rate for each product
 			$TaxInfo = $Cart->GetTaxName($CartDetails[$j]['user_id']);
 			
-			//print "<pre>";
-			//print_r($TaxInfo);
-			
-			$tax_rate = array();
+ 			$tax_rate = array();
 			foreach($TaxInfo as $tax)
 			{
-				//print "<pre>";
-				//print_r($ship);
-				//$taxName[] = $tax['tax_name'];
 				$taxZone = explode(',',$tax['zone']);
-				//print (count($shippingZone))."<br>";
-				for($k=0; $k < count($taxZone); $k++)
+ 				for($k=0; $k < count($taxZone); $k++)
 				{
-					//print_r($shippingZone[$k])."<br>";
-					$taxState = explode(':',$taxZone[$k]);
-					//print "<pre>";
-					//print_r($taxState);
-					foreach($taxState as $key => $val )
+ 					$taxState = explode(':',$taxZone[$k]);
+ 					foreach($taxState as $key => $val )
 					{
 						if($key == 0 ) {
 							
@@ -301,11 +287,10 @@ class Fb_CartController extends FbCommonController
 						
 						}
 						
-					}//die;
-				}//die;
+					}
+				}
 			}
-			//die;
-			//print_r($tax_rate);
+			
 			$taxe_rate_value[$CartDetails[$j]['product_id']] = $tax_rate;
 	
 		}
@@ -322,9 +307,7 @@ class Fb_CartController extends FbCommonController
 			$combo_array[$key] = $str;
 		}
 		
-		//print "<pre>";
-		//print_r($taxe_rate_value);die;
-		$this->view->taxRate = $taxe_rate_value;
+ 		$this->view->taxRate = $taxe_rate_value;
 		$this->view->ship_handel_day = $Ship_Handel_Day;
 		$this->view->Ship_Method_Combo = $combo_array;
 
@@ -445,10 +428,11 @@ class Fb_CartController extends FbCommonController
  		
 		$cartId = $_POST['cartid'];
 		$prodId = $_POST['prodid'];
+		$prodPrice = $_POST['prodPrice'];
 		$prodData = $Product->GetProductDetails($prodId);
 		$updateData = array(
  				'product_qty' => $_POST['prodQty'],
-				'product_total_cost' => $prodData['product_price']*$_POST['prodQty']
+				'product_total_cost' => $prodPrice*$_POST['prodQty']
  			);
 		//print_r($updateData);die;
 		$UpdateCartDetails = $Cart->UpdateCart($updateData,$cartId,$prodId);
@@ -484,10 +468,9 @@ class Fb_CartController extends FbCommonController
 		$prodId = $_POST['prodid'];
 		
 		$prodData = $Product->GetProductDetails($prodId);
-		//print_r($prodData['product_weight']);
-		$ShippingCostDetails = $Cart->GetShippingCost($methodId);
-		//print_r($ShippingCostDetails);die;
 		
+ 		$ShippingCostDetails = $Cart->GetShippingCost($methodId);
+ 		
 		$shippingPriceArray = explode(',',$ShippingCostDetails['price']);
 		
 		$start = 0;
@@ -552,6 +535,91 @@ class Fb_CartController extends FbCommonController
 		//print_r($CartData);die;
 		echo json_encode($CartData);die;
   	} 
+
+	/**
+	* Function updateshippingmethodAction
+	*
+	* This function is used for update the shipping method and its detail. 
+	*
+	* Date Created: 2011-10-07
+	*
+	* @access public
+	* @param ()  - No parameter
+	* @return (void) - Return void
+	*
+	* @author Jayesh
+	*  
+	* @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	**/  
+	public function updateshippingmethodAction()
+	{
+		global $mysession;
+		$Cart = new Models_Cart();
+		$Product = new Models_Product();
+		$filter = new Zend_Filter_StripTags();
+ 		
+		$cartId = $_POST['cartid'];
+		$prodIds = explode(',',$_POST['prodid']);
+		$methodIds = explode(',',$_POST['methodid']);
+		
+		$taxrates = explode(',',$_POST['taxrate']);
+		
+ 		for($i=0; $i<count($prodIds); $i++)
+		{
+				
+			$taxRate = $filter->filter(trim($taxrates[$i]));
+			$prodData = $Product->GetProductDetails($prodIds[$i]);
+			if($methodIds[$i])
+			{
+				$ShippingCostDetails = $Cart->GetShippingCost($methodIds[$i]);
+				
+				$shippingPriceArray = explode(',',$ShippingCostDetails['price']);
+				
+				$start = 0;
+				
+				foreach($shippingPriceArray as $val)
+				{
+					$shippingRangeArray = explode(':',$val);
+					
+					if($prodData['product_weight'] > $start && $prodData['product_weight'] <= $shippingRangeArray[0])
+					{
+						
+						$ship_Price = $shippingRangeArray[1];
+					}
+					
+					$start = $shippingRangeArray[0];
+					
+				}
+			}
+			else{
+				$ship_Price = 0;
+			}
+			
+			$prodData = $Cart->GetCartProductDetail($prodIds[$i],$cartId);
+			$total_cost = round((($prodData['product_price']+$ship_Price)*$prodData['product_qty'])+$taxRate);
+			$updateData = array(
+					'tax_rate' => round($taxRate),
+					'shipping_method_id' => $methodIds[$i],
+					'shipping_cost' => round($ship_Price),
+					'product_total_cost' => $total_cost
+				);
+			//print "<pre>";
+			//print $taxRate;	
+			$UpdateCartDetails = $Cart->UpdateCart($updateData,$cartId,$prodIds[$i]);
+			
+			
+		}
+		$CartData = $Cart->GetProductInCart();
+		$Final_Amount = 0;
+		foreach($CartData as $value)
+		{
+			$Final_Amount += round($value['product_total_cost']);
+		
+		}
+		//print $Final_Amount;die;
+		echo json_encode($Final_Amount);die;
+  	} 
+
 	
 }
 

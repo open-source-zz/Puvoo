@@ -214,6 +214,10 @@ class Rest_ProductController extends RestCommonController
 			//Url Validator
 			$url_validator = new UrlValidator();
 			
+			//Date Validator
+			$date_validator = new Zend_Validate_Date();
+			
+			
 			$myparams = $this->getRequest()->getParams();
 			$cntProduct = 0;
 			$isProdArray = false;
@@ -224,6 +228,27 @@ class Rest_ProductController extends RestCommonController
 			print_r($myparams);
 			print "</pre>";
 			die;*/
+			
+			$name = "";
+			$description = 	"";
+			$price = 0;
+			$code = "";
+			$weight = 0;
+			$length = 0;
+			$width = 0;
+			$depth = 0;
+			$weight_unit = "";
+			$length_unit = "";
+			$start_sales = 0;
+			$available_qty = 0;
+			$discount = 0;
+			$available_date = "";
+			$expiration_date = "";
+			$promotion_start_date = "";
+			$promotion_end_date = "";
+			$main_image = "";
+			$prod_opt_qty = 0;
+					
 			$products = array();
 			$arr_error = array();
 			$categories = array();
@@ -247,7 +272,7 @@ class Rest_ProductController extends RestCommonController
 			if(isset($myparams["Products"]["Product"][0]))
 			{
 				
-				$cntProduct = count($myparams["Products"]["Product"][0]);
+				$cntProduct = count($myparams["Products"]["Product"]);
 				$isProdArray = true;	
 			}
 			else
@@ -259,7 +284,6 @@ class Rest_ProductController extends RestCommonController
 			if(isset($myparams["Products"]) && $cntProduct <= 10)
 			{
 				
-			
 				$x = 0;
 				for($i = 0; $i < $cntProduct; $i++)
 				{
@@ -287,6 +311,36 @@ class Rest_ProductController extends RestCommonController
 					$start_sales = 	(int) $filter->filter(trim($prod['start_sales']));
 					$available_qty = 	(int) $filter->filter(trim($prod['available_qty']));
 					$main_image = $filter->filter(trim($prod['main_image']));
+					
+					if(isset($prod['discount']))
+					{
+						$discount = (int) $filter->filter(trim($prod['discount']));
+						if($discount < 0 || $discount > 100)
+						{
+							$discount = 0;
+						}
+					}
+					
+					if(isset($prod['available_date']))
+					{
+						$available_date = $filter->filter(trim($prod['available_date']));
+					}
+					
+					if(isset($prod['expiration_date']))
+					{
+						$expiration_date = $filter->filter(trim($prod['expiration_date']));
+					}
+					
+					if(isset($prod['promotion_start_date']))
+					{
+						$promotion_start_date = $filter->filter(trim($prod['promotion_start_date']));
+					}
+					
+					if(isset($prod['promotion_end_date']))
+					{
+						$promotion_end_date = $filter->filter(trim($prod['promotion_end_date']));
+					}
+					
 					
 					if(isset($prod["categories"]))
 					{
@@ -361,6 +415,38 @@ class Rest_ProductController extends RestCommonController
 					if($available_qty == "" || $available_qty <= 0)
 					{
 						$arr_error[] = "Invalid quantity for product " . ($i+1);
+					}
+					
+					if($available_date != "")
+					{
+						if(!$date_validator->isValid($available_date))
+						{
+							$arr_error[] = "Invalid available date for product " . ($i+1);
+						}
+					}
+					
+					if($expiration_date != "")
+					{
+						if(!$date_validator->isValid($expiration_date))
+						{
+							$arr_error[] = "Invalid expiration date for product " . ($i+1);
+						}
+					}
+					
+					if($promotion_start_date != "")
+					{
+						if(!$date_validator->isValid($promotion_start_date))
+						{
+							$arr_error[] = "Invalid promotion start date for product " . ($i+1);
+						}
+					}
+					
+					if($promotion_end_date != "")
+					{
+						if(!$date_validator->isValid($promotion_end_date))
+						{
+							$arr_error[] = "Invalid promotion end date for product " . ($i+1);
+						}
 					}
 					
 					if($main_image == "" || !$url_validator->isValid($main_image))
@@ -454,7 +540,7 @@ class Rest_ProductController extends RestCommonController
 						
 					}else{
 					
-						$arr_error[] = "Pruduct " . ($i+1) . " must be associated with atleast 1 category";	
+						$arr_error[] = "Product " . ($i+1) . " must be associated with atleast 1 category";	
 					}
 					
 					if(count($attributes > 0))
@@ -468,21 +554,81 @@ class Rest_ProductController extends RestCommonController
 								$arr_error[] = "Invalid name provided for attribute " . ($j+1) . " for product " . ($i+1);	
 							}
 							
-							if(!is_array($attributes[$j]["options"]["value"]))
+							if(is_array($attributes[$j]["options"]["value"]) && isset($attributes[$j]["options"]["value"]["name"]))
 							{
 								$attributes[$j]["options"]["value"] = array($attributes[$j]["options"]["value"]);
 							}
 							
 							if(count($attributes[$j]["options"]["value"]) > 0)
 							{
+								$prod_opt_qty = 0;
+								
 								for($k = 0; $k < count($attributes[$j]["options"]["value"]); $k++)
 								{
-									$attributes[$j]["options"]["value"][$k] = $filter->filter(trim($attributes[$j]["options"]["value"][$k]));
+									$attributes[$j]["options"]["value"][$k]["name"] = $filter->filter(trim($attributes[$j]["options"]["value"][$k]["name"]));
 									
-									if($attributes[$j]["options"]["value"][$k] == "")
+									if(isset($attributes[$j]["options"]["value"][$k]["sku"]))
+									{
+										$attributes[$j]["options"]["value"][$k]["sku"] = $filter->filter(trim($attributes[$j]["options"]["value"][$k]["sku"]));
+									}
+									else
+									{
+										$attributes[$j]["options"]["value"][$k]["sku"] = "";
+									}
+									
+									
+									if(isset($attributes[$j]["options"]["value"][$k]["weight"]))
+									{
+										$attributes[$j]["options"]["value"][$k]["weight"] = $filter->filter(trim($attributes[$j]["options"]["value"][$k]["weight"]));
+									}
+									else
+									{
+										$attributes[$j]["options"]["value"][$k]["weight"] = $weight;
+									}
+									
+									if(isset($attributes[$j]["options"]["value"][$k]["weight_unit"]))
+									{
+										$attributes[$j]["options"]["value"][$k]["weight_unit"] = $filter->filter(trim($attributes[$j]["options"]["value"][$k]["weight_unit"]));
+										
+										if($attributes[$j]["options"]["value"][$k]["weight_unit"] == "")
+										{
+											$attributes[$j]["options"]["value"][$k]["weight_unit"] = $weight_unit;
+										}
+									}
+									else
+									{
+										$attributes[$j]["options"]["value"][$k]["weight_unit"] = $weight_unit;
+									}
+									
+									if(isset($attributes[$j]["options"]["value"][$k]["price"]))
+									{
+										$attributes[$j]["options"]["value"][$k]["price"] = $filter->filter(trim($attributes[$j]["options"]["value"][$k]["price"]));
+										
+									}
+									else
+									{
+										$attributes[$j]["options"]["value"][$k]["price"] = 0;
+									}
+								
+									if(isset($attributes[$j]["options"]["value"][$k]["quantity"]))
+									{
+										$attributes[$j]["options"]["value"][$k]["quantity"] = (int)$filter->filter(trim($attributes[$j]["options"]["value"][$k]["quantity"]));
+										$prod_opt_qty += $attributes[$j]["options"]["value"][$k]["quantity"];
+									}
+									else
+									{
+										$attributes[$j]["options"]["value"][$k]["quantity"] = 0;
+									}
+									
+									if($attributes[$j]["options"]["value"][$k]["name"] == "")
 									{
 										$arr_error[] = "Invalid option value provided for attribute " . ($k+1) . " for product " . ($i+1);
 									}
+								}
+								
+								if($prod_opt_qty != $available_qty)
+								{
+									$arr_error[] = "Sum of quantity of product options is not equal to available quantity for product " . ($i+1);
 								}
 							}
 						}
@@ -510,6 +656,11 @@ class Rest_ProductController extends RestCommonController
 						$products[$i]['length_unit'] = $length_unit;
 						$products[$i]['start_sales'] = $start_sales;
 						$products[$i]['available_qty'] = $available_qty;
+						$products[$i]['discount'] = $discount;
+						$products[$i]['available_date'] = $available_date;
+						$products[$i]['expiration_date'] = $expiration_date;
+						$products[$i]['promotion_start_date'] = $promotion_start_date;
+						$products[$i]['promotion_end_date'] = $promotion_end_date;
 						$products[$i]['main_image'] = $main_image;
 						$products[$i]['images'] = $images;
 						$products[$i]['categories'] = $categories;
@@ -566,7 +717,12 @@ class Rest_ProductController extends RestCommonController
 					
 					$data["start_sales"] = $products[$i]["start_sales"];
 					$data["available_qty"] = $products[$i]["available_qty"];
-					
+					$data['discount'] = $products[$i]['discount'];
+					$data['available_date'] = $products[$i]['available_date'];
+					$data['expiration_date'] = $products[$i]['expiration_date'];
+					$data['promotion_start_date'] = $products[$i]['promotion_start_date'];
+					$data['promotion_end_date'] = $products[$i]['promotion_end_date'];
+						
 					//insert product and get product id
 					$arr_msg[$i]["id"] = $Product->insertProduct($data);
 					
@@ -609,11 +765,15 @@ class Rest_ProductController extends RestCommonController
 								for($k = 0; $k < count($products[$i]["attributes"][$j]["options"]["value"]); $k++)
 								{
 									$det_id = 0;
-								
-									$det_data = array('product_options_id'  => $opt_id,
-													   'option_value' => $products[$i]["attributes"][$j]["options"]["value"][$k]
-													);
-													
+										
+									$det_data['product_options_id'] = $opt_id;
+									$det_data['option_name'] = $products[$i]["attributes"][$j]["options"]["value"][$k]["name"];
+									$det_data['option_code'] = $products[$i]["attributes"][$j]["options"]["value"][$k]["sku"];
+									$det_data['option_weight'] = $products[$i]["attributes"][$j]["options"]["value"][$k]["weight"];
+									$det_data['option_weight_unit_id'] = $Weight->getWeightIdFromKey($products[$i]["attributes"][$j]["options"]["value"][$k]["weight_unit"]);
+									$det_data['option_price'] = $products[$i]["attributes"][$j]["options"]["value"][$k]["price"];
+									$det_data['option_quantity'] = $products[$i]["attributes"][$j]["options"]["value"][$k]["quantity"];
+									
 									$det_id = $ProdOpt->insertProductOptionsDetail($det_data);
 								}
 							}
@@ -869,6 +1029,9 @@ class Rest_ProductController extends RestCommonController
 			//Url Validator
 			$url_validator = new UrlValidator();
 			
+			//Date Validator
+			$date_validator = new Zend_Validate_Date();
+			
 			$myparams = $this->getRequest()->getParams();
 			
 			/*print "<pre>";
@@ -909,6 +1072,14 @@ class Rest_ProductController extends RestCommonController
 			$start_sales = "";
 			$available_qty = 0;
 			$main_image = "";
+			$discount = 0;
+			$available_date = "";
+			$expiration_date = "";
+			$promotion_start_date = "";
+			$promotion_end_date = "";
+			$main_image = "";
+			$prod_opt_qty = 0;
+			
 					
 			$cntProduct = 0;
 			$isProdArray = false;
@@ -916,7 +1087,7 @@ class Rest_ProductController extends RestCommonController
 			if(isset($myparams["Products"]["Product"][0]))
 			{
 				
-				$cntProduct = count($myparams["Products"]["Product"][0]);
+				$cntProduct = count($myparams["Products"]["Product"]);
 				$isProdArray = true;	
 			}
 			else
@@ -1002,12 +1173,41 @@ class Rest_ProductController extends RestCommonController
 					
 					if(isset($prod['available_qty']))
 					{
-						$available_qty = 	(int) $filter->filter(trim($prod['available_qty']));
+						$available_qty = (int) $filter->filter(trim($prod['available_qty']));
 					}
 					
 					if(isset($prod['main_image']))
 					{
 						$main_image = $filter->filter(trim($prod['main_image']));
+					}
+					
+					if(isset($prod['discount']))
+					{
+						$discount = (int) $filter->filter(trim($prod['discount']));
+					}
+					else
+					{
+						$discount = "";
+					}
+					
+					if(isset($prod['available_date']))
+					{
+						$available_date = $filter->filter(trim($prod['available_date']));
+					}
+					
+					if(isset($prod['expiration_date']))
+					{
+						$expiration_date = $filter->filter(trim($prod['expiration_date']));
+					}
+					
+					if(isset($prod['promotion_start_date']))
+					{
+						$promotion_start_date = $filter->filter(trim($prod['promotion_start_date']));
+					}
+					
+					if(isset($prod['promotion_end_date']))
+					{
+						$promotion_end_date = $filter->filter(trim($prod['promotion_end_date']));
 					}
 					
 					if(isset($prod["categories"]))
@@ -1034,15 +1234,15 @@ class Rest_ProductController extends RestCommonController
 						}
 					}
 					
-					if(isset($prod["attributes"]))
+					if(isset($prod["attributes"]['attribute']))
 					{
-						if(isset($prod["attributes"]["attribute"][0]))
+						if(isset($prod["attributes"]['attribute'][0]))
 						{
-							$attributes = $prod["attributes"]["attribute"];
+							$attributes = $prod["attributes"]['attribute'];
 						}
 						else
 						{
-							$attributes = array($prod["attributes"]["attribute"]);
+							$attributes = array($prod["attributes"]['attribute']);
 						}
 					}
 					
@@ -1084,6 +1284,38 @@ class Rest_ProductController extends RestCommonController
 					if($available_qty != "" && $available_qty <= 0)
 					{
 						$arr_error[] = "Invalid quantity for product";
+					}
+					
+					if($available_date != "")
+					{
+						if(!$date_validator->isValid($available_date))
+						{
+							$arr_error[] = "Invalid available date for product";
+						}
+					}
+					
+					if($expiration_date != "")
+					{
+						if(!$date_validator->isValid($expiration_date))
+						{
+							$arr_error[] = "Invalid expiration date for product";
+						}
+					}
+					
+					if($promotion_start_date != "")
+					{
+						if(!$date_validator->isValid($promotion_start_date))
+						{
+							$arr_error[] = "Invalid promotion start date for product";
+						}
+					}
+					
+					if($promotion_end_date != "")
+					{
+						if(!$date_validator->isValid($promotion_end_date))
+						{
+							$arr_error[] = "Invalid promotion end date for product";
+						}
 					}
 					
 					if($main_image != "" && !$url_validator->isValid($main_image))
@@ -1181,6 +1413,7 @@ class Rest_ProductController extends RestCommonController
 					
 					if(count($attributes > 0))
 					{
+						
 						for ($j = 0; $j < count($attributes); $j++)
 						{
 							$attributes[$j]["name"] = $filter->filter(trim($attributes[$j]["name"]));
@@ -1190,22 +1423,82 @@ class Rest_ProductController extends RestCommonController
 								$arr_error[] = "Invalid name provided for attribute " . ($j+1) . " for product";	
 							}
 							
-							if(!is_array($attributes[$j]["options"]["value"]))
+							if(is_array($attributes[$j]["options"]["value"]) && isset($attributes[$j]["options"]["value"]["name"]))
 							{
 								$attributes[$j]["options"]["value"] = array($attributes[$j]["options"]["value"]);
 							}
 							
 							if(count($attributes[$j]["options"]["value"]) > 0)
 							{
+								$prod_opt_qty = 0;
+								
 								for($k = 0; $k < count($attributes[$j]["options"]["value"]); $k++)
 								{
-									$attributes[$j]["options"]["value"][$k] = $filter->filter(trim($attributes[$j]["options"]["value"][$k]));
+									$attributes[$j]["options"]["value"][$k]["name"] = $filter->filter(trim($attributes[$j]["options"]["value"][$k]["name"]));
 									
-									if($attributes[$j]["options"]["value"][$k] == "")
+									if(isset($attributes[$j]["options"]["value"][$k]["sku"]))
 									{
-										$arr_error[] = "Invalid option value provided for attribute " . ($k+1) . " for product";
+										$attributes[$j]["options"]["value"][$k]["sku"] = $filter->filter(trim($attributes[$j]["options"]["value"][$k]["sku"]));
+									}
+									else
+									{
+										$attributes[$j]["options"]["value"][$k]["sku"] = "";
+									}
+									
+									
+									if(isset($attributes[$j]["options"]["value"][$k]["weight"]))
+									{
+										$attributes[$j]["options"]["value"][$k]["weight"] = $filter->filter(trim($attributes[$j]["options"]["value"][$k]["weight"]));
+									}
+									else
+									{
+										$attributes[$j]["options"]["value"][$k]["weight"] = $weight;
+									}
+									
+									if(isset($attributes[$j]["options"]["value"][$k]["weight_unit"]))
+									{
+										$attributes[$j]["options"]["value"][$k]["weight_unit"] = $filter->filter(trim($attributes[$j]["options"]["value"][$k]["weight_unit"]));
+										
+										if($attributes[$j]["options"]["value"][$k]["weight_unit"] == "")
+										{
+											$attributes[$j]["options"]["value"][$k]["weight_unit"] = $weight_unit;
+										}
+									}
+									else
+									{
+										$attributes[$j]["options"]["value"][$k]["weight_unit"] = $weight_unit;
+									}
+									
+									if(isset($attributes[$j]["options"]["value"][$k]["price"]))
+									{
+										$attributes[$j]["options"]["value"][$k]["price"] = $filter->filter(trim($attributes[$j]["options"]["value"][$k]["price"]));
+										
+									}
+									else
+									{
+										$attributes[$j]["options"]["value"][$k]["price"] = 0;
+									}
+								
+									if(isset($attributes[$j]["options"]["value"][$k]["quantity"]))
+									{
+										$attributes[$j]["options"]["value"][$k]["quantity"] = (int)$filter->filter(trim($attributes[$j]["options"]["value"][$k]["quantity"]));
+										$prod_opt_qty += $attributes[$j]["options"]["value"][$k]["quantity"];
+									}
+									else
+									{
+										$attributes[$j]["options"]["value"][$k]["quantity"] = 0;
+									}
+									
+									if($attributes[$j]["options"]["value"][$k]["name"] == "")
+									{
+										$arr_error[] = "Invalid option value provided for attribute " . ($k+1) . " for product " ;
 									}
 								}
+								
+								/*if($prod_opt_qty != $available_qty)
+								{
+									$arr_error[] = "Sum of quantity of product options is not equal to available quantity for product";
+								}*/
 							}
 						}
 					}
@@ -1233,6 +1526,11 @@ class Rest_ProductController extends RestCommonController
 						$products[$i]['length_unit'] = $length_unit;
 						$products[$i]['start_sales'] = $start_sales;
 						$products[$i]['available_qty'] = $available_qty;
+						$products[$i]['discount'] = $discount;
+						$products[$i]['available_date'] = $available_date;
+						$products[$i]['expiration_date'] = $expiration_date;
+						$products[$i]['promotion_start_date'] = $promotion_start_date;
+						$products[$i]['promotion_end_date'] = $promotion_end_date;
 						$products[$i]['main_image'] = $main_image;
 						$products[$i]['images'] = $images;
 						$products[$i]['categories'] = $categories;
@@ -1330,6 +1628,31 @@ class Rest_ProductController extends RestCommonController
 						$data["available_qty"] = $products[$i]["available_qty"];
 					}
 					
+					if($products[$i]["discount"] != "" && $products[$i]["discount"] >= 0)
+					{
+						$data["discount"] = $products[$i]["discount"];
+					}
+					
+					if($products[$i]["available_date"] != "")
+					{
+						$data["available_date"] = $products[$i]["available_date"];
+					}
+					
+					if($products[$i]["expiration_date"] != "")
+					{
+						$data["expiration_date"] = $products[$i]["expiration_date"];
+					}
+					
+					if($products[$i]["promotion_start_date"] != "")
+					{
+						$data["promotion_start_date"] = $products[$i]["promotion_start_date"];
+					}
+					
+					if($products[$i]["promotion_end_date"] != "")
+					{
+						$data["promotion_end_date"] = $products[$i]["promotion_end_date"];
+					}
+					
 					//update product 
 					$Product->updateProduct($data);
 					
@@ -1378,11 +1701,15 @@ class Rest_ProductController extends RestCommonController
 								for($k = 0; $k < count($products[$i]["attributes"][$j]["options"]["value"]); $k++)
 								{
 									$det_id = 0;
-								
-									$det_data = array('product_options_id'  => $opt_id,
-													   'option_value' => $products[$i]["attributes"][$j]["options"]["value"][$k]
-													);
-													
+										
+									$det_data['product_options_id'] = $opt_id;
+									$det_data['option_name'] = $products[$i]["attributes"][$j]["options"]["value"][$k]["name"];
+									$det_data['option_code'] = $products[$i]["attributes"][$j]["options"]["value"][$k]["sku"];
+									$det_data['option_weight'] = $products[$i]["attributes"][$j]["options"]["value"][$k]["weight"];
+									$det_data['option_weight_unit_id'] = $Weight->getWeightIdFromKey($products[$i]["attributes"][$j]["options"]["value"][$k]["weight_unit"]);
+									$det_data['option_price'] = $products[$i]["attributes"][$j]["options"]["value"][$k]["price"];
+									$det_data['option_quantity'] = $products[$i]["attributes"][$j]["options"]["value"][$k]["quantity"];
+									
 									$det_id = $ProdOpt->insertProductOptionsDetail($det_data);
 								}
 							}

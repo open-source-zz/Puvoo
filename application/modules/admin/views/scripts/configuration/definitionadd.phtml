@@ -1,0 +1,77 @@
+<div class="Breadcrumb" id="PageBreadcrumb">
+	<ul>
+	   <li class="Home SecondLast"><a href="<?php echo SITE_URL; ?>admin/"><?php echo $this->Translate("Administration"); ?></a></li>
+	   <li class="Last1"><a href="<?php echo SITE_URL; ?>admin/configuration"><?php echo $this->Translate('Configuration_Group'); ?></a></li>
+	   <li class="Last1"><a href="<?php echo SITE_URL; ?>admin/configuration/definitionlist/id/<?php echo $this->configuration_group_id; ?>"><?php echo $this->Translate('Configuration_List'); ?></a></li>
+	   <li class="Last"><span><?php echo $this->Translate('Add_Configuration'); ?></span></li>
+	</ul>
+</div>
+
+
+<div class="BodyContainer DashboardContainer" style="text-align:left;"> 
+	<div class="Heading1">
+		<?php echo $this->Translate('Manage_Configuration_List'); ?>
+	</div>
+	
+	<?php if(count($this->addErrorMessage) > 0 ) { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
+				<?php foreach($this->addErrorMessage as $key => $val ) { ?>
+					<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+					<strong><?php echo $val; ?></strong></p>
+				<?php } ?>
+			</div>
+		</div>
+	<?php } ?>	
+	
+	<form method="post" name="def_add_form" id="def_add_form" >
+		<table class="Panel" style="margin-top:10px;">
+			<tr>
+				<td class="Heading2" colspan="2"><?php echo $this->Translate('Add_Configuration'); ?></td>
+			</tr>
+			<tr>
+				<td colspan="2">
+				<div id="div0" style="padding-bottom:5px">
+					<table class="Panel" width="100%" cellspacing="0" cellpadding="0">
+						<tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Configuration_Key'); ?>
+							</td>
+							<td>
+								<input type="text" name="configuration_key" id="configuration_key" class="Field250" value="<?php echo $this->data['configuration_key']; ?>" />
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						<tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Configuration_Value'); ?>
+							</td>
+							<td>
+								<input type="text" name="configuration_value" id="configuration_value" class="Field250" value="<?php echo $this->data['configuration_value']; ?>" />
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="15"></td></tr>
+						<tr>
+						   	<td colspan="2">
+								<input type="submit" id="anything" onclick="Javascript: return ValidateDefAddForm()"  value="<?php echo $this->Translate('Submit'); ?>" />
+								<input type="button" id="anything"  value="<?php echo $this->Translate('Cancle'); ?>" onclick="window.location='<?php echo $this->site_url; ?>'"/>
+						   </td>
+						</tr>
+					</table>
+				</div>
+				</td>
+			</tr>
+		</table>   
+		<input type="hidden" name="configuration_group_id" id="configuration_group_id" value="<?php echo $this->configuration_group_id ?>" />
+	</form>            
+</div> 
+
+<!--     JS Global Variable for the language    -->
+
+<script language="javascript" type="text/javascript">
+var siteurl = "<?php echo SITE_URL; ?>";
+var ERR_CONFIGURATION_KEY = "<?php echo $this->Translate('Err_Configuration_Key'); ?>";  
+var ERR_CONFIGURATION_VALUE = "<?php echo $this->Translate('Err_Configuration_Value'); ?>";  
+</script>

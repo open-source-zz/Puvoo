@@ -91,6 +91,7 @@ class FbCommonController extends Zend_Controller_Action
 		$mysession->FbuserId = "";
  		$Category = new Models_Category();
 		$Product = new Models_Product();
+		$Common = new Models_Common();
 		$catid = $this->_request->getParam('id');
 		
 		//Get Request
@@ -104,6 +105,7 @@ class FbCommonController extends Zend_Controller_Action
 			}
 			else
 			{
+				//print $catid;die;
 				$CatCombo = $Category->GetSubCategory($catid);
 				if($CatCombo)
 				{
@@ -171,6 +173,7 @@ class FbCommonController extends Zend_Controller_Action
 		
 			$menu_array[] = $Allcategory;
 		}
+		
 		//print "<pre>";
 		//print_r($menu_array);die;
 		$this->view->Mycategory = $menu_array;
@@ -180,7 +183,7 @@ class FbCommonController extends Zend_Controller_Action
 
 		//print_r($cat);die;
 		//to get selected category
-		$selectCat = $Category->GetCategory();
+		$selectCat = $Category->GetTopMainCategory();
 		
 		 
 		//for display category list on left menu 
@@ -197,12 +200,23 @@ class FbCommonController extends Zend_Controller_Action
 				{
 					$SubCatList .= "<li>";
 					$SubCatList .= "<a href='".SITE_FB_URL."category/subcat/id/".$SubCat[$i]['category_id']."' target='_top'><img src='".IMAGES_FB_PATH."/2d30f5a834021d7887e1712062d0ed055283edc5_th.jpg' alt='' />".$SubCat[$i]['category_name']."</a>";
+					$SubCatList .= "<div><ul class='submenu'>";
+					$Sub_Cat = $Category->GetSubCategory($SubCat[$i]['category_id']);
+					//print "<pre>";
+					//print_r($Sub_Cat)."<br>";
+					for($j=0; $j<count($Sub_Cat); $j++)
+					{
+						$SubCatList .= "<li>";
+						$SubCatList .= "<a href='".SITE_FB_URL."category/subcat/id/".$Sub_Cat[$i]['category_id']."' target='_top'><img src='".IMAGES_FB_PATH."/2d30f5a834021d7887e1712062d0ed055283edc5_th.jpg' alt='' />".$Sub_Cat[$i]['category_name']."</a>";
+						$SubCatList .= "</li>";
+					}
+					$SubCatList .= "</ul></div>";
 					$SubCatList .="</li>";
  				}
 									
    			$SubCatList .="</ul></div></li>";
  			$this->view->Category .= $SubCatList;
-			
+			//print $SubCatList;die;
  		}
 		
 		///CART Controller
@@ -220,7 +234,7 @@ class FbCommonController extends Zend_Controller_Action
 			$CartTotal = '';
 			foreach($CartDetails as $value)
 			{
- 				$Price += $value['product_price']*$value['product_qty'];
+ 				$Price += $value['price']*$value['product_qty'];
 				$cartId = $value['cart_id'];
 				$CartTotal += $value['product_qty'];
 			}
@@ -281,7 +295,7 @@ class FbCommonController extends Zend_Controller_Action
 			
 		}
 		$Id = $this->_request->getParam('id');
-		//print_r($Url);
+		
 		if($Id)
 		{
 			
@@ -291,22 +305,83 @@ class FbCommonController extends Zend_Controller_Action
 					
 					if($cur_controller == 'product' && $Id!='')
 					{
-						$productDetails = $Product->GetProductDetails($Id);
-						$userId = $productDetails['user_id'];
+						$prodExist = $Product->ProductExist($Id);
+						if($prodExist) {		
+							$productDetails = $Product->GetProductDetails($Id);
+							$userId = $productDetails['user_id'];
+						} else  {
+							 $this->_redirect("fb/");
+						 }
 					}
+					
 					if($cur_controller == 'retailer' && $Id!='')
 					{
 						$userId = $Id;
 					}
-					//print $userId;die;
-					$sellerInfo = $Product->GetSellerInformation($userId);
 					
-					//print_r($sellerInfo);die;
-					$this->view->terms = $sellerInfo['store_terms_policy'];
-					$this->view->returnPolicy = $sellerInfo['return_policy'];
-					$this->view->storeDescription = $sellerInfo['store_description'];
+					if ( $userId != '' ) {  
+
+						$sellerInfo = $Product->GetSellerInformation($userId);
+						$this->view->terms = $sellerInfo['store_terms_policy'];
+						$this->view->returnPolicy = $sellerInfo['return_policy'];
+						$this->view->storeDescription = $sellerInfo['store_description'];
+						
+					}
+					
 				}
+ 		}
+		
+		// top friends like
+		$TopFrdsLikeProd = $Product->GetTopFrndsLikeProduct();
+		$this->view->frndstoplike = $TopFrdsLikeProd;
+		
+		//Contact Us Details
+		$ContactDetails = $Common->GetContactUsDetails();
+		//print "<pre>";
+		//print_r($ContactDetails);die;
+ 		foreach($ContactDetails as $key=>$detail)
+		{
+			if($detail['configuration_key'] == 'contact_us_address')
+			{
+				$this->view->ContactAddress = $detail['configuration_value'];
+			}
 			
+			if($detail['configuration_key'] == 'contact_us_telephone')
+			{
+				if(stristr($detail['configuration_value'], ',') === FALSE)
+				{
+					$this->view->ContactPhone = $detail['configuration_value'];
+				}
+				else
+				{
+					$phone = explode(',',$detail['configuration_value']);
+					$list = '';
+					foreach($phone as $val)
+					{
+						$list .= $val."<br>";
+					}
+					$this->view->ContactPhone = $list;
+				}
+				
+			}
+			
+			if($detail['configuration_key'] == 'contact_us_email')
+			{
+				if(stristr($detail['configuration_value'], ',') === FALSE)
+				{
+					$this->view->ContactEmail = $detail['configuration_value'];
+				}
+				else
+				{
+					$email = explode(',',$detail['configuration_value']);
+					$list1 = '';
+					foreach($email as $val2)
+					{
+						$list1 .= "<a href='mailto:".$val2."'>".$val2."</a><br>";
+					}
+					$this->view->ContactEmail = $list1;
+				}
+			}
 		}
   	} 
 

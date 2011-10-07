@@ -1,0 +1,135 @@
+<div class="Breadcrumb" id="PageBreadcrumb">
+	<ul>
+	   <li class="Home SecondLast"><a href="<?php echo SITE_URL; ?>admin/"><?php echo $this->Translate("Administration"); ?></a></li>
+	   <li class="Last1"><a href="<?php echo SITE_URL; ?>admin/banner"><?php echo $this->Translate('Banner'); ?></a></li>
+	   <li class="Last"><span><?php echo $this->Translate('Add_Banner'); ?></span></li>
+	</ul>
+</div>
+
+
+<div class="BodyContainer DashboardContainer" style="text-align:left;"> 
+	<div class="Heading1">
+		<?php echo $this->Translate('Manage_Facebook_Banner'); ?>
+	</div>
+	
+	<?php if(count($this->addErrorMessage) > 0 ) { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
+				<?php foreach($this->addErrorMessage as $key => $val ) { ?>
+					<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+					<strong><?php echo $val; ?></strong></p>
+				<?php } ?>
+			</div>
+		</div>
+	<?php } ?>	
+	
+	<form method="post" name="add_form" id="add_form" enctype="multipart/form-data" >
+		<table class="Panel" style="margin-top:10px;">
+			<tr>
+				<td class="Heading2" colspan="2"><?php echo $this->Translate('Add_Banner'); ?></td>
+			</tr>
+			<tr>
+				<td colspan="2">
+				<div id="div0" style="padding-bottom:5px">
+					<table class="Panel" width="100%" cellspacing="0" cellpadding="0">
+						<tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Upload_Banner'); ?>
+							</td>
+							<td>
+								<input type="file" name="banner_image" id="banner_image" class="Field250" />
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Banner_Link'); ?>
+							</td>
+							<td>
+								<input type="text" name="banner_link" id="banner_link" class="Field250"  value="<?php echo $this->data['banner_link']; ?>"/>
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="15"></td></tr>
+						<tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Banner_Status'); ?>
+							</td>
+							<td>
+								<span>
+									<?php if($this->data['is_active'] == "1") { ?>
+										<input type="radio" name="is_active" id="is_active" checked="checked" class="" value="1" />			
+										<?php echo $this->Translate('Admin_User_Status_Active'); ?>&nbsp;
+										<input type="radio" name="is_active"  value="0" />
+										<?php echo $this->Translate('Admin_User_Status_Inactive'); ?>
+									<?php } elseif($this->data['is_active'] == "0") {  ?>
+										<input type="radio" name="is_active" id="is_active" class="" value="1" />			
+										<?php echo $this->Translate('Admin_User_Status_Active'); ?>&nbsp;
+										<input type="radio" name="is_active"  value="0" checked="checked" />
+										<?php echo $this->Translate('Admin_User_Status_Inactive'); ?>
+									<?php } else { ?>
+										<input type="radio" name="is_active" id="is_active" class="" value="1" />			
+										<?php echo $this->Translate('Admin_User_Status_Active'); ?>&nbsp;
+										<input type="radio" name="is_active"  value="0" />
+										<?php echo $this->Translate('Admin_User_Status_Inactive'); ?>
+									<?php } ?>  
+								</span>
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="15"></td></tr>
+						<tr>
+						   	<td colspan="2">
+								<input type="submit" id="anything" onclick="Javascript: return ValidateAddFrom()"  value="<?php echo $this->Translate('Submit'); ?>" />
+								<input type="button" id="anything"  value="<?php echo $this->Translate('Cancle'); ?>" onclick="window.location='<?php echo $this->site_url; ?>'"/>
+						   </td>
+						</tr>
+					</table>
+				</div>
+				</td>
+			</tr>
+		</table>   
+	</form>            
+</div> 
+
+<!--     JS Global Variable for the language    -->
+
+<script language="javascript" type="text/javascript">
+var siteurl = "<?php echo SITE_URL; ?>";
+var ERR_BANNER_IMAGE = "<?php echo $this->Translate('Err_Banner_Image'); ?>";  
+var ERR_UPLOAD_IMAGE_EXT = "<?php echo $this->Translate('Err_Upload_Image_Ext'); ?>";  
+var ERR_BANNER_LINK = "<?php echo $this->Translate('Err_Banner_Link'); ?>";  
+var ERR_BANNER_INVALID_LINK = "<?php echo $this->Translate('Err_Banner_Invalid_Link'); ?>";  
+var ERR_BANNER_STATUS = "<?php echo $this->Translate('Err_Banner_Status'); ?>";  
+
+
+function ValidateAddFrom()
+{
+	
+	$("#add_form").validate({
+							
+		rules: {
+					banner_image: { required: true,  accept: "jpg|jpeg|png|gif" },
+					banner_link: {  required: true, url: true },
+					is_active: {  required: true  }
+			   },
+			   
+		messages:{
+					banner_image: { required: ERR_BANNER_IMAGE,  accept: ERR_UPLOAD_IMAGE_EXT },
+					banner_link: { required: ERR_BANNER_LINK, url: ERR_BANNER_INVALID_LINK  },							  
+					is_active: { required: ERR_BANNER_STATUS }
+				 },
+				 
+		errorPlacement: function(error, element) 
+		{ 
+			if ( element.is(":radio") ) { 
+				error.appendTo (element.parent().next() ); 
+			} else {
+				error.appendTo( element.next() ); 
+			}
+		}
+	});
+}
+
+</script>

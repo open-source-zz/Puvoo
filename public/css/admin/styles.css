@@ -120,6 +120,10 @@ body {
 	text-decoration: none;
 }
 
+.Breadcrumb li.Last1 {
+		background: #f4f5f7 url('../../images/admin/breadcrumb_sep3.gif') no-repeat right;
+}
+
 .Breadcrumb {
 	clear: left;
 	height: 24px;

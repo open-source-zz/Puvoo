@@ -70,6 +70,7 @@ class Fb_IndexController extends FbCommonController
 		 global $db,$mysession;
 		 $Category = new Models_Category();
 		 $Product = new Models_Product();
+		 $Common = new Models_Common();
 		 //to get all main category
 		 $this->view->Allcategory = $Category->GetMainCategory();
 		 //to get selected category
@@ -99,9 +100,26 @@ class Fb_IndexController extends FbCommonController
 		 
 		 //$this->view->FeaturedProduct = $Product->GetFeaturedSeller();
 		 $this->view->FeaturedProduct = array();
+		 
+		 /// Best Seller Products
+		 
+		 $bestSellerProd = $Product->GetBestSelllerProduct();
+		 $this->view->bestSeller = $bestSellerProd;
 		 //print "<pre>";
-		 //print_r($this->view->FeaturedProduct);die;
-      }
+		 //print_r($bestSellerProd);die;
+		 // Friens Like
+		 $FrdsLikeProd = $Product->GetFrndsLikeProduct();
+		 $this->view->frndslike = $FrdsLikeProd;
+ 		//print_r($FrdsLikeProd);die;
+		
+		/// Facebook banner
+		$banners = $Common->GetfacebookBanner();
+		
+		$this->view->bannerCnt = count($banners);
+		$this->view->banner = $banners;
+     }
+	  
+	  
 
 }
 

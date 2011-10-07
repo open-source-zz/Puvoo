@@ -2,7 +2,7 @@
 <div class="Breadcrumb" id="PageBreadcrumb">
 	<ul>
 	   <li class="Home SecondLast"><a href="<?php echo SITE_URL; ?>user/"><?php echo $this->Translate("User_Home"); ?></a></li>
-	   <li class="Last"><a href="<?php echo SITE_URL; ?>user/apihelp/"><?php echo $this->Translate("Api_Help"); ?></a></li>
+	   <li class="Last1"><a href="<?php echo SITE_URL; ?>user/apihelp/"><?php echo $this->Translate("Api_Help"); ?></a></li>
 	   <li class="Last"><span><?php echo $this->Translate("Edit_Product_Api_Help"); ?></span></li>
 	</ul>
 </div>
@@ -13,7 +13,7 @@
 		<?php echo $this->Translate('Edit_Product_Api_Help'); ?>
 	</div>
 <div style="margin-top:20px;"><h4>REST URL : <?php echo SITE_URL."rest/product"; ?></h4> </div>
-<div style="margin-top:20px;"><h4>editproduct Input</h4></div>
+<div style="margin-top:20px;"><h4>Edit Product Input</h4></div>
 <div style="margin-top:20px;">The box below lists all fields that could be included in the call request. To learn more about an individual field or its type scroll down to find it in the table below the box.</div>
 <pre style="background-color:#E0E0E0;  font-size:12px">
 
@@ -31,11 +31,16 @@
 		&lt;length&gt; DECIMAL &lt;/length&gt;
 		&lt;width&gt; DECIMAL &lt;/width&gt;
 		&lt;depth&gt; DECIMAL &lt;/depth&gt;
-		&lt;weightunit&gt; TEXT &lt;/weightunit&gt;
-		&lt;lengthunit&gt; TEXT &lt;/lengthunit&gt;
+		&lt;weight_unit&gt; TEXT &lt;/weight_unit&gt;
+		&lt;length_unit&gt; TEXT &lt;/length_unit&gt;
 		&lt;start_sales&gt; BOOLEAN &lt;/start_sales&gt;
 		&lt;available_qty&gt; INT &lt;/available_qty&gt;
 		&lt;main_image&gt; URL &lt;/main_image&gt;
+		&lt;discount&gt; INT &lt;/discount&gt;
+		&lt;available_date&gt; DATETIME &lt;/available_date&gt;
+		&lt;expiration_date&gt; DATETIME &lt;/expiration_date&gt;
+		&lt;promotion_start_date&gt; DATETIME &lt;/promotion_start_date&gt;
+		&lt;promotion_end_date&gt; DATETIME &lt;/promotion_end_date&gt;
 		
 		&lt;categories&gt;
 		  &lt;id&gt; INT &lt;/id&gt;
@@ -51,7 +56,14 @@
 		  &lt;attribute&gt;
 			&lt;name&gt; TEXT &lt;/name&gt;
 			&lt;options&gt;
-				&lt;value&gt; TEXT &lt;/value&gt;
+				&lt;value&gt;
+					&lt;name&gt; TEXT &lt;/name&gt;
+					&lt;sku&gt; TEXT &lt;/sku&gt;
+					&lt;weight&gt; DECIMAL &lt;/weight&gt;
+					&lt;weight_unit&gt; TEXT &lt;/weight_unit&gt;
+					&lt;price&gt; DECIMAL &lt;/price&gt;
+					&lt;quantity&gt; INT &lt;/quantity&gt;
+				&lt;/value&gt;
 				&lt;!-- ... more value nodes here ... --&gt;
 			&lt;/options&gt;
 		  &lt;/attribute&gt;
@@ -179,6 +191,37 @@
 		<td >It will contain URL of main image of product.</td>
 	</tr>
 	<tr>
+		<td valign="top" >discount</td>
+		<td valign="top">INT</td>
+		<td valign="top">Optional,Single</td>
+		<td >The discount percentage offered to loyal customers. For example, to enable a 30% discount, specify "30". Values less than 0 or greater than 100 will be reset to zero.</td>
+	</tr>
+	<tr>
+		<td valign="top" >available_date</td>
+		<td valign="top">DATETIME</td>
+		<td valign="top">Optional,Single</td>
+		<td >If provided, the datetime the product is first available for purchase.<br />Format: YYYY-mm-dd</td>
+	</tr>
+	<tr>
+		<td valign="top" >expiration_date</td>
+		<td valign="top">DATETIME</td>
+		<td valign="top">Optional,Single</td>
+		<td >If provided, the time the product is no longer available for purchase.<br />Format: YYYY-mm-dd</td>
+	</tr>
+	<tr>
+		<td valign="top" >promotion_start_date</td>
+		<td valign="top">DATETIME</td>
+		<td valign="top">Optional,Single</td>
+		<td >If provided, the start datetime for the product promotion.<br />Format: YYYY-mm-dd</td>
+	</tr>
+	<tr>
+		<td valign="top" >promotion_end_date</td>
+		<td valign="top">DATETIME</td>
+		<td valign="top">Optional,Single</td>
+		<td >If provided, the end datetime for the product promotion.<br />Format: YYYY-mm-dd</td>
+	</tr>
+	
+	<tr>
 		<td valign="top" >categories</td>
 		<td valign="top">XML node</td>
 		<td valign="top">Optional,Single</td>
@@ -228,13 +271,49 @@
 	</tr>
 	<tr>
 		<td valign="top">value</td>
-		<td valign="top">TEXT</td>
+		<td valign="top">XML Node</td>
 		<td valign="top">Conditional,Repeatable</td>
-		<td >It will require if options node is there. It will appear atleast once. It will contain attribute option value.</td>
+		<td >It will require if options node is there. It will appear atleast once. It will contain attribute option values.</td>
+	</tr>
+	<tr>
+		<td valign="top">name</td>
+		<td valign="top">TEXT</td>
+		<td valign="top">Conditional,Single</td>
+		<td valign="top">The name of the option value. example "tg. M"</td>
+	</tr>
+	<tr>
+		<td valign="top">sku</td>
+		<td valign="top">TEXT</td>
+		<td valign="top">Recommended,Single</td>
+		<td valign="top">The product sku based on product attributes. Example: Product1_red</td>
+	</tr>
+	<tr>
+		<td valign="top">weight</td>
+		<td valign="top">DECIMAL</td>
+		<td valign="top">Optional,Single</td>
+		<td valign="top">Weight of product for this option</td>
+	</tr>
+	<tr>
+		<td valign="top">weight_unit</td>
+		<td valign="top">TEXT</td>
+		<td valign="top">Optional,Single</td>
+		<td valign="top">Weight unit for product option. If not setted it will take the weight unit of the product</td>
+	</tr>
+	<tr>
+		<td valign="top">price</td>
+		<td valign="top">DECIMAL</td>
+		<td valign="top">Optional,Single</td>
+		<td valign="top">The price of option to add to the product price</td>
+	</tr>
+	<tr>
+		<td valign="top">quantity</td>
+		<td valign="top">INT</td>
+		<td valign="top">Optional,Single</td>
+		<td valign="top">The price of option to add to the product price</td>
 	</tr>
 </table>
 <div style="margin-top:20px;">
-<h4>editproduct Output</h4>
+<h4>Edit Product Output</h4>
 </div>
 <pre style="background-color:#E0E0E0;  font-size:12px">
 &lt;?xml version="1.0" encoding="utf-8" ?&gt;
@@ -312,6 +391,11 @@ $data = "&lt;Products&gt;\r\n"
 	. "&lt;start_sales&gt;0&lt;/start_sales&gt;\r\n"
 	. "&lt;available_qty&gt;10&lt;/available_qty&gt;\r\n"
 	. "&lt;main_image&gt;http://c69282.r82.cf3.rackcdn.com/PALLINE.jpg&lt;/main_image&gt;\r\n"
+	. "&lt;discount&gt;2&lt;/discount&gt;\r\n"
+	. "&lt;available_date&gt;2011-10-07&lt;/available_date&gt;"
+	. "&lt;expiration_date&gt;2011-10-31&lt;/expiration_date&gt;"
+	. "&lt;promotion_start_date&gt;2011-10-07&lt;/promotion_start_date&gt;"
+	. "&lt;promotion_end_date&gt;2011-10-31&lt;/promotion_end_date&gt;"
 	. "&lt;categories&gt;\r\n"
 	. "&lt;id&gt;3&lt;/id&gt;\r\n"
 	. "&lt;id&gt;4&lt;/id&gt;\r\n"
@@ -323,9 +407,14 @@ $data = "&lt;Products&gt;\r\n"
 	. "&lt;attribute&gt;\r\n"
 	. "&lt;name&gt;colors&lt;/name&gt;\r\n"
 	. "&lt;options&gt;\r\n"
-	. "&lt;value&gt;red&lt;/value&gt;\r\n"
-	. "&lt;value&gt;blue&lt;/value&gt;\r\n"
-	. "&lt;value&gt;green&lt;/value&gt;\r\n"
+	. "&lt;value&gt;"
+	. "&lt;name&gt;sizeM&lt;/name&gt;\r\n"
+	. "&lt;sku&gt;product1_red_m&lt;/sku&gt;\r\n"
+	. "&lt;weight&gt;1&lt;/weight&gt;\r\n"
+	. "&lt;weight_unit&gt;Kgs&lt;/weight_unit&gt;\r\n"
+	. "&lt;price&gt;2&lt;/price&gt;\r\n"
+	. "&lt;quantity&gt;10&lt;/quantity&gt;\r\n"
+	. "&lt;/value&gt;\r\n"
 	. "&lt;/options&gt;\r\n"
 	. "&lt;/attribute&gt;\r\n"
 	. "&lt;/attributes&gt;\r\n"

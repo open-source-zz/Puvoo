@@ -1,0 +1,96 @@
+<div class="Breadcrumb" id="PageBreadcrumb">
+	<ul>
+	   <li class="Home SecondLast"><a href="<?php echo SITE_URL; ?>admin/"><?php echo $this->Translate("Administration"); ?></a></li>
+	   <li class="Last"><span><?php echo $this->Translate('Contact_Us'); ?></span></li>
+	</ul>
+</div>
+
+<div class="BodyContainer DashboardContainer" style="text-align:left;">
+	
+	<!--        Header       -->
+	<div class="Heading1">
+		<?php echo $this->Translate('Contact_Us'); ?>
+	</div>
+	
+	<!--       Success and Error Message      -->
+	<?php if(count($this->updateError) > 0 ) { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
+				<?php foreach($this->updateError as $key => $val ) { ?>
+					<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+					<strong><?php echo $val; ?></strong></p>
+				<?php } ?>
+			</div>
+		</div>
+	<?php } ?>
+	<?php if($this->updateSuccess != '') { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-highlight ui-corner-all" style="margin-top: 20px; padding: 0 .7em;"> 
+				<p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
+				<strong><?php echo $this->updateSuccess; ?></strong></p>
+			</div>
+		</div>
+	<?php } ?>
+	
+	<!--       Form      -->
+	<form method="post" name="frmcontactus" id="frmcontactus" >
+		<table class="Panel" style="margin-top:10px;">
+			<tr>
+				<td class="Heading2" colspan="2"><?php echo $this->Translate('Contact_Us'); ?></td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<div id="div0" style="padding-bottom:5px">
+						<table class="Panel" width="100%" cellspacing="0" cellpadding="0">
+							<tr>
+								<td class="FieldLabel">
+									<span class="Required">*</span>&nbsp;<?php echo $this->Translate('Address'); ?>:
+								</td>
+								<td>
+									<input type="text" name="contact_us_address" id="contacu_us_address" class="Field250" value="<?php echo $this->contact_us_address ?>" />
+									<span></span>
+								</td>
+							</tr>
+							<tr><td height="5"></td></tr>
+							 <tr>
+								<td class="FieldLabel">
+									<span class="Required">*</span>&nbsp;<?php echo $this->Translate('Telephone'); ?>:
+								</td>
+								<td>
+									<input type="text" name="contact_us_telephone" id="contact_us_telephone" class="Field250" value="<?php echo $this->contact_us_telephone ?>" />
+									<span></span>
+								</td>
+							</tr>
+							<tr><td height="5"></td></tr>
+							 <tr>
+								<td class="FieldLabel">
+									<span class="Required">*</span>&nbsp;<?php echo $this->Translate('Email'); ?>:
+								</td>
+								<td>
+									<input type="text" name="contact_us_email" id="contact_us_email" class="Field250" value="<?php echo $this->contact_us_email ?>" />
+									<span></span>
+								</td>
+							</tr>
+							<tr><td height="15"></td></tr>
+							<tr>
+							   <td colspan="2" style="padding-left:10px;">
+									<input type="submit" id="anything"  value="<?php echo $this->Translate('Update'); ?>" />
+									<input type="button" id="anything"  value="<?php echo $this->Translate('Cancle'); ?>" onclick="window.location='<?php echo SITE_URL . 'admin/' ?>'"/>
+								</td>
+							</tr> <tr><td height="15"></td></tr>
+						</table>
+					</div>
+				</td>
+			</tr>
+		</table>  
+		<input type="hidden" name="configuration_group_id" id="configuration_group_id" value="<?php echo $this->configuration_group_id; ?>" />
+	</form>             
+</div>
+
+<!--     JS Global Variable for the language    -->
+<script language="javascript" type="text/javascript">
+	var ERR_CONTACT_ADDRESS = "<?php echo $this->Translate('Err_Contact_Address'); ?>";
+	var ERR_CONTACT_TEL = "<?php echo $this->Translate('Err_Contact_Tel'); ?>";
+	var ERR_CONTACT_EMAIL = "<?php echo $this->Translate('Err_Contact_Email'); ?>";
+	
+</script>

@@ -139,12 +139,11 @@ class Fb_CategoryController extends FbCommonController
  			$page_no = $request->getPost('page_no');
 			$Sort = $request->getPost('sortBy');
  			$mysession->pagesize = $pagesize;
+			$this->view->$Sort = "selected='selected'";
+			if($Sort == ''){
+				$Sort = 'bestseller';
+			}
  		}
-		
- 		$this->view->$Sort = "selected='selected'";
-		if($Sort == ''){
-			$Sort = 'bestseller';
-		}
 		
  		// to get category details
 		$catdetails = $Category->GetCategoryDetail($id);

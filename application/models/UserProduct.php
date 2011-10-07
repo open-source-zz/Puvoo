@@ -238,12 +238,12 @@ class Models_UserProduct
 				 WHERE product_id =".$id;
 		$sql3 =" SELECT cm.*
 				 FROM product_to_categories as ptc
-				 JOIN category_master as cm ON(cm.category_id = ptc.category_id)
+				 LEFT JOIN category_master as cm ON(cm.category_id = ptc.category_id)
 				 WHERE cm.is_active = 1 
 				 AND ptc.product_id =".$id;
-	 	$sql4 =" SELECT po.*,pod.option_value,pod.product_options_id as LNK_options_id
+	 	$sql4 =" SELECT po.*,pod.option_name,pod.product_options_id as LNK_options_id, pod.option_code ,pod.product_options_detail_id
 				 FROM product_options as po
-				 JOIN product_options_detail as pod ON(po.product_options_id = pod.product_options_id)
+				 LEFT JOIN product_options_detail as pod ON(po.product_options_id = pod.product_options_id)
 				 WHERE po.product_id = ".$id;
 		
 		$product["detail"] = $db->fetchRow($sql);
@@ -342,5 +342,129 @@ class Models_UserProduct
 				
 		return $db->lastInsertId();
 	}
+	
+	/*
+	 * GetProductOptionValueById(): To get product Options value.
+	 *
+	 * It is used to get all the details of particular product Options value.
+	 *
+	 * Date created: 2011-10-05
+	 *
+	 * @author  	Yogesh
+	 * @param  (Int)   : $prodOptValId - Product option deatail id.
+	 * @return (Array) : Array of product option value
+     * @global  $db Zend_db for database.
+                $mysession Zend_Session_Namespace for session variables.
+	 * 
+	 */
+	public function GetProductOptionValueById($prodOptValId)
+	{
+		//print $prodOptId;die;
+		$db = $this->db;
+		
+		$sql = "SELECT pod.*, po.option_title, po.product_id  
+				FROM product_options_detail as pod
+				LEFT JOIN product_options as po ON ( po.product_options_id = pod.product_options_id ) 
+				WHERE pod.product_options_detail_id='".$prodOptValId."'";
+		
+		$result = $db->fetchRow($sql);
+		return $result;
+	}
+	
+	/*
+	 * updateProductOptionValue(): To update product Options value.
+	 *
+	 * It is used to update the details of particular product Options value and product option.
+	 *
+	 * Date created: 2011-10-06
+	 *
+	 * @author  	Yogesh
+	 * @return (Array) 	: $data1 - Array of product option value
+	 * @param  (Array)  : $data2 - Array of Product option data.
+	 * @return (Boolean): True on success.
+     * @global  $db Zend_db for database.
+                $mysession Zend_Session_Namespace for session variables.
+	 * 
+	 */
+	
+	public function updateProductOptionValue($data1, $data2)
+	{
+		$db = $this->db;
+				
+		$where1 ="product_options_detail_id = ".$data1["product_options_detail_id"];		
+		
+		$db->update("product_options_detail", $data1, $where1); 	
+		
+		$where2 ="product_options_id = ".$data2["product_options_id"];		
+		
+		$db->update("product_options", $data2, $where2); 
+		
+		return true;	
+	
+	}
+	
+	/*
+	 * insertProductOptionValue(): To insert product Options value.
+	 *
+	 * It is used to add the product Options value.
+	 *
+	 * Date created: 2011-10-06
+	 *
+	 * @author  	Yogesh
+	 * @return (Array) 	: $data - Array of product option value
+	 * @return (Boolean): True on success.
+     * @global  $db Zend_db for database.
+                $mysession Zend_Session_Namespace for session variables.
+	 * 
+	 */
+	
+	public function insertProductOptionValue($data)
+	{
+		$db = $this->db;	
+				
+		$db->insert("product_options_detail", $data); 	 
+		
+		$product_options_detail_id = $db->lastInsertId();
+		
+		if($product_options_detail_id > 0 ) {
+		
+			$select = $db->select()
+						 ->from("product_options_detail")
+						 ->where("product_options_detail_id = ".$product_options_detail_id);
+			$record = $db->fetchRow($select);
+			return $record;
+		
+		} else {
+			return false;
+		}
+	}
+	
+	/*
+	 * DeleteProductOptionValue(): To delete product Options value.
+	 *
+	 * It is used to delete the product Options value.
+	 *
+	 * Date created: 2011-10-06
+	 *
+	 * @author  	Yogesh
+	 * @return (Int) 	: $id - product option value id
+	 * @return (Boolean): True on success.
+     * @global  $db Zend_db for database.
+                $mysession Zend_Session_Namespace for session variables.
+	 * 
+	 */
+	
+	public function DeleteProductOptionValue($id)
+	{
+	
+		$db = $this->db;	
+		
+		$db->delete("product_options_detail","product_options_detail_id = ".$id);	
+		
+		return true;
+	
+	} 
+
+	
 }
 ?>

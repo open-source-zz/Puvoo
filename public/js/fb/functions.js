@@ -16,7 +16,7 @@ function validateAddToCart(URL)
 		
 		var NoOfCombo = $('#Opt_Combo').val();
 		var value = new Array();
-		for(i=0; i < NoOfCombo; i++)
+/*		for(i=0; i < NoOfCombo; i++)
 		{
 			value[i] = $('#OptionCombo'+i).val();
 			
@@ -29,7 +29,8 @@ function validateAddToCart(URL)
 			}
 
 		}
-	 	$.ajax({
+*/	
+	$.ajax({
  	    type: "POST",
 		url:URL,
  		data: {
@@ -47,11 +48,15 @@ function validateAddToCart(URL)
 					}
 					return value;
 			  },
+			  prodPrice: function() 
+			  {
+					return $('#TotalPrice').val();
+			  }
          },
  		dataType:'json',
 		success:function(data)
 		{ 
-			alert(data);
+			//alert(data);
   			top.location.href = '';
  		}		
 	});
@@ -156,10 +161,12 @@ function updatecart(prodId,cartId)
 			  },
 			  prodPrice: function()
 			  {
-				  return $('#ProductTotalPrice'+prodId).val();
+				  //alert($('#IndivisualPrice'+prodId).val());
+				  return $('#IndivisualPrice'+prodId).val();
 			  },
 			  prodQty: function()
 			  {
+				  //alert($('#ProductQty'+prodId).val());
 				  return $('#ProductQty'+prodId).val();
 			  }
 
@@ -174,7 +181,8 @@ function updatecart(prodId,cartId)
  			for(i in data)
 			{
 						
-				$('#itemPrice'+data[i]['product_id']).html("$"+data[i]['product_total_cost']);
+				$('#itemPrice'+data[i]['product_id']).html("$"+data[i]['price']*data[i]['product_qty']);
+				$('#IndivisualPrice'+data[i]['product_id']).val(data[i]['price']);
 				$('#ProductQty'+data[i]['product_id']).val(data[i]['product_qty']);
 				ProdQty = parseInt(ProdQty)+parseInt(data[i]['product_qty']);
 				totalCost = parseFloat(totalCost)+parseFloat(data[i]['product_total_cost']);
@@ -189,7 +197,59 @@ function updatecart(prodId,cartId)
 		}		
 	});
 }
-
+var OptionCost = new Array();
+function changePrice(detailId,prodId,OptId)
+{
+	
+/*	if(Optprice == 0)
+	{
+		$('#prod_price').html("$"+prodPrice);
+ 	}
+	else{
+		var total = parseFloat(prodPrice)+parseFloat(Optprice);
+		$('#prod_price').html("$"+total);
+	}
+*/	
+	$.ajax({
+ 	    type: "POST",
+		url:site_url+"product/updateprice",
+ 		data: {
+			  opt_detail_id: function() 
+			  {
+					return detailId;
+			  },
+			  prodid: function() 
+			  {
+					return prodId;
+			  }  
+         },
+ 		dataType:'json',
+		success:function(data)
+		{ 
+		
+				//alert(data['option_price']);return false;
+					var dft_price = $('#DefaultPrice').val();
+					//var total = parseFloat(dft_price)+parseFloat(data);
+					
+					
+					OptionCost[OptId] =  parseFloat(data['option_price']);
+					
+					var total = 0;
+ 					for(temp in OptionCost)
+					{
+						//alert(temp+" => "+ OptionCost[temp]);
+						total = total + OptionCost[temp];
+						
+					}
+ 					$('#hiddenPrice').val(parseFloat(total));
+					var OptPrice = $('#hiddenPrice').val();
+ 					var total = parseFloat(dft_price)+parseFloat(OptPrice);
+					//alert(total);
+ 					$('#prod_price').html("$"+total);
+					$('#TotalPrice').val(total);
+ 		}		
+	});
+}
 
 function addShippingDetail(cartId)
 {
@@ -671,31 +731,38 @@ function GetShippingCost(ShippMethodId,prodId)
 				$('#buttonArea').show();
 				$('#div3').show();
 			
-				var ship_total = new Array();
-					$('#ShippingSpace'+prodId).show();
-					$('#ShippingRow'+prodId).show();
-					$('#ShippingCost'+prodId).html("$"+data);
-					
-					ShippingCost[prodId] =  parseFloat(data);
-					
-					var total = 0;
-					for(temp in ShippingCost)
-					{
-						total = total + ShippingCost[temp]
-					}
-					
-					$('#ShippingtotalAmount').val(total);
-			});
+			
+				$('#ShippingSpace'+prodId).show();
+				$('#ShippingRow'+prodId).show();
+				$('#ShippingCost'+prodId).html("$"+data);
+				
+				ShippingCost[prodId] =  parseFloat(data);
+				
+				var total = 0;
+				for(temp in ShippingCost)
+				{
+					//alert(temp+" => "+ShippingCost[temp]);
+					total = total + ShippingCost[temp];
+				}
+				
+				$('#ShippingtotalAmount').val(total);
+				
+		});
  		}		
 	});
 
 	
 }
 
-
+var ids = new Array();
+var methodids = new Array();
+var taxrate = new Array();
 function UpdateShipping(CartId,prodId)
 {
-	return false;
+	//alert();
+	//alert(prodId);
+	//console.log(prodId);
+	
 		$.ajaxSetup({
 		   beforeSend : function(){ 
 				$('#loader').show();
@@ -705,47 +772,61 @@ function UpdateShipping(CartId,prodId)
 				$(this).fadeIn(3000, function() {
 					$('#breadCrumb_cart').hide();
 					$('#buttonArea').hide();
+					$('#div3').hide();
 				});
 		   },
 		   complete : function(){ 
 				$('#loader').hide();
 				$('#loader').removeClass('ui-widget-loading');
+				ShowTab(4);
 		   }		   
 		});
 	
 		$.ajax({
  	    type: "POST",
-		url:site_url+"cart/updateshippingcost",
+		url:site_url+"cart/updateshippingmethod",
  		data: {
-			  shipmethodid: function() 
+			  cartid: function() 
 			  {
-					return ShippMethodId;
+					return CartId;
 			  },
 			  prodid: function() 
 			  {
-					return prodId;
-			  }  
+				  	for(i=0; i<prodId.length; i++ )
+					{
+						ids[i] = prodId[i];
+					}
+ 					return ids;
+			  },
+			  methodid: function() 
+			  {
+				  	for(j=0; j<prodId.length; j++ )
+					{
+						methodids[j] = $('#Shipping_Method_'+prodId[j]).val();
+						
+					}
+   					return methodids;
+			  },
+			  taxrate: function() 
+			  {
+				  	for(k=0; k<prodId.length; k++ )
+					{
+						taxrate[k] = $('#taxRate'+prodId[k]).html().replace('$','');
+						
+					}
+					
+   					return taxrate;
+			  }
          },
  		dataType:'json',
 		success:function(data)
 		{ 
+			//alert(data);
+			$('#FinalAmount').val(data);
 			$('#breadCrumb_cart').show();
-			$('#buttonArea').show();
+			ShowTab(4);
+			//$('#buttonArea').show();
 
-			var combo = '';
-			if(data != '')
-			{
-				for(i in data)
-				{
-					//alert(i+"=>"+data[i]['state_name']);
-					combo +="<option value='"+data[i]['state_id']+"'>"+data[i]['state_name']+"</option>";
-					$('#Shippingstate1').html(combo);
-				}
-			}else{
-					combo ="<option value='0'>Select State</option>";
-					$('#Shippingstate1').html(combo);
-			}
-  			//top.location.href = '';
  		}		
 	});
 

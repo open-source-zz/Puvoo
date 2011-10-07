@@ -2,19 +2,19 @@
                 	<div class="widget1">
                     	<div class="ulclass">
                             <ul>
-                            	<li><a href="#"><img src="<?php echo IMAGES_FB_PATH ?>/frnd_like.jpg" alt="" style="vertical-align:middle; margin-right:6px;" />You Like</a></li>
-                                <li><a href="#"><img src="<?php echo IMAGES_FB_PATH ?>/frnd_like.jpg" alt="" style="vertical-align:middle; margin-right:6px;" />Friends Like</a></li>
+                            	<li><a href="#"><img src="<?php echo IMAGES_FB_PATH ?>/frnd_like.jpg" alt="" style="vertical-align:middle; margin-right:6px;" /><?php echo $this->Translate('YouLike')?></a></li>
+                                <li><a href="#"><img src="<?php echo IMAGES_FB_PATH ?>/frnd_like.jpg" alt="" style="vertical-align:middle; margin-right:6px;" /><?php echo $this->Translate('FrndsLike')?></a></li>
                                 <li class="cart_wrapper" style="border-bottom:none;"><a href="javascript:void(0)"><img src="<?php echo IMAGES_FB_PATH ?>/cart.png" alt="" style="vertical-align:middle; margin-right:6px;" /><?php echo $this->Translate('YourCart')?><span id="cartCounterNumber" class="payvmentButtonNumber" style="padding-left:5px;"><?if($this->CartCnt){?><?php echo $this->CartCnt;?><?}else{?>0<?php }?></span></a></li>
                             </ul>
                         </div>
                     </div>
                 	<div align="center" style="margin-bottom:10px; margin-top:10px;">
                         <img src="<?php echo IMAGES_FB_PATH ?>/like_shoppingmall.jpg" alt="" />
-                        <img src="<?php echo IMAGES_FB_PATH ?>/like_1.jpg" alt="" style="padding-left:23px; padding-top:5px;"/>
+                       
                     </div>
                     <div class="navCategory portlet">
                         <!--<div class="widgetHeader"> Popular Categories </div>-->
-                        <div class="widgetHeader_menu"> Popular Categories </div>
+                        <div class="widgetHeader_menu"><?php echo $this->Translate('PopularCategory')?></div>
                         <ul class="sf-menu sf-vertical sf-js-enabled sf-shadow">
 							<?php echo $this->Category; ?>
                         </ul>
@@ -23,100 +23,31 @@
                     
                     <div class="clear"></div>
                     <div id="productMostLikedWidget" style="display: block;">
-                        <div class="widgetHeader_menu">Top Trending Likes</div>
+                        <div class="widgetHeader_menu"><?php echo $this->Translate('TopTradingLike')?></div>
                         <div class="widget">
-                            <div class="productWidgetLineItem">
-                                <div class="productWidgetThumbnail">
-                                    <div>
-                                        <a href="#" target="_top">
-                                        <img src="<?php echo IMAGES_FB_PATH ?>/c58faa54e4c3de95ac413a2cf96d7b293d5de8f6_th.jpg" alt="" />
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="productWidgetDesc">
-                                <a title="Limited Edition double disc Collectors DVD of The Perfect House" href="#" target="_top">Limited Edition double disc Collectors DVD of The Perfect House</a>
-                                </div>
-                                <div style="clear:both;"></div>
-                            </div>
-                            <div class="productWidgetLineItem">
-                                <div class="productWidgetThumbnail">
-                                    <div>
-                                        <a href="#" target="_top">
-                                        <img src="<?php echo IMAGES_FB_PATH ?>/2d30f5a834021d7887e1712062d0ed055283edc5_th.jpg" alt="" />
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="productWidgetDesc">
-                                <a title="Limited Edition double disc Collectors DVD of The Perfect House" href="#" target="_top">Limited Edition double disc Collectors DVD of The Perfect House</a>
-                                </div>
-                                <div style="clear:both;"></div>
-                            </div>
-                            <div class="productWidgetLineItem">
-                                <div class="productWidgetThumbnail">
-                                    <div>
-                                        <a href="#" target="_top">
-                                        <img src="<?php echo IMAGES_FB_PATH ?>/4ea1d88bd564250e7aab6e33719f101ca1d3bc12_th.jpg" alt="" />
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="productWidgetDesc">
-                                <a title="Limited Edition double disc Collectors DVD of The Perfect House" href="#" target="_top">Limited Edition double disc Collectors DVD of The Perfect House</a>
-                                </div>
-                                <div style="clear:both;"></div>
-                            </div>
-                            <div class="productWidgetLineItem">
-                                <div class="productWidgetThumbnail">
-                                    <div>
-                                        <a href="#" target="_top">
-                                        <img src="<?php echo IMAGES_FB_PATH ?>/7fffb33f31b7e39a6043177ba28eb918238d37f9_th.jpg" alt="" />
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="productWidgetDesc">
-                                <a title="Limited Edition double disc Collectors DVD of The Perfect House" href="#" target="_top">Limited Edition double disc Collectors DVD of The Perfect House</a>
-                                </div>
-                                <div style="clear:both;"></div>
-                            </div>
-                            <div class="productWidgetLineItem">
-                                <div class="productWidgetThumbnail">
-                                    <div>
-                                        <a href="#" target="_top">
-                                        <img src="<?php echo IMAGES_FB_PATH ?>/37f8c6b8027f77ead971b6c1875a06ea34ed18b5_th.jpg" alt="" />
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="productWidgetDesc">
-                                <a title="Limited Edition double disc Collectors DVD of The Perfect House" href="#" target="_top">Limited Edition double disc Collectors DVD of The Perfect House</a>
-                                </div>
-                                <div style="clear:both;"></div>
-                            </div>
-                            <div class="productWidgetLineItem">
-                                <div class="productWidgetThumbnail">
-                                    <div>
-                                        <a href="#" target="_top">
-                                        <img src="<?php echo IMAGES_FB_PATH ?>/859c8744d63164cb0bd2aea8a8689aa296b28ab6_th.jpg" alt="" />
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="productWidgetDesc">
-                                <a title="Limited Edition double disc Collectors DVD of The Perfect House" href="#" target="_top">Limited Edition double disc Collectors DVD of The Perfect House</a>
-                                </div>
-                                <div style="clear:both;"></div>
-                            </div>
-                            
-                            <div class="productWidgetLineItem" style="border-bottom: medium none;">
-                                <div class="productWidgetThumbnail">
-                                    <div>
-                                        <a href="#" target="_top">
-                                        <img src="<?php echo IMAGES_FB_PATH ?>/dc13d7ee4e48dd6785982d60776d2e87cc6298d9_th.jpg" alt="" />
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="productWidgetDesc">
-                                <a title="Limited Edition double disc Collectors DVD of The Perfect House" href="#" target="_top">Limited Edition double disc Collectors DVD of The Perfect House</a>
-                                </div>
-                                <div style="clear:both;"></div>
-                            </div>
+							<?php foreach($this->frndstoplike as $val){?>
+								<div class="productWidgetLineItem">
+									<div class="productWidgetThumbnail">
+										<div>
+										<?php
+											$SmallImg = explode('_',$val['image_name']);
+											$tinyImage = SITE_PRODUCT_IMAGES_PATH.$val['image_path']."/".$SmallImg[0]."_th3.jpg";	
+										?>
+											<a href="#" target="_top">
+											<?php if($val['image_name']){?>
+												<img src="<?php echo $tinyImage; ?>" alt="" />
+											<?php }else{?>
+												<img src="<?php echo IMAGES_FB_PATH ?>/coming.jpg" alt="" />
+											<?php }?>
+											</a>
+										</div>
+									</div>
+									<div class="productWidgetDesc">
+									<a title="Limited Edition double disc Collectors DVD of The Perfect House" href="#" target="_top"><?php echo $val['product_name'];?></a>
+									</div>
+									<div style="clear:both;"></div>
+								</div>
+                          <?php }?>  
                         </div>
                     </div>
                 </div>

@@ -132,11 +132,11 @@ class Models_Cart
 				'cart_id' => 1,
 				'product_id' => $ProductInfo['product_id'],
 				'product_name' => $ProductInfo['product_name'],
-				'product_price' => $ProductInfo['product_price'],
+				'product_price' => $ProductInfo['price'],
 				'product_qty' => $productQty,
-				'product_total_cost' => $ProductInfo['product_price']*1
+				'product_total_cost' => $ProductInfo['price']*1
 		);
-		
+		//print_r($ProductDetails);die;
 		$db->insert('cart_detail', $ProductDetails);
 		
 		return true;
@@ -164,9 +164,14 @@ class Models_Cart
 				'product_options_id' => $productOptions['product_options_id'],
 				'product_options_detail_id' => $productOptions['product_options_detail_id'],
 				'option_title' => $productOptions['option_title'],
-				'option_value' => $productOptions['option_value']
+				'option_value' => $productOptions['option_name'],
+				'option_code' => $productOptions['option_code'],
+				'option_weight' => $productOptions['option_weight'],
+				'option_weight_unit_id' => $productOptions['option_weight_unit_id'],
+				'option_price' => $productOptions['option_price']
+				//'option_quantity' => $productOptions['option_quantity']
 		);
-		
+		//print_r($ProductOptionDetails);die;
 		$db->insert('cart_product_options', $ProductOptionDetails);
 		
 		return true;
@@ -195,7 +200,7 @@ class Models_Cart
 //				LEFT JOIN user_shipping_method usm ON (um.user_id = usm.user_id) 
 //				LEFT JOIN user_shipping_method_detail usd ON (usm.shipping_method_id = usd.shipping_method_id)
 //				WHERE cm.facebook_user_id ='xyz@yahoo.com' ";
-		$sql = "SELECT cd.*,cm.*,pi.image_path,pi.image_name,pm.*,um.* FROM cart_detail as cd
+		$sql = "SELECT cd.*,cd.product_price as price,cm.*,pi.image_path,pi.image_name,pm.*,um.* FROM cart_detail as cd
 				LEFT JOIN cart_master as cm ON (cd.cart_id = cm.cart_id)
 				LEFT JOIN product_images as pi ON (cd.product_id = pi.product_id and pi.is_primary_image = 1)
 				LEFT JOIN product_master as pm ON (pi.product_id = pm.product_id)
@@ -225,6 +230,30 @@ class Models_Cart
 		$db= $this->db;
 		
 		$sql = "SELECT * FROM cart_master WHERE facebook_user_id = 'xyz@yahoo.com'";
+		//print $sql;die;
+		$result = $db->fetchRow($sql);
+		
+		return $result;
+	
+	}
+
+	/**
+	 * function UserExist
+	 *
+	 * It is used find the user that have in the cart.
+	 *
+	 * Date created: 2011-09-02
+	 *
+	 * @param () - No parameter.
+	 * @return (Array) - Return true on success
+	 * @author  Jayesh 
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 */
+	public function GetCartProductDetail($prodId,$cartId)
+	{
+		$db= $this->db;
+		
+		$sql = "SELECT * FROM cart_detail WHERE product_id = ".$prodId." and cart_id=".$cartId."";
 		//print $sql;die;
 		$result = $db->fetchRow($sql);
 		

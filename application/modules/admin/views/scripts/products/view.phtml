@@ -11,8 +11,9 @@
 <!--  Crumb  Start -->
 <div class="Breadcrumb" id="PageBreadcrumb">
 	<ul>
-	   <li class="Home SecondLast"><a href="#"><?php echo $this->Translate("Administration"); ?></a></li>
-	   <li class="Last"><span><?php echo $this->Translate('Products'); ?></span></li>
+	   <li class="Home SecondLast"><a href="<?php echo SITE_URL; ?>admin/"><?php echo $this->Translate("Administration"); ?></a></li>
+	   <li class="Last1"><a href="<?php echo SITE_URL; ?>admin/products"><?php echo $this->Translate('Products'); ?></a></li>
+	   <li class="Last"><span><?php echo $this->Translate('View_Products'); ?></span></li>
 	</ul>
 </div>
 <!--  Crumb  end -->
@@ -122,7 +123,19 @@
 						<td>
 							:&nbsp;&nbsp;<?php echo $detail["available_qty"]; ?>
 						</td>
-					</tr>									
+					</tr>	
+					<tr>
+						<td valign="top">
+							<h5><?php echo $this->Translate('Product_Category'); ?></h5>
+						</td>
+						<td>
+							:&nbsp;&nbsp;
+							<select name="product_category" id="product_category" multiple="multiple"  >
+								<?php echo $this->cateTree; ?>		
+							</select>
+						</td>
+					</tr>	
+											
 				</table>
 			</div>
 			<br />
@@ -172,7 +185,7 @@
 						<div class="box-content scroll-pane" style="height:270px; width:395px;" >
 							
 							<table  width="100%" >
-								<tr>
+								<!--<tr>
 									<td width="40%" valign="top">
 										<h5><?php echo $this->Translate('Product_Category'); ?></h5>
 									</td>
@@ -193,7 +206,7 @@
 											?>						
 										</ul>
 									</td>
-								</tr>
+								</tr>-->
 								<tr>
 									<td width="40%" valign="top">
 										<h5><?php echo $this->Translate('Product_Options'); ?></h5>
@@ -211,7 +224,7 @@
 															foreach($options as $key =>$val2)
 															{
 																if($val["LNK_options_id"] == $val2["LNK_options_id"]) {
-																echo "<li>".$val2["option_value"]."</li>";
+																echo "<li>".$val2["option_name"]."</li>";
 																}
 															}
 															echo "</ul></li>";
@@ -247,6 +260,10 @@
 		// Accordion
 		$("#accordion").accordion({ header: "h3",autoHeight: false, navigation: true });
 		
-		
+		$("#product_category").multiselect({
+		   header: false,
+		   noneSelectedText: "<?php echo $this->Translate('Product_Select_MCategory'); ?>",
+		});	
 	});
+	
 </script>

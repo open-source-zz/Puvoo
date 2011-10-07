@@ -61,11 +61,10 @@ define('INSTALL_DIR', '/');
 // Define Site Url
 define('SITE_URL', 'http://'. $_SERVER['HTTP_HOST']. INSTALL_DIR);
  
- 
 // Define Path for css folder
 define('CSS_PATH', INSTALL_DIR."public/css" );
 
- // Define Path for js folder
+// Define Path for js folder
 define('JS_PATH', INSTALL_DIR."public/js");
 
 // Define Path for images folder
@@ -88,6 +87,12 @@ define('SITE_UPLOAD_FOLDER_PATH', INSTALL_DIR . "public/upload");
 
 //Site Product Images relative path
 define('SITE_PRODUCT_IMAGES_PATH', INSTALL_DIR . "public/upload/products");
+
+//Site Banner Images folder path
+define('SITE_BANNER_IMAGES_FOLDER', realpath(SITE_UPLOAD_FOLDER . "/banner"));
+
+//Site Banner Images relative path
+define('SITE_BANNER_IMAGES_PATH', INSTALL_DIR . "public/upload/banner");
 
 // set include_path
 set_include_path(implode(PATH_SEPARATOR, array(

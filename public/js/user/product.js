@@ -184,21 +184,106 @@ function DeleteProductImage(product_id,image_id)
 var PD_Option = new Array();
 var PD_Option_Detail = new Array();
 var PD_Option_Action = new Array();
+var product_option_id = 0 ;
 
-function EditProductOption(id)
+function EditProductOption(option_id)
 {
-	if(id > 0) {
-			
-		PD_Option[id] = $("#PD_Option_"+id).html();
-		PD_Option_Detail[id] = jQuery.trim($("#PD_Option_Detail_"+id).html());
-		PD_Option_Action[id] = $("#PD_Option_Action_"+id).html();
-		
-		$("#PD_Option_"+id).html('<input class = "Field150" type = "text" name = "PDO_'+id+'" id = "PDO_'+id+'" value = "'+PD_Option[id]+'" >');
-		$("#PD_Option_Detail_"+id).html('<input type = "text" name = "PDOD_'+id+'" id = "PDOD_'+id+'" value = "'+PD_Option_Detail[id]+'" class = "Field300" />');
-		$("#PD_Option_Action_"+id).html('<a style="color:#17649E; cursor:pointer;" onclick="UpdateProductOption('+id+')" >'+UPDATE+'</a>');
+	$.ajax({
+			type:'GET',
+			url:siteurl+'user/products/option/option_detail_id/'+option_id,
+			dataType:"json",  
+			success:function(data)	{ 
+				ProductOptionArray = data;
+				for(tmp in data)
+				{
+					$("#product_option_form #prod_"+tmp).val(data[tmp]);
+				}
+			}
+	});
+	ValidateProductOptionFrom();
+	$( "#dialog-product-option" ).dialog({
+		resizable: false,
+		height:'auto',
+		width:600,
+		modal: true,
+		buttons: {
+			Update: function() {
+				$("#product_option_form").submit();
+			},
+			Cancel: function() {
+				$(".productoptval").val('');
+				$( this ).dialog( "close" );
+			}
+		}
+	});	
+}
+
+
+
+function ValidateProductOptionFrom()
+{
+	$("#product_option_form").validate({
+							
+			rules: {
+						prod_option_name: {  required: true  },		
+						prod_option_weight: { number: true },
+						prod_option_price: {  number: true },
+						prod_option_quantity: { number: true }
+				   },
+		   
+			messages:{
+						prod_option_name: {  required: ERR_PRODUCT_OPTION_VALUE_NAME  },		
+						prod_option_weight: { number: ERR_PRODUCT_OPTION_VALUE_INVALID_WEIGHT },
+						prod_option_price: { number: ERR_PRODUCT_OPTION_VALUE_INVALID_PRICE },
+						prod_option_quantity: { number: ERR_PRODUCT_OPTION_VALUE_INVALID_QUANTITY  }
+					 },
+					 
+			errorPlacement: function(error, element) 
+			{ 
+				error.appendTo( element.parent().next() ); 
+			},
+			submitHandler: function() {  
+				var ValueString = '';
+				var counter = 0;
+				for( tmp in ProductOptionArray ) 
+				{ 
+					if( counter == 0 ) {
+						ValueString += tmp+"="+$("#product_option_form #prod_"+tmp).val();
+					} else {
+						ValueString += "&"+tmp+"="+$("#product_option_form #prod_"+tmp).val();
+					}
+					counter++;
+				}
+				UpdateProductOptionValue(ValueString);
+				$( "#dialog-product-option" ).dialog( "close" );
+			}
+	});	
+}
+
+
+function UpdateProductOptionValue(value)
+{
+	if(value != '') {
+		$(".productoptval").val('');
+		$.ajax({
+			type:'POST',
+			url:siteurl+'user/products/updateoptionvalue',
+			data: value,
+			dataType: 'json',
+			success:function(returnArray)
+			{	
+				alert(PRODUCT_OPTION_VALUE_EDIT_SUCCESS);
+				$("#PD_Option_"+returnArray["product_options_id"]).html( returnArray["option_title"] );
+				$("#POD_Name_"+returnArray["product_options_detail_id"]).html( returnArray["option_name"] );
+				$("#POD_Code_"+returnArray["product_options_detail_id"]).html( returnArray["option_code"] );
+				
+			}
+	    });
 		
 	}
 }
+
+
 
 function UpdateProductOption(id)
 {
@@ -233,7 +318,10 @@ function DeleteProductOption(id)
 					type:'POST',
 					url:siteurl+'user/products/deleteoption',
 					data: "option_id="+id,
-					success:function(data)	{ $("#PD_Row_"+id).remove(); }
+					success:function(data)	{
+						$("#PD_Row_"+id).next().remove();
+						$("#PD_Row_"+id).remove();
+					}
 				});
 				
 				$( this ).dialog( "close" );
@@ -250,68 +338,187 @@ var counter = 1;
 
 function AddProductOption(prod_id)
 {
-	var row_id = $("#last_product_option_id").val();
-	
 	var OptHtml = '';
 		OptHtml += '<tr id="add_demo_'+counter+'">';
 		OptHtml += '<td width="25%"><input class = "Field150" type = "text" name = "PDO_add_'+counter+'" id = "PDO_add_'+counter+'" ></td>';
-		OptHtml += '<td width="55%"><input type = "text" name = "PDOD_add_'+counter+'" id = "PDOD_add_'+counter+'"  class = "Field300" /></td>';
-		OptHtml += '<td width="20%"><a  onclick="Javascript: return AddOption('+counter+','+prod_id+')" style="color:#17649E; cursor:pointer;" >'+ADD+'</a></td>';
+		OptHtml += '<td width="20%"><a onclick="Javascript: return AddOption('+counter+','+prod_id+')" style="color:#17649E; cursor:pointer;" >'+ADD+'</a>&nbsp;&nbsp;&nbsp;<a onclick="Javascript: return AddOptionCancle('+counter+','+prod_id+')" style="color:#17649E; cursor:pointer;" >'+CANCEL+'</a></td>';
 		OptHtml += '</tr>';
 	
-	if(row_id != '') {
-		$(OptHtml).insertAfter("#PD_Row_"+row_id);
- 	} else {
-		$(OptHtml).insertAfter("#No_Option");
-		//$("#No_Option").html(OptHtml);
-	}
+	$(OptHtml).insertAfter("#PrDOptVal tr:last");
 	
 	counter++; 
+}
+
+function AddOptionCancle(no,pid) 
+{
+	$("#add_demo_"+no).remove();
 }
 
 function AddOption(no,pid)
 {
 	var title = $("#PDO_add_"+no).val();
-	var option = $("#PDOD_add_"+no).val();
 	
 	if(title == '' )
 	{
 		alert(ERR_PRODUCT_OPTION_TITLE);
 		return false;
 	}
-	if(option == '')
-	{
-		alert(ERR_PRODUCT_OPTION_DETAIL);	
-		return false;
-	}
 	
 	$.ajax({
 			type:'POST',
 			url:siteurl+'user/products/addoption',
-			data: "product_id="+pid+"&option_title="+title+"&option_detail="+option,
+			data: "product_id="+pid+"&option_title="+title,
 			success:function(data)	{ 
 			
 				$("#add_demo_"+no).remove();
 				var success_array = data.split("///");
 				
-				var action = '<a  onclick="EditProductOption('+success_array[1]+')" style="color:#17649E; cursor:pointer;" >'+EDIT+'</a>&nbsp;/&nbsp;<a style="color:#17649E; cursor:pointer;" onclick="DeleteProductOption('+success_array[1]+')" >'+DELETE+'</a>';
-				
 				var OptHtml = '';
 					OptHtml += '<tr id="PD_Row_'+success_array[1]+'">';
-					OptHtml += '<td width="25%" id="PD_Option_'+success_array[1]+'" >'+title+'</td>';
-					OptHtml += '<td width="55%" id="PD_Option_Detail_'+success_array[1]+'" >'+option+'</td>';
-					OptHtml += '<td width="20%" id="PD_Option_Action_'+success_array[1]+'" >'+action+'</td>';
+					OptHtml += '<td width="25%" id="PD_Option_'+success_array[1]+'" valign="top" >'+title+'</td>';
+					OptHtml += '<td width="55%" id="PD_Option_Detail_'+success_array[1]+'" >'
+					OptHtml += '<table width="100%" id="PD_Option_Table_'+success_array[1]+'">';
+					OptHtml += '</table>';
+					OptHtml += '</td>';
 					OptHtml += '</tr>';
-				var row_id = $("#last_product_option_id").val();
-				$("#last_product_option_id").val(success_array[1]);
+					OptHtml += '<tr><td></td><td>';
+					OptHtml += '<input type="button" onclick="AddMoreOptionValue('+success_array[1]+')"  value="'+PRODUCT_ADD_OPTION+'"> ';
+					OptHtml += '<input type="button" onclick="DeleteProductOption('+success_array[1]+')"  value="'+PRODUCT_DELETE_OPTION+'">';
+					OptHtml += '</td></tr>';
+					OptHtml += '<script>$(function() { $( "input:button" ).button(); });</script>';
+					
+				$(OptHtml).insertAfter("#PrDOptVal tr:last");
+				$("#No_Option").remove();
 				
-				if(row_id != '') {
-					$(OptHtml).insertAfter("#PD_Row_"+row_id);
-				} else {
-					$("#No_Option").hide();
-					$(OptHtml).insertAfter("#No_Option");
-				}
 			}
 		});
+}
+
+
+///////////////////////////	For Adding Product Options Value  /////////////////////////
+
+function AddMoreOptionValue(id)
+{
+	$("#product_option_form_add .productoptval").val('');
+	ValidateAddProductOptionFrom(id);
+	$( "#dialog-product-option-add" ).dialog({
+		resizable: false,
+		height:'auto',
+		width:600,
+		modal: true,
+		buttons: {
+			Add: function() {
+				$("#product_option_form_add").submit();
+			},
+			Cancel: function() {
+				$(".productoptval").val('');
+				$( this ).dialog( "close" );
+			}
+		}
+	});	
+}
+
+function ValidateAddProductOptionFrom(Option_Id)
+{
+	product_option_id = Option_Id;
+	$("#product_option_form_add").validate({
+							
+			rules: {
+						add_prod_option_name: {  required: true  },		
+						add_prod_option_weight: { number: true },
+						add_prod_option_price: {  number: true },
+						add_prod_option_quantity: { number: true }
+				   },
+		   
+			messages:{
+						add_prod_option_name: {  required: ERR_PRODUCT_OPTION_VALUE_NAME  },		
+						add_prod_option_weight: { number: ERR_PRODUCT_OPTION_VALUE_INVALID_WEIGHT },
+						add_prod_option_price: { number: ERR_PRODUCT_OPTION_VALUE_INVALID_PRICE },
+						add_prod_option_quantity: { number: ERR_PRODUCT_OPTION_VALUE_INVALID_QUANTITY  }
+					 },
+					 
+			errorPlacement: function(error, element) 
+			{ 
+				error.appendTo( element.parent().next() ); 
+			},
+			submitHandler: function() {  
+				AddProductOptionValue();
+				$( "#dialog-product-option-add" ).dialog( "close" );
+			}
+	});	
+}
+
+function AddProductOptionValue(id)
+{
+	var OptValName 		= $("#product_option_form_add #add_prod_option_name").val();
+	var OptValCode 		= $("#product_option_form_add #add_prod_option_code").val();
+	var OptValWeight 	= $("#product_option_form_add #add_prod_option_weight").val();
+	var OptValWeightUid	= $("#product_option_form_add #add_prod_option_weight_unit_id").val();
+	var OptValPrice		= $("#product_option_form_add #add_prod_option_price").val();
+	var OptValQuantity	= $("#product_option_form_add #add_prod_option_quantity").val();
 	
+	var ValueString = '';
+		ValueString += 'product_options_id='+product_option_id+'&option_name='+OptValName+'&option_code='+OptValCode+'&option_weight='+OptValWeight+'&option_weight_unit_id='+OptValWeightUid+'&option_price='+OptValPrice+'&option_quantity='+OptValQuantity;
+	
+	$.ajax({
+			type:'POST',
+			url:siteurl+'user/products/addoptionvalue',
+			data: ValueString,
+			dataType: 'json',
+			success:function(retArray)	{ 
+				
+				var HtmlStr = $("#PD_Option_Table_"+retArray["product_options_id"]).html();
+				
+				var NewRow =  "<tr id='POD_Row_"+retArray["product_options_detail_id"]+"' >";
+					NewRow += "<td width='35%' id='POD_Name_"+retArray["product_options_detail_id"]+"' >";
+					NewRow += retArray["option_name"];
+					NewRow += "</td>";
+					NewRow += "<td width='35%' id='POD_Code_"+retArray["product_options_detail_id"]+"' >";
+					NewRow += retArray["option_code"];
+					NewRow += "</td>";
+					NewRow += "<td width='25%'>";
+					NewRow += "<a  onclick='EditProductOption("+retArray["product_options_detail_id"]+")' style='color:#17649E; cursor:pointer;' >";
+					NewRow += EDIT;
+					NewRow += "</a>&nbsp;&nbsp;/&nbsp;&nbsp;";
+					NewRow += "<a  style='color:#17649E; cursor:pointer;' onclick='DeleteProductOptionValue("+retArray["product_options_detail_id"]+")' >";
+					NewRow += DELETE;
+					NewRow += "</a></td></tr>";
+					
+				$("#PD_Option_Table_"+retArray["product_options_id"]).html(HtmlStr+NewRow);
+					
+			}
+		});
+}
+
+///////////////////////////	For Deleting Product Options Value  /////////////////////////
+
+function DeleteProductOptionValue(id)
+{
+	$( "#dialog-confirm-delete-pod" ).dialog({
+		resizable: false,
+		height:'auto',
+		modal: true,
+		buttons: {
+			"Delete": function() {
+				
+				$.ajax({
+					type:'POST',
+					url:siteurl+'user/products/deleteoptionval',
+					data: "product_options_detail_id="+id,
+					success:function(data)	{ 
+					
+						alert(data);
+						$("#POD_Row_"+id).remove(); 
+					}
+					
+				});
+				
+				$( this ).dialog( "close" );
+				
+			},
+			Cancel: function() {
+				$( this ).dialog( "close" );
+			}
+		}
+	});	
 }

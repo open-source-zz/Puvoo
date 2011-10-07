@@ -167,7 +167,7 @@ class Admin_ImageController extends AdminCommonController
 			$id = $ProdImg->insertProductImages($img_data);	
 				
 			
-			$success = array('success'=>true,'id'=> $id, 'filename'=>$filepath.'/'.$encname.'_th1.'.$ext);
+			$success = array('success'=>true,'id'=> $id, 'filename'=>SITE_PRODUCT_IMAGES_PATH.$filepath.'/'.$encname.'_th1.'.$ext);
 			
 			echo htmlspecialchars(json_encode($success), ENT_NOQUOTES);
 			die;

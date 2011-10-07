@@ -82,6 +82,28 @@ class Models_Category
  	} 
 	
 	/**
+	 * function GetTopMainCategory()
+	 *
+	 * It is used to get the top main category from the database and display in left menu.
+	 *
+	 * Date created: 2011-11-06
+	 *
+	 * @param () - No parameter
+	 * @return (Array) - Return Array of records
+	 * @author Jayesh 
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+ 	public function GetTopMainCategory()
+	{
+		$db = $this->db;
+		
+		$sql = "select * from category_master where parent_id = '0' and is_active='1' order By category_name asc limit 0,10";
+ 		$result = $db->fetchAll($sql);
+		return $result;
+ 	} 
+	
+	
+	/**
 	 * function GetCategory
 	 *
 	 * It is used to get the category from the database and display in left menu.

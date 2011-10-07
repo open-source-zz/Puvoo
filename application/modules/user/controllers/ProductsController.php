@@ -363,9 +363,18 @@ class User_ProductsController extends UserCommonController
 		$product_id = $mysession->Product_Id; 
 		$this->view->product_id = $product_id;
 		
-		$this->view->records = $product->getAllProductDetail($product_id);	
+		$this->view->weight = $product->fetchAllRecords("weight_master");
 		
-		$this->view->addMessage = $mysession->User_Message;
+		if( $product_id > 0 || $product_id != '' ) {
+			
+			$this->view->product_data = $product->getAllProductDetail($product_id);	
+			
+			$this->view->addMessage = $mysession->User_Message;
+		} else {
+		
+			$mysession->User_EMessage = $translate->_('Err_Product_Not_Found');
+			$this->_redirect('user/products'); 	
+		}
 		
 		if($request->isPost())	{
 			
@@ -386,7 +395,7 @@ class User_ProductsController extends UserCommonController
 				$mysession->User_Message = '';
 				$mysession->Product_Id = '';
 				
-				$mysession->User_Message = $translate->_('Product_Add_Image_Success');
+				$mysession->User_SMessage = $translate->_('Product_Add_Image_Success');
 				$this->_redirect('user/products'); 	
 				
 			} else {
@@ -618,6 +627,7 @@ class User_ProductsController extends UserCommonController
 		$translate = Zend_Registry::get('Zend_Translate');
 		
 		$product = new Models_UserProduct();
+		$product_master = new Models_Product();
 		$request = $this->getRequest();
 		
 		$filter = new Zend_Filter_StripTags();	
@@ -627,6 +637,14 @@ class User_ProductsController extends UserCommonController
 			
 			$this->view->product_id = $product_id;
 			$this->view->product_detail = $product->getAllProductDetail($product_id);
+			
+			$category = array();
+			foreach( $this->view->product_detail["category"] as $key => $val )
+			{
+				$category[] = $val["category_id"];
+			}
+			
+			$this->view->cateTree = $product_master->getCateTree($category);
 			
 		} else {
 			
@@ -862,9 +880,8 @@ class User_ProductsController extends UserCommonController
 		
 		$project_id = $filter->filter(trim($this->_request->getPost('product_id'))); 
 		$option_title = $filter->filter(trim($this->_request->getPost('option_title'))); 
-		$option_detail = $filter->filter(trim($this->_request->getPost('option_detail'))); 	
-		
-		$option_id = $product->insertProductOption($project_id,$option_title,$option_detail);
+		$option_id = 0;
+		$option_id = $product->insertProductOption($project_id,$option_title);
 		
 		if($option_id > 0) {
 			
@@ -872,6 +889,180 @@ class User_ProductsController extends UserCommonController
  		}
 	
 	}
+	
+	/**
+     * Function optionAction
+	 *
+	 * This function is used to get data of particular product options value by primary key.
+	 *
+     * Date Created: 2011-10-06
+     *
+     * @access public
+	 * @param ()  		- No parameter
+	 * @return () 		- Return records in json format
+	 *
+     * @author Yogesh
+     *  
+     * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+     **/	
+	
+	public function optionAction()
+	{
+		global $mysession;
+		$translate = Zend_Registry::get('Zend_Translate');
+		
+		$product = new Models_Product();
+		$filter = new Zend_Filter_StripTags();	
+		
+		$prodopt_id = $filter->filter(trim($this->_request->getParam('option_detail_id'))); 
+		
+		$record = $product->GetProductOptionValueById($prodopt_id);
+		
+		$json = Zend_Json::encode($record);
+		echo $json; die;
+	
+	}
+	
+	/**
+     * Function updateoptionvalueAction
+	 *
+	 * This function is used to update all data of particular product options value by primary key.
+	 *
+     * Date Created: 2011-10-06
+     *
+     * @access public
+	 * @param ()  		- No parameter
+	 * @return (Josn) 	- Return records in json format
+	 *
+     * @author Yogesh
+     *  
+     * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+     **/	
+	
+	public function updateoptionvalueAction()
+	{
+		global $mysession;
+		$translate = Zend_Registry::get('Zend_Translate');
+		
+		$product = new Models_Product();
+		$filter = new Zend_Filter_StripTags();	
+		
+		$data["product_options_detail_id"] = $filter->filter(trim($this->_request->getPost('product_options_detail_id'))); 
+		$data["option_name"] = $filter->filter(trim($this->_request->getPost('option_name'))); 
+		$data["option_code"] = $filter->filter(trim($this->_request->getPost('option_code'))); 
+		$data["option_weight"] = $filter->filter(trim($this->_request->getPost('option_weight'))); 
+		$data["option_weight_unit_id"] = $filter->filter(trim($this->_request->getPost('option_weight_unit_id'))); 
+		$data["option_price"] = $filter->filter(trim($this->_request->getPost('option_price'))); 
+		$data["option_quantity"] = $filter->filter(trim($this->_request->getPost('option_quantity'))); 		
+		
+		$data2["product_options_id"] = $filter->filter(trim($this->_request->getPost('product_options_id'))); 
+		$data2["option_title"] = $filter->filter(trim($this->_request->getPost('option_title'))); 
+		
+		if( $data["product_options_detail_id"] > 0 && $data2["product_options_id"] > 0 ) {
+		
+			if($product->updateProductOptionValue($data,$data2)) {
+				
+				$records = array_merge($data,$data2);
+				
+				$json = Zend_Json::encode($records);
+				echo $json; die;
+				
+			}
+		} else {
+			
+			$records["error"] = $translate->_('Err_Edit_Product_Option_Value');
+			$json = Zend_Json::encode($records);
+			echo $json; die;
+		}
+	}
+	
+	/**
+     * Function addoptionvalueAction
+	 *
+	 * This function is used to add the product options value.
+	 *
+     * Date Created: 2011-10-06
+     *
+     * @access public
+	 * @param ()  		- No parameter
+	 * @return (Josn) 	- Return records in json format
+	 *
+     * @author Yogesh
+     *  
+     * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+     **/
+	
+	function addoptionvalueAction()
+	{
+		global $mysession;
+		$translate = Zend_Registry::get('Zend_Translate');
+		
+		$product = new Models_Product();
+		$filter = new Zend_Filter_StripTags();		
+		
+		$data["option_name"] = $filter->filter(trim($this->_request->getPost('option_name'))); 
+		$data["option_code"] = $filter->filter(trim($this->_request->getPost('option_code'))); 
+		$data["option_weight"] = $filter->filter(trim($this->_request->getPost('option_weight'))); 
+		$data["option_weight_unit_id"] = $filter->filter(trim($this->_request->getPost('option_weight_unit_id'))); 
+		$data["option_price"] = $filter->filter(trim($this->_request->getPost('option_price'))); 
+		$data["option_quantity"] = $filter->filter(trim($this->_request->getPost('option_quantity'))); 				
+		$data["product_options_id"] = $filter->filter(trim($this->_request->getPost('product_options_id'))); 
+		
+		$record = $product->insertProductOptionValue($data);
+		
+		if($record != NULL || $record != "" ) {
+			
+			$json = Zend_Json::encode($record);
+			echo $json; die;
+			
+		} else {
+			
+			$error["error"] =$translate->_('Err_Add_Product_Option_Value'); 
+			$json = Zend_Json::encode($error);
+			echo $json; die;
+		}
+	} 
+	
+	
+	/**
+     * Function deleteoptionvalAction
+	 *
+	 * This function is used to delete the product options value.
+	 *
+     * Date Created: 2011-10-06
+     *
+     * @access public
+	 * @param ()  		- No parameter
+	 * @return (Josn) 	- Return records in json format
+	 *
+     * @author Yogesh
+     *  
+     * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+     **/
+	
+	function deleteoptionvalAction()
+	{
+		global $mysession;
+		$translate = Zend_Registry::get('Zend_Translate');
+		
+		$product = new Models_Product();
+		$filter = new Zend_Filter_StripTags();		
+		
+		$product_options_detail_id = $filter->filter(trim($this->_request->getPost('product_options_detail_id')));
+		
+		if( $product_options_detail_id > 0 || $product_options_detail_id != '' ) {
+			
+			if($product->DeleteProductOptionValue($product_options_detail_id)) {
+				
+				echo $translate->_('Products_Option_Value_Success_Delete'); die;
+		
+			} else {
+		
+				echo $translate->_('Err_Products_Option_Value_Delete');	die;
+			}
+		}
+	}
+	
 	
 }
 ?>

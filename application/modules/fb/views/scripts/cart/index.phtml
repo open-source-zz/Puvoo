@@ -55,8 +55,9 @@
 								
 							</div>
 							<div id="itemQtyPrice_1" class="cartItemDivider cartItemPriceDisplay">
-								<div id="itemPrice<?php echo $Item['product_id'];?>" align="right"><?php echo "$".$Item['product_total_cost'];?></div>
-								<input type="hidden" value="<?php echo $Item['product_price'] ?>" name="ProductTotalPrice<?php echo $Item['product_id'];?>" id="ProductTotalPrice<?php echo $Item['product_id'];?>" />
+								<div id="itemPrice<?php echo $Item['product_id'];?>" align="right"><?php echo "$".$Item['price']*$Item['product_qty'];?></div>
+								<input type="hidden" value="<?php echo $Item['price'] ?>" name="IndivisualPrice<?php echo $Item['product_id'];?>" id="IndivisualPrice<?php echo $Item['product_id'];?>" />
+								<input type="hidden" value="<?php echo $Item['price'] ?>" name="ProductTotalPrice<?php echo $Item['product_id'];?>" id="ProductTotalPrice<?php echo $Item['product_id'];?>" />
 							</div>
 							<div class="clear"></div>
 						</div>
@@ -326,7 +327,7 @@
 										
 									</td>
 									<td>
-										Your receipts will be sent to this email address.
+										<?php echo $this->Translate('ReceiptInfo')?>
 									</td>
 								</tr>
 								<tr><td height="8"></td></tr>
@@ -353,7 +354,7 @@
 										
 											<select name="baddressType" id="baddressType" >
 											<option value="0"><?php echo $this->Translate('Select')?></option>
-											<option value="Residencial"  <?php if($this->addType == 'Residencial'){?> selected="selected" <?php }?> >Residencial</option>
+											<option value="Residencial"  <?php if($this->addType == 'Residencial'){?> selected="selected" <?php }?> ><?php echo $this->Translate('Residencial')?></option>
 										</select>
 									</td>
 								</tr>
@@ -462,9 +463,12 @@
 				</form>
 			</div>			
 			<div id="div3" style="display:none;">
+			<form action='expresscheckout.php' METHOD='POST'>
  				<div class="shoppingCart" id="shipping_method">
+				
 					<?php $total_price = floatval(0.00);
 						$totalAmout = array();
+						$prodIdArray = array();
 						 ?>
 					<?php foreach($this->cartItems as $Item){?>
 						<table class="merchantTable" style="border: medium none; border-bottom:1px solid #E2E2E2;" id="merchantProd<?php echo $Item['product_id'];?>">
@@ -477,7 +481,7 @@
 									<label for="lastName"><?php echo $this->Translate('SubTotal')?></label>
 								</td>
 								<td>
-									<?php echo "$".floatval($Item['product_total_cost']);?>
+									<?php echo "$".floatval($Item['product_price']*$Item['product_qty']);?>
 								</td>
 							</tr>
 							<tr><td height="4"></td></tr>	
@@ -498,7 +502,7 @@
 								</td>
 								<td>
 									<select name="Shipping_Method_<?php echo $Item['product_id'];?>" id="Shipping_Method_<?php echo $Item['product_id'];?>" style="width:130px;">
-										<option value="0" selected="selected" onclick="GetShippingCost('0',<?php echo $Item['product_id'];?>)">Choose Shipping</option>
+										<option value="0" selected="selected" onclick="GetShippingCost('0',<?php echo $Item['product_id'];?>)"><?php echo $this->Translate('ChooseShipping')?></option>
 										<?php 
 											echo $flag;
 										?>
@@ -527,8 +531,8 @@
 													if($val){
 														
 														foreach($val as $val2){
-															$taxrate = ($Item['product_total_cost']*$val2)/100;
-															$totalAmout[$Item['product_id']] =  floatval($Item['product_price'])+floatval($taxrate); 
+															$taxrate = (($Item['product_price']*$Item['product_qty'])*$val2)/100;
+															$totalAmout[$Item['product_id']] =  floatval(($Item['product_price']*$Item['product_qty']))+floatval($taxrate); 
 															echo "$".$taxrate;
 														}
 													}else{
@@ -562,7 +566,7 @@
 							<?php if($flag == "" ) { ?>
 							<tr>
 								<td width="200" colspan="2">
-									<b>This store does not allow shipping to your country. Please remove any items from your cart that belong to this store.</b>
+									<b><?php echo $this->Translate('NoShippingError')?></b>
 								</td>
 							</tr>
 							<?php } ?>
@@ -628,6 +632,7 @@
 						
 						
 						<!--<?php $total_price +=  (float)$Item['product_total_cost']; ?>-->
+						<?php $prodIdArray[$Item['product_id']] += $Item['product_id'];?>
  						<?php $total_price +=  floatval($totalAmout); ?>
 					<?php }?>
 				</div>
@@ -636,45 +641,30 @@
 						
 					   </div>
 					   <div id="Sharer_btns">
-<form onsubmit="secureCheckout('/mall/cart/checkout', 'checkoutForm'); return false;" id="checkoutForm" method="POST">
-<!--<input class="cartButtonLabel"
-       type="submit"
-       value="Secure Checkout"
-/>-->
-<input type="hidden" value="OFZfn3Wyf3MzBg17-q1-84Dm1JSDHvLzxJriwox0CGQ.eyJhbGdvcml0aG0iOiJITUFDLVNIQTI1NiIsImV4cGlyZXMiOjEzMTc0NjMyMDAsImlzc3VlZF9hdCI6MTMxNzQ1NjUwMiwib2F1dGhfdG9rZW4iOiIxMzU2MDc3ODM3OTV8Mi5BUUF1aDV1aFNuZF93OGhfLjM2MDAuMTMxNzQ2MzIwMC4xLTEwMDAwMjg1NDYyNDQyNXxnNXl2eVNITTBzc3ZqU0ZJSnMtZU13UlBSd00iLCJ1c2VyIjp7ImNvdW50cnkiOiJpbiIsImxvY2FsZSI6ImVuX1VTIiwiYWdlIjp7Im1pbiI6MjF9fSwidXNlcl9pZCI6IjEwMDAwMjg1NDYyNDQyNSJ9" name="signed_request">
-</form>					   
 					   
 					   <input type="hidden"  name="totalAmount" id="totalAmount" value="<?php echo $total_price;?>" />
 					   <input type="hidden" name="ShippingtotalAmount" id="ShippingtotalAmount" value="0" />
 						<input type="button" value="" class="your_setting" onclick="showsetting(); return false;" />
 						<?php if($flag != "" ) { ?>
-						<input type="button" value="" class="continuecheckout" onclick="UpdateShipping('<?php echo $this->cartId; ?>','<?php echo $Item['product_id'] ?>')" />
+						<input type="button" value="" class="continuecheckout" onclick="UpdateShipping('<?php echo $this->cartId; ?>','<?php echo $prodIdArray; ?>')" />
 						<?php }?>
 						
 					   </div>
 				</div>
-				
+				</form>
 				</div>
 				<div id="div4" style="display:none;">
-					<div class="shoppingCart" id="paypal">
-						<form action='<?php echo SITE_FB_URL;?>/expresscheckout/' method='POST'>
+					<div class="shoppingCart" id="paypal" style="margin-top: 15px; margin-bottom: 15px;">
+						<form action='/Puvoo/public/expresscheckout.php' method='POST'>
 <input type='image' name='submit' src='https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif' border='0' align='top' alt='Check out with PayPal'/>
-</form>
-				   </div>
-				   <div id="buttonArea">
-					   <div class="SharingOptions_Text">
-						
-					   </div>
-					   <div id="Sharer_btns">
-						<input type="button" value="" class="your_setting" onclick="showsetting(); return false;" />
-						<input type="button" value="" class="checkout" />
-						
-					   </div>
+					<input type="hidden"  name="FinalAmount" id="FinalAmount" />
+				   
+						</form>
 					</div>
 			   </div>
 			   <div id="div5" style="display:none;">
 				   <div class="shoppingCart" id="success">
-						<div class="sucesstext">Success</div>
+						<div class="sucesstext"><?php echo $this->Translate('Success')?></div>
 				   </div>
 				   <div id="buttonArea">
 				   <div class="SharingOptions_Text">
@@ -693,7 +683,7 @@
 		</div> 
 		
 	 <div id="settingarea" style="display:none; visibility:hidden;">
-		<div id="popup_head"><h1>Your Setting</h1></div>
+		<div id="popup_head"><h1><?php echo $this->Translate('YourSetting')?></h1></div>
 		<div id="contactArea">
 			<div style="width:570px;margin:auto; margin-top:15px;" >
 				<table cellspacing="0" cellpadding="10" border="0">
@@ -702,20 +692,20 @@
 							<a href="javascript:void(0)" style="margin-right:25px;"><img src="<?php echo IMAGES_FB_PATH ?>/picture.gif" alt="" /></a>
 						</td>
 						<td>
-							Hi XYZ. These are your custom settings for your shopping cart on Facebook. Your cart and the items in it will be available across any storefront powered by Puvoo on Facebook. 
+							<?php echo $this->Translate('TempDetail1')?>
 						</td>
 					</tr>
 				</table>
 				<div id="fb_tabs" class="usual">
 					<ul>
-						<li><a href="javascript:void(0)" id="tab6" class="selected" onclick="ShowFbTab(6);">Currency</a></li>
-						<li><a href="javascript:void(0)" id="tab7" onclick="ShowFbTab(7);">Shipping Address</a></li>
+						<li><a href="javascript:void(0)" id="tab6" class="selected" onclick="ShowFbTab(6);"><?php echo $this->Translate('Currency')?></a></li>
+						<li><a href="javascript:void(0)" id="tab7" onclick="ShowFbTab(7);"><?php echo $this->Translate('ShippingAddress')?></a></li>
 					</ul>
 					<div id="div6">
 						<table cellspacing="0" cellpadding="10" border="0">
 							<tr>
 								<td>
-									<label for="lastName">Your Cart's Currency:</label>
+									<label for="lastName"><?php echo $this->Translate('CartCurrency')?>Your Cart's Currency:</label>
 								</td>
 								<td>
 									<select name="address">
@@ -726,7 +716,7 @@
 							<tr><td height="10"></td></tr>
 							<tr>
 								<td colspan="2">
-									View your cart in the currency of your choosing. Your cart will automatically calculate your items using the latest foreign exchange rate when needed.
+									<?php echo $this->Translate('TempDetail2')?>
 								</td>
 							</tr>
 						</table>
@@ -779,7 +769,7 @@
 										
 									</td>
 									<td>
-										Your receipts will be sent to this email address.
+										<?php echo $this->Translate('ReceiptInfo')?>
 									</td>
 								</tr>
 								<tr><td height="8"></td></tr>
@@ -806,7 +796,7 @@
 										
 											<select name="addressType1" id="addressType1" name="addressType" >
 											<option value="0"><?php echo $this->Translate('Select')?></option>
-											<option value="Residencial"  <?php if($this->addType == 'Residencial'){?> selected="selected" <?php }?> >Residencial</option>
+											<option value="Residencial"  <?php if($this->addType == 'Residencial'){?> selected="selected" <?php }?> ><?php echo $this->Translate('Residencial')?></option>
 										</select>
 									</td>
 								</tr>
@@ -925,10 +915,10 @@
 			<!--<div id="popup_head"><h1>Seller Information</h1></div>-->
 				
 					<ul class="tabs" style="margin-top:10px;">
-						<li class="active"><a href="#tab8">About</a></li>
-						 <li class=""><a href="#tab9">Terms and Policies</a></li>
-						 <li class=""><a href="#tab10">Return Policy</a></li>
-						<li class=""><a href="#tab11">Contact Seller</a></li>
+						<li class="active"><a href="#tab8"><?php echo $this->Translate('About')?></a></li>
+						 <li class=""><a href="#tab9"><?php echo $this->Translate('TermsPolicies')?></a></li>
+						 <li class=""><a href="#tab10"><?php echo $this->Translate('ReturnPolicy')?></a></li>
+						<li class=""><a href="#tab11"><?php echo $this->Translate('ContactSeller')?></a></li>
  					</ul>
 				
 				<div class="tab_container">
@@ -943,17 +933,17 @@
 				   <?php echo $this->returnPolicy;?>        
 				</div>
 
-				<div style="display: none;" id="tab12" class="tab_content">
+				<!--<div style="display: none;" id="tab12" class="tab_content">
 					<table width="100%">
 						<tr>
 							<td width="30%" style="text-align: center">
-								<h3 style="text-align:center; font-size:18px;">New Seller  </h3>
-								(0 reviews)
+								<h3 style="text-align:center; font-size:18px;"><?php echo $this->Translate('NewSeller')?>  </h3>
+								
 							</td>
 							<td>
 								<table width="100%" cellspacing="0" cellpadding="5" border="0">
 									<tr>
-										<td>Positive</td>
+										<td><?php echo $this->Translate('Positive')?></td>
 										<td><span class="sellerRatingThumbs positiveThumb"></span></td>
 										<td>
 											<img style="background-position: -102px 0pt;" 
@@ -1001,7 +991,7 @@
 							</td>
 						</tr>
 					</table>        
-				</div>
+				</div>-->
 				<div style="display: none;" id="tab11" class="tab_content">
 				   <input type="button" class="send_email" value="" />
 				</div>
