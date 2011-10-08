@@ -2,7 +2,7 @@
 	<ul>
 	   <li class="Home SecondLast"><a href="<?php echo $this->site_url ?>"><?php echo $this->Translate("Administration"); ?></a></li>
 	   <?php if($this->parent_id == 0){ ?>
-	   <li class="Last1"><span><?php echo $this->Translate('Category'); ?></span></li>
+	   <li class="Last1"><a href="<?php echo $this->site_url ?>"><?php echo $this->Translate('Category'); ?></a></li>
 	   <?php } ?>
 	   <?php if($this->parent_id > 0){ ?>
 	   <li class="Last1"><a href="<?php echo $this->site_url ?>"><?php echo $this->Translate('Category'); ?></a></li>
@@ -38,7 +38,7 @@
 		</div>
 	<?php } ?>	
 	
-	<form method="post" name="add_form" id="add_form" >
+	<form method="post" name="add_form" id="add_form" enctype="multipart/form-data" >
 		<table class="Panel" style="margin-top:10px;">
 			<tr>
 				<td class="Heading2" colspan="2"><?php echo $this->Translate('Add_Categories'); ?></td>
@@ -67,19 +67,16 @@
 									<?php echo $this->cateTree; ?>
 								</select>
 								<span></span>
-								
-								<!--<?php if(count($this->categories) > 0) {  ?>
-									<?php  		foreach($this->categories as $key => $val) { ?>	
-									<?php 			if($val['category_id'] == $this->data['parent_category']) { ?>
-									<option selected="selected" value="<?php echo $val['category_id']; ?>">
-									<?php 			} else { ?>
-									<option value="<?php echo $val['category_id']; ?>">
-									<?php 			}?>
-									<?php 			echo $val["category_name"];  ?>	
-									</option>
-									<?php 		}  ?>
-									<?php } else {  ?>
-									<?php }  ?>-->
+							</td>
+						</tr>				
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Category_Icon'); ?>:
+							</td>
+							<td>
+								<input type="file" name="icon_image" id="icon_image">
+								<span></span>
 							</td>
 						</tr>						
 						<tr><td height="15"></td></tr>

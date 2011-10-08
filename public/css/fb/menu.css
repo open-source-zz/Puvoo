@@ -93,7 +93,7 @@ ul.sf-menu li li li:hover ul, ul.sf-menu li li li.sfHover ul {
     text-decoration: none;
 }
 
-.submenu li a img, .submenu li a:visited img { vertical-align:middle; margin-right:8px; height:25px; width:25px;}
+.submenu li a img, .submenu li a:visited img { vertical-align:middle; margin-right:8px; height:32px; width:32px;}
 .sf-menu li a:hover { background:none #f2f2f2; }
 .submenu li:first-child, .oddFirst {
     border-left: 1px solid #FFFFFF;

@@ -1,8 +1,8 @@
 <div class="Breadcrumb" id="PageBreadcrumb">
 	<ul>
-	   <li class="Home SecondLast"><a href="<?php echo $this->site_url ?>"<?php echo $this->Translate("Administration"); ?></a></li>
+	   <li class="Home SecondLast"><a href="<?php echo $this->site_url ?>"><?php echo $this->Translate("Administration"); ?></a></li>
 	   <?php if($this->parent_id == 0){ ?>
-	   <li class="Last1"><span><?php echo $this->Translate('Category'); ?></span></li>
+	   <li class="Last1"><a href="<?php echo $this->site_url ?>"><?php echo $this->Translate('Category'); ?></a></li>
 	   <?php } ?>
 	   <?php if($this->parent_id > 0){ ?>
 	   <li class="Last1"><a href="<?php echo $this->site_url ?>"><?php echo $this->Translate('Category'); ?></a></li>
@@ -40,7 +40,7 @@
 		</div>
 	<?php } ?>	
 	
-	<form method="post" name="edit_form" id="edit_form" >
+	<form method="post" name="edit_form" id="edit_form" enctype="multipart/form-data" >
 		<table class="Panel" style="margin-top:10px;">
 			<tr>
 				<td class="Heading2" colspan="2"><?php echo $this->Translate('Edit_Categories'); ?></td>
@@ -67,9 +67,20 @@
 								<select name="parent_category" id="parent_category" class="comboField">
 									<option value="0" ><?php echo $this->Translate('Admin_Select_Parent_Category'); ?></option>
 									<?php echo $this->cateTree; ?>
-									
 								</select>
 								<span></span>
+							</td>
+						</tr>		
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Category_Icon'); ?>:
+							</td>
+							<td>
+								<input type="file" name="icon_image" id="icon_image">
+								<span></span><br /><br />
+								<img src="<?php echo SITE_ICONS_IMAGES_PATH; ?>/<?php echo $edit_record['icon_image']; ?>">
+								<input type="hidden" name="category_image_name" id="category_image_name" value="<?php echo $edit_record['icon_image']; ?>">
 							</td>
 						</tr>						
 						<tr><td height="15"></td></tr>

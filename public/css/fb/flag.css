@@ -1,7 +1,7 @@
 .flag {
 	width: 16px;
 	height: 11px;
-	background:url('../../images/fb/flags.png') no-repeat
+	background:url('../../images/fb/flags.png') no-repeat ;
 }
 
 .flag.flag-ad {background-position: -16px 0}
@@ -246,3 +246,8 @@
 .flag.flag-za {background-position: 0 -165px}
 .flag.flag-zm {background-position: -16px -165px}
 .flag.flag-zw {background-position: -32px -165px}
+
+.flagfont 
+{
+	color:#000000;
+}

@@ -221,7 +221,8 @@
 			$parent_id = (int)$request->getPost('parent_id');
 			$data['category_name']=$filter->filter(trim($this->_request->getPost('category_name'))); 	
 			$data['parent_id']=$filter->filter(trim($this->_request->getPost('parent_category'))); 	
-			$data['is_active']=$filter->filter(trim($this->_request->getPost('is_active'))); 	
+			$data['is_active']=$filter->filter(trim($this->_request->getPost('is_active')));
+			$data['icon_image'] =  "";
 			$addErrorMessage = array();
 			if($data['category_name'] == "") {
 				$addErrorMessage[] = $translate->_('Err_Category_Name');			
@@ -229,6 +230,18 @@
 			if($data['is_active'] == "") {
 				$addErrorMessage[] = $translate->_('Err_Is_Active');			
 			}
+			
+			if($_FILES["icon_image"]["name"] != "" ) {
+				
+				$UploadImageErr = $this->uploadImage($_FILES["icon_image"]);
+				
+				if( isset($UploadImageErr["error"]) ) { 
+					$addErrorMessage[] = $UploadImageErr["error"];
+				} else {
+					$data['icon_image'] = $UploadImageErr["success"];
+				}
+			}
+			
 			$where = "1 = 1";
 			if( count($addErrorMessage) == 0 || $addErrorMessage == ""){
 				if($home->ValidateTableField("category_name",$data['category_name'],"category_master",$where)) {
@@ -298,6 +311,7 @@
 				$data['category_name']=$filter->filter(trim($this->_request->getPost('category_name'))); 	
 				$data['parent_id']=$filter->filter(trim($this->_request->getPost('parent_category'))); 	
 				$data['is_active']=$filter->filter(trim($this->_request->getPost('is_active'))); 
+				$category_image = $filter->filter(trim($this->_request->getPost('category_image_name'))); 
 				
 				$editErrorMessage = array();
 				if($data['category_name'] == "") {
@@ -305,6 +319,17 @@
 				}
 				if($data['is_active'] == "") {
 					$editErrorMessage[] = $translate->_('Err_Is_Active');			
+				}
+				
+				if($_FILES["icon_image"]["name"] != "" ) {
+				
+					$UploadImageErr = $this->uploadImage($_FILES["icon_image"]);
+					
+					if( isset($UploadImageErr["error"]) ) { 
+						$editErrorMessage[] = $UploadImageErr["error"];
+					} else {
+						$data['icon_image'] = $UploadImageErr["success"];
+					}
 				}
 				
 				$where = "category_id != ".$data["category_id"];
@@ -325,6 +350,8 @@
 					}
 				}
 				
+				
+				$data["icon_image"] = $category_image;
 				$this->view->parent_id = $parent_id;
 				$this->view->records = $data;	
 				$this->view->category_id =  $data["category_id"];	
@@ -438,6 +465,93 @@
 		}
 		$this->_redirect("/admin/category/index/parent_id/" . $parent_id);	
    }
+   
+    /**
+     * Function uploadImage
+	 *
+	 * This function is used to upload the image banner.
+	 *
+     * Date Created: 2011-10-07
+     *
+     * @access public
+	 * @param ()  - No parameter
+	 * @return (void) - Return void
+	 *
+     * @author Yogesh
+     *  
+     * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+     **/
+   
+	public function uploadImage($file)
+	{
+		$translate = Zend_Registry::get('Zend_Translate');
+		define ("MAX_SIZE","10000");
+		$errors = array();
+		$image_name = '';
+		$image =$file["name"];
+		$uploadedfile = $file['tmp_name'];
+	
+		if ($image) 
+		{
+			$filename = stripslashes($file['name']);
+			$extension =  explode("/",$file['type']);
+			$extension = $extension[1] ;
+			$extension = strtolower($extension);
+			
+			if (($extension != "jpg") && ($extension != "jpeg") && ($extension != "png") && ($extension != "gif")) {
+				$errors["error"] = $translate->_('Err_Upload_Image_Ext');
+				return $errors;
+			} else 	{
+				
+				$size=filesize($file['tmp_name']);
+				
+				if ($size > MAX_SIZE*1024)
+				{
+				 	$errors["error"] = $translate->_('Err_Upload_Image_Size_Limit');	
+					return $errors;
+				 	$errors=1;
+				}
+	 
+				if($extension=="jpg" || $extension=="jpeg" )
+				{
+					$uploadedfile = $file['tmp_name'];
+					$src = imagecreatefromjpeg($uploadedfile);
+				}
+				else if($extension=="png")
+				{
+					$uploadedfile = $file['tmp_name'];
+					$src = imagecreatefrompng($uploadedfile);
+				}
+				else 
+				{
+					$src = imagecreatefromgif($uploadedfile);
+				}
+		 
+				list($width,$height)=getimagesize($uploadedfile);
+				
+				$newwidth=32;
+				$newheight= 32;
+				$tmp=imagecreatetruecolor($newwidth,$newheight);
+								
+				imagecopyresampled($tmp,$src,0,0,0,0,$newwidth,$newheight, $width,$height);
+				
+				$image_name = md5(microtime());
+				
+				$filename = SITE_ICONS_IMAGES_FOLDER."/".$image_name.".".$extension;
+				
+				imagejpeg($tmp,$filename,100);
+	
+				imagedestroy($src);
+				imagedestroy($tmp);
+			}
+		}
+	
+		//If no errors registred, print the success message
+		 if($errors != NULL || count($errors) == 0 ) 	 {
+		 	$errors["success"] =  $image_name.".".$extension;
+			return $errors;
+		 }
+	}
    
 }
 ?>

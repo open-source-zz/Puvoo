@@ -1,5 +1,4 @@
 
-<div id="popupContact" >
 <input type="hidden" value="1" id="currentTab" />
 <input type="hidden" id="cartcount" name="cartcount" value="<?php echo $this->CartCnt;?>" />
 	<a id="popupContactClose" style="font-size:12px;"><?php echo $this->Translate('Close')?></a>
@@ -1089,5 +1088,14 @@
 			document.getElementById('cartarea').style.visibility='visible';
 		}
 				
-   </script>
-</div>
+	
+	
+	$(document).ready(function()
+	{
+		 $("#popupContactClose").click(function()
+		 {
+			 disablePopup();
+		 });
+	 
+	});
+</script>

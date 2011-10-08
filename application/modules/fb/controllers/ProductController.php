@@ -94,6 +94,7 @@ class Fb_ProductController extends FbCommonController
  		$Product = new Models_Product();
 		$Category = new Models_Category();
  		$Poductid = $this->_request->getParam('id');
+		
 		$prodExist = $Product->ProductExist($Poductid);
 		
 		if($prodExist)
@@ -229,21 +230,23 @@ class Fb_ProductController extends FbCommonController
 			$QueryString = $this->_request->getParam('q');
 			$Search = 1;
  			$CatId = $this->_request->getParam('ccatid');
+		}else{
+			$QueryString = $_GET['q'];
+			$Search = $_GET['Search'];
+ 			$CatId = $_GET['cid'];
+		}
+		
+		if($this->_request->getPost('sortBy') !='')
+		{
 			$sort = $this->_request->getPost('sortBy');
 			$this->view->$sort = "selected='selected'";
 			if($sort == ''){
 				$sort = 'bestseller';
 			}
 		}else{
-			$QueryString = $_GET['q'];
-			$Search = $_GET['Search'];
- 			$CatId = $_GET['cid'];
-			$sort = $this->_request->getPost('sortBy');
-			$this->view->$sort = "selected='selected'";
-			if($sort == ''){
-				$sort = 'bestseller';
-			}
-		}
+			$sort = 'bestseller';
+ 		}
+
 		//print $sort;die;
 		$this->view->qstring = $QueryString;
    		$this->view->catid = $CatId;
@@ -312,7 +315,9 @@ class Fb_ProductController extends FbCommonController
 
 	 public function addtocartAction()
 	 {
+	 	
 	 	global $mysession;
+		$this->_helper->layout()->disableLayout();
 		$db = Zend_Registry::get('Db_Adapter');
 		$Category = new Models_Category();
 		$Product = new Models_Product();
@@ -347,7 +352,7 @@ class Fb_ProductController extends FbCommonController
 						$CartDetails = $Cart->GetCartDetailId($prodId);
  						$cartDetailId = $CartDetails['cart_detail_id'];
 						// Insert Record in cart option
-						if($this->_request->getParam('option'))
+						if($this->_request->getParam('option') != '')
 						{
 							$optionInfo = explode(',',$this->_request->getParam('option'));
 							
@@ -361,19 +366,86 @@ class Fb_ProductController extends FbCommonController
 								
 							}
 						}
-						echo json_encode("Yout product add successfully in your cart");die;
+						//echo json_encode("Yout product add successfully in your cart");die;
 					}
  					//echo json_encode($CartCnt);die;
 					//echo SITE_FB_URL.$_SERVER['REQUEST_URI'];die;
 					
 				}
-				else
-				{
-					echo json_encode("Product is already in your cart");die;
- 					
-				}
 	
 			}
+			
+		$CartDetails = $Cart->GetProductInCart();
+		
+		if(count($CartDetails) > 0){
+			$this->view->cartItems = $CartDetails;
+			
+			$cartId = '';
+			$Price = 0;
+			$CartTotal = '';
+			foreach($CartDetails as $value)
+			{
+ 				$Price += $value['price']*$value['product_qty'];
+				$cartId = $value['cart_id'];
+				$CartTotal += $value['product_qty'];
+			}
+			//print $Price;die;
+			$this->view->CartCnt = $CartTotal;
+ 			$this->view->TotalPrice = $Price;
+			$this->view->cartId = $cartId;
+			$mysession->cartId = $cartId;
+			
+			if($cartId) {
+				
+				$ShippingInfo = $Cart->GetShippingInfo($cartId);
+				//print_r($ShippingInfo);die;
+				$this->view->firstName = $ShippingInfo['shipping_user_fname'];
+				$this->view->lastName = $ShippingInfo['shipping_user_lname'];
+				$this->view->email = $ShippingInfo['shipping_user_email'];
+				$this->view->phone = $ShippingInfo['shipping_user_telephone'];
+				$this->view->addType = $ShippingInfo['shipping_user_address_type'];
+				$this->view->stateID = $ShippingInfo['shipping_user_state_id'];
+				$this->view->stateName = $ShippingInfo['state_name'];
+				$this->view->countryId = $ShippingInfo['shipping_user_country_id'];
+				$address = explode('@',$ShippingInfo['shipping_user_address']);
+				if(isset($address[0]))
+				{
+					$this->view->address = $address[0];
+ 				}
+				if(isset($address[1]))
+				{
+					$this->view->address1 = $address[1];
+ 				}
+				
+				$this->view->city = $ShippingInfo['shipping_user_city'];
+				$this->view->state = $ShippingInfo['shipping_user_state_id'];
+				$this->view->zip = $ShippingInfo['shipping_user_zipcode'];
+				
+				$BillingInfo = $Cart->GetBillingInfo($cartId);
+				//print_r($ShippingInfo);die;
+				$this->view->bill_firstName = $BillingInfo['billing_user_fname'];
+				$this->view->bill_lastName = $BillingInfo['billing_user_lname'];
+				$this->view->bill_email = $BillingInfo['billing_user_email'];
+				$this->view->bill_phone = $BillingInfo['billing_user_telephone'];
+				$this->view->bill_addType = $BillingInfo['billing_user_address_type'];
+				$this->view->bill_stateID = $BillingInfo['billing_user_state_id'];
+				$this->view->bill_stateName = $BillingInfo['state_name'];
+				$this->view->bill_countryId = $BillingInfo['billing_user_country_id'];
+				$Billaddress = explode('@',$BillingInfo['billing_user_address']);
+ 				$this->view->bill_address = $Billaddress[0];
+				$this->view->bill_address1 = $Billaddress[1];
+				$this->view->bill_city = $BillingInfo['billing_user_city'];
+				$this->view->bill_state = $BillingInfo['billing_user_state_id'];
+				$this->view->bill_zip = $BillingInfo['billing_user_zipcode'];
+				
+			}
+			// Country combo
+			$this->view->CountryCombo = $Cart->GetCountry();
+			// State combo
+			$this->view->StateCombo = $Cart->GetState($this->view->countryId);
+
+		}		
+
 		//}else{
 		//	echo "error";die;
 		//}
@@ -398,6 +470,7 @@ class Fb_ProductController extends FbCommonController
 
 	 public function updatepriceAction()
 	 {
+	 	
 	 	global $mysession;
 		$db = Zend_Registry::get('Db_Adapter');
 		$Category = new Models_Category();

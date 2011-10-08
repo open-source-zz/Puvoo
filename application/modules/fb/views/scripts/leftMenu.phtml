@@ -33,7 +33,7 @@
 											$SmallImg = explode('_',$val['image_name']);
 											$tinyImage = SITE_PRODUCT_IMAGES_PATH.$val['image_path']."/".$SmallImg[0]."_th3.jpg";	
 										?>
-											<a href="#" target="_top">
+											<a href="<?php echo SITE_FB_URL?>product/view/id/<?php echo $val['product_id'];?>" target="_top">
 											<?php if($val['image_name']){?>
 												<img src="<?php echo $tinyImage; ?>" alt="" />
 											<?php }else{?>
@@ -43,7 +43,7 @@
 										</div>
 									</div>
 									<div class="productWidgetDesc">
-									<a title="Limited Edition double disc Collectors DVD of The Perfect House" href="#" target="_top"><?php echo $val['product_name'];?></a>
+									<a title="" href="<?php echo SITE_FB_URL?>product/view/id/<?php echo $val['product_id'];?>" target="_top"><?php echo $val['product_name'];?></a>
 									</div>
 									<div style="clear:both;"></div>
 								</div>

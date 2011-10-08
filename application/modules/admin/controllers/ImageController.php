@@ -78,13 +78,15 @@ class Admin_ImageController extends AdminCommonController
     {
 		
 			$allowedExtensions = array();
-			$sizeLimit = 1024 *  1024 * 1024;		
+			$sizeLimit = 2097152;		
 			$uploader = new qqFileUploader($allowedExtensions, $sizeLimit);
 			$folder_path =  SITE_PRODUCT_IMAGES_FOLDER . "/p".$_GET['id'];
 			$folder_exists = is_dir($folder_path);
 			if(!$folder_exists) {
 				createDirectory($folder_path);
 			}
+			
+			chmod($folder_path,0777);
 			
 			$thumb = new Thumbnail();
 			$ProdImg = new Models_ProductImages();
@@ -185,6 +187,8 @@ class qqUploadedFileXhr {
      * Save the file to the specified path
      * @return boolean TRUE on success
      */
+	 
+	 
     function save($path) { 
    
         $input = fopen("php://input", "r");
@@ -207,10 +211,11 @@ class qqUploadedFileXhr {
         return $_GET['qqfile'];
     }
     function getSize() {
+		$translate = Zend_Registry::get('Zend_Translate');
         if (isset($_SERVER["CONTENT_LENGTH"])){
             return (int)$_SERVER["CONTENT_LENGTH"];            
         } else {
-            throw new Exception('Getting content length is not supported.');
+            throw new Exception($translate->_('Err_Image_Upload_Length'));
         }      
     }   
 }
@@ -239,10 +244,10 @@ class qqUploadedFileForm {
 
 class qqFileUploader {
     private $allowedExtensions = array();
-    private $sizeLimit =   1048576000;
+    private $sizeLimit =   2097152;
     private $file;
 
-    function __construct(array $allowedExtensions = array(), $sizeLimit = 10485760){        
+    function __construct(array $allowedExtensions = array(), $sizeLimit = 2097152){        
         $allowedExtensions = array_map("strtolower", $allowedExtensions);
             
         $this->allowedExtensions = $allowedExtensions;        
@@ -260,12 +265,13 @@ class qqFileUploader {
     }
     
     private function checkServerSettings(){        
+		$translate = Zend_Registry::get('Zend_Translate');
         $postSize = $this->toBytes(ini_get('post_max_size'));
         $uploadSize = $this->toBytes(ini_get('upload_max_filesize'));        
         
         if ($postSize < $this->sizeLimit || $uploadSize < $this->sizeLimit){
-            $size = max(1, $this->sizeLimit / 1024 / 1024) . 'M';             
-            die("{'error':'increase post_max_size and upload_max_filesize to $size'}");    
+            $size = max(1, $this->sizeLimit / 1024 / 1024) . ' MB';             
+            die("{'".$translate->_('Err_Image_Upload_Error')."':'".$translate->_('Err_Image_Upload_Max_Size')." $size'}");    
         }        
     }
     
@@ -284,22 +290,23 @@ class qqFileUploader {
      * Returns array('success'=>true) or array('error'=>'error message')
      */
     function handleUpload($uploadDirectory, $replaceOldFile = FALSE){
+		$translate = Zend_Registry::get('Zend_Translate');
         if (!is_writable($uploadDirectory)){
-            return array('error' => "Server error. Upload directory isn't writable.");
+            return array($translate->_('Err_Image_Upload_Error') => $translate->_('Err_Image_Upload_Server') );
         }
         
         if (!$this->file){
-            return array('error' => 'No files were uploaded.');
+            return array($translate->_('Err_Image_Upload_Error') =>$translate->_('Err_Image_Upload_File'));
         }
         
         $size = $this->file->getSize();
         
         if ($size == 0) {
-            return array('error' => 'File is empty');
+            return array($translate->_('Err_Image_Upload_Error') => $translate->_('Err_Image_Upload_File_Empty'));
         }
         
         if ($size > $this->sizeLimit) {
-            return array('error' => 'File is too large');
+            return array($translate->_('Err_Image_Upload_Error') => $translate->_('Err_Image_Upload_Large_File'));
         }
         
         $pathinfo = pathinfo($this->file->getName());
@@ -318,7 +325,7 @@ class qqFileUploader {
 
         if($this->allowedExtensions && !in_array(strtolower($ext), $this->allowedExtensions)){
             $these = implode(', ', $this->allowedExtensions);
-            return array('error' => 'File has an invalid extension, it should be one of '. $these . '.');
+            return array($translate->_('Err_Image_Upload_Error') => $translate->_('Err_Image_Upload_Invalid_Ext_File'). $these . '.');
         }
         
         if(!$replaceOldFile){
@@ -333,8 +340,7 @@ class qqFileUploader {
         if ($this->file->save($uploadDirectory . $filename . '_img.' . $ext)){
             return array('success'=>true,'image_name' => $filename,'image_path'=> $filename . '_img.' . $ext,'filename'=>$uploadDirectory.$filename.'_img.'. $ext);
         } else {
-            return array('error'=> 'Could not save uploaded file.' .
-                'The upload was cancelled, or server error encountered');
+            return array($translate->_('Err_Image_Upload_Error')=> $translate->_('Err_Image_Upload_Cancel'));
         }
         
     }    

@@ -35,6 +35,7 @@
 		   <?php echo $this->Translate('Category')?>: <?php echo $this->catname?> 
 		</div>
 		<form name="frmcatproduct" method="post" id="frmcatproduct" action="">
+		<?php if(count($this->records) > 0){?>
 		<div class="portlet">
 			 <div class="bluewidgetHeader">
 				   <div style="float:left;">
@@ -55,7 +56,12 @@
 				   <?php echo $this->paginationControl($this->paginator, 'Sliding', 'pagination_bottom.phtml'); ?>
 				</div>
 				<div style="clear:both"></div>
-			</div>
+		</div>
+		<?php }else{?>
+							<div style="font-size:12px; padding: 8px 10px 9px; border-bottom: 1px solid #E2E2E2;">
+								<p>"<?php echo $this->Translate('NoProduct')?>"</p>
+							</div>
+						<?php }?> 
 		<div id="productGridView" class="portlet">
 		<?php foreach($this->records as $prodval){?>
 			<div class="productGridItem productGridItemTopRow firstborder">
@@ -92,6 +98,7 @@
 		  <?php }?>   
 		 </div>   
 	</div>
+	<?php if(count($this->records) > 0){?>
 	<div class="portlet">
 		<div class="productListingNav">
 		   
@@ -101,6 +108,7 @@
 
 		<div style="padding-bottom:10px; clear:both"></div>
 	</div>
+	<?php }?>
 	</form>
 	<!--<script type="text/javascript">
 		$(document).ready(function(){

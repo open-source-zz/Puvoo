@@ -93,6 +93,7 @@ class User_ProductsController extends UserCommonController
 		
 		//Create Object of Product model
 		$product = new Models_UserProduct();
+		
 		//Create Object of Validator
 		$validator = new Zend_Validate_Float();
 		
@@ -876,17 +877,24 @@ class User_ProductsController extends UserCommonController
 		$translate = Zend_Registry::get('Zend_Translate');
 		
 		$product = new Models_Product();
+		$home = new Models_AdminMaster();
 		$filter = new Zend_Filter_StripTags();	
 		
 		$project_id = $filter->filter(trim($this->_request->getPost('product_id'))); 
 		$option_title = $filter->filter(trim($this->_request->getPost('option_title'))); 
-		$option_id = 0;
-		$option_id = $product->insertProductOption($project_id,$option_title);
 		
-		if($option_id > 0) {
+		$where = "product_id  = ".$project_id;
+		if($home->ValidateTableField("option_title",$option_title,"product_options",$where)) {
+			$option_id = 0;
+			$option_id = $product->insertProductOption($project_id,$option_title);
 			
-			echo "///".$option_id."///".$translate->_('Product_Option_Insert_Success'); die;
- 		}
+			if($option_id > 0) {
+				
+				echo "///".$option_id."///".$translate->_('Product_Option_Insert_Success'); die;
+			}
+		} else {
+			echo "///0///".$translate->_('Err_Product_Option_Title_Exists'); die;
+		}
 	
 	}
 	
@@ -945,6 +953,7 @@ class User_ProductsController extends UserCommonController
 		$translate = Zend_Registry::get('Zend_Translate');
 		
 		$product = new Models_Product();
+		$home = new Models_AdminMaster();
 		$filter = new Zend_Filter_StripTags();	
 		
 		$data["product_options_detail_id"] = $filter->filter(trim($this->_request->getPost('product_options_detail_id'))); 
@@ -958,21 +967,44 @@ class User_ProductsController extends UserCommonController
 		$data2["product_options_id"] = $filter->filter(trim($this->_request->getPost('product_options_id'))); 
 		$data2["option_title"] = $filter->filter(trim($this->_request->getPost('option_title'))); 
 		
-		if( $data["product_options_detail_id"] > 0 && $data2["product_options_id"] > 0 ) {
+		$product_id = $filter->filter(trim($this->_request->getPost('product_id'))); 
 		
-			if($product->updateProductOptionValue($data,$data2)) {
+		$where = "product_id = '".$product_id."' and product_options_id  != ".$data2["product_options_id"];
+			
+		if($home->ValidateTableField("option_title",$data2["option_title"],"product_options",$where)) {
+		
+			$where1 = "product_options_id = '".$data2["product_options_id"]."' and product_options_detail_id  != ".$data["product_options_detail_id"];
+			if($home->ValidateTableField("option_name",$data["option_name"],"product_options_detail",$where1)) {
+		
+				if( $data["product_options_detail_id"] > 0 && $data2["product_options_id"] > 0 ) {
 				
-				$records = array_merge($data,$data2);
+					if($product->updateProductOptionValue($data,$data2)) {
+						
+						$records = array_merge($data,$data2);
+						
+						$json = Zend_Json::encode($records);
+						echo $json; die;
+						
+					}
+				} else {
+					
+					$records["error"] = $translate->_('Err_Edit_Product_Option_Value');
+					$json = Zend_Json::encode($records);
+					echo $json; die;
+				}
+			} else {
 				
+				$records["error"] = $translate->_('Err_Product_Option_Value_Exists');
 				$json = Zend_Json::encode($records);
 				echo $json; die;
 				
 			}
+			
 		} else {
 			
-			$records["error"] = $translate->_('Err_Edit_Product_Option_Value');
-			$json = Zend_Json::encode($records);
-			echo $json; die;
+				$records["error"] = $translate->_('Err_Product_Option_Title_Exists');
+				$json = Zend_Json::encode($records);
+				echo $json; die;
 		}
 	}
 	
@@ -998,6 +1030,7 @@ class User_ProductsController extends UserCommonController
 		$translate = Zend_Registry::get('Zend_Translate');
 		
 		$product = new Models_Product();
+		$home = new Models_AdminMaster();
 		$filter = new Zend_Filter_StripTags();		
 		
 		$data["option_name"] = $filter->filter(trim($this->_request->getPost('option_name'))); 
@@ -1008,17 +1041,26 @@ class User_ProductsController extends UserCommonController
 		$data["option_quantity"] = $filter->filter(trim($this->_request->getPost('option_quantity'))); 				
 		$data["product_options_id"] = $filter->filter(trim($this->_request->getPost('product_options_id'))); 
 		
-		$record = $product->insertProductOptionValue($data);
+		$where = "product_options_id  = ".$data["product_options_id"];
+		if($home->ValidateTableField("option_name",$data["option_name"],"product_options_detail",$where)) {
 		
-		if($record != NULL || $record != "" ) {
+			$record = $product->insertProductOptionValue($data);
 			
-			$json = Zend_Json::encode($record);
-			echo $json; die;
-			
+			if($record != NULL || $record != "" ) {
+				
+				$json = Zend_Json::encode($record);
+				echo $json; die;
+				
+			} else {
+				
+				$error["error"] =$translate->_('Err_Add_Product_Option_Value'); 
+				$json = Zend_Json::encode($error);
+				echo $json; die;
+			}
 		} else {
-			
-			$error["error"] =$translate->_('Err_Add_Product_Option_Value'); 
-			$json = Zend_Json::encode($error);
+		
+			$records["error"] = $translate->_('Err_Product_Option_Value_Exists');
+			$json = Zend_Json::encode($records);
 			echo $json; die;
 		}
 	} 

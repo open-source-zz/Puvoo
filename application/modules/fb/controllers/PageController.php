@@ -110,5 +110,25 @@ class Fb_PageController extends FbCommonController
 	 {
 	 
 	 }
+	 
+	/**
+	 * Function contactusAction
+	 *
+	 * This function is used for displays the contact us page. 
+	 *
+	 * Date Created: 2011-09-20
+	 *
+	 * @access public
+	 * @param ()  - No parameter
+	 * @return (void) - Return void
+	 *
+	 * @author Jayesh
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/  
+	 public function invitefriendAction()
+	 {
+	 
+	 }
 }
 ?>

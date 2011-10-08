@@ -254,6 +254,7 @@ function ValidateProductOptionFrom()
 					}
 					counter++;
 				}
+				ValueString += "&product_id="+$("#detail_edit_form #product_id").val();
 				UpdateProductOptionValue(ValueString);
 				$( "#dialog-product-option" ).dialog( "close" );
 			}
@@ -272,10 +273,16 @@ function UpdateProductOptionValue(value)
 			dataType: 'json',
 			success:function(returnArray)
 			{	
-				alert(PRODUCT_OPTION_VALUE_EDIT_SUCCESS);
-				$("#PD_Option_"+returnArray["product_options_id"]).html( returnArray["option_title"] );
-				$("#POD_Name_"+returnArray["product_options_detail_id"]).html( returnArray["option_name"] );
-				$("#POD_Code_"+returnArray["product_options_detail_id"]).html( returnArray["option_code"] );
+				if( returnArray["error"] == undefined ) {
+					
+					alert(PRODUCT_OPTION_VALUE_EDIT_SUCCESS);
+					$("#PD_Option_"+returnArray["product_options_id"]).html( returnArray["option_title"] );
+					$("#POD_Name_"+returnArray["product_options_detail_id"]).html( returnArray["option_name"] );
+					$("#POD_Code_"+returnArray["product_options_detail_id"]).html( returnArray["option_code"] );
+					
+				} else {					
+					alert(returnArray["error"]);	
+				}
 				
 			}
 	    });
@@ -372,24 +379,27 @@ function AddOption(no,pid)
 			
 				$("#add_demo_"+no).remove();
 				var success_array = data.split("///");
-				
-				var OptHtml = '';
-					OptHtml += '<tr id="PD_Row_'+success_array[1]+'">';
-					OptHtml += '<td width="25%" id="PD_Option_'+success_array[1]+'" valign="top" >'+title+'</td>';
-					OptHtml += '<td width="55%" id="PD_Option_Detail_'+success_array[1]+'" >'
-					OptHtml += '<table width="100%" id="PD_Option_Table_'+success_array[1]+'">';
-					OptHtml += '</table>';
-					OptHtml += '</td>';
-					OptHtml += '</tr>';
-					OptHtml += '<tr><td></td><td>';
-					OptHtml += '<input type="button" onclick="AddMoreOptionValue('+success_array[1]+')"  value="'+PRODUCT_ADD_OPTION+'"> ';
-					OptHtml += '<input type="button" onclick="DeleteProductOption('+success_array[1]+')"  value="'+PRODUCT_DELETE_OPTION+'">';
-					OptHtml += '</td></tr>';
-					OptHtml += '<script>$(function() { $( "input:button" ).button(); });</script>';
+				if( success_array[1] > 0 ) {
+					var OptHtml = '';
+						OptHtml += '<tr id="PD_Row_'+success_array[1]+'">';
+						OptHtml += '<td width="25%" id="PD_Option_'+success_array[1]+'" valign="top" >'+title+'</td>';
+						OptHtml += '<td width="55%" id="PD_Option_Detail_'+success_array[1]+'" >'
+						OptHtml += '<table width="100%" id="PD_Option_Table_'+success_array[1]+'">';
+						OptHtml += '</table>';
+						OptHtml += '</td>';
+						OptHtml += '</tr>';
+						OptHtml += '<tr><td></td><td>';
+						OptHtml += '<input type="button" onclick="AddMoreOptionValue('+success_array[1]+')"  value="'+PRODUCT_ADD_OPTION+'"> ';
+						OptHtml += '<input type="button" onclick="DeleteProductOption('+success_array[1]+')"  value="'+PRODUCT_DELETE_OPTION+'">';
+						OptHtml += '</td></tr>';
+						OptHtml += '<script>$(function() { $( "input:button" ).button(); });</script>';
+						
+					$(OptHtml).insertAfter("#PrDOptVal tr:last");
+					$("#No_Option").remove();
 					
-				$(OptHtml).insertAfter("#PrDOptVal tr:last");
-				$("#No_Option").remove();
-				
+				} else {
+					alert( success_array[2] );	
+				}
 			}
 		});
 }
@@ -465,26 +475,32 @@ function AddProductOptionValue(id)
 			url:siteurl+'user/products/addoptionvalue',
 			data: ValueString,
 			dataType: 'json',
-			success:function(retArray)	{ 
+			success:function(retArray)	{
 				
-				var HtmlStr = $("#PD_Option_Table_"+retArray["product_options_id"]).html();
+				if( retArray["error"] == undefined ) {
 				
-				var NewRow =  "<tr id='POD_Row_"+retArray["product_options_detail_id"]+"' >";
-					NewRow += "<td width='35%' id='POD_Name_"+retArray["product_options_detail_id"]+"' >";
-					NewRow += retArray["option_name"];
-					NewRow += "</td>";
-					NewRow += "<td width='35%' id='POD_Code_"+retArray["product_options_detail_id"]+"' >";
-					NewRow += retArray["option_code"];
-					NewRow += "</td>";
-					NewRow += "<td width='25%'>";
-					NewRow += "<a  onclick='EditProductOption("+retArray["product_options_detail_id"]+")' style='color:#17649E; cursor:pointer;' >";
-					NewRow += EDIT;
-					NewRow += "</a>&nbsp;&nbsp;/&nbsp;&nbsp;";
-					NewRow += "<a  style='color:#17649E; cursor:pointer;' onclick='DeleteProductOptionValue("+retArray["product_options_detail_id"]+")' >";
-					NewRow += DELETE;
-					NewRow += "</a></td></tr>";
+					var HtmlStr = $("#PD_Option_Table_"+retArray["product_options_id"]).html();
 					
-				$("#PD_Option_Table_"+retArray["product_options_id"]).html(HtmlStr+NewRow);
+					var NewRow =  "<tr id='POD_Row_"+retArray["product_options_detail_id"]+"' >";
+						NewRow += "<td width='35%' id='POD_Name_"+retArray["product_options_detail_id"]+"' >";
+						NewRow += retArray["option_name"];
+						NewRow += "</td>";
+						NewRow += "<td width='35%' id='POD_Code_"+retArray["product_options_detail_id"]+"' >";
+						NewRow += retArray["option_code"];
+						NewRow += "</td>";
+						NewRow += "<td width='25%'>";
+						NewRow += "<a  onclick='EditProductOption("+retArray["product_options_detail_id"]+")' style='color:#17649E; cursor:pointer;' >";
+						NewRow += EDIT;
+						NewRow += "</a>&nbsp;&nbsp;/&nbsp;&nbsp;";
+						NewRow += "<a  style='color:#17649E; cursor:pointer;' onclick='DeleteProductOptionValue("+retArray["product_options_detail_id"]+")' >";
+						NewRow += DELETE;
+						NewRow += "</a></td></tr>";
+						
+					$("#PD_Option_Table_"+retArray["product_options_id"]).html(HtmlStr+NewRow);
+					
+				} else {
+					alert( retArray["error"] );
+				}
 					
 			}
 		});

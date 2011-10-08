@@ -1,0 +1,65 @@
+<!--  Crumb  Start -->
+<div class="Breadcrumb" id="PageBreadcrumb">
+	<ul>
+	   <li class="Home SecondLast"><a href="<?php echo SITE_URL; ?>user/"><?php echo $this->Translate("User_Home"); ?></a></li>
+	   <li class="Last"><span><?php echo $this->Translate("API_Token"); ?></span></li>
+	</ul>
+</div>
+<!--  Crumb  end -->
+
+
+<div class="BodyContainer DashboardContainer" style="text-align:left;">
+	<div class="Heading1">
+		<?php echo $this->Translate('API_Token'); ?>
+	</div>
+
+<!--       Success and Error Message      -->
+	<?php if($this->updateError != '') { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
+				<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+				<strong><?php echo $this->updateError; ?></strong></p>
+			</div>
+		</div>
+	<?php } ?>	
+	<?php if($this->updateSuccess != '') { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-highlight ui-corner-all" style="margin-top: 20px; padding: 0 .7em;"> 
+				<p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
+				<strong><?php echo $this->updateSuccess; ?></strong></p>
+			</div>
+		</div>
+	<?php } ?>
+
+
+	<form method="post" name="frmtoken" id="frmtoken" >
+		<table class="Panel" style="margin-top:10px;">
+			<tr>
+				<td class="Heading2" colspan="2"><?php echo $this->Translate('API_Token'); ?></td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<div id="div0" style="padding-bottom:5px">
+						<table class="Panel" width="100%" cellspacing="0" cellpadding="0">
+							<tr>
+								<td width="15%" class="FieldLabel">
+									<?php echo $this->Translate('API_Token'); ?>:
+								</td>
+								<td width="85%">
+									<?php echo $this->token; ?>
+								</td>
+							</tr>
+							<tr><td height="15"></td></tr>
+							<tr>
+							   <td colspan="2" style="padding-left:10px;">
+									<input type="submit" id="anything"  value="<?php echo $this->Translate('Recreate_Token'); ?>" />
+									<input type="button" id="anything"  value="<?php echo $this->Translate('Cancle'); ?>" onclick="window.location='<?php echo SITE_URL . 'user/' ?>'"/>
+								</td>
+							</tr> <tr><td height="15"></td></tr>
+						</table>
+					</div>
+				</td>
+			</tr>
+		</table>  
+	</form>             
+</div>

@@ -199,7 +199,7 @@ class FbCommonController extends Zend_Controller_Action
 				for($i=0; $i<count($SubCat); $i++)
 				{
 					$SubCatList .= "<li>";
-					$SubCatList .= "<a href='".SITE_FB_URL."category/subcat/id/".$SubCat[$i]['category_id']."' target='_top'><img src='".IMAGES_FB_PATH."/2d30f5a834021d7887e1712062d0ed055283edc5_th.jpg' alt='' />".$SubCat[$i]['category_name']."</a>";
+					$SubCatList .= "<a href='".SITE_FB_URL."category/subcat/id/".$SubCat[$i]['category_id']."' target='_top'><img src='".SITE_ICONS_IMAGES_PATH."/".$SubCat[$i]['icon_image']."' alt='' />".$SubCat[$i]['category_name']."</a>";
 					$SubCatList .= "<div><ul class='submenu'>";
 					$Sub_Cat = $Category->GetSubCategory($SubCat[$i]['category_id']);
 					//print "<pre>";
@@ -207,7 +207,7 @@ class FbCommonController extends Zend_Controller_Action
 					for($j=0; $j<count($Sub_Cat); $j++)
 					{
 						$SubCatList .= "<li>";
-						$SubCatList .= "<a href='".SITE_FB_URL."category/subcat/id/".$Sub_Cat[$i]['category_id']."' target='_top'><img src='".IMAGES_FB_PATH."/2d30f5a834021d7887e1712062d0ed055283edc5_th.jpg' alt='' />".$Sub_Cat[$i]['category_name']."</a>";
+						$SubCatList .= "<a href='".SITE_FB_URL."category/subcat/id/".$Sub_Cat[$i]['category_id']."' target='_top'><img src='".SITE_ICONS_IMAGES_PATH."/".$Sub_Cat[$i]['icon_image']."' alt='' />".$Sub_Cat[$i]['category_name']."</a>";
 						$SubCatList .= "</li>";
 					}
 					$SubCatList .= "</ul></div>";
@@ -224,8 +224,13 @@ class FbCommonController extends Zend_Controller_Action
  		//To know how many product in Cart
 		$Cart = new Models_Cart();
 		$CartDetails = $Cart->GetProductInCart();
-		//print "<pre>";
-		//print_r($CartDetails);die;
+		
+		
+		// Country combo
+		$this->view->CountryCombo = $Cart->GetCountry();
+		// State combo
+		$this->view->StateCombo = $Cart->GetState($this->view->countryId);
+		
 		if($CartDetails){
 			$this->view->cartItems = $CartDetails;
 			
@@ -258,8 +263,15 @@ class FbCommonController extends Zend_Controller_Action
 				$this->view->stateName = $ShippingInfo['state_name'];
 				$this->view->countryId = $ShippingInfo['shipping_user_country_id'];
 				$address = explode('@',$ShippingInfo['shipping_user_address']);
- 				$this->view->address = $address[0];
-				$this->view->address1 = $address[1];
+				if(isset($address[0]))
+				{
+					$this->view->address = $address[0];
+ 				}
+				if(isset($address[1]))
+				{
+					$this->view->address1 = $address[1];
+ 				}
+				
 				$this->view->city = $ShippingInfo['shipping_user_city'];
 				$this->view->state = $ShippingInfo['shipping_user_state_id'];
 				$this->view->zip = $ShippingInfo['shipping_user_zipcode'];
@@ -283,54 +295,43 @@ class FbCommonController extends Zend_Controller_Action
 				
 			}
 			
-			// Country combo
-			$this->view->CountryCombo = $Cart->GetCountry();
-			// State combo
-			$this->view->StateCombo = $Cart->GetState($this->view->countryId);
-			
-			
 			$_SESSION['Payment_Amount'] = '1000';
-			
-			
 			
 		}
 		$Id = $this->_request->getParam('id');
-		
 		if($Id)
 		{
-			
-				if($cur_controller == 'product' || $cur_controller == 'retailer')
+			if($cur_controller == 'product' || $cur_controller == 'retailer')
+			{
+				$userId = '';
+				
+				if($cur_controller == 'product' && $Id!='')
 				{
-					$userId = '';
-					
-					if($cur_controller == 'product' && $Id!='')
-					{
-						$prodExist = $Product->ProductExist($Id);
-						if($prodExist) {		
-							$productDetails = $Product->GetProductDetails($Id);
-							$userId = $productDetails['user_id'];
-						} else  {
-							 $this->_redirect("fb/");
-						 }
-					}
-					
-					if($cur_controller == 'retailer' && $Id!='')
-					{
-						$userId = $Id;
-					}
-					
-					if ( $userId != '' ) {  
-
-						$sellerInfo = $Product->GetSellerInformation($userId);
-						$this->view->terms = $sellerInfo['store_terms_policy'];
-						$this->view->returnPolicy = $sellerInfo['return_policy'];
-						$this->view->storeDescription = $sellerInfo['store_description'];
-						
-					}
+					$prodExist = $Product->ProductExist($Id);
+					if($prodExist) {		
+						$productDetails = $Product->GetProductDetails($Id);
+						$userId = $productDetails['user_id'];
+					} else  {
+						 $this->_redirect("fb/");
+					 }
+				}
+				
+				if($cur_controller == 'retailer' && $Id!='')
+				{
+					$userId = $Id;
+				}
+				
+				if ( $userId != '' ) {  
+	
+					$sellerInfo = $Product->GetSellerInformation($userId);
+					$this->view->terms = $sellerInfo['store_terms_policy'];
+					$this->view->returnPolicy = $sellerInfo['return_policy'];
+					$this->view->storeDescription = $sellerInfo['store_description'];
 					
 				}
- 		}
-		
+				
+			}
+		}
 		// top friends like
 		$TopFrdsLikeProd = $Product->GetTopFrndsLikeProduct();
 		$this->view->frndstoplike = $TopFrdsLikeProd;

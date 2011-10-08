@@ -53,11 +53,20 @@ function validateAddToCart(URL)
 					return $('#TotalPrice').val();
 			  }
          },
- 		dataType:'json',
+ 		dataType:'html',
 		success:function(data)
 		{ 
-			//alert(data);
-  			top.location.href = '';
+			
+			
+			//loadPopup2()
+			$('#popupContact').html(data);
+			var totalProd = $('#cartcount').val();
+			//alert(totalProd);
+			$('#cartCounterNumber').html(totalProd);
+			  centerPopup();
+			  loadPopup2();
+ 
+  			//top.location.href = '';
  		}		
 	});
 
@@ -832,3 +841,97 @@ function UpdateShipping(CartId,prodId)
 
 	
 }
+
+
+
+function loadPopup()
+{
+	ShowTab(1);
+	$('#sellerarea').hide();
+	$('#cartarea').show();
+	$('#order_review').show();
+	$('#shipping_li').show();
+	$('#billing_li').hide();
+	$('#div8').hide();
+	$('#buttonArea').show();
+	$("#backgroundPopup").css({"opacity": "0.1"});
+	$("#backgroundPopup").fadeIn("fast");
+	$("#popupContact").slideDown("slow");
+ 
+ 
+}
+
+function loadPopup1()
+{
+	$('#cartarea').hide();
+	$('#sellerarea').show();
+	$("#backgroundPopup").css({"opacity": "0.1"});
+	$("#backgroundPopup").fadeIn("fast");
+	$("#popupContact").slideDown("slow");
+}
+
+function loadPopup2()
+{
+	//alert("test");
+	ShowTab(1);
+	$('#sellerarea').hide();
+	$('#cartarea').show();
+	$('#order_review').show();
+	$('#shipping_li').show();
+	$('#billing_li').hide();
+	$('#div8').hide();
+	$('#buttonArea').show();
+	$("#backgroundPopup").css({"opacity": "0.1"});
+	$("#backgroundPopup").fadeIn("fast");
+	$("#popupContact").slideDown("slow");
+}
+
+
+function disablePopup()
+{
+	$("#backgroundPopup").fadeOut("slow");
+	$("#popupContact").slideUp("slow");
+}
+function centerPopup()
+{
+/* $("#popupContact").height('auto');	*/
+  
+	var windowWidth = document.documentElement.clientWidth;
+	var windowHeight = document.documentElement.clientHeight;
+	//var popupHeight = $("#innerDIV").height();
+	var popupWidth = $("#popupContact").width();
+	$("#popupContact").css({"position": "absolute","top": windowHeight/2 - 410/2,"left": windowWidth/2-popupWidth/2});
+	$("#backgroundPopup").css({"height": windowHeight});
+
+}
+
+$(document).ready(function()
+{
+ $(".cart_wrapper").click(function()
+ {
+  centerPopup();
+  loadPopup();
+ });
+ $("#btn1").click(function()
+ {
+  centerPopup();
+  loadPopup1();
+ });
+ $("#btn").click(function()
+ {
+  centerPopup();
+  loadPopup2();
+ });
+	 $("#popupContactClose").click(function()
+	 {
+		 disablePopup();
+	 });
+  
+ $(document).keypress(function(e)
+ {
+  if(e.keyCode==27)//Disable popup on pressing `ESC`
+  {
+   disablePopup();
+  }
+ });
+});

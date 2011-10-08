@@ -425,5 +425,63 @@ class Models_UserMaster
 		}
 	}
 	
+	
+	
+	/**
+	 * Function getToken
+	 *
+	 * This function is used to get api token of given user. 
+	 *
+	 * Date created: 2011-10-08
+	 *
+	 * @access public
+	 * @param (string)  - 	$id : User Id
+	 * @return (String)  -	Return API token of user   
+	 *
+	 * @author Amar
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	public function getToken($id)
+	{
+		$db = $this->db;
+		$sql = "SELECT user_api_token FROM user_master WHERE user_id = '".$id."'";	
+			
+		$data = $db->fetchOne($sql);		
+		if($data != NULL && $data != '') {
+			return $data; 
+		} else {
+			return "";
+		}		
+	}
+	
+	
+	/**
+	 * Function createToken
+	 *
+	 * This function is used to create new api token of given user. 
+	 *
+	 * Date created: 2011-10-08
+	 *
+	 * @access public
+	 * @param (string)  - 	$id : User Id
+	 * @return (Boolean)  -	Return true   
+	 *
+	 * @author Amar
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	public function createToken($id)
+	{
+		$db = $this->db;
+		$sql = "UPDATE user_master SET user_api_token = md5( concat( user_email, NOW( ) ) ) , user_api_token_expiry = DATE_ADD( NOW( ) , INTERVAL 18 MONTH ) WHERE user_id = " . $id;	
+			
+		$data = $db->query($sql);		
+		if($data != NULL && $data != '') {
+			return true; 
+		} else {
+			return false;
+		}		
+	}
 }
 ?>

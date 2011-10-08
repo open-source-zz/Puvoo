@@ -94,6 +94,12 @@ define('SITE_BANNER_IMAGES_FOLDER', realpath(SITE_UPLOAD_FOLDER . "/banner"));
 //Site Banner Images relative path
 define('SITE_BANNER_IMAGES_PATH', INSTALL_DIR . "public/upload/banner");
 
+//Category Icons Images folder path
+define('SITE_ICONS_IMAGES_FOLDER', realpath(SITE_UPLOAD_FOLDER . "/icons"));
+
+//Category Icons Images relative path
+define('SITE_ICONS_IMAGES_PATH', INSTALL_DIR . "public/upload/icons");
+
 // set include_path
 set_include_path(implode(PATH_SEPARATOR, array(
 	APPLICATION_PATH,LIBRARY_PATH,CONTROLLERS_PATH,MODELS_PATH,

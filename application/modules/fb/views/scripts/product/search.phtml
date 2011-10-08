@@ -1,11 +1,12 @@
 
 <div id="rightColumn">
+<form name="frmcatproduct" method="post" id="frmcatproduct">
              	<div class="mainColumnWidget">
                  	<div class="categoryHeader" style="border-top: 1px solid #E2E2E2;">
                        <?php echo $this->Translate('Search')?><?php echo $this->qstring?> 
                     </div>
 					
-				<form name="frmcatproduct" method="post" id="frmcatproduct">
+				
 						<?php if(count($this->records) > 0){?>
 						<div class="portlet">
                          <div class="bluewidgetHeader">
@@ -24,13 +25,13 @@
                     
                     </div>
 					<div class="portlet" style="border-bottom:1px solid #E2E2E2">
-				<div class="productListingNav">
-				   <?php echo $this->paginationControl($this->paginator, 'Sliding', 'pagination_bottom.phtml'); ?>
-				</div>
-				<div style="clear:both"></div>
-			</div>
+						<div class="productListingNav">
+						   <?php echo $this->paginationControl($this->paginator, 'Sliding', 'pagination_bottom.phtml'); ?>
+						</div>
+						<div style="clear:both"></div>
+				 	</div>
 						<?php }else{?>
-							<div style="font-size:12px;">
+							<div style="font-size:12px; padding: 8px 10px 9px; border-bottom: 1px solid #E2E2E2;">
 								<p>"<?php echo $this->Translate('NoProduct')?>"</p>
 							</div>
 						<?php }?> 
