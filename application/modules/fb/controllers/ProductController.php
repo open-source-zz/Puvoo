@@ -95,104 +95,111 @@ class Fb_ProductController extends FbCommonController
 		$Category = new Models_Category();
  		$Poductid = $this->_request->getParam('id');
 		
-		$prodExist = $Product->ProductExist($Poductid);
 		
-		if($prodExist)
+		
+		if($Poductid)
 		{
-			$this->view->ProdId = $Poductid;
-					
-			 
-			//get category id through product id
-				
-			$result = $Category->GetcategoryID($Poductid);
-			$this->view->cat_id = $result['category_id'];
-			$this->view->catname = $result['category_name'];
-	
-			//to get parentcategory details
-			$parentcat_details = $Category->GetCategoryDetail($result['parent_id']);
-			$this->view->parentcat_id = $result['parent_id'];
-			$this->view->parentcat_name = $parentcat_details['category_name'];
-			 
-			//to get subcategory
-			$subcat =$Category->GetSubCategory($result['category_id']); 
-			$this->view->subcatlist = $subcat;
+			$prodExist = $Product->ProductExist($Poductid);
 			
-			//to get Product Details
-			$productDetail = $Product->GetProductDetails($Poductid);
-			//print "<pre>";
-			//print_r($productDetail);die;
-			$this->view->ProdName = ucfirst($productDetail['product_name']);
-			$ProdPrice = $productDetail['product_price'];
-			$this->view->ProdPrice = $ProdPrice;
-			$this->view->ProdDesc = $productDetail['product_description'];
-			$this->view->ProdWeight = $productDetail['product_weight']."&nbsp".$productDetail['weight_unit_key'];
-			$this->view->ProdLength = $productDetail['length']."&nbsp".$productDetail['length_unit_key'];
-			$this->view->ProdSeller = $productDetail['store_name'];
-			$this->view->ProdSellerId = $productDetail['user_id'];
-	
-			//to get Product images
-			$productImages = $Product->GetProductImages($Poductid);
-			$tinyImageList = '';
-			$tinyImage = '';
-			
-			foreach($productImages as $key=>$img)
+			if($prodExist)
 			{
-				$SmallImg = explode('_',$img['image_name']);
-				$tinyImage = SITE_PRODUCT_IMAGES_PATH.$img['image_path']."/".$SmallImg[0]."_th2.jpg";
-				if($key == 0)
+				$this->view->ProdId = $Poductid;
+						
+				 
+				//get category id through product id
+					
+				$result = $Category->GetcategoryID($Poductid);
+				$this->view->cat_id = $result['category_id'];
+				$this->view->catname = $result['category_name'];
+		
+				//to get parentcategory details
+				$parentcat_details = $Category->GetCategoryDetail($result['parent_id']);
+				$this->view->parentcat_id = $result['parent_id'];
+				$this->view->parentcat_name = $parentcat_details['category_name'];
+				 
+				//to get subcategory
+				$subcat =$Category->GetSubCategory($result['category_id']); 
+				$this->view->subcatlist = $subcat;
+				
+				//to get Product Details
+				$productDetail = $Product->GetProductDetails($Poductid);
+				//print "<pre>";
+				//print_r($productDetail);die;
+				$this->view->ProdName = ucfirst($productDetail['product_name']);
+				$ProdPrice = $productDetail['product_price'];
+				$this->view->ProdPrice = $ProdPrice;
+				$this->view->ProdDesc = $productDetail['product_description'];
+				$this->view->ProdWeight = $productDetail['product_weight']."&nbsp;".$productDetail['weight_unit_key'];
+				$this->view->ProdLength = $productDetail['length']."&nbsp;".$productDetail['length_unit_key'];
+				$this->view->ProdSeller = $productDetail['store_name'];
+				$this->view->ProdSellerId = $productDetail['user_id'];
+		
+				//to get Product images
+				$productImages = $Product->GetProductImages($Poductid);
+				$tinyImageList = '';
+				$tinyImage = '';
+				
+				foreach($productImages as $key=>$img)
 				{
-					$this->view->DefaultImagePath = SITE_PRODUCT_IMAGES_PATH.$img['image_path']."/".$img['image_name']."";
-				}
-	
-				if(count($productImages) > 1){
-					$tinyImageList .= "<li id='TinyImageBox_".$key."' onclick='showProductThumbImage(".$key.",&#39;".$img['image_path']."&#39;,&#39;".$img['image_name']."&#39;)'>";
-					$tinyImageList .= "<a href='javascript:void(0)' id='link".$key."' class='activelink'>";
+					$SmallImg = explode('_',$img['image_name']);
+					$tinyImage = SITE_PRODUCT_IMAGES_PATH.$img['image_path']."/".$SmallImg[0]."_th2.jpg";
 					if($key == 0)
 					{
-						$tinyImageList .= "<div id='Tiny".$key."' class='active'>";
-					}else{
-						$tinyImageList .= "<div id='Tiny".$key."' class='otherimg'>";
+						$this->view->DefaultImagePath = SITE_PRODUCT_IMAGES_PATH.$img['image_path']."/".$img['image_name']."";
 					}
-					$tinyImageList .= "<img id='TinyImage_".$key."' src='".$tinyImage."' style='border:none; padding:0px;' alt='' />";
-					$tinyImageList .= "</div></a></li>";
-					
-					$this->view->imageList = $tinyImageList;
-				}
-			}	
-			
-			//to get Product Option
-			$productOptions = $Product->GetProductOption($Poductid);
-			
-			for($i=0; $i < count($productOptions); $i++)
-			{
-				$Opt = '';
-				$this->view->totalCombo = count($productOptions);
-				//$TotalPrice = '';
-				foreach($productOptions as $key => $option)
-				{
-						$OptionsValue = $Product->GetProductOptionValue($option['product_options_id']);
-						//print "<pre>";
-						//print_r($option);die;
-						
-						$Opt .= "<tr>";
-						$Opt .= "<td><b>".ucfirst($option['option_title'])." Choice:</b><br />";
-						$Opt .= "<select class='optionText inputtext' name='OptionCombo".$key."' id='OptionCombo".$key."' >";
-						$Opt .= "<option value='0' onclick='javascript:changePrice(0,".$Poductid.",".$option['product_options_id'].")'>Choose ".$option['option_title']."</option>";
-						
-						foreach($OptionsValue as $val){
-							//print_r($val);die;
-							//$TotalPrice += $val['option_price'];
-							$Opt .= "<option value='".$val['product_options_detail_id']."' onclick='javascript:changePrice(".$val['product_options_detail_id'].",".$Poductid.",".$option['product_options_id'].")'>".$val['option_name']."</option>";
-							
+		
+					if(count($productImages) > 1){
+						$tinyImageList .= "<li id='TinyImageBox_".$key."' onclick='showProductThumbImage(".$key.",&#39;".$img['image_path']."&#39;,&#39;".$img['image_name']."&#39;)'>";
+						$tinyImageList .= "<a href='javascript:void(0)' id='link".$key."' class='activelink'>";
+						if($key == 0)
+						{
+							$tinyImageList .= "<div id='Tiny".$key."' class='active'>";
+						}else{
+							$tinyImageList .= "<div id='Tiny".$key."' class='otherimg'>";
 						}
-						//print $TotalPrice."+".$ProdPrice;die;
-						//$this->view->ProdPrice = $ProdPrice+$TotalPrice;
-						//print $this->view->ProdPrice;die;
-						$Opt .= "</select></td></tr>";
-						$Opt .= "<tr><td height='8'></td></tr>";
+						$tinyImageList .= "<img id='TinyImage_".$key."' src='".$tinyImage."' style='border:none; padding:0px;' alt='' />";
+						$tinyImageList .= "</div></a></li>";
 						
-						$this->view->OptionCombo = $Opt;
+						$this->view->imageList = $tinyImageList;
+					}
+				}	
+				
+				//to get Product Option
+				$productOptions = $Product->GetProductOption($Poductid);
+				
+				for($i=0; $i < count($productOptions); $i++)
+				{
+					$Opt = '';
+					$this->view->totalCombo = count($productOptions);
+					//$TotalPrice = '';
+					foreach($productOptions as $key => $option)
+					{
+							$OptionsValue = $Product->GetProductOptionValue($option['product_options_id']);
+							//print "<pre>";
+							//print_r($option);die;
+							
+							$Opt .= "<tr>";
+							$Opt .= "<td><b>".ucfirst($option['option_title'])." Choice:</b><br />";
+							$Opt .= "<select class='optionText inputtext' name='OptionCombo".$key."' id='OptionCombo".$key."' >";
+							$Opt .= "<option value='0' onclick='javascript:changePrice(0,".$Poductid.",".$option['product_options_id'].")'>Choose ".$option['option_title']."</option>";
+							
+							foreach($OptionsValue as $val){
+								//print_r($val);die;
+								//$TotalPrice += $val['option_price'];
+								$Opt .= "<option value='".$val['product_options_detail_id']."' onclick='javascript:changePrice(".$val['product_options_detail_id'].",".$Poductid.",".$option['product_options_id'].")'>".$val['option_name']."</option>";
+								
+							}
+							//print $TotalPrice."+".$ProdPrice;die;
+							//$this->view->ProdPrice = $ProdPrice+$TotalPrice;
+							//print $this->view->ProdPrice;die;
+							$Opt .= "</select></td></tr>";
+							$Opt .= "<tr><td height='8'></td></tr>";
+							
+							$this->view->OptionCombo = $Opt;
+					}
 				}
+			}else{
+				$this->_redirect("fb/");
 			}
 		}else{
 			$this->_redirect("fb/");
@@ -240,9 +247,6 @@ class Fb_ProductController extends FbCommonController
 		{
 			$sort = $this->_request->getPost('sortBy');
 			$this->view->$sort = "selected='selected'";
-			if($sort == ''){
-				$sort = 'bestseller';
-			}
 		}else{
 			$sort = 'bestseller';
  		}
@@ -352,16 +356,20 @@ class Fb_ProductController extends FbCommonController
 						$CartDetails = $Cart->GetCartDetailId($prodId);
  						$cartDetailId = $CartDetails['cart_detail_id'];
 						// Insert Record in cart option
+						//print_r($this->_request->getParam('option'));die;
 						if($this->_request->getParam('option') != '')
 						{
 							$optionInfo = explode(',',$this->_request->getParam('option'));
 							
 							foreach($optionInfo as $opt)
 							{
-								$productOptions = $Product->GetProductOptionUsingValue($prodId,$opt);
-								
-								//print_r($productOptions);die;
-								$ins_opt = $Cart->Insert_CartOption_Record($productOptions,$cartDetailId);
+								if($opt != 0)
+								{
+									$productOptions = $Product->GetProductOptionUsingValue($prodId,$opt);
+									
+									//print_r($productOptions);die;
+									$ins_opt = $Cart->Insert_CartOption_Record($productOptions,$cartDetailId);
+								}
 								//$ProductInfo['options'] = $optionInfo;
 								
 							}
@@ -390,7 +398,7 @@ class Fb_ProductController extends FbCommonController
 				$CartTotal += $value['product_qty'];
 			}
 			//print $Price;die;
-			$this->view->CartCnt = $CartTotal;
+			$this->view->CartCnt = count($CartDetails);
  			$this->view->TotalPrice = $Price;
 			$this->view->cartId = $cartId;
 			$mysession->cartId = $cartId;

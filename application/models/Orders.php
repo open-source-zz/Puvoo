@@ -204,9 +204,10 @@ class Models_Orders
 	 {
 	 	$db = $this->db;
 		
-	 	$select = "SELECT od.*,opo.*
+	 	$select = "SELECT od.*,opo.*, wm.weight_unit_key
 				   FROM order_detail as od
 				   LEFT JOIN order_product_options as opo ON (od.order_detail_id = opo.order_detail_id)
+				   LEFT JOIN weight_master as wm ON (opo.option_weight_unit_id = wm.weight_unit_id)
 				   WHERE od.order_id = ".$id;
 		
 		return $db->fetchAll($select);

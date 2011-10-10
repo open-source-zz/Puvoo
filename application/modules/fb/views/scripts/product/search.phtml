@@ -45,7 +45,7 @@
 										<img class="img" src="<?php echo IMAGES_FB_PATH ?>/Default.gif"/>
 									<?}else{?>
 									
-										<img class="img" src="<?php echo $prodval['image_path'] ?>/<?php echo $prodval['image_name'] ?>" width="128"/>
+										<img class="img" src="<?php echo SITE_PRODUCT_IMAGES_PATH.$prodval['image_path'] ?>/<?php echo $prodval['image_name'] ?>" width="128"/>
 									<?}?>
 									</a>
 								</div>
@@ -53,7 +53,7 @@
 									<a target="_top" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $prodval['product_id'];?>"><?php echo $prodval['product_name'];?></a> 
 								</div>
 								<div class="productPrice">
-								   <?php echo "$".$prodval['product_price'];?>
+								    <?php echo "$".$prodval['product_price']." (USD)";?>
 								</div>
 								<div class="socialbtn">
 									<div class="left">

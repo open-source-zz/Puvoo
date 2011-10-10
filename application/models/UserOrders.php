@@ -237,9 +237,10 @@ class Models_UserOrders
 	 {
 	 	$db = $this->db;
 		
-	 	$select = "SELECT od.*,opo.*,od.order_detail_id as primary_id
+	 	$select = "SELECT od.*,opo.*,od.order_detail_id as primary_id, wm.weight_unit_key
 				   FROM order_detail as od
 				   LEFT JOIN order_product_options as opo ON (od.order_detail_id = opo.order_detail_id)
+				   LEFT JOIN weight_master as wm ON (opo.option_weight_unit_id = wm.weight_unit_id)
 				   WHERE od.order_id = '".$id."'
 				   AND od.product_id
 				   IN (SELECT pm.product_id 

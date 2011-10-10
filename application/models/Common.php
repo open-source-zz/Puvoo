@@ -108,6 +108,36 @@ class Models_Common
 		 
  		return $result;
 	}
+
+	/**
+	 * function RetailerExist
+	 *
+	 * It is used to check that retailer is exist or not.
+	 *
+	 * Date created: 2011-09-10
+	 *
+	 * @param (int) $retId- Retailer Id.
+	 * @return (Array) - Return true on success
+	 * @author  Jayesh 
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 */
+	public function RetailerExist($retId)
+	{
+		$db= $this->db;
+		
+		$sql = "SELECT * FROM user_master WHERE user_id = ".$retId."";
+		
+		$result = $db->fetchRow($sql);
+		if($result == NULL || $result == "")
+		{
+			return false;
+		
+		}else{ 
+			return true;
+		}
+	
+	}
+
 	
 }
 ?>

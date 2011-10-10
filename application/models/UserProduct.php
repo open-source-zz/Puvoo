@@ -241,7 +241,8 @@ class Models_UserProduct
 				 LEFT JOIN category_master as cm ON(cm.category_id = ptc.category_id)
 				 WHERE cm.is_active = 1 
 				 AND ptc.product_id =".$id;
-	 	$sql4 =" SELECT po.*,pod.option_name,pod.product_options_id as LNK_options_id, pod.option_code ,pod.product_options_detail_id
+	 	$sql4 =" SELECT po.*,pod.option_name,pod.product_options_id as LNK_options_id, pod.option_code ,pod.product_options_detail_id, pod.option_weight, pod.option_price, pod.option_quantity,
+				 (SELECT wm.weight_unit_key FROM weight_master as wm WHERE wm.weight_unit_id = pod.option_weight_unit_id ) as weight_unit_key
 				 FROM product_options as po
 				 LEFT JOIN product_options_detail as pod ON(po.product_options_id = pod.product_options_id)
 				 WHERE po.product_id = ".$id;

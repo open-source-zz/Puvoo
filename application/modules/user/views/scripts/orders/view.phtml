@@ -209,7 +209,7 @@
 					<div> 
 						<table width="100%">
 							<tr>
-								<td width="50%" >
+								<td width="50%" valign="top" >
 									<div style="border:5px solid #ECECEC;">
 									<table width="100%" cellpadding="2">
 										<tr>
@@ -256,14 +256,40 @@
 											<td width="50%"><?php echo $this->Translate('Order_Product_Option'); ?></td>
 											<td width="50%"><?php echo $this->Translate('Order_Product_Option_Value'); ?></td>
 										</tr>
+										<?php $counter = 0; ?>
 										<?php foreach( $order_product_detail as $key2 => $val2 ) { ?>
-										<?php 	if($val2["order_detail_id"] == $val["order_detail_id"] ) {?>
-											<tr>
-												<td><?php echo $val2["option_title"]; ?></td>
-												<td><?php echo $val2["option_value"]; ?></td>
+										<?php 	if($val2["order_detail_id"] == $val["order_detail_id"] && $val2["order_detail_id"] != ''  ) {?>
+											<tr style="border-bottom:1px solid #D8D8D8;">
+												<td valign="top" style="padding-top:5px;"><?php echo $val2["option_title"]; ?></td>
+												<td>
+													<table width="100%">
+														<tr>
+															<td><?php echo $this->Translate('Product_Name'); ?>:</td>
+															<td><?php echo $val2["option_value"]; ?></td>
+														</tr>
+														<tr>
+															<td><?php echo $this->Translate('Product_Option_Value_Code'); ?>:</td>
+															<td><?php echo $val2["option_code"]; ?></td>
+														</tr>
+														<tr>
+															<td><?php echo $this->Translate('Product_Weight'); ?>:</td>
+															<td><?php echo $val2["option_weight"]."&nbsp;&nbsp;".$val2["weight_unit_key"]; ?></td>
+														</tr>
+														<tr>
+															<td><?php echo $this->Translate('Product_Price'); ?>:</td>
+															<td><?php echo $val2["option_price"]; ?></td>
+														</tr>
+													</table>
+												</td>
 											</tr>
+										<?php 		$counter++; ?>
 										<?php 	} ?>
 										<?php } ?>
+										<?php if($counter == 0 ) { ?>
+											<tr style="border-bottom:1px solid #D8D8D8;">
+												<td colspan="2"><?php echo $this->Translate('Product_No_Options_Found'); ?></td>
+											</tr>
+										<?php 	}  ?>
 									</table>
 									</div>
 								</td>

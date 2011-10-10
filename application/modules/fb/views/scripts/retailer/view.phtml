@@ -7,7 +7,7 @@
 		<div class="categoryHeader" style="float:left; width:85%;">
 		  <?php echo $this->StoreName;?> 
 		  <div style="margin-top:5px;">
-		  	<img alt="" src="<?php echo IMAGES_FB_PATH ?>/like_1.jpg" />
+		  	<iframe src="//www.facebook.com/plugins/like.php?href=<?php echo urlencode(SITE_FB_URL . "retailer/view/id/" . $this->RetailerId); ?>&amp;send=false&amp;layout=button_count&amp;width=90&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:90px; height:21px;" allowTransparency="true"></iframe>
 		  </div>
 		  <div style="border-top:1px solid #E2E2E2; margin-top:5px;"></div>
 		  <div>
@@ -59,11 +59,20 @@
 				</div>
 				<div class="socialbtn">
 					<div class="left">
-						<img src="<?php echo IMAGES_FB_PATH ?>/like_1.jpg" alt="" />
+						<iframe src="//www.facebook.com/plugins/like.php?href=<?php echo urlencode(SITE_FB_URL . "product/view/id/" . $prodval['product_id']); ?>&amp;send=true&amp;layout=button_count&amp;width=90&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:90px; height:21px;" allowTransparency="true"></iframe>
 					</div>
 				   <div style="text-align: right;">
 					   <div class="share" id="shareLinkContGrid_lls1">
-							<a class="shareLinks" rel="Grid_lls1" href="#"><?php echo $this->Translate('Share')?></a>
+							<div id="fb-root"></div>
+							<script>(function(d, s, id) {
+							  var js, fjs = d.getElementsByTagName(s)[0];
+							  if (d.getElementById(id)) {return;}
+							  js = d.createElement(s); js.id = id;
+							  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+							  fjs.parentNode.insertBefore(js, fjs);
+							}(document, 'script', 'facebook-jssdk'));</script>
+							
+							<fb:send href="<?php echo SITE_FB_URL . "product/view/id/" . $prodval['product_id']; ?>"></fb:send>
 					   </div>
 						<div style="clear: both;"></div>
 	

@@ -1000,20 +1000,17 @@
 				
 			</div>
 		</div>
- 		<div style="height:100px; display:none;" id="ProductAddCart">
-		 <div id="popup_head"><h1><?php echo $this->Translate('ShoppingCart')?></h1></div><br />
-		 	<h3 style="text-align:center;"><?php echo $this->Translate('AddSuccess')?></h3>
-		 </div>
-			 <?php }else{?>
+ 			 <?php }else{?>
 		 <div style="height:100px;" id="EmptyCart">
 		 <div id="popup_head"><h1><?php echo $this->Translate('ShoppingCart')?></h1></div><br />
-		 	<h3 style="text-align:center;"><?php echo $this->Translate('NoItem')?></h3>
+		 	<h3 style="text-align:center;" ><?php echo $this->Translate('NoItem')?></h3>
 		 </div>
 	 <?php }?>
-
+	 	<div id="popup_head" style="display:none;"><h1><?php echo $this->Translate('ShoppingCart')?></h1></div>
+		<div id="loader" style="display:none; height:70px; padding:25px;"></div>
 	 	<div style="height:100px; display:none;" id="EmptyCart">
 			<div>&nbsp;</div>
-		 	<h3 style="text-align:center;"><?php echo $this->Translate('NoItem')?></h3>
+		 	<h3 style="text-align:center;" ><?php echo $this->Translate('NoItem')?></h3>
 		 </div>
 <script type="text/javascript">
 

@@ -624,7 +624,12 @@ qq.extend(qq.FileUploader.prototype, {
 				ImageDiv += '		<img src="'+result.filename+'" alt="" />';
 				ImageDiv += '	</div>';
 				ImageDiv += '	<div class="borderbottom1">';
-				ImageDiv += '		<div style="float:left;"><input type="radio" value="'+result.id+'" name="product_primary_image"  /></div>';
+				alert(result.is_primary_image);
+				if(result.is_primary_image == 1 ) {				
+					ImageDiv += '		<div style="float:left;"><input type="radio" value="'+result.id+'" name="product_primary_image" checked="checked" /></div>';
+				} else {					
+					ImageDiv += '		<div style="float:left;"><input type="radio" value="'+result.id+'" name="product_primary_image"  /></div>';
+				}
 				ImageDiv += '		<div style="float:right; margin-top:-5px;"><a style="cursor:pointer;" onclick="DeleteProductImage('+product_id+','+result.id+')" >';
 				ImageDiv += '			<img src="'+image_path+'delicon.gif" alt="" style="vertical-align:middle; padding-top:1px;" />';
 				ImageDiv += '		</a></div>';

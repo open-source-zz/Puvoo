@@ -72,16 +72,16 @@
 			<div id="pd_facepile">
 				<p><b><?php echo $this->Translate('ShopperLike')?></b></p>
 				<div style="clear:both;height:5px;"></div>
-				<a href="#"><img src="<?php echo IMAGES_FB_PATH ?>/picture_002.jpg" style="padding: 1px;" height="25" width="25" alt="" /></a>
-				<a href="#"><img src="<?php echo IMAGES_FB_PATH ?>/picture_002.jpg" style="padding: 1px;" height="25" width="25" alt="" /></a>
-				<a href="#"><img src="<?php echo IMAGES_FB_PATH ?>/picture_002.jpg" style="padding: 1px;" height="25" width="25" alt="" /></a>
-				<a href="#"><img src="<?php echo IMAGES_FB_PATH ?>/picture.gif" style="padding: 1px;" height="25" width="25" alt="" /></a>
-				<a href="#"><img src="<?php echo IMAGES_FB_PATH ?>/picture.gif" style="padding: 1px;" height="25" width="25" alt="" /></a>
-				<a href="#"><img src="<?php echo IMAGES_FB_PATH ?>/picture_002.jpg" style="padding: 1px;" height="25" width="25" alt="" /></a>
-				<a href="#"><img src="<?php echo IMAGES_FB_PATH ?>/picture_002.jpg" style="padding: 1px;" height="25" width="25" alt="" /></a>
-				<a href="#"><img src="<?php echo IMAGES_FB_PATH ?>/picture.gif" style="padding: 1px;" height="25" width="25" alt="" /></a>
-				<a href="#"><img src="<?php echo IMAGES_FB_PATH ?>/picture_002.jpg" style="padding: 1px;" height="25" width="25" alt="" /></a>
-				<a href="#"><img src="<?php echo IMAGES_FB_PATH ?>/picture.gif" style="padding: 1px;" height="25" width="25" alt="" /></a>
+					<div id="fb-root"></div>
+					<script>(function(d, s, id) {
+					  var js, fjs = d.getElementsByTagName(s)[0];
+					  if (d.getElementById(id)) {return;}
+					  js = d.createElement(s); js.id = id;
+					  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+					  fjs.parentNode.insertBefore(js, fjs);
+					}(document, 'script', 'facebook-jssdk'));</script>
+					
+					<fb:facepile href="<?php echo SITE_FB_URL . "product/view/id/" . $this->ProdId; ?>" width="170" max_rows="1"></fb:facepile>
 			</div>
 			<div class="productInfoBox">
 				<form id="productForm" name="productForm" method="post" enctype="multipart/form-data" action="<?php echo SITE_FB_URL;?>product/addtocart" >
@@ -98,7 +98,7 @@
 						<input type="hidden" value="<?php echo $this->totalCombo;?>" name="Opt_Combo" id="Opt_Combo" />
 					</div>
 					<div id="pfcartbin" style="margin-top:10px;">
-						<input type="button" class="add_cartbtn" value="" id="btn" onclick="Javascript: return validateAddToCart('<?php echo SITE_FB_URL;?>product/addtocart')" />
+						<input type="button" class="add_cartbtn" value="" id="btn" onclick="Javascript: return validateAddToCart('product/addtocart')" />
 					</div>
 						<input id="productId" name="productId" type="hidden" value="<?php echo $this->ProdId;?>"/>
 						<input id="command" name="command" type="hidden" value="addStoreItem"/>
@@ -131,13 +131,24 @@
 				</div>
 				<div class="socialbtn" style="margin-left:0px; margin-top:0px;">
 					<div class="left" style="width:120px;">
-						<img src="<?php echo IMAGES_FB_PATH ?>/like_1.jpg" alt="" />
+						<iframe src="//www.facebook.com/plugins/like.php?href=<?php echo urlencode(SITE_FB_URL . "product/view/id/" . $this->ProdId); ?>&amp;send=false&amp;layout=button_count&amp;width=90&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:90px; height:21px;" allowTransparency="true"></iframe>
 					</div>
 				   <div style="text-align: left;">
 					   <div class="share" id="shareLinkContGrid_lls1">
-							<a class="shareLinks" rel="Grid_lls1" href="#"><?php echo $this->Translate('Share')?></a>
+							<div id="fb-root"></div>
+							<script>(function(d, s, id) {
+							  var js, fjs = d.getElementsByTagName(s)[0];
+							  if (d.getElementById(id)) {return;}
+							  js = d.createElement(s); js.id = id;
+							  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+							  fjs.parentNode.insertBefore(js, fjs);
+							}(document, 'script', 'facebook-jssdk'));</script>
+							
+							<fb:send href="<?php echo SITE_FB_URL . "product/view/id/" . $this->ProdId; ?>"></fb:send>
+
 					   </div>
-						<div style="clear: both;"></div>
+					   
+					   <div style="clear: both;"></div>
 		
 					</div>
 					<div style="clear: both"></div>
@@ -158,6 +169,18 @@
 				</div>
 			 </div>
 			<div class="clear"></div>
+		</div>
+		<div style="border-top:solid 1px #E2E2E2;">
+			<div id="fb-root"></div>
+			<script>(function(d, s, id) {
+			  var js, fjs = d.getElementsByTagName(s)[0];
+			  if (d.getElementById(id)) {return;}
+			  js = d.createElement(s); js.id = id;
+			  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+			  fjs.parentNode.insertBefore(js, fjs);
+			}(document, 'script', 'facebook-jssdk'));</script>
+
+			<fb:comments href="<?php echo SITE_FB_URL . "product/view/id/" . $this->ProdId; ?>" num_posts="2" width="550"></fb:comments>
 		</div>
 	</div>
 </div>

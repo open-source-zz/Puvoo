@@ -1,9 +1,10 @@
 <style>
 	.scroll-pane,scroll-pane2
 	{
-		height: 270px;
+		height: 370px;
 		overflow: auto;
 		float:left;
+		padding-bottom:50px;
 	}
 </style>
 
@@ -135,7 +136,38 @@
 							</select>
 						</td>
 					</tr>	
-											
+					<tr>
+						<td valign="top">
+							<h5><?php echo $this->Translate('Product_Available_Date'); ?></h5>
+						</td>
+						<td>
+							:&nbsp;&nbsp;<?php echo date("F j, Y", strtotime($detail["available_date"])); ?>
+						</td>
+					</tr>	
+					<tr>
+						<td valign="top">
+							<h5><?php echo $this->Translate('Product_Expiration_Date'); ?></h5>
+						</td>
+						<td>
+							:&nbsp;&nbsp;<?php echo date("F j, Y", strtotime($detail["expiration_date"])); ?>
+						</td>
+					</tr>	
+					<tr>
+						<td valign="top">
+							<h5><?php echo $this->Translate('Product_Promotion_Start_Date'); ?></h5>
+						</td>
+						<td>
+							:&nbsp;&nbsp;<?php echo date("F j, Y", strtotime($detail["promotion_start_date"])); ?>
+						</td>
+					</tr>	
+					<tr>
+						<td valign="top">
+							<h5><?php echo $this->Translate('Product_Promotion_End_Date'); ?></h5>
+						</td>
+						<td>
+							:&nbsp;&nbsp;<?php echo date("F j, Y", strtotime($detail["promotion_end_date"])); ?>
+						</td>
+					</tr>					
 				</table>
 			</div>
 			<br />
@@ -156,8 +188,8 @@
 					<h3><a href="#"><?php echo $this->Translate('Product_Images'); ?></a></h3>
 					<?php $images = $product_detail["images"]; ?>
 					<div >
-						<div style="height:280px; width:395px;">
-							<div class="scroll-pane" style="">
+						<div >
+							<div class="scroll-pane" style="width:395px;">
 								<div class="excersice-list">
 									<ul>
 										<?php 
@@ -178,70 +210,62 @@
 					</div>
 				</div>
 				<div>
-					<h3><a href="#"><?php echo $this->Translate('Product_Properties'); ?></a></h3>
+					<h3><a href="#"><?php echo $this->Translate('Product_Options'); ?></a></h3>
 					<div >
 						<?php $category = $product_detail["category"]; ?>
 						<?php $options = $product_detail["options"]; ?>
-						<div class="box-content scroll-pane" style="height:270px; width:395px;" >
-							
-							<table  width="100%" >
-								<!--<tr>
-									<td width="40%" valign="top">
-										<h5><?php echo $this->Translate('Product_Category'); ?></h5>
-									</td>
-									<td width="60%">
-										<ul class="circle width100 fl">
-											<?php  
-												if($category != NULL) {
+						<div class="box-content scroll-pane" style="width:395px;" >
+							<?php 
+								if($options != NULL) {
+									$option_value = '';
+									foreach($options as $key =>$val) { 
+										if($val["LNK_options_id"] != $option_value) {
+							?>	
+											<div class="Heading2">
+												<?php echo $val["option_title"]; ?>
+											</div>
+							<?php			foreach($options as $key =>$val2)
+											{
+												if($val["LNK_options_id"] == $val2["LNK_options_id"]) {
+							?>
+													<div class="box-content" >
+														<p class="p_left" style="padding-left:5px;">
+															<strong><h5><?php echo $val2["option_name"]; ?>:</h5></strong>
+															<table  width="100%" >
+																<tr>
+																	<td width="30%">
+																		<strong><?php echo $this->Translate('Product_Option_Value_Code'); ?>:</strong>
+																	</td>
+																	<td width="20%"><?php echo $val2["option_code"]; ?></td>
+																	<td width="30%">
+																		<strong><?php echo $this->Translate('Product_Price'); ?>:</strong>
+																	</td >
+																	<td width="20%"><?php echo $val2["option_price"]; ?></td>
+																</tr>
+																<tr>
+																	<td>
+																		<strong><?php echo $this->Translate('Product_Weight'); ?>:</strong>
+																	</td>
+																	<td><?php echo $val2["option_weight"]."&nbsp;&nbsp;".$val2["weight_unit_key"]; ?></td>
+																	<td>
+																		<strong><?php echo $this->Translate('Product_Quantity'); ?>:</strong>
+																	</td>
+																	<td><?php echo $val2["option_quantity"]; ?></td>
+																</tr>
+															</table>
+														</p>
+														<hr/>
+													</div>
+							<?php				}
+											}
+										}
+										$option_value = $val["product_options_id"];
+									}
 													
-													foreach($category as $key =>$val)
-													{
-														echo "<li>".$val["category_name"]."</li>";
-													}
-													
-												} else {
-													echo "<li>".$this->Translate('Product_No_Category_Found')."</li>";
-												}
-											
-											?>						
-										</ul>
-									</td>
-								</tr>-->
-								<tr>
-									<td width="40%" valign="top">
-										<h5><?php echo $this->Translate('Product_Options'); ?></h5>
-									</td>
-									<td width="60%">
-										<ul class="circle width100 fl">
-											<?php  
-												if($options != NULL) {
-													$option_value = '';
-													foreach($options as $key =>$val)
-													{
-														if($val["LNK_options_id"] != $option_value)
-														{
-															echo "<li>".$val["option_title"]."<ul class='circle'>";
-															foreach($options as $key =>$val2)
-															{
-																if($val["LNK_options_id"] == $val2["LNK_options_id"]) {
-																echo "<li>".$val2["option_name"]."</li>";
-																}
-															}
-															echo "</ul></li>";
-														}
-														$option_value = $val["product_options_id"];
-													}
-													
-												} else {
-													echo "<li>".$this->Translate('Product_No_Options_Found')."</li>";
-												}
-											
-											?>						
-										</ul>
-									</td>
-								</tr>
-							</table>
-							
+								} else {
+									echo $this->Translate('Product_No_Options_Found');
+								}
+							?>
 						</div>
 					</div>
 				</div>

@@ -181,7 +181,56 @@
 						  <td></td>
 						</tr>
 						<tr><td height="5"></td></tr>
-						
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Product_Discount'); ?>
+							</td>
+						  <td>
+							  <input type="text" name="discount" id="discount" value="<?php echo $detail['discount'];  ?>" class="Field250" />
+						  </td>
+						  <td></td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						<tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Product_Available_Date'); ?>
+							</td>
+							<td>
+								<input type="text" name="available_date" id="available_date" value="<?php echo date('Y-m-d', strtotime($detail['available_date']));  ?>" class="Field250 datepicker" />		
+							</td>
+							<td></td>
+						</tr>	
+						<tr><td height="5"></td></tr>
+						<tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Product_Expiration_Date'); ?>
+							</td>
+							<td>
+								<input type="text" name="expiration_date" id="expiration_date" value="<?php echo date('Y-m-d', strtotime($detail['expiration_date']));  ?>" class="Field250 datepicker" />		
+							</td>
+							<td></td>
+						</tr>	
+						<tr><td height="5"></td></tr>	
+						<tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Product_Promotion_Start_Date'); ?>
+							</td>
+							<td>
+								<input type="text" name="promotion_start_date" id="promotion_start_date" value="<?php echo date('Y-m-d', strtotime($detail['promotion_start_date']));  ?>" class="Field250 datepicker" />		
+							</td>
+							<td></td>
+						</tr>	
+						<tr><td height="5"></td></tr>	
+						<tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Product_Promotion_End_Date'); ?>
+							</td>
+							<td>
+								<input type="text" name="promotion_end_date" id="promotion_end_date" value="<?php echo date('Y-m-d', strtotime($detail['promotion_end_date']));  ?>" class="Field250 datepicker" />		
+							</td>
+							<td></td>
+						</tr>		
+						<tr><td height="5"></td></tr>						
 						<tr>
 							<td class="FieldLabel">
 								<?php echo $this->Translate("Product_Start_Sales"); ?>
@@ -419,6 +468,14 @@ var ERR_PRODUCT_OPTION_VALUE_INVALID_PRICE = "<?php echo $this->Translate('Err_P
 var ERR_PRODUCT_OPTION_VALUE_INVALID_QUANTITY = "<?php echo $this->Translate('Err_Product_Option_Value_Invalid_Quantity'); ?>" ;
 var ERR_PRODUCT_OPTION_VALUE_INVALID_WEIGHT = "<?php echo $this->Translate('Err_Product_Option_Value_Invalid_Weight'); ?>";
 var PRODUCT_OPTION_VALUE_EDIT_SUCCESS = "<?php echo $this->Translate('Product_Option_Value_Edit_Success'); ?>";
+var ERR_PRODUCT_PRIMARY_AVAILABLE_DATE = "<?php echo $this->Translate('Err_Product_Available_Date'); ?>"; 
+var ERR_PRODUCT_PRIMARY_EXPIRATION_DATE = "<?php echo $this->Translate('Err_Product_Expiration_Date'); ?>"; 
+var ERR_PRODUCT_PRIMARY_PROMOTION_START_DATE = "<?php echo $this->Translate('Err_Product_Promotion_Start_Date'); ?>"; 
+var ERR_PRODUCT_PRIMARY_PROMOTION_END_DATE = "<?php echo $this->Translate('Err_Product_Promotion_End_Date'); ?>"; 
+var ERR_PRODUCT_PRIMARY_INVALID_DATE = "<?php echo $this->Translate('Err_Product_Invalid_Date'); ?>"; 
+var ERR_PRODUCT_DISCOUNT = "<?php echo $this->Translate('Err_Product_Discount'); ?>"; 
+var ERR_PRODUCT_INVALID_DISCOUNT = "<?php echo $this->Translate('Err_Product_Invalid_Discount'); ?>"; 
+var ERR_PRODUCT_RANGE_DISCOUNT = "<?php echo $this->Translate('Err_Product_Range_Discount'); ?>"; 
 
 </script>
 
@@ -635,3 +692,9 @@ var PRODUCT_OPTION_VALUE_EDIT_SUCCESS = "<?php echo $this->Translate('Product_Op
 		</form>
 	</div>
 </div>
+
+<script>
+	$(function() {
+		$( ".datepicker" ).datepicker({ dateFormat: 'yy-mm-dd' });
+	});
+</script>

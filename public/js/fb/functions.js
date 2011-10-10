@@ -4,6 +4,7 @@ function getPage(page)
 {
 	$('#page_no').val(page);
 	$("#frmcatproduct").submit();
+	$("#frmRetailerProduct").submit();
 }
 
 function reloadPageWithNewSort(val)
@@ -32,7 +33,7 @@ function validateAddToCart(URL)
 */	
 	$.ajax({
  	    type: "POST",
-		url:URL,
+		url:site_url+URL,
  		data: {
 			  prodid: function() 
 			  {
@@ -190,12 +191,12 @@ function updatecart(prodId,cartId)
  			for(i in data)
 			{
 						
-				$('#itemPrice'+data[i]['product_id']).html("$"+data[i]['price']*data[i]['product_qty']);
-				$('#IndivisualPrice'+data[i]['product_id']).val(data[i]['price']);
+				$('#itemPrice'+data[i]['product_id']).html("$"+roundVal( parseFloat(data[i]['price'])*parseInt(data[i]['product_qty'])));
+				$('#IndivisualPrice'+data[i]['product_id']).val(roundVal(data[i]['price']));
 				$('#ProductQty'+data[i]['product_id']).val(data[i]['product_qty']);
 				ProdQty = parseInt(ProdQty)+parseInt(data[i]['product_qty']);
 				totalCost = parseFloat(totalCost)+parseFloat(data[i]['product_total_cost']);
-				$('#cartCounterNumber').html(ProdQty);
+				//$('#cartCounterNumber').html(ProdQty);
 				$('#SubtotalDiv').show();
 				$('#cartSubTotal').html("$"+totalCost);
 				$('#breadCrumb_cart').show();
@@ -206,6 +207,14 @@ function updatecart(prodId,cartId)
 		}		
 	});
 }
+
+function roundVal(val){
+	var dec = 2;
+	var result = Math.round(val*Math.pow(10,dec))/Math.pow(10,dec);
+	return result;
+}
+
+
 var OptionCost = new Array();
 function changePrice(detailId,prodId,OptId)
 {
@@ -235,13 +244,18 @@ function changePrice(detailId,prodId,OptId)
  		dataType:'json',
 		success:function(data)
 		{ 
-		
+					
 				//alert(data['option_price']);return false;
 					var dft_price = $('#DefaultPrice').val();
 					//var total = parseFloat(dft_price)+parseFloat(data);
-					
-					
-					OptionCost[OptId] =  parseFloat(data['option_price']);
+					if(data != false)
+					{
+						var opt_price = data['option_price'];
+					}else{
+						
+						var opt_price = 0;
+					}
+					OptionCost[OptId] =  parseFloat(opt_price);
 					
 					var total = 0;
  					for(temp in OptionCost)
@@ -900,7 +914,7 @@ function centerPopup()
 	var windowHeight = document.documentElement.clientHeight;
 	//var popupHeight = $("#innerDIV").height();
 	var popupWidth = $("#popupContact").width();
-	$("#popupContact").css({"position": "absolute","top": windowHeight/2 - 410/2,"left": windowWidth/2-popupWidth/2});
+	$("#popupContact").css({"position": "absolute","top": 85,"left": windowWidth/2-popupWidth/2});
 	$("#backgroundPopup").css({"height": windowHeight});
 
 }

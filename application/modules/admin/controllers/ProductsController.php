@@ -55,7 +55,13 @@ class Admin_ProductsController extends AdminCommonController
 		parent::init();				
 		Zend_Loader::loadClass('Models_Product');
 		Zend_Loader::loadClass('Models_ProductImages');
-		$this->view->JS_Files = array('admin/AdminCommon.js','admin/product.js','admin/jquery.jscrollpane.min.js','admin/fileuploader.js','admin/jquery.multiselect.js');	
+		$this->view->JS_Files = array(
+										'admin/AdminCommon.js',
+										'admin/product.js',
+										'admin/jquery.jscrollpane.min.js',
+										'admin/fileuploader.js',
+										'admin/jquery.multiselect.js'
+									);	
 		define("TABLE","product_master");
 		define("PRIMARY_KEY","product_id");
 	}
@@ -253,6 +259,9 @@ class Admin_ProductsController extends AdminCommonController
 				// Validator 
 				$float_validator = new Zend_Validate_Float();
 				$number_validator = new Zend_Validate_Digits();
+				$date_validator = new Zend_Validate_Date();
+				$int_validator = new Zend_Validate_Int();
+				$range_validator  = new Zend_Validate_Between(array('min' => 0, 'max' => 100));
 				
 				if( $edit_type == "Detail" ) {
 					
@@ -268,7 +277,13 @@ class Admin_ProductsController extends AdminCommonController
 					$data['width']=$filter->filter(trim($this->_request->getPost('width')));
 					$data['depth']=$filter->filter(trim($this->_request->getPost('depth')));
 					$data['available_qty']=$filter->filter(trim($this->_request->getPost('available_qty')));
+					$data['discount']=$filter->filter(trim($this->_request->getPost('discount')));
+					$data['available_date']=$filter->filter(trim($this->_request->getPost('available_date')));
+					$data['expiration_date']=$filter->filter(trim($this->_request->getPost('expiration_date')));
+					$data['promotion_start_date']=$filter->filter(trim($this->_request->getPost('promotion_start_date')));
+					$data['promotion_end_date']=$filter->filter(trim($this->_request->getPost('promotion_end_date')));
 					$data['start_sales']=$filter->filter(trim($this->_request->getPost('start_sales')));
+					$this->view->user_name=$filter->filter(trim($this->_request->getPost('product_user_name')));
 					
 					$product_category = $filter->filter(trim($this->_request->getPost('multiselect_product_category_value')));
 					
@@ -323,12 +338,45 @@ class Admin_ProductsController extends AdminCommonController
 					if($data['available_qty'] == '') {
 						$editErrorMessage[] = $translate->_('Err_Product_Quantity');		
 					}
+					if($data['discount'] == '') {
+						$editErrorMessage[] = $translate->_('Err_Product_Discount');		
+					} else if(!$int_validator->isValid($data['discount'])) {
+						$editErrorMessage[] = $translate->_('Err_Product_Invalid_Discount');	
+					} else if(!$range_validator->isValid($data['discount'])) {
+						$editErrorMessage[] = $translate->_('Err_Product_Range_Discount');	
+					}
+					
 					if(!$number_validator->isValid($data['available_qty'])) {
 						$editErrorMessage[] = $translate->_('Err_Product_Invalid_Quantity');		
 					}
 					if($product_primary_image == '' ) {					
 						$editErrorMessage[] = $translate->_('Err_Product_Primary_Image');
 					} 
+					if($data['available_date'] == '') {
+						$editErrorMessage[] = $translate->_('Err_Product_Available_Date');
+					} else if(!$date_validator->isValid($data['available_date'])) {
+						$editErrorMessage[] = $translate->_('Err_Product_Invalid_Date');
+					}
+					if($data['expiration_date'] == '') {
+						$editErrorMessage[] = $translate->_('Err_Product_Expiration_Date');
+					} else if(!$date_validator->isValid($data['expiration_date'])) {
+						$editErrorMessage[] = $translate->_('Err_Product_Invalid_Date');
+					}
+					if($data['promotion_start_date'] == '') {
+						$editErrorMessage[] = $translate->_('Err_Product_Promotion_Start_Date');								
+					} else if(!$date_validator->isValid($data['promotion_start_date'])) {					
+						$editErrorMessage[] = $translate->_('Err_Product_Invalid_Date');
+					}
+					if($data['promotion_end_date'] == '') {
+						$editErrorMessage[] = $translate->_('Err_Product_Promotion_End_Date');								
+					} else if(!$date_validator->isValid($data['promotion_end_date'])) {					
+						$editErrorMessage[] = $translate->_('Err_Product_Invalid_Date');
+					}
+					
+					if($data['start_sales'] == '' ) {					
+						$editErrorMessage[] = $translate->_('Err_Product_Start_Sales');
+					}
+					
 					
 					if( count($editErrorMessage) == 0 || $editErrorMessage == "" ) {
 					

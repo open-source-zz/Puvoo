@@ -17,10 +17,10 @@ var produImagePath = "<?php echo SITE_PRODUCT_IMAGES_PATH;?>";
                             	<td><a href="<?php echo SITE_URL;?>" target="_blank"><input type="button" value="" class="join_marketplace" /></a></td>
                                 <td style="padding-left:10px;">
 									
-                                	<select id="cid" style="height:26px; width:120px; " name="cid" >
+                                	<select id="cid" style="height:26px; width:120px;" name="cid" >
                                       <option   value="0" selected="selected"><?php echo $this->Translate('SelectCountry')?></option>
                                         <?php foreach($this->CountryCombo as $value){?>
-											<option  value="<?php echo $value['country_id']; ?>"><div style="background-color:#00CC66; float:left; width:16px;">&nbsp;&nbsp;&nbsp;</div><?php echo $value['country_name']; ?></option>
+											<option class="flag flag-<?php echo strtolower($value['country_iso2']); ?>"  value="<?php echo $value['country_id']; ?>">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $value['country_name']; ?></option>
 											<?php }?>
                                     </select>
                                 </td>
@@ -31,4 +31,4 @@ var produImagePath = "<?php echo SITE_PRODUCT_IMAGES_PATH;?>";
             	<?php echo $this->render('search.phtml') ?>
             </div>
             <div class="clear"></div>
-        </div>
+</div>

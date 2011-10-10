@@ -87,6 +87,34 @@ class Models_ProductImages
 		return $db->lastInsertId();
 	}
 	
+	/**
+	 * Function selectProductImages
+	 *
+	 * This function is used to insert product images
+     *
+	 * Date created: 2011-10-10
+	 *  
+	 * @access public
+	 * @param (Int) - $id : Product Id
+	 * @return (void) - Return void
+	 * @author Amar
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	
+	public function selectProductImages($id)
+	{
+		$db = $this->db;
+		
+		$select = $db->select()
+					 ->from("product_images")
+					 ->where("product_id = ".$id);
+		
+		$data = $db->fetchAll($select);
+		
+		return $data;
+	}
+	
 	
 	/**
 	 * Function deleteImagesByProductId

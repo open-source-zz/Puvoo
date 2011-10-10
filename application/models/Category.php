@@ -543,5 +543,35 @@ class Models_Category
 		 return $tempTree;          // Return the entire child tree
 	}
 	
+	/**
+	 * function CategoryExist
+	 *
+	 * It is used to check that category is exist or not.
+	 *
+	 * Date created: 2011-09-10
+	 *
+	 * @param (int) $catId- Category Id.
+	 * @return (Array) - Return true on success
+	 * @author  Jayesh 
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 */
+	public function CategoryExist($catId)
+	{
+		$db= $this->db;
+		
+		$sql = "SELECT * FROM category_master WHERE category_id = ".$catId."";
+		
+		$result = $db->fetchRow($sql);
+		if($result == NULL || $result == "")
+		{
+			return false;
+		
+		}else{ 
+			return true;
+		}
+	
+	}
+	
+	
 }
 ?>

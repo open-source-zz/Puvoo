@@ -4,13 +4,13 @@
                             <ul>
                             	<li><a href="#"><img src="<?php echo IMAGES_FB_PATH ?>/frnd_like.jpg" alt="" style="vertical-align:middle; margin-right:6px;" /><?php echo $this->Translate('YouLike')?></a></li>
                                 <li><a href="#"><img src="<?php echo IMAGES_FB_PATH ?>/frnd_like.jpg" alt="" style="vertical-align:middle; margin-right:6px;" /><?php echo $this->Translate('FrndsLike')?></a></li>
-                                <li class="cart_wrapper" style="border-bottom:none;"><a href="javascript:void(0)"><img src="<?php echo IMAGES_FB_PATH ?>/cart.png" alt="" style="vertical-align:middle; margin-right:6px;" /><?php echo $this->Translate('YourCart')?><span id="cartCounterNumber" class="payvmentButtonNumber" style="padding-left:5px;"><?if($this->CartCnt){?><?php echo $this->CartCnt;?><?}else{?>0<?php }?></span></a></li>
+                                <li class="cart_wrapper" style="border-bottom:none;"><a href="javascript:void(0)"><img src="<?php echo IMAGES_FB_PATH ?>/cart.png" alt="" style="vertical-align:middle; margin-right:6px;" /><?php echo $this->Translate('YourCart')?><span id="cartCounterNumber" class="ButtonNumber" style="padding-left:5px;"><?if($this->CartCnt){?><?php echo $this->CartCnt;?><?}else{?>0<?php }?></span></a></li>
                             </ul>
                         </div>
                     </div>
                 	<div align="center" style="margin-bottom:10px; margin-top:10px;">
                         <img src="<?php echo IMAGES_FB_PATH ?>/like_shoppingmall.jpg" alt="" />
-                       
+                       	<iframe src="//www.facebook.com/plugins/like.php?href=<?php echo urlencode(SITE_FB_URL); ?>&amp;send=false&amp;layout=button_count&amp;width=90&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:90px; height:21px;" allowtransparency="true"></iframe>
                     </div>
                     <div class="navCategory portlet">
                         <!--<div class="widgetHeader"> Popular Categories </div>-->

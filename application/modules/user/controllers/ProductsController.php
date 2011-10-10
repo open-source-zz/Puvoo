@@ -239,6 +239,9 @@ class User_ProductsController extends UserCommonController
 			// Validator 
 			$float_validator = new Zend_Validate_Float();
 			$number_validator = new Zend_Validate_Digits();
+			$date_validator = new Zend_Validate_Date();
+			$int_validator = new Zend_Validate_Int();
+			$range_validator  = new Zend_Validate_Between(array('min' => 0, 'max' => 100));
 			
 			// Fetch all record here
 			$data['user_id']=$mysession->User_Id;
@@ -253,7 +256,13 @@ class User_ProductsController extends UserCommonController
 			$data['width']=$filter->filter(trim($this->_request->getPost('width')));
 			$data['depth']=$filter->filter(trim($this->_request->getPost('depth')));
 			$data['available_qty']=$filter->filter(trim($this->_request->getPost('available_qty')));
+			$data['discount']=$filter->filter(trim($this->_request->getPost('discount')));
 			$data['start_sales']=$filter->filter(trim($this->_request->getPost('start_sales')));
+			$data['available_date']=$filter->filter(trim($this->_request->getPost('available_date')));
+			$data['expiration_date']=$filter->filter(trim($this->_request->getPost('expiration_date')));
+			$data['promotion_start_date']=$filter->filter(trim($this->_request->getPost('promotion_start_date')));
+			$data['promotion_end_date']=$filter->filter(trim($this->_request->getPost('promotion_end_date')));
+			
 			$product_category = $filter->filter(trim($this->_request->getPost('multiselect_product_category_value')));
 			
 			$addErrorMessage = array();
@@ -321,6 +330,58 @@ class User_ProductsController extends UserCommonController
 			
 				$addErrorMessage[] = $translate->_('Err_Product_Invalid_Quantity');	
 			} 
+			
+			if($data['discount'] == '') {
+			
+				$addErrorMessage[] = $translate->_('Err_Product_Discount');	
+					
+			} else if(!$int_validator->isValid($data['discount'])) {
+			
+				$addErrorMessage[] = $translate->_('Err_Product_Invalid_Discount');	
+				
+			} else if(!$range_validator->isValid($data['discount'])) {
+			
+				$addErrorMessage[] = $translate->_('Err_Product_Range_Discount');	
+				
+			}
+			
+			if($data['available_date'] == '') {
+					
+				$addErrorMessage[] = $translate->_('Err_Product_Available_Date');
+						
+			} else if(!$date_validator->isValid($data['available_date'])) {
+			
+				$addErrorMessage[] = $translate->_('Err_Product_Invalid_Date');
+			}
+			
+			if($data['expiration_date'] == '') {
+			
+				$addErrorMessage[] = $translate->_('Err_Product_Expiration_Date');
+						
+			} else if(!$date_validator->isValid($data['expiration_date'])) {
+			
+				$addErrorMessage[] = $translate->_('Err_Product_Invalid_Date');
+			}
+			
+			if($data['promotion_start_date'] == '') {
+			
+				$addErrorMessage[] = $translate->_('Err_Product_Promotion_Start_Date');
+						
+			} else if(!$date_validator->isValid($data['promotion_start_date'])) {
+			
+				$addErrorMessage[] = $translate->_('Err_Product_Invalid_Date');
+			}
+			
+			if($data['promotion_end_date'] == '') {
+			
+				$addErrorMessage[] = $translate->_('Err_Product_Promotion_End_Date');
+						
+			} else if(!$date_validator->isValid($data['promotion_end_date'])) {
+			
+				$addErrorMessage[] = $translate->_('Err_Product_Invalid_Date');
+			}
+			
+			
 			if($data['start_sales'] == '' ) {			
 				$addErrorMessage[] = $translate->_('Err_Product_Start_Sales');	
 			}  
@@ -477,6 +538,9 @@ class User_ProductsController extends UserCommonController
 				// Validator 
 				$float_validator = new Zend_Validate_Float();
 				$number_validator = new Zend_Validate_Digits();
+				$date_validator = new Zend_Validate_Date();
+				$int_validator = new Zend_Validate_Int();
+				$range_validator  = new Zend_Validate_Between(array('min' => 0, 'max' => 100));
 				
 				if( $edit_type == "Detail" ) {
 					
@@ -492,7 +556,12 @@ class User_ProductsController extends UserCommonController
 					$data['width']=$filter->filter(trim($this->_request->getPost('width')));
 					$data['depth']=$filter->filter(trim($this->_request->getPost('depth')));
 					$data['available_qty']=$filter->filter(trim($this->_request->getPost('available_qty')));
+					$data['discount']=$filter->filter(trim($this->_request->getPost('discount')));
 					$data['start_sales']=$filter->filter(trim($this->_request->getPost('start_sales')));
+					$data['available_date']=$filter->filter(trim($this->_request->getPost('available_date')));
+					$data['expiration_date']=$filter->filter(trim($this->_request->getPost('expiration_date')));
+					$data['promotion_start_date']=$filter->filter(trim($this->_request->getPost('promotion_start_date')));
+					$data['promotion_end_date']=$filter->filter(trim($this->_request->getPost('promotion_end_date')));
 					
 					$product_category = $filter->filter(trim($this->_request->getPost('multiselect_product_category_value')));
 					
@@ -556,8 +625,7 @@ class User_ProductsController extends UserCommonController
 					
 					} else if(!$float_validator->isValid($data['depth'])) {
 					
-						$editErrorMessage[] = $translate->_('Err_Product_Invalid_Depth');		
-						
+						$editErrorMessage[] = $translate->_('Err_Product_Invalid_Depth');	
 					} 
 					if($data['available_qty'] == '') {
 					
@@ -566,8 +634,53 @@ class User_ProductsController extends UserCommonController
 					} else if(!$number_validator->isValid($data['available_qty'])) {
 					
 						$editErrorMessage[] = $translate->_('Err_Product_Invalid_Quantity');
+					}
+					
+					if($data['discount'] == '') {
+						$editErrorMessage[] = $translate->_('Err_Product_Discount');		
+					} else if(!$int_validator->isValid($data['discount'])) {
+						$editErrorMessage[] = $translate->_('Err_Product_Invalid_Discount');	
+					} else if(!$range_validator->isValid($data['discount'])) {
+						$editErrorMessage[] = $translate->_('Err_Product_Range_Discount');	
+					}
+					
+					if($data['available_date'] == '') {
+					
+						$editErrorMessage[] = $translate->_('Err_Product_Available_Date');
 								
-					} else if($product_primary_image == '' ) {					
+					} else if(!$date_validator->isValid($data['available_date'])) {
+					
+						$editErrorMessage[] = $translate->_('Err_Product_Invalid_Date');
+					}
+					
+					if($data['expiration_date'] == '') {
+					
+						$editErrorMessage[] = $translate->_('Err_Product_Expiration_Date');
+								
+					} else if(!$date_validator->isValid($data['expiration_date'])) {
+					
+						$editErrorMessage[] = $translate->_('Err_Product_Invalid_Date');
+					}
+					
+					if($data['promotion_start_date'] == '') {
+					
+						$editErrorMessage[] = $translate->_('Err_Product_Promotion_Start_Date');
+								
+					} else if(!$date_validator->isValid($data['promotion_start_date'])) {
+					
+						$editErrorMessage[] = $translate->_('Err_Product_Invalid_Date');
+					}
+					
+					if($data['promotion_end_date'] == '') {
+					
+						$editErrorMessage[] = $translate->_('Err_Product_Promotion_End_Date');
+								
+					} else if(!$date_validator->isValid($data['promotion_end_date'])) {
+					
+						$editErrorMessage[] = $translate->_('Err_Product_Invalid_Date');
+					}
+					
+					if($product_primary_image == '' ) {					
 					
 						$editErrorMessage[] = $translate->_('Err_Product_Primary_Image');
 					} 

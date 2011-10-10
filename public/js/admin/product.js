@@ -32,7 +32,12 @@ function ValidateProductDetailForm()
 						width: { required: true, number: true },
 						depth: { required: true, number: true},
 						available_qty: { required: true, number: true },
-						start_sales: { required: true }
+						start_sales: { required: true },
+						discount: { required: true, number: true, range: [0, 100]  },
+						available_date: { required: true, date: true },
+						expiration_date: { required: true, date: true },
+						promotion_start_date: { required: true, date: true },
+						promotion_end_date: { required: true, date: true },
 				   },
 		   
 			messages:{
@@ -47,7 +52,12 @@ function ValidateProductDetailForm()
 						width: { required: ERR_PRODUCT_WIDTH, number: ERR_PRODUCT_INVALID_WIDTH },
 						depth: { required: ERR_PRODUCT_DEPTH, number: ERR_PRODUCT_INVALID_DEPTH},
 						available_qty: { required: ERR_PRODUCT_QUANTITY, number: ERR_PRODUCT_INVALID_QUANTITY },
-						start_sales: { required: ERR_PRODUCT_START_SALE }
+						discount: { required: ERR_PRODUCT_DISCOUNT, number: ERR_PRODUCT_INVALID_DISCOUNT, range: ERR_PRODUCT_RANGE_DISCOUNT  },
+						start_sales: { required: ERR_PRODUCT_START_SALE },
+						available_date: { required: ERR_PRODUCT_PRIMARY_AVAILABLE_DATE, date: ERR_PRODUCT_PRIMARY_INVALID_DATE },
+						expiration_date: { required: ERR_PRODUCT_PRIMARY_EXPIRATION_DATE, date: ERR_PRODUCT_PRIMARY_INVALID_DATE },
+						promotion_start_date: { required: ERR_PRODUCT_PRIMARY_PROMOTION_START_DATE, date: ERR_PRODUCT_PRIMARY_INVALID_DATE },
+						promotion_end_date: { required: ERR_PRODUCT_PRIMARY_PROMOTION_END_DATE, date: ERR_PRODUCT_PRIMARY_INVALID_DATE },
 					 },
 					 
 			errorPlacement: function(error, element) 

@@ -160,16 +160,21 @@ class Admin_ImageController extends AdminCommonController
 			$thumb->get($arr_imgname[3]);	
 					
 			//Insert record in database table
+			
+			$record = $ProdImg->selectProductImages($_GET["id"]);
+			$is_primary_image = 0;
+			if( count($record) > 0 ) {  $is_primary_image = 0; } else { $is_primary_image = 1; } 
+			
 			$img_data = array( 'product_id'  => $_GET["id"],
 							   'image_name' => $filename,
 							   'image_path' => $filepath,
-							   'is_primary_image' => 0
+							   'is_primary_image' => $is_primary_image
 								);
 			
 			$id = $ProdImg->insertProductImages($img_data);	
-				
 			
-			$success = array('success'=>true,'id'=> $id, 'filename'=>SITE_PRODUCT_IMAGES_PATH.$filepath.'/'.$encname.'_th1.'.$ext);
+			
+			$success = array('success'=>true,'id'=> $id,'is_primary_image' => $is_primary_image, 'filename'=>SITE_PRODUCT_IMAGES_PATH.$filepath.'/'.$encname.'_th1.'.$ext);
 			
 			echo htmlspecialchars(json_encode($success), ENT_NOQUOTES);
 			die;

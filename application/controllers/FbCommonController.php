@@ -56,16 +56,18 @@ class FbCommonController extends Zend_Controller_Action
 		Zend_Registry::set('Db_Adapter', $db);
 		//require_once ("../public/paypalfunctions.php");
 		// Define Site Url for fb folder
-		define('SITE_FB_URL', 'http://'. $_SERVER['HTTP_HOST']. INSTALL_DIR."fb/");
-
+		//define('SITE_FB_URL', 'http://'. $_SERVER['HTTP_HOST']. INSTALL_DIR."fb/");
+		 
+		define('SITE_FB_URL', 'http://apps.facebook.com/pvalpha/');
+			
 		// Define Path for images folder FB
-		define('IMAGES_FB_PATH', INSTALL_DIR."public/images/fb");
+		define('IMAGES_FB_PATH', INSTALL_DIR."images/fb");
 
 		// Define Path for css folder for FB
-		define('CSS_FB_PATH', INSTALL_DIR."public/css/fb" );
+		define('CSS_FB_PATH', INSTALL_DIR."css/fb" );
 
 		// Define Path for css folder for FB
-		define('JS_FB_PATH', INSTALL_DIR."public/js/fb" );
+		define('JS_FB_PATH', INSTALL_DIR."js/fb" );
 		
 		//Get Language array
 		$lang = array();
@@ -85,7 +87,7 @@ class FbCommonController extends Zend_Controller_Action
 		   
 		   
 		Zend_Registry::set('Zend_Translate', $tr);
-		define('Facebook_Authentication_URL',"https://www.facebook.com/dialog/oauth?client_id=236169479754038&redirect_uri=https://apps.facebook.com/puvootest/");
+		define('Facebook_Authentication_URL',"https://www.facebook.com/dialog/oauth?client_id=124974344272864&redirect_uri=https://apps.facebook.com/pvalpha/");
 		
 		//$mysession->FbuserId = "xyz@yahoo.com";
 		$mysession->FbuserId = "";
@@ -224,13 +226,8 @@ class FbCommonController extends Zend_Controller_Action
  		//To know how many product in Cart
 		$Cart = new Models_Cart();
 		$CartDetails = $Cart->GetProductInCart();
-		
-		
-		// Country combo
-		$this->view->CountryCombo = $Cart->GetCountry();
-		// State combo
-		$this->view->StateCombo = $Cart->GetState($this->view->countryId);
-		
+		//print "<pre>";
+		//print_r($CartDetails);die;
 		if($CartDetails){
 			$this->view->cartItems = $CartDetails;
 			
@@ -244,7 +241,7 @@ class FbCommonController extends Zend_Controller_Action
 				$CartTotal += $value['product_qty'];
 			}
 			//print $Price;die;
-			$this->view->CartCnt = $CartTotal;
+			$this->view->CartCnt = count($CartDetails);
  			$this->view->TotalPrice = $Price;
 			$this->view->cartId = $cartId;
 			$mysession->cartId = $cartId;
@@ -295,43 +292,49 @@ class FbCommonController extends Zend_Controller_Action
 				
 			}
 			
+			// Country combo
+			$this->view->CountryCombo = $Cart->GetCountry();
+			// State combo
+			$this->view->StateCombo = $Cart->GetState($this->view->countryId);
+			
+			
 			$_SESSION['Payment_Amount'] = '1000';
+			
+			
 			
 		}
 		$Id = $this->_request->getParam('id');
-		if($Id)
+		
+		if($cur_controller == 'product' || $cur_controller == 'retailer')
 		{
-			if($cur_controller == 'product' || $cur_controller == 'retailer')
+			$userId = '';
+			
+			if($cur_controller == 'product' && $Id!='')
 			{
-				$userId = '';
-				
-				if($cur_controller == 'product' && $Id!='')
-				{
-					$prodExist = $Product->ProductExist($Id);
-					if($prodExist) {		
-						$productDetails = $Product->GetProductDetails($Id);
-						$userId = $productDetails['user_id'];
-					} else  {
-						 $this->_redirect("fb/");
-					 }
-				}
-				
-				if($cur_controller == 'retailer' && $Id!='')
-				{
-					$userId = $Id;
-				}
-				
-				if ( $userId != '' ) {  
-	
-					$sellerInfo = $Product->GetSellerInformation($userId);
-					$this->view->terms = $sellerInfo['store_terms_policy'];
-					$this->view->returnPolicy = $sellerInfo['return_policy'];
-					$this->view->storeDescription = $sellerInfo['store_description'];
-					
-				}
+				$prodExist = $Product->ProductExist($Id);
+				if($prodExist) {		
+					$productDetails = $Product->GetProductDetails($Id);
+					$userId = $productDetails['user_id'];
+				} else  {
+					$this->_redirect("/fb");
+				 }
+			}
+			if($cur_controller == 'retailer' && $Id!='')
+			{
+				$userId = $Id;
+			}
+			
+			if ( $userId != '' ) {  
+
+				$sellerInfo = $Product->GetSellerInformation($userId);
+				$this->view->terms = $sellerInfo['store_terms_policy'];
+				$this->view->returnPolicy = $sellerInfo['return_policy'];
+				$this->view->storeDescription = $sellerInfo['store_description'];
 				
 			}
+			
 		}
+		
 		// top friends like
 		$TopFrdsLikeProd = $Product->GetTopFrndsLikeProduct();
 		$this->view->frndstoplike = $TopFrdsLikeProd;

@@ -96,9 +96,16 @@ class Models_Product
 			 
 			$where .= " order By product_price desc";
 			
-		}else{
+		}elseif($sort == 'bestseller'){
 			
-			$where .= " order By product_price asc";
+			$where .= " order By sold_count desc";
+			
+		}elseif($sort == 'most_liked'){
+			
+			$where .= " order By like_count desc";
+		}else{
+		
+			$where .= " order By sold_count desc";
 		}
  		
 		$sql = "SELECT DISTINCT pm.product_id,pm.product_name,pm.product_price,pi.* FROM product_to_categories as ptc 
@@ -165,9 +172,16 @@ class Models_Product
 			 
 			$where .= " order By product_price desc";
 			
-		}else{
+		}elseif($sort == 'bestseller'){
 			
-			$where .= " order By product_price asc";
+			$where .= " order By sold_count desc";
+			
+		}elseif($sort == 'most_liked'){
+			
+			$where .= " order By like_count desc";
+		}else{
+		
+			$where .= " order By sold_count desc";
 		}
  		
 		$sql = "SELECT DISTINCT pm.*,pi.*,um.store_name FROM product_master as pm 
@@ -743,16 +757,14 @@ class Models_Product
 				 WHERE pm.product_id = ".$id;
 		$sql2 =" SELECT * 
 				 FROM product_images
-				 WHERE product_id =".$id;
-		/*$sql3 =" SELECT ptc.*
-				 FROM product_to_categories as ptc
-				 WHERE ptc.product_id =".$id;*/
+				 WHERE product_id =".$id;		
 		$sql3 =" SELECT cm.*
 				 FROM product_to_categories as ptc
 				 JOIN category_master as cm ON(cm.category_id = ptc.category_id)
 				 WHERE cm.is_active = 1 
 				 AND ptc.product_id =".$id;
-	 	$sql4 =" SELECT po.*,pod.option_name,pod.product_options_id as LNK_options_id, pod.option_code ,pod.product_options_detail_id
+	 	$sql4 =" SELECT po.*,pod.option_name,pod.product_options_id as LNK_options_id, pod.option_code ,pod.product_options_detail_id, pod.option_weight, pod.option_price, pod.option_quantity,
+				 (SELECT wm.weight_unit_key FROM weight_master as wm WHERE wm.weight_unit_id = pod.option_weight_unit_id ) as weight_unit_key
 				 FROM product_options as po
 				 LEFT JOIN product_options_detail as pod ON(po.product_options_id = pod.product_options_id)
 				 WHERE po.product_id = ".$id;
