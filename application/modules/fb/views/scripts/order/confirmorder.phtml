@@ -1,0 +1,47 @@
+<form name="payment_checkout" id="payment_checkout" action="<?php echo SITE_FB_URL;?>" method="post" enctype="multipart/form-data" target="_top"> 
+<div id="rightColumn">
+  <div class="mainColumnWidget" style="border-bottom:1px solid #E2E2E2;">
+    <div class="categoryHeader"> <?php echo $this->Translate('OrderReview')?> </div>
+    <div id="contactArea">
+      <div class="shoppingCart" id="order_review" style="display:block; visibility:visible;">
+        <div id="cart_head">
+          <div class="itemAvailable">
+            <div class="cartItemProductImageCell" style="height:0px;"> <b>Product</b> </div>
+            <div class="cartItemDivider cartItemMainContent"> <b>Description</b> </div>
+            <div class="cartItemDivider cartItemMainContent"> <b>Qty</b> </div>
+            <div class="cartItemDivider cartItemDeleteButton"> </div>
+            <div id="itemQtyPrice_1" class="cartItemDivider cartItemPriceDisplay" style="width:78px; float:left;"> <b>Price</b> </div>
+            <div class="clear"></div>
+          </div>
+        </div>
+		
+        <?php foreach($this->cartItems as $Item){?>
+		
+        <div id="cartRow_2" class="itemAvailable">
+          <div class="cartItemProductImageCell"> <img class="cartItemProductImage" src="<?php echo SITE_PRODUCT_IMAGES_PATH.$Item['image_path'] ?>/<?php echo $Item['image_name'] ?>" alt="" /> </div>
+          <div class="cartItemDivider cartItemMainContent"> <span class="cartItemProductTitle"> <a title="<?php echo $Item['store_name'];?>" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $Item['product_id'];?>" target="_top"><?php echo ucfirst($Item['product_name']);?></a> </span>
+            <div id="cartItemDetail_1" class="cartItemDetail" style="display: block"> <span class="cartRetailerLabel"> <?php echo $this->Translate('Seller')?> <a href="javascript:void(0)" target="_top"><?php echo $Item['store_name'];?></a> </span> </div>
+          </div>
+          <div class="cartItemDivider cartItemMainContent"> <?php echo $Item['product_qty'];?> </div>
+          <div id="itemQtyPrice_1" class="cartItemDivider cartItemPriceDisplay" style="float:left;">
+            <div ><?php echo $this->currency_symbol."&nbsp;".$Item['product_total_cost'] ?></div>
+          </div>
+          <div class="clear"></div>
+        </div>
+		<div id="SubtotalDiv" class="" style="margin-top: 10px; text-align: right;  margin-bottom: 20px;">
+			<span class="boldText"><?php echo $this->Translate('OrderTotal')?></span>
+			<span id="cartSubTotal" ><?php echo $this->currency_symbol."&nbsp;".$Item['total_order_amount'] ?></span>
+							
+		</div>
+        <?php } ?>
+		
+		<input type="hidden" name="payment_token" id="payment_token" value="<?php echo $this->token; ?>">
+		<input type="hidden" name="payment_payerId" id="payment_payerId" value="<?php echo $this->PayerID; ?>">
+        <div style="margin-top:10px; margin-bottom:10px;" align="right">
+          <input type="submit" class="confirm" value="" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</form>

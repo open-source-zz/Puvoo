@@ -40,7 +40,7 @@ class Rest_InventoryController extends RestCommonController
 {
 	protected $api_key = "";
 	protected $user_id = 0;
-	
+	protected $translate = NULL;
 	/**
 	 * Function init
 	 *
@@ -58,12 +58,13 @@ class Rest_InventoryController extends RestCommonController
 	public function init(){
 		parent::init();
 		
+		$this->translate = Zend_Registry::get('Zend_Translate');
 		//Get api key from header
 		$this->api_key = $this->getRequest()->getHeader('apikey');
 		
 		if($this->api_key == "" || $this->api_key == null)
 		{
-			$this->view->message = 'Access Denied';
+			$this->view->message = $this->translate->_('Invt_Access_Denied');
         	$this->getResponse()->setHttpResponseCode(401);
 			
 		}
@@ -74,7 +75,7 @@ class Rest_InventoryController extends RestCommonController
 		}
 		
 		if($this->user_id <= 0){
-			$this->view->message = 'Access Denied';
+			$this->view->message = $this->translate->_('Invt_Access_Denied');
         	$this->getResponse()->setHttpResponseCode(401);
 		}	
 		
@@ -97,7 +98,8 @@ class Rest_InventoryController extends RestCommonController
 	 **/
 	public function optionsAction()
     {
-        $this->view->message = 'Resource Options';
+		
+        $this->view->message = $this->translate->_('Invt_Resource_Options');
         $this->getResponse()->setHttpResponseCode(200);
     }
 
@@ -123,7 +125,7 @@ class Rest_InventoryController extends RestCommonController
 		if($this->user_id > 0)
 		{
 			$this->view->resources = array('mykey' => $this->api_key);
-			$this->view->message = 'Resource Index';
+			$this->view->message = $this->translate->_('Invt_Resource_Index');
         	$this->getResponse()->setHttpResponseCode(200);
 		}
     }
@@ -293,23 +295,23 @@ class Rest_InventoryController extends RestCommonController
 					
 					//check values
 					if($pid <= 0){
-						$arr_error[] = "Invalid id for product";
+						$arr_error[] = $this->translate->_('Invt_Invalid_Product_Id');
 					}
 					
 					if($pid > 0 && !$Product->checkProductForUser($pid, $this->user_id))
 					{
-						$arr_error[] = "Invalid id for product";
+						$arr_error[] = $this->translate->_('Invt_Invalid_Product_Id');
 					}
 					
 					if($price != "" && $price <= 0)
 					{
-						$arr_error[] = "Invalid price for product";
+						$arr_error[] = $this->translate->_('Invt_Invalid_Product_Price');
 					}
 					
 					
 					if($available_qty != "" && $available_qty <= 0)
 					{
-						$arr_error[] = "Invalid quantity for product";
+						$arr_error[] = $this->translate->_('Invt_Invalid_Product_Quantity');
 					}
 					
 					
@@ -329,7 +331,7 @@ class Rest_InventoryController extends RestCommonController
 			}			
 			else
 			{
-				$arr_error[] = "You can edit inventory of maximum 50 product at a time";
+				$arr_error[] = $this->translate->_('Invt_Product_Edit_Limit');
 			}
 			
 			if(count($arr_error) == 0)
@@ -358,8 +360,8 @@ class Rest_InventoryController extends RestCommonController
 					
 				}
 				
-				$this->view->result = 'Success';
-				$this->view->message = 'Product updated successfully';
+				$this->view->result = $this->translate->_('Invt_Success');
+				$this->view->message = $this->translate->_('Invt_Product_Edit_Success');
 				
         		$this->getResponse()->setHttpResponseCode(201);
 				

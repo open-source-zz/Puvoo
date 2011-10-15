@@ -37,7 +37,7 @@
 				<?php echo $this->ProdName?>
 			</div>
 			<div class="right" id="prod_price">
-				<?php echo '$'.$this->ProdPrice; ?> 
+				<?php echo DEFAULT_CURRENCY_SYMBOL.$this->ProdPrice; ?> 
 			</div>
 			<div class="clear"></div>
 		</div>  
@@ -56,13 +56,8 @@
 		 </div>  
 		<div class="left" style="width:170px; padding-left:10px;">
 			<div class="description">
-				<div class="descriptionHeader">
-					<h3><?php echo $this->Translate('Description')?></h3>
-				</div>
 				<div id="pfdesc">
-					<?php echo $this->ProdDesc?>
-					<br />
-					<br />
+					
 					<span style="font-weight:bold;"><?php echo $this->Translate('Weight')?> - </span><?php echo $this->ProdWeight;?>
 					<br />
 				 
@@ -98,7 +93,7 @@
 						<input type="hidden" value="<?php echo $this->totalCombo;?>" name="Opt_Combo" id="Opt_Combo" />
 					</div>
 					<div id="pfcartbin" style="margin-top:10px;">
-						<input type="button" class="add_cartbtn" value="" id="btn" onclick="Javascript: return validateAddToCart('product/addtocart')" />
+						<input type="button" class="add_cartbtn" value="" id="btn" onclick="validateAddToCart()" />
 					</div>
 						<input id="productId" name="productId" type="hidden" value="<?php echo $this->ProdId;?>"/>
 						<input id="command" name="command" type="hidden" value="addStoreItem"/>
@@ -110,12 +105,31 @@
 						<input type="hidden" name="hiddenPrice" id="hiddenPrice" value="0" />
 						<input type="hidden" name="DefaultPrice" id="DefaultPrice" value="<?php echo $this->ProdPrice; ?> " />
 						<input type="hidden" name="TotalPrice" id="TotalPrice" value="<?php echo $this->ProdPrice; ?> " />
+						<input type="hidden" name="FbuserId" id="FbuserId" value="<?php echo $this->FB_userid;?>" />
 				</form>
 			</div>
 			<div id="backgroundPopup"></div>
  		</div>
 		<div class="clear"></div>
 		<div style="border-top:solid 1px #E2E2E2;background:#F2F2F2; margin-top:10px; padding-bottom:12px;">  
+			<div class="left" style="padding-left: 10px;">
+				<div class="productInfoBox">
+					<div>
+						<div id="pfshipto">
+							<strong><h3><?php echo $this->Translate('Description')?></h3></strong>
+						</div>
+						<div id="pfshipmethod">
+							<?php echo $this->ProdDesc; ?>
+						</div>
+					</div>
+				</div>
+			 </div>
+			<div class="clear"></div>
+		</div>
+		
+		<div class="clear"></div>
+		
+		<div style="border-top:solid 1px #E2E2E2;background:#F2F2F2; padding-bottom:12px;">  
 			<div class="left" style="padding-left: 10px;">
 				<div class="productInfoBox">
 					<div>
@@ -129,30 +143,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="socialbtn" style="margin-left:0px; margin-top:0px;">
-					<div class="left" style="width:120px;">
-						<iframe src="//www.facebook.com/plugins/like.php?href=<?php echo urlencode(SITE_FB_URL . "product/view/id/" . $this->ProdId); ?>&amp;send=false&amp;layout=button_count&amp;width=90&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:90px; height:21px;" allowTransparency="true"></iframe>
-					</div>
-				   <div style="text-align: left;">
-					   <div class="share" id="shareLinkContGrid_lls1">
-							<div id="fb-root"></div>
-							<script>(function(d, s, id) {
-							  var js, fjs = d.getElementsByTagName(s)[0];
-							  if (d.getElementById(id)) {return;}
-							  js = d.createElement(s); js.id = id;
-							  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
-							  fjs.parentNode.insertBefore(js, fjs);
-							}(document, 'script', 'facebook-jssdk'));</script>
-							
-							<fb:send href="<?php echo SITE_FB_URL . "product/view/id/" . $this->ProdId; ?>"></fb:send>
-
-					   </div>
-					   
-					   <div style="clear: both;"></div>
-		
-					</div>
-					<div style="clear: both"></div>
-				 </div>
+				
 			 </div>
 			<div class="right">
 				<div class="productInfoBox">
@@ -169,6 +160,18 @@
 				</div>
 			 </div>
 			<div class="clear"></div>
+			<div class="socialbtn" style="margin-left:10px; margin-top:0px;">
+					<div id="fb-root"></div>
+					<script>(function(d, s, id) {
+					  var js, fjs = d.getElementsByTagName(s)[0];
+					  if (d.getElementById(id)) {return;}
+					  js = d.createElement(s); js.id = id;
+					  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=124974344272864";
+					  fjs.parentNode.insertBefore(js, fjs);
+					}(document, 'script', 'facebook-jssdk'));</script>
+					<fb:like href="<?php echo SITE_FB_URL . "product/view/id/" . $this->ProdId; ?>" send="true" layout="button_count" width="500" show_faces="false"></fb:like>
+					
+			</div>
 		</div>
 		<div style="border-top:solid 1px #E2E2E2;">
 			<div id="fb-root"></div>
@@ -184,3 +187,15 @@
 		</div>
 	</div>
 </div>
+<script type="text/javascript">
+
+		$(document).ready(function()
+		{
+			 $("#popupContactClose").click(function()
+			 {
+				 disablePopup();
+			 });
+		 
+		});
+
+</script>

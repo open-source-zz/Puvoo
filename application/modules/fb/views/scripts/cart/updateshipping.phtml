@@ -14,16 +14,19 @@
 					<label for="lastName"><?php echo $this->Translate('SubTotal')?></label>
 				</td>
 				<td>
-					<?php echo "$".floatval($Item['price']*$Item['product_qty']);?>
+					<?php echo $this->currency_symbol."&nbsp;".floatval($Item['price']*$Item['product_qty']);?>
 				</td>
 			</tr>
 			<tr><td height="4"></td></tr>	
 			
 			<?php 
 			 $flag  = "";
-				foreach($this->Ship_Method_Combo as $key => $val ){
-					if($key == $Item['product_id'] ){
-						$flag = $val;
+			 	if($this->Ship_Method_Combo)
+				{
+					foreach($this->Ship_Method_Combo as $key => $val ){
+						if($key == $Item['product_id'] ){
+							$flag = $val;
+						}
 					}
 				}
 			?>
@@ -47,7 +50,7 @@
 					<label for="lastName"><?php echo $this->Translate('ShippingCost')?>:</label>
 				</td>
 				<td id="ShippingCost<?php echo $Item['product_id'];?>">
-					$0
+					<?php echo $this->currency_symbol."&nbsp;"."0";?>
 				</td>
 			</tr>
 			<tr><td height="4"></td></tr>
@@ -59,21 +62,26 @@
 				</td>
 				<td id="taxRate<?php echo $Item['product_id'];?>">
 					<?php 
+						if($this->taxRate)
+						{
  							foreach($this->taxRate as $key => $val){
 								if($key == $Item['product_id'] ){
 									if($val){
  										foreach($val as $val2){
  											$taxrate = (($Item['price']*$Item['product_qty'])*$val2)/100;
 											$totalAmout[$Item['product_id']] =  floatval(($Item['price']*$Item['product_qty']))+floatval($taxrate); 
- 											echo "$".$taxrate;
+ 											echo $this->currency_symbol."&nbsp;".round($taxrate,2);
  										}
  									}else{
  										$totalAmout[$Item['product_id']] =  $Item['product_total_cost']; 
- 										echo "$0";
+ 										echo $this->currency_symbol."&nbsp;"."0";
  									}
 								}
 							}
-						?>
+						}else{
+							echo $this->currency_symbol."&nbsp;"."0";
+						}
+					?>
 				</td>
 			</tr>
 			
@@ -83,13 +91,18 @@
 					<label for="lastName"><?php echo $this->Translate('HandlingTime')?></label>
 				</td>
 				<td>
-					<?php 
+					<?php
+						if($this->ship_handel_day)
+						{
 							foreach($this->ship_handel_day as $key => $val ){
 								if($key == $Item['product_id'] ){
 								
 									echo $val."&nbsp;Days";
 								}
 							}
+						}else{
+							echo $this->Translate('Nodays');
+						}
 						?>
 				</td>
 			</tr>

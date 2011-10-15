@@ -51,6 +51,8 @@ abstract class RestCommonController extends REST_Controller
 	 **/
     public function init() 
 	{
+		 global $mysession; 
+		 
         $this->_helper->viewRenderer->setNoRender(true);
 		$this->_helper->layout()->disableLayout();
 		
@@ -58,6 +60,25 @@ abstract class RestCommonController extends REST_Controller
 		
 		//save database adapter in zend registry
 		Zend_Registry::set('Db_Adapter', $db);
+		
+		//Get Language array
+		$lang = array();
+		
+		$lang_def = new Models_LanguageDefinitions();
+		
+		$lang = $lang_def->getGroupLanguage('REST', 1);
+		
+		//Set Default language for site
+		$tr = new Zend_Translate(
+			array(
+			'adapter' => 'array',
+			  'content' => $lang,
+			  'locale'  => $mysession->language 
+			)
+		);
+		   
+		//Save translation adapter in zend registry
+		Zend_Registry::set('Zend_Translate', $tr);
 		
 	} 
 	

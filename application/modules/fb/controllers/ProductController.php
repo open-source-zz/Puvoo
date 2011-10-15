@@ -40,12 +40,15 @@ class Fb_ProductController extends FbCommonController
 	 * @author Jayesh
 	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
-	 **/  
+	 **/
 	 public function init()
 	 {
+	 	global $mysession;
 		parent::init();
 		 /* Initialize action controller here */
 		Zend_Loader::loadClass('Models_Product');
+		
+		//$this->view->FB_userid = $mysession->FbuserId;
 	 }
 	
 	/**
@@ -94,8 +97,7 @@ class Fb_ProductController extends FbCommonController
  		$Product = new Models_Product();
 		$Category = new Models_Category();
  		$Poductid = $this->_request->getParam('id');
-		
-		
+		$this->view->FB_userid = FBUSER_ID;
 		
 		if($Poductid)
 		{
@@ -126,7 +128,7 @@ class Fb_ProductController extends FbCommonController
 				//print "<pre>";
 				//print_r($productDetail);die;
 				$this->view->ProdName = ucfirst($productDetail['product_name']);
-				$ProdPrice = $productDetail['product_price'];
+				$ProdPrice = $productDetail['prod_convert_price'];
 				$this->view->ProdPrice = $ProdPrice;
 				$this->view->ProdDesc = $productDetail['product_description'];
 				$this->view->ProdWeight = $productDetail['product_weight']."&nbsp;".$productDetail['weight_unit_key'];
@@ -205,7 +207,6 @@ class Fb_ProductController extends FbCommonController
 			$this->_redirect("fb/");
 		}
 		
-		
 	 }
 	 
 	/**
@@ -231,7 +232,20 @@ class Fb_ProductController extends FbCommonController
 		$Category = new Models_Category();
 		$Product = new Models_Product();
 		
-		//print_r($_POST);die;
+		
+		$tempArray = explode("/",$_SERVER["REQUEST_URI"]);
+		$siteArray = array();
+		foreach( $tempArray as $key => $val )
+		{
+			if( $key != 0 && $key != 1) {
+				$siteArray[] = $val;
+			}
+		}
+		
+		$this->view->temp_url = SITE_FB_URL.implode("/",$siteArray);
+		
+		
+  		//print_r($_POST);die;
 		if(!$_GET)
 		{
 			$QueryString = $this->_request->getParam('q');
@@ -239,13 +253,18 @@ class Fb_ProductController extends FbCommonController
  			$CatId = $this->_request->getParam('ccatid');
 		}else{
 			$QueryString = $_GET['q'];
-			$Search = $_GET['Search'];
+			$Search = $_GET['search'];
  			$CatId = $_GET['cid'];
+			
+			
+			$this->view->QueryString = $_GET['q'];
+			$this->view->Search = $_GET['search'];
+ 			$this->view->CatId = $_GET['cid'];
 		}
 		
-		if($this->_request->getPost('sortBy') !='')
+		if($this->_request->getParam('sortBy') !='')
 		{
-			$sort = $this->_request->getPost('sortBy');
+			$sort = $this->_request->getParam('sortBy');
 			$this->view->$sort = "selected='selected'";
 		}else{
 			$sort = 'bestseller';
@@ -261,8 +280,8 @@ class Fb_ProductController extends FbCommonController
    		//Get Request
 		$request = $this->getRequest();
 		
-		if($request->isPost()){
- 			$page_no = $request->getPost('page_no');
+		if($request->getParam('page_no') != ''){
+ 			$page_no = $request->getParam('page_no');
  			$mysession->pagesize = $pagesize;
  		}
 		$parentid = '';
@@ -283,6 +302,10 @@ class Fb_ProductController extends FbCommonController
 		{
 			$this->view->allcategories = $Category->GetMainCategory();
 		}
+		
+		$QueryString = $_GET['q'];
+		$Search = $_GET['search'];
+		$CatId = $_GET['cid'];
 		
 		$SearchDetails = $Product->GetProductSearch($QueryString,$Search,$CatId,$sort);
 //		print "<pre>";
@@ -326,8 +349,7 @@ class Fb_ProductController extends FbCommonController
 		$Category = new Models_Category();
 		$Product = new Models_Product();
 		$Cart = new Models_Cart();
- 	 	
-		//print_r($_POST);die;
+ 	 	$Common = new Models_Common();
 		//if(Facebook_Authentication_URL)
 		//{
 			if($this->_request->getParam('prodid'))
@@ -342,6 +364,7 @@ class Fb_ProductController extends FbCommonController
 				//print $prodId;die;
 				$ProductInfo = $Product->GetProductDetails($prodId);
 				$ProductInfo['price'] = $this->_request->getParam('prodPrice');
+				$ProductInfo['fbid'] = $this->_request->getParam('fbuserid');
 				//print_r($ProductInfo);die;
 				$exist = $Cart->ProductExist($ProductInfo['product_id']);
 				
@@ -349,11 +372,11 @@ class Fb_ProductController extends FbCommonController
 				if($exist < 1)
 				{	
 					// Insert Record in cart
-					$ins_crt = $Cart->Insert_Record($ProductInfo);
+					$ins_crt = $Cart->InsertRecord($ProductInfo);
 					//print $ins_crt;die;
 					if ($ins_crt = true)
 					{
-						$CartDetails = $Cart->GetCartDetailId($prodId);
+						$CartDetails = $Cart->GetCartDetailId($prodId,$ProductInfo['fbid']);
  						$cartDetailId = $CartDetails['cart_detail_id'];
 						// Insert Record in cart option
 						//print_r($this->_request->getParam('option'));die;
@@ -366,9 +389,8 @@ class Fb_ProductController extends FbCommonController
 								if($opt != 0)
 								{
 									$productOptions = $Product->GetProductOptionUsingValue($prodId,$opt);
-									
 									//print_r($productOptions);die;
-									$ins_opt = $Cart->Insert_CartOption_Record($productOptions,$cartDetailId);
+									$ins_opt = $Cart->InsertCartOptionRecord($productOptions,$cartDetailId);
 								}
 								//$ProductInfo['options'] = $optionInfo;
 								
@@ -383,7 +405,7 @@ class Fb_ProductController extends FbCommonController
 	
 			}
 			
-		$CartDetails = $Cart->GetProductInCart();
+		$CartDetails = $Cart->GetProductInCart($this->_request->getParam('fbuserid'));
 		
 		if(count($CartDetails) > 0){
 			$this->view->cartItems = $CartDetails;
@@ -393,15 +415,22 @@ class Fb_ProductController extends FbCommonController
 			$CartTotal = '';
 			foreach($CartDetails as $value)
 			{
+				//echo "<pre>";
+				//print_r($value);die;
  				$Price += $value['price']*$value['product_qty'];
 				$cartId = $value['cart_id'];
 				$CartTotal += $value['product_qty'];
+				
+				$currency_symbol = $Common->GetCurrencyValue($value['currId']);
+				
 			}
-			//print $Price;die;
-			$this->view->CartCnt = count($CartDetails);
+			$this->view->currency_symbol = $currency_symbol['currency_symbol'];
+			
+ 			$this->view->CartCnt = count($CartDetails);
  			$this->view->TotalPrice = $Price;
 			$this->view->cartId = $cartId;
 			$mysession->cartId = $cartId;
+			$this->view->currencyId = $currency_symbol['currency_id'];
 			
 			if($cartId) {
 				
@@ -440,8 +469,17 @@ class Fb_ProductController extends FbCommonController
 				$this->view->bill_stateName = $BillingInfo['state_name'];
 				$this->view->bill_countryId = $BillingInfo['billing_user_country_id'];
 				$Billaddress = explode('@',$BillingInfo['billing_user_address']);
- 				$this->view->bill_address = $Billaddress[0];
-				$this->view->bill_address1 = $Billaddress[1];
+ 				//$this->view->bill_address = $Billaddress[0];
+				//$this->view->bill_address1 = $Billaddress[1];
+				if(isset($Billaddress[0]))
+				{
+					$this->view->bill_address = $Billaddress[0];
+ 				}
+				if(isset($Billaddress[1]))
+				{
+					$this->view->bill_address1 = $Billaddress[1];
+ 				}
+				
 				$this->view->bill_city = $BillingInfo['billing_user_city'];
 				$this->view->bill_state = $BillingInfo['billing_user_state_id'];
 				$this->view->bill_zip = $BillingInfo['billing_user_zipcode'];
@@ -451,12 +489,11 @@ class Fb_ProductController extends FbCommonController
 			$this->view->CountryCombo = $Cart->GetCountry();
 			// State combo
 			$this->view->StateCombo = $Cart->GetState($this->view->countryId);
+			
+			$this->view->CurrencyCombo = $Common->GetCurrency();
 
 		}		
 
-		//}else{
-		//	echo "error";die;
-		//}
 		
 	 }
 	 
@@ -499,6 +536,7 @@ class Fb_ProductController extends FbCommonController
 		$Opt_detailId = $this->_request->getParam('opt_detail_id');
 		
 		$OptPrice = $Product->getProductOptPrice($Opt_detailId,$prodId);
+		//echo "<pre>";
 		//print_r($OptPrice );die;
 		echo json_encode($OptPrice);die;
 	 }

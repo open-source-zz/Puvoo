@@ -38,7 +38,7 @@
 	<?php $array_records = $this->constant_array; ?>
 	<?php $records = $this->records;  ?>
 	
-	<form method="post" name="Userstoresetting_form" id="Userstoresetting_form" >
+	<form method="post" name="Userstoresetting_form" id="Userstoresetting_form"  >
 		<table class="Panel" style="margin-top:10px;">
 			<tr>
 				<td class="Heading2" colspan="2"><?php echo $this->Translate('Store_Setting'); ?></td>
@@ -82,7 +82,7 @@
 								<?php echo $this->Translate('Store_Currency'); ?>:
 							</td>
 						  	<td>
-								<select name="story_currency" id="story_currency" class="Field250">
+								<select name="story_currency" id="story_currency" class="Field250" >
 									  <option value="" selected="selected"><?php echo $this->Translate('User_Select_Currency'); ?></option>
 									  <?php if(count($this->currency) > 0) {  ?>
 									  <?php 	if($records['currency_id'] != "") {  ?>
@@ -162,15 +162,17 @@
 								  <?php if(count($this->country_states) > 0) {  ?>
 								  <?php 	if($records['state_id'] != "") {  ?>
 								  <?php  		foreach($this->country_states as $key => $val) { ?>	
-								  <?php 			if($val['state_id'] == $records['state_id']) {  ?>		  
+								  <?php           if($val["country_id"] ==  $records['country_id']) { ?>
+								  <?php 			 if($val['state_id'] == $records['state_id']) {  ?>		  
 								  <option selected="selected" value="<?php echo $val['state_id']; ?>"><?php echo $val["state_name"];  ?></option>
-								  <?php  			} else {  ?>
+								  <?php  			 } else {  ?>
 								  <option  value="<?php echo $val['state_id']; ?>"><?php echo $val["state_name"];  ?></option>
-								  <?php  			}  ?>
+								  <?php  			 }  ?>
+								  <?php  		   }  ?>
 								  <?php 		}  ?>
 								  <?php  	} else {  ?>
 								  <?php  		foreach($this->country_states as $key => $val) { ?>
-								  <option value="<?php echo $val['state_id']; ?>"><?php echo $val["state_name"];  ?></option>
+								  <option value=""><?php echo $this->Translate('Shipping_Select_State'); ?></option>
 								  <?php 		}  ?>
 								  <?php  	}  ?>
 								  <?php  }  ?>

@@ -95,6 +95,7 @@ class Fb_RetailerController extends FbCommonController
 		$Category = new Models_Category(); 
 		
  		$retailer_id = $this->_request->getParam('id');
+		$this->view->retailerId = $retailer_id;
 		if($retailer_id)
 		{
 			$Ret_Exist = $Common->RetailerExist($retailer_id);
@@ -108,20 +109,18 @@ class Fb_RetailerController extends FbCommonController
 				//Get Request
 				$request = $this->getRequest();
 				$Sort = '';
-				if($request->isPost()){
-					$page_no = $request->getPost('page_no');
-					$Sort = $request->getPost('sortBy');
+				if($request->getParam('page_no') != ''){
+					$page_no = $request->getParam('page_no');
+					$Sort = $request->getParam('sortBy');
 					$mysession->pagesize = $pagesize;
-				}
-				
-				$this->view->$Sort = "selected='selected'";
-				if($Sort == ''){
+					$this->view->$Sort = "selected='selected'";
+					if($Sort == ''){
 					$Sort = 'bestseller';
+					}
 				}
-		
-				$this->view->RetailerId = $retailer_id;
-						
 				
+ 				$this->view->RetailerId = $retailer_id;
+						
 				 
 				//to get Product Details
 				$Ret_productDetail = $Product->GetProductByRetailerId($retailer_id,$Sort);

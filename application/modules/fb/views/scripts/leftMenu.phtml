@@ -2,8 +2,8 @@
                 	<div class="widget1">
                     	<div class="ulclass">
                             <ul>
-                            	<li><a href="#"><img src="<?php echo IMAGES_FB_PATH ?>/frnd_like.jpg" alt="" style="vertical-align:middle; margin-right:6px;" /><?php echo $this->Translate('YouLike')?></a></li>
-                                <li><a href="#"><img src="<?php echo IMAGES_FB_PATH ?>/frnd_like.jpg" alt="" style="vertical-align:middle; margin-right:6px;" /><?php echo $this->Translate('FrndsLike')?></a></li>
+                            	<li><a href="<?php echo SITE_FB_URL;?>like/yourlikes" target="_top"><img src="<?php echo IMAGES_FB_PATH ?>/frnd_like.jpg" alt="" style="vertical-align:middle; margin-right:6px;" /><?php echo $this->Translate('YouLike')?></a></li>
+                                <li><a href="<?php echo SITE_FB_URL;?>like/friendlikes" target="_top"><img src="<?php echo IMAGES_FB_PATH ?>/frnd_like.jpg" alt="" style="vertical-align:middle; margin-right:6px;" /><?php echo $this->Translate('FrndsLike')?></a></li>
                                 <li class="cart_wrapper" style="border-bottom:none;"><a href="javascript:void(0)"><img src="<?php echo IMAGES_FB_PATH ?>/cart.png" alt="" style="vertical-align:middle; margin-right:6px;" /><?php echo $this->Translate('YourCart')?><span id="cartCounterNumber" class="ButtonNumber" style="padding-left:5px;"><?if($this->CartCnt){?><?php echo $this->CartCnt;?><?}else{?>0<?php }?></span></a></li>
                             </ul>
                         </div>
@@ -37,7 +37,7 @@
 											<?php if($val['image_name']){?>
 												<img src="<?php echo $tinyImage; ?>" alt="" />
 											<?php }else{?>
-												<img src="<?php echo IMAGES_FB_PATH ?>/coming.jpg" alt="" />
+												<img src="<?php echo IMAGES_FB_PATH ?>/coming.jpeg" alt="" />
 											<?php }?>
 											</a>
 										</div>

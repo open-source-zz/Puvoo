@@ -12,87 +12,108 @@ function reloadPageWithNewSort(val)
 	$("#frmcatproduct").submit();
 }
 
-function validateAddToCart(URL)
-{	
+
+function addTocart(fb_userid,product_id, options_id, product_price)
+{
+		$('#loader2').show();
+		$('#loader2').css('visibility','visible');
+		$('#loader2').addClass('ui-widget-loading');
 		
 		var NoOfCombo = $('#Opt_Combo').val();
 		var value = new Array();
-/*		for(i=0; i < NoOfCombo; i++)
-		{
-			value[i] = $('#OptionCombo'+i).val();
-			
-			if($('#OptionCombo'+i).val() == 0){
+		
+		$.ajax({
+			type: "POST",
+			url:site_url+"product/addtocart",
+			async: true,
+			data: {
+				  prodid: function() 
+				  {
+						return product_id; 
+				  },
+				  option: function() 
+				  {
+						return options_id; value;
+				  },
+				  prodPrice: function() 
+				  {
+						return product_price; 
+				  },
+				  fbuserid: function() 
+				  {
+						return fb_userid;
+				  }
+			 },
+			dataType:'html',
+			success:function(data)
+			{ 
 				
-				var value = $('#OptionCombo'+i+' option').html();
- 				var msg = "Please "+value.toLowerCase()+" option";
-				alert(msg);
-				return false;
+				//loadPopup2()
+				$('#popupContact').html(data);
+				var totalProd = $('#cartcount').val();
+				//alert(totalProd);
+				$('#cartCounterNumber').html(totalProd);
+				  centerPopup();
+				  loadPopup2();
+			}		
+		});
+	
+	
+}
+
+function validateAddToCart()
+{	
+
+	var fb_userid = $("#facebook_user_numeric_id").val();
+	var fb_useremailid = $("#facebook_userid").val();
+	
+	if(fb_userid != '' && fb_useremailid != '' ) {
+		
+		var NoOfCombo = $('#Opt_Combo').val();
+			var value = new Array();
+			for(i=0; i < NoOfCombo; i++)
+			{
+				value[i] = $('#OptionCombo'+i).val(); 
 			}
-
-		}
-*/	
-	$.ajax({
- 	    type: "POST",
-		url:site_url+URL,
- 		data: {
-			  prodid: function() 
-			  {
-					return $('#productId').val();
-			  },
-			  option: function() 
-			  {
-					var NoOfCombo = $('#Opt_Combo').val();
-					var value = new Array();
-					for(i=0; i < NoOfCombo; i++)
-					{
-						value[i] = $('#OptionCombo'+i).val(); 
-					}
-					return value;
-			  },
-			  prodPrice: function() 
-			  {
-					return $('#TotalPrice').val();
-			  }
-         },
- 		dataType:'html',
-		success:function(data)
-		{ 
 			
-			
-			//loadPopup2()
-			$('#popupContact').html(data);
-			var totalProd = $('#cartcount').val();
-			//alert(totalProd);
-			$('#cartCounterNumber').html(totalProd);
-			  centerPopup();
-			  loadPopup2();
- 
-  			//top.location.href = '';
- 		}		
-	});
-
+			addTocart(fb_useremailid, $('#productId').val(), value, $('#TotalPrice').val());
+	
+	} else { 
+	
+		FB.ui({
+            method: 'permissions.request',
+            perms: 'email'
+        }, function (response) {
+            if (response.status == "connected") {
+				
+				var fb_useremailid = response.session.uid;
+				var NoOfCombo = $('#Opt_Combo').val();
+				var value = new Array();
+				for(i=0; i < NoOfCombo; i++)
+				{
+					value[i] = $('#OptionCombo'+i).val(); 
+				}
+				addTocart(fb_useremailid, $('#productId').val(), value, $('#TotalPrice').val());
+                return false;
+            } 
+        });
+		
+	}
+	 
 }
 
 function DeleteCartProduct(prodId,cartId)
 {
 	
-		$.ajaxSetup({
-		   beforeSend : function(){ 
-				$('#loader').show();
-				$('#loader').css('visibility','visible');
-				$('#loader').addClass('ui-widget-loading');
-				
-				$(this).fadeIn(3000, function() {
-					$('#breadCrumb_cart').hide();
-					$('#order_review').hide();
-					$('#buttonArea').hide();
-					$('#SubtotalDiv').hide();
-				});
-		   },
-		   complete : function(){ 
-				$('#loader').hide();
-				$('#loader').removeClass('ui-widget-loading');
-		   }		   
+		$('#loader').show();
+		$('#loader').css('visibility','visible');
+		$('#loader').addClass('ui-widget-loading');
+		
+		$(this).fadeIn(3000, function() {
+			$('#breadCrumb_cart').hide();
+			$('#order_review').hide();
+			$('#buttonArea').hide();
+			$('#SubtotalDiv').hide();
 		});
 	
  	 	$.ajax({
@@ -106,15 +127,22 @@ function DeleteCartProduct(prodId,cartId)
 			  cartid: function()
 			  {
 				  return cartId;
+			  },
+  			  fbuid: function()
+			  {
+				  return $('#facebook_userid').val();
 			  }
+
          },
  		dataType:'json',
 		success:function(data)
 		{ 
-			//alert(data);return false;
+
+		
 				$('#cartCounterNumber').html(data);
 				if(data != 0){
-					
+					$('#loader').hide();
+					$('#loader').removeClass('ui-widget-loading');
 					$('#breadCrumb_cart').show();
 					$('#SubtotalDiv').show();
 					$('#order_review').show();
@@ -178,6 +206,10 @@ function updatecart(prodId,cartId)
 			  {
 				  //alert($('#ProductQty'+prodId).val());
 				  return $('#ProductQty'+prodId).val();
+			  },
+			  fbuid: function()
+			  {
+				  return $('#facebook_userid').val();
 			  }
 
          },
@@ -190,8 +222,8 @@ function updatecart(prodId,cartId)
 			
  			for(i in data)
 			{
-						
-				$('#itemPrice'+data[i]['product_id']).html("$"+roundVal( parseFloat(data[i]['price'])*parseInt(data[i]['product_qty'])));
+				
+				$('#itemPrice'+data[i]['product_id']).html(cartCurrSymbol+" "+roundVal( parseFloat(data[i]['price'])*parseInt(data[i]['product_qty'])));
 				$('#IndivisualPrice'+data[i]['product_id']).val(roundVal(data[i]['price']));
 				$('#ProductQty'+data[i]['product_id']).val(data[i]['product_qty']);
 				ProdQty = parseInt(ProdQty)+parseInt(data[i]['product_qty']);
@@ -228,6 +260,7 @@ function changePrice(detailId,prodId,OptId)
 		$('#prod_price').html("$"+total);
 	}
 */	
+	
 	$.ajax({
  	    type: "POST",
 		url:site_url+"product/updateprice",
@@ -250,7 +283,7 @@ function changePrice(detailId,prodId,OptId)
 					//var total = parseFloat(dft_price)+parseFloat(data);
 					if(data != false)
 					{
-						var opt_price = data['option_price'];
+						var opt_price = data['Opt_convert_price'];
 					}else{
 						
 						var opt_price = 0;
@@ -268,13 +301,15 @@ function changePrice(detailId,prodId,OptId)
 					var OptPrice = $('#hiddenPrice').val();
  					var total = parseFloat(dft_price)+parseFloat(OptPrice);
 					//alert(total);
- 					$('#prod_price').html("$"+total);
+					
+ 					$('#prod_price').html(def_curr_symbol+total.toFixed(2));
 					$('#TotalPrice').val(total);
  		}		
 	});
 }
 
-function addShippingDetail(cartId)
+
+function addShippingDetail()
 {
 		//alert(id);
 		$.ajaxSetup({
@@ -302,7 +337,7 @@ function addShippingDetail(cartId)
  		data: {
 			  cartid: function()
 			  {
-				  return cartId;
+				  return $('#cartID').val();
 			  },
 			  fname: function()
 			  {
@@ -354,6 +389,10 @@ function addShippingDetail(cartId)
 			  {
 				  
 				  return $('#IsBilling').is(':checked');
+			  },
+			   fbuid: function()
+			  {
+				  return $('#facebook_userid').val();
 			  }
 			  
          },
@@ -390,7 +429,7 @@ function addShippingDetail(cartId)
 	
 }
 
-function addBillingDetail(cartId)
+function addBillingDetail()
 {
 		$.ajaxSetup({
 		   beforeSend : function(){ 
@@ -417,7 +456,7 @@ function addBillingDetail(cartId)
  		data: {
 			  Bill_cartid: function()
 			  {
-				  return cartId;
+				  return $('#cartID').val();
 			  },
 			  Bill_fname: function()
 			  {
@@ -482,7 +521,9 @@ function addBillingDetail(cartId)
 	
 }
 
-function addShippingDetail1(cartId)
+
+
+function addShippingDetail1()
 {
 		$.ajaxSetup({
 		   beforeSend : function(){ 
@@ -509,7 +550,7 @@ function addShippingDetail1(cartId)
  		data: {
 			  cartid: function()
 			  {
-				  return cartId;
+				  return $('#cartID').val();
 			  },
 			  fname: function()
 			  {
@@ -579,25 +620,8 @@ function addShippingDetail1(cartId)
 
 function GetStateforCountry(id)
 {
-		$.ajaxSetup({
-		   beforeSend : function(){ 
-				$('#loader').show();
-				$('#loader').css('visibility','visible');
-				$('#loader').addClass('ui-widget-loading');
-				
-				$(this).fadeIn(3000, function() {
-					//$('#breadCrumb_cart').hide();
-					//$('#div8').hide();
-					$('#div2').hide();
-					$('#buttonArea').hide();
-				});
-		   },
-		   complete : function(){ 
-				$('#loader').hide();
-				$('#loader').removeClass('ui-widget-loading');
-		   }		   
-		});
-
+	
+	
 	$.ajax({
  	    type: "POST",
 		url:site_url+"cart/getcountrystate",
@@ -610,11 +634,6 @@ function GetStateforCountry(id)
  		dataType:'json',
 		success:function(data)
 		{ 
-			$('#breadCrumb_cart').show();
-			//$('#div8').show();
-			$('#div2').show();
-			$('#buttonArea').show();
-			
 			var combo = '';
 			if(data != '')
 			{
@@ -636,23 +655,6 @@ function GetStateforCountry(id)
 
 function GetStateforCountry1(id)
 {
-		$.ajaxSetup({
-		   beforeSend : function(){ 
-				$('#loader').show();
-				$('#loader').css('visibility','visible');
-				$('#loader').addClass('ui-widget-loading');
-				
-				$(this).fadeIn(3000, function() {
-					$('#settingarea').hide();						  
-					$('#div7').hide();
-					$('#buttonArea').hide();
-				});
-		   },
-		   complete : function(){ 
-				$('#loader').hide();
-				$('#loader').removeClass('ui-widget-loading');
-		   }		   
-		});
 
 	$.ajax({
  	    type: "POST",
@@ -666,10 +668,6 @@ function GetStateforCountry1(id)
  		dataType:'json',
 		success:function(data)
 		{ 
-			$('#settingarea').show();						  
-			$('#div7').show();
-			$('#buttonArea').show();
-			
 			var combo = '';
 			if(data != '')
 			{
@@ -688,6 +686,8 @@ function GetStateforCountry1(id)
 	});
 
 }
+		
+
 
 
 function showProductThumbImage(ThumbIndex,ImagePath,Imagename) {
@@ -714,22 +714,16 @@ var ShippingCost = new Array();
 
 function GetShippingCost(ShippMethodId,prodId)
 {
+	
+	
 		$.ajaxSetup({
 		   beforeSend : function(){ 
-				//$('#loader').show();
-				//$('#loader').css('visibility','visible');
-				$('#ShippingCost'+prodId).html('');
+ 				$('#ShippingCost'+prodId).html('');
 				$('#ShippingCost'+prodId).addClass('ui-widget2-loading');
 				
-				$(this).fadeIn(3000, function() {
-					//$('#breadCrumb_cart').hide();
-					//$('#div3').hide();
-					//$('#buttonArea').hide();
-				});
-		   },
+ 		   },
 		   complete : function(){ 
-				//$('#loader').hide();
-				$('#ShippingCost'+prodId).removeClass('ui-widget2-loading');
+ 				$('#ShippingCost'+prodId).removeClass('ui-widget2-loading');
 		   }		   
 		});
 
@@ -744,11 +738,16 @@ function GetShippingCost(ShippMethodId,prodId)
 			  prodid: function() 
 			  {
 					return prodId;
-			  }  
+			  },
+			  current_currencyId: function() 
+			  {
+					return $('#CurrentCurrencyId').val();
+			  },
          },
  		dataType:'json',
 		success:function(data)
 		{ 
+		
 			$(this).fadeIn(3000, function() {
 				$('#breadCrumb_cart').show();
 				$('#buttonArea').show();
@@ -757,7 +756,7 @@ function GetShippingCost(ShippMethodId,prodId)
 			
 				$('#ShippingSpace'+prodId).show();
 				$('#ShippingRow'+prodId).show();
-				$('#ShippingCost'+prodId).html("$"+data);
+				$('#ShippingCost'+prodId).html(cartCurrSymbol+" "+data);
 				
 				ShippingCost[prodId] =  parseFloat(data);
 				
@@ -839,7 +838,15 @@ function UpdateShipping(CartId,prodId)
 					}
 					
    					return taxrate;
-			  }
+			  },
+			  fbuid: function()
+			  {
+				  return $('#facebook_userid').val();
+			  },
+			  current_currencyId: function() 
+			  {
+					return $('#CurrentCurrencyId').val();
+			  },
          },
  		dataType:'json',
 		success:function(data)
@@ -931,11 +938,11 @@ $(document).ready(function()
   centerPopup();
   loadPopup1();
  });
- $("#btn").click(function()
- {
-  centerPopup();
-  loadPopup2();
- });
+// $("#btn").click(function()
+// {
+//  centerPopup();
+//  loadPopup2();
+// });
 	 $("#popupContactClose").click(function()
 	 {
 		 disablePopup();
@@ -949,3 +956,98 @@ $(document).ready(function()
   }
  });
 });
+
+
+
+function addUserLike(likeurl,widget)
+{
+	$.ajax({
+ 	    type: "POST",
+		url:site_url+"index/adduserlike",
+ 		data: {
+				likeurl: function() 
+				{
+					return likeurl;
+				},
+				facebook_user_email: function() 
+				{
+					return $("#facebook_userid").val();
+				},
+				facebook_user_id: function() 
+				{
+					return $("#facebook_user_numeric_id").val();
+				}
+		},
+		dataType:'html',
+		success:function(data)
+		{ 
+ 		}		
+	});
+}
+
+function removeUserLike(url,widget)
+{
+	$.ajax({
+ 	    type: "POST",
+		url:site_url+"index/removeuserlike",
+ 		data: {
+				likeurl: function() 
+				{
+					return url;
+				},
+				facebook_user_email: function() 
+				{
+					return $("#facebook_userid").val();
+				},
+				facebook_user_id: function() 
+				{
+					return $("#facebook_user_numeric_id").val();
+				}
+		},
+		dataType:'html',
+		success:function(data)
+		{ 
+ 		}		
+	});
+}
+
+
+function ChangeCartCurrency()
+{
+	
+		$('#settingarea').hide();
+		$('#loader2').show();
+		$('#loader2').css('visibility','visible');
+		$('#loader2').addClass('ui-widget-loading');
+								  
+	$.ajax({
+ 	    type: "POST",
+		url:site_url+"cart/updatecartcurrency",
+ 		data: {
+				currencyId: function() 
+				{
+					return $('#CartCurrency').val();
+				},
+				current_currencyId: function() 
+				{
+					return $('#CurrentCurrencyId').val();
+				},
+				fbuid: function()
+				{
+				  return $('#facebook_userid').val();
+				}
+		},
+		dataType:'html',
+		success:function(data)
+		{ 
+			$(this).fadeIn(3000, function() {
+				$('#loader2').hide();
+				$('#loader2').removeClass('ui-widget-loading');
+				$('#cartarea').hide();
+				$('#popupContact').html(data);
+				ShowTab(1);
+			});
+		}		
+	});
+	
+}

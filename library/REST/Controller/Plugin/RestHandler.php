@@ -59,11 +59,20 @@ class REST_Controller_Plugin_RestHandler extends Zend_Controller_Plugin_Abstract
         }
         else
         {
+			
             $contentType = $this->getMimeType($request->getHeader('Content-Type'));
-            $rawBody = $request->getRawBody();
-
+			
+			if($contentType == "" && $request->getParam('format') == "xml")
+			{
+				
+				$contentType = "text/xml";
+			}
+			
+            $rawBody = urldecode(trim($request->getRawBody()));
+			
             if (!empty($rawBody))
             {
+				
                 try
                 {
                     switch ($contentType)
@@ -71,12 +80,13 @@ class REST_Controller_Plugin_RestHandler extends Zend_Controller_Plugin_Abstract
                         case 'application/json':
                             $params = Zend_Json::decode($rawBody, Zend_Json::TYPE_ARRAY);
                             break;
-
-                        case 'text/xml':
+							
+						case 'text/xml':
                         case 'application/xml':
-                            $json = @Zend_Json::fromXml($rawBody);
-                            $params = Zend_Json::decode($json, Zend_Json::TYPE_ARRAY);
-                            break;
+						
+                            $json = Zend_Json::fromXml($rawBody);
+							$params = Zend_Json::decode($json, Zend_Json::TYPE_ARRAY);
+							break;
 
                         case 'application/octet-stream':
                             $serializer = new Zend_Serializer_Adapter_Amf3();

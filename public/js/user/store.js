@@ -41,7 +41,7 @@ function FillStateCombo(id)
 {	
 	$.ajax({
 		  type: 'POST',
-		  url: site_url+'user/store/fillstate/',
+		  url: site_url+'user/store/fillstate',
 		  data: "country_id="+id,
 		  dataType:'html',
 		  success: function(data) 

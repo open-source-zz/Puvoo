@@ -104,13 +104,13 @@ class Fb_IndexController extends FbCommonController
 		 /// Best Seller Products
 		 
 		 $bestSellerProd = $Product->GetBestSelllerProduct();
-		 $this->view->bestSeller = $bestSellerProd;
-		 //print "<pre>";
+		 //echo "<pre>";
 		 //print_r($bestSellerProd);die;
+		 $this->view->bestSeller = $bestSellerProd;
+		 
 		 // Friens Like
 		 $FrdsLikeProd = $Product->GetFrndsLikeProduct();
 		 $this->view->frndslike = $FrdsLikeProd;
- 		//print_r($FrdsLikeProd);die;
 		
 		/// Facebook banner
 		$banners = $Common->GetfacebookBanner();
@@ -120,6 +120,57 @@ class Fb_IndexController extends FbCommonController
      }
 	  
 	  
+	function adduserlikeAction()
+	{
+		global $user,$facebook;
+		
+		//Disable layout
+		$this->_helper->layout()->disableLayout();
+		
+		$master = new Models_AdminMaster();
+		$filter = new Zend_Filter_StripTags();	
+		
+		$data["product_url"] = $filter->filter(trim($this->_request->getPost('likeurl'))); 	
+		$data["facebook_user_email"] = $filter->filter(trim($this->_request->getPost('facebook_user_email'))); 	
+		$data["facebook_user_id"] = $filter->filter(trim($this->_request->getPost('facebook_user_id'))); 	
+		
+		$urlArray = explode("/",$data["product_url"]);
+		$data["product_id"] = $urlArray[count($urlArray)-1];
+		
+		if($master->updateProductCounter($data)) { 
+		
+			print "Done !!";
+		} else {
+		
+			print "Error !!";
+		}
+		die;
+		
+	}
+	
+	function removeuserlikeAction()
+	{
+		global $user,$facebook;
+		
+		//Disable layout
+		$this->_helper->layout()->disableLayout();
+		
+		$master = new Models_AdminMaster();
+		$filter = new Zend_Filter_StripTags();	
+		
+		$data["product_url"] = $filter->filter(trim($this->_request->getPost('likeurl'))); 	
+		$data["facebook_user_email"] = $filter->filter(trim($this->_request->getPost('facebook_user_email'))); 	
+		$data["facebook_user_id"] = $filter->filter(trim($this->_request->getPost('facebook_user_id'))); 	
+		
+		$urlArray = explode("/",$data["product_url"]);
+		$data["product_id"] = $urlArray[count($urlArray)-1];
+		
+		$master->deleteProductLike($data);
+		
+		print "Done !!";
+		die;
+		
+	}
 
 }
 

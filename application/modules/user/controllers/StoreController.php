@@ -53,7 +53,7 @@ class User_StoreController extends UserCommonController
 	public function init()
 	{
 		parent::init();		
-		//$this->view->JS_Files = array('/user/store.js');
+		$this->view->JS_Files = array('/user/store.js');
 	}
 	
 	
@@ -182,6 +182,49 @@ class User_StoreController extends UserCommonController
 			$this->view->User_EMessage = $addErrorMessage;
 		
 		}
+		
+	}
+	
+	/**
+	 * Function indexAction
+	 * 
+	 * This function is used for setting the user's store, and if store not available, create new store.
+	 *
+	 * Date created: 2011-08-30
+	 *
+	 * @access public
+	 * @param ()  - No parameter
+	 * @return (void) - Return void
+	 *
+	 * @author Yogesh
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	public function fillstateAction()
+    {
+		global $mysession;
+		
+		$translate = Zend_Registry::get('Zend_Translate');
+		
+		$store = new Models_UserMaster();
+		
+		$filter = new Zend_Filter_StripTags();	
+			
+		$country_id = $filter->filter(trim($this->_request->getPost('country_id'))); 	
+		
+		$states = $store->getAllStates($country_id);
+		
+		$stateStr = ''; 
+		$stateStr .= '<option value="" selected="selected">'.$translate->_('Shipping_Select_State').'</option>';  
+		if( count($states) > 0 ) {
+		
+			foreach( $states as $key => $val ) 
+			{
+				$stateStr .= '<option value="'.$val["state_id"].'" >'.$val["state_name"].'</option>'; 
+			}
+		}
+		
+		echo $stateStr; die;
 		
 	}
 }

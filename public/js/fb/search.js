@@ -11,7 +11,7 @@ function PerformSearch()
  		return false;
 	}else{
 		 
-		$('#frmSearch').attr('action',''+site_url+'product/search?q='+searchtext+'&Search=1&cid='+catid+'');
+		$('#frmSearch').attr('action',''+site_fb_url+'product/search?q='+searchtext+'&search=1&cid='+catid+'');
 		$('#frmSearch').submit();
 		//$('#frmcatproduct').submit();
 		$('#loader').hide();

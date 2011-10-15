@@ -1,0 +1,115 @@
+<div id="rightColumn">
+	<div class="mainColumnWidget">
+		<div id="breadCrumb">
+			<ul>
+				<li>
+					<a target="_top" href="<?php echo SITE_FB_URL;?>">
+						<img title="home" alt="home" src="<?php echo IMAGES_FB_PATH ?>/home.png"/>
+					</a>
+				</li>
+				<li>
+					<a target="_top" href="#"><?php echo $this->Translate('FrndsLike')?></a>
+				</li>
+			</ul>
+		</div>
+		
+		<div class="categoryHeader" style="border-bottom: 1px solid #E2E2E2;">
+		  <?php echo $this->Translate('FrndsLike')?>
+		</div>
+		
+		
+		<form name="frmcatproduct" method="get" id="frmcatproduct" target="_top" action="<?php echo SITE_FB_URL;?>like/friendlikes">
+		
+		<?php if(count($this->records) > 0){ ?>
+		<div class="portlet" style="border-bottom:1px solid #E2E2E2">
+				<div class="productListingNav">
+				   <?php echo $this->paginationControl($this->paginator, 'Sliding', 'pagination_bottom.phtml'); ?>
+				</div>
+				<div style="clear:both"></div>
+		</div>
+		<?php } ?>
+		
+		<?php if( $this->userlogin == 1 ) { ?>
+		
+		<div id="productGridView" class="portlet">
+			
+			<?php if( count($this->records) > 0 ) { ?>
+			<?php 	foreach($this->records as $key => $val ) { ?>
+			
+			<div class="productGridItem productGridItemTopRow firstborder" style="height:220px;">
+				
+				<div class="thumbnailImage" style="margin-top:14px;">
+					<a target="_top" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $val['product_id'];?>">
+					
+						<?php if( $val['image_name'] == '' ){ ?>
+					
+							<img class="img" src="<?php echo IMAGES_FB_PATH ?>/Default.gif"/>
+					
+						<?php } else { ?>
+					
+							<img class="img" src="<?php echo SITE_PRODUCT_IMAGES_PATH.$val['image_path'] ?>/<?php echo $val['image_name'] ?>" width="128"/>
+					
+						<?php } ?>
+					
+					</a>
+				</div>
+				
+				<div class="productTitle">
+					<a target="_top" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $val['product_id'];?>">
+						<?php echo $val['product_name'];?>
+					</a> 
+				</div>
+				
+				<div class="productPrice">
+				   <?php echo DEFAULT_CURRENCY_SYMBOL.$val['converted_price']."&nbsp; ( ".DEFAULT_CURRENCY_CODE." )";?>
+				</div>
+			 </div>
+			 
+			<?php 	} ?>
+			
+			<?php } else { ?>
+			
+				<div class="productGridItem productGridItemTopRow firstborder" style="height:100px; width:100%;">
+				
+					<div class="productTitle" style="text-align:left;">
+						<a href="#" >
+							<?php echo $this->Translate('Product_Not_Found')?>
+						</a> 
+					</div>
+					
+			 </div>
+			
+			<?php }?>
+		
+		 </div>
+		 
+		 <?php } else  {  ?>
+		 
+		 <div id="productGridView" class="portlet" style="padding-left:25px; min-height:100px; border-bottom: 1px solid #E2E2E2; padding-top:15px;">
+		 	
+				<fb:login-button></fb:login-button>
+		 
+		 </div>
+		 
+		 <?php } ?>
+		 
+		 <div style="padding-bottom:10px; clear:both"></div>
+		
+			<?php if(count($this->records) > 0){?>
+				<div class="portlet" style="border-bottom: 1px solid #E2E2E2;">
+					<div class="productListingNav">
+					   
+						<?php echo $this->paginationControl($this->paginator, 'Sliding', 'pagination_bottom.phtml'); ?>
+						
+					</div>
+					
+					<input type="hidden" name="page_no" id="page_no" value="<?php echo $this->page_no; ?>" />
+					
+					<div style="padding-bottom:10px; clear:both"></div>
+				</div>
+			<?php }?>
+		 
+		 </form>
+		 
+	</div>
+</div>

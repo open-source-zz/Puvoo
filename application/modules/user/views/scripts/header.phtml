@@ -8,6 +8,19 @@
 <link href="<?php echo CSS_PATH ?>/user/fileuploader.css" rel="stylesheet" type="text/css" />
 <link href="<?php echo CSS_PATH ?>/user/jquery.multiselect.css" rel="stylesheet" type="text/css" />
 <link href="<?php echo CSS_PATH ?>/user/jquery.jscrollpane.css" rel="stylesheet" type="text/css" />
+<?php  
+		if(count($this->CSS_Files) > 0)
+		{
+			foreach($this->CSS_Files as $key => $val) 
+			{ 
+?>
+	  			<link href="<?php echo CSS_PATH ?>/user/<?php echo $val;?>" rel="stylesheet" type="text/css" />
+<?php 
+			}
+		} 
+?> 
+
+
 
 <!--  JS  -->
 <script type="text/javascript" src="<?php echo JS_PATH ?>/jquery-1.5.1.min.js"></script> 

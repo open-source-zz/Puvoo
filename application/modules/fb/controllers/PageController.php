@@ -108,7 +108,56 @@ class Fb_PageController extends FbCommonController
 	 **/  
 	 public function contactusAction()
 	 {
-	 
+	 	global $mysession;
+		
+		$Common = new Models_Common();
+	 	
+		$ContactDetails = $Common->GetContactUsDetails();
+ 
+  		foreach($ContactDetails as $key=>$detail)
+		{
+			if($detail['configuration_key'] == 'contact_us_address')
+			{
+				$this->view->ContactAddress = $detail['configuration_value'];
+			}
+			
+			if($detail['configuration_key'] == 'contact_us_telephone')
+			{
+				if(stristr($detail['configuration_value'], ',') === FALSE)
+				{
+					$this->view->ContactPhone = $detail['configuration_value'];
+				}
+				else
+				{
+					$phone = explode(',',$detail['configuration_value']);
+					$list = '';
+					foreach($phone as $val)
+					{
+						$list .= $val."<br>";
+					}
+					$this->view->ContactPhone = $list;
+				}
+				
+			}
+			
+			if($detail['configuration_key'] == 'contact_us_email')
+			{
+				if(stristr($detail['configuration_value'], ',') === FALSE)
+				{
+					$this->view->ContactEmail = $detail['configuration_value'];
+				}
+				else
+				{
+					$email = explode(',',$detail['configuration_value']);
+					$list1 = '';
+					foreach($email as $val2)
+					{
+						$list1 .= "<a href='mailto:".$val2."'>".$val2."</a><br>";
+					}
+					$this->view->ContactEmail = $list1;
+				}
+			}
+		}
 	 }
 	 
 	/**
@@ -128,7 +177,76 @@ class Fb_PageController extends FbCommonController
 	 **/  
 	 public function invitefriendAction()
 	 {
-	 
+	 	global $user,$facebook;
+		$flag = 0;
+		if ($user) {
+		  $flag = 1;
+		  try {
+			// Proceed knowing you have a logged in user who's authenticated.
+			$uprofile = $facebook->api('/me/likes');
+			
+		  } catch (FacebookApiException $e) {
+			error_log($e);
+			$user = null;
+		  }
+		} else {
+			$flag = 0;
+		}
+		
+		$this->view->userlogin = $flag;
+		
+		$request = $this->getRequest();
+		
+		if($request->isPost() && $request->isPost("yourlike_user_id") != '' ){
+			
+			$filter = new Zend_Filter_StripTags();	
+			
+			$data['friends_email']=$filter->filter(trim($this->_request->getPost('friends_email'))); 	
+			$data['friends_mailtext']=$filter->filter(trim($this->_request->getPost('friends_mailtext'))); 	
+			
+			$addError = array();
+			if( $data['friends_email'] == '' || $data['friends_email'] == "Start typing a friend's email id" ) {
+				$addError[] = "Please enter friend's email id with comma seprated";
+			}
+			if( $data['friends_mailtext'] == '' ) {
+				$addError[] = "Please enter mail text";
+			}
+			$validator = new Zend_Validate_EmailAddress();
+			$success = '';
+			$this->view->userlogin = 1;
+			if( count($addError) == 0 || $addError == '' ) {
+			
+				$emailArray = explode(",",$data['friends_email']);
+				
+				if( count($emailArray) > 0 ) {
+					
+					foreach($emailArray as $key => $val )
+					{
+						if ($validator->isValid($val)) {  
+						
+							$to 		= $val;
+							$to_name 	= '';
+							$from		= "noreply@puvoo.com";
+							$from_name	= "Puvoo";
+							$subject	= "Invite friend";					
+							$body 		= 'Prefer this link:<br />';
+							$body 		.= "<a href ='http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']."' >http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']."</a><br />";
+							$body 		.= $data['friends_mailtext'];
+							
+							sendMail($to,$to_name,$from,$from_name,$subject,$body);
+						} 
+					} 
+					$success = "Invitation successfully send to your friends";
+					
+				}
+			} else {
+			
+				$this->view->addError = $addError;
+			}
+			
+			$this->view->success = $success;
+		}
+		
 	 }
 }
 ?>

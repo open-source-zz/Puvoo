@@ -40,6 +40,7 @@ class Rest_ProductController extends RestCommonController
 {
 	protected $api_key = "";
 	protected $user_id = 0;
+	protected $translate = NULL;
 	
 	/**
 	 * Function init
@@ -58,12 +59,13 @@ class Rest_ProductController extends RestCommonController
 	public function init(){
 		parent::init();
 		
+		$this->translate = Zend_Registry::get('Zend_Translate');
 		//Get api key from header
 		$this->api_key = $this->getRequest()->getHeader('apikey');
 		
 		if($this->api_key == "" || $this->api_key == null)
 		{
-			$this->view->message = 'Access Denied';
+			$this->view->message = $this->translate->_('Product_Access_Denied');
         	$this->getResponse()->setHttpResponseCode(401);
 			
 		}
@@ -74,7 +76,7 @@ class Rest_ProductController extends RestCommonController
 		}
 		
 		if($this->user_id <= 0){
-			$this->view->message = 'Access Denied';
+			$this->view->message = $this->translate->_('Product_Access_Denied');
         	$this->getResponse()->setHttpResponseCode(401);
 		}	
 		
@@ -97,7 +99,7 @@ class Rest_ProductController extends RestCommonController
 	 **/
 	public function optionsAction()
     {
-        $this->view->message = 'Resource Options';
+        $this->view->message = $this->translate->_('Product_Resource_Option');
         $this->getResponse()->setHttpResponseCode(200);
     }
 
@@ -119,11 +121,10 @@ class Rest_ProductController extends RestCommonController
 	 **/
     public function indexAction()
     {
-        
-		if($this->user_id > 0)
+        if($this->user_id > 0)
 		{
 			$this->view->resources = array('mykey' => $this->api_key);
-			$this->view->message = 'Resource Index';
+			$this->view->message = $this->translate->_('Product_Resource_Option');
         	$this->getResponse()->setHttpResponseCode(200);
 		}
     }
@@ -299,7 +300,8 @@ class Rest_ProductController extends RestCommonController
 					
 					//filter values
 					$name = $filter->filter(trim($prod['name']));
-					$description = 	$filter->filter(trim($prod['description']));
+					$description = 	trim($prod['description']);
+					$product_external_id = 	$filter->filter(trim($prod['product_external_id']));
 					$price = 	(float) $filter->filter(trim($prod['price']));
 					$code = 	$filterChain2->filter(trim($prod['code']));
 					$weight = 	(float) $filter->filter(trim($prod['weight']));
@@ -380,48 +382,48 @@ class Rest_ProductController extends RestCommonController
 					
 					//check values
 					if($name == ""){
-						$arr_error[] = "Invalid or empty name for product "  . ($i+1);
+						$arr_error[] = $this->translate->_('Product_Invalid_Product_Name')." "  . ($i+1);
 					}
 					
 					if($description == ""){
-						$arr_error[] = "Invalid or empty description for product "  . ($i+1);
+						$arr_error[] = $this->translate->_('Product_Empty_Product_Desc')." "  . ($i+1);
 					}
 					
 					if($price == "" || $price <= 0)
 					{
-						$arr_error[] = "Invalid price for product " . ($i+1);
+						$arr_error[] = $this->translate->_('Product_Invalid_Product_Price')." " . ($i+1);
 					}
 					
 					if($weight == "" || $weight <= 0)
 					{
-						$arr_error[] = "Invalid weight for product " . ($i+1);
+						$arr_error[] = $this->translate->_('Product_Invalid_Product_Weight')." " . ($i+1);
 					}
 					
 					if($length == "" || $length <= 0)
 					{
-						$arr_error[] = "Invalid length for product " . ($i+1);
+						$arr_error[] = $this->translate->_('Product_Invalid_Product_Length')." " . ($i+1);
 					}
 					
 					if($width == "" || $width <= 0)
 					{
-						$arr_error[] = "Invalid width for product " . ($i+1);
+						$arr_error[] = $this->translate->_('Product_Invalid_Product_Width')." " . ($i+1);
 					}
 					
 					if($depth == "" || $depth <= 0)
 					{
-						$arr_error[] = "Invalid depth for product " . ($i+1);
+						$arr_error[] = $this->translate->_('Product_Invalid_Product_Depth')." " . ($i+1);
 					}
 					
 					if($available_qty == "" || $available_qty <= 0)
 					{
-						$arr_error[] = "Invalid quantity for product " . ($i+1);
+						$arr_error[] = $this->translate->_('Product_Invalid_Product_Quantity')." " . ($i+1);
 					}
 					
 					if($available_date != "")
 					{
 						if(!$date_validator->isValid($available_date))
 						{
-							$arr_error[] = "Invalid available date for product " . ($i+1);
+							$arr_error[] = $this->translate->_('Product_Invalid_Product_Ava_Date')." " . ($i+1);
 						}
 					}
 					
@@ -429,7 +431,7 @@ class Rest_ProductController extends RestCommonController
 					{
 						if(!$date_validator->isValid($expiration_date))
 						{
-							$arr_error[] = "Invalid expiration date for product " . ($i+1);
+							$arr_error[] = $this->translate->_('Product_Invalid_Product_Exp_Date')." " . ($i+1);
 						}
 					}
 					
@@ -437,7 +439,7 @@ class Rest_ProductController extends RestCommonController
 					{
 						if(!$date_validator->isValid($promotion_start_date))
 						{
-							$arr_error[] = "Invalid promotion start date for product " . ($i+1);
+							$arr_error[] = $this->translate->_('Product_Invalid_Product_Promo_Date')." " . ($i+1);
 						}
 					}
 					
@@ -445,13 +447,13 @@ class Rest_ProductController extends RestCommonController
 					{
 						if(!$date_validator->isValid($promotion_end_date))
 						{
-							$arr_error[] = "Invalid promotion end date for product " . ($i+1);
+							$arr_error[] = $this->translate->_('Product_Invalid_Product_Promo_End_Date')." " . ($i+1);
 						}
 					}
 					
 					if($main_image == "" || !$url_validator->isValid($main_image))
 					{
-						$arr_error[] = "Invalid main image url for product " . ($i+1);
+						$arr_error[] = $this->translate->_('Product_Invalid_Product_Image_Url')." " . ($i+1);
 					}
 					else{
 						//$img_content = file_get_contents($main_image);
@@ -459,17 +461,17 @@ class Rest_ProductController extends RestCommonController
 						
 						if($img_width < 300)
 						{
-							$arr_error[] = "Invalid main image width for product " . ($i+1);	
+							$arr_error[] = $this->translate->_('Product_Invalid_Product_Image_Width')." " . ($i+1);	
 						}
 						
 						if($img_height < 300)
 						{
-							$arr_error[] = "Invalid main image height for product " . ($i+1);	
+							$arr_error[] = $this->translate->_('Product_Invalid_Product_Image_Height')." " . ($i+1);	
 						}
 						
 						if($img_type <= 0  ||  $img_type > 3) 
 						{
-							$arr_error[] = "Invalid main image type for product " . ($i+1);	
+							$arr_error[] = $this->translate->_('Product_Invalid_Product_Image_Type')." " . ($i+1);	
 						}
 						
 						
@@ -487,7 +489,7 @@ class Rest_ProductController extends RestCommonController
 							
 							if($images[$j] == "" || !$url_validator->isValid($images[$j]))
 							{
-								$arr_error[] = "Invalid url for image " . ($j+1) . " for product " . ($i+1);	
+								$arr_error[] = $this->translate->_('Product_Invalid_Image_Url')." " . ($j+1) . " ".$this->translate->_('Product_For_Product')." " . ($i+1);	
 							}
 							else{
 									//$img_content = file_get_contents($main_image);
@@ -495,17 +497,17 @@ class Rest_ProductController extends RestCommonController
 										 
 									if($img_width < 300)
 									{
-										$arr_error[] = "Invalid width for image " . ($j+1) . " for product " . ($i+1);	
+										$arr_error[] = $this->translate->_('Product_Invalid_Image_Width')." " . ($j+1) . " ".$this->translate->_('Product_For_Product')." " . ($i+1);	
 									}
 									
 									if($img_height < 300)
 									{
-										$arr_error[] = "Invalid height for image " . ($j+1) . " for product " . ($i+1);	
+										$arr_error[] = $this->translate->_('Product_Invalid_Image_Height')." " . ($j+1) . " ".$this->translate->_('Product_For_Product')." " . ($i+1);	
 									}
 									
 									if($img_type <= 0  ||  $img_type > 3) 
 									{
-										$arr_error[] = "Invalid type for image " . ($j+1) . " for product " . ($i+1);	
+										$arr_error[] = $this->translate->_('Product_Invalid_Image_Type')." " . ($j+1) . " ".$this->translate->_('Product_For_Product')." " . ($i+1);	
 									}
 									
 									$img_width = 0;
@@ -524,7 +526,7 @@ class Rest_ProductController extends RestCommonController
 							
 							if($categories[$j] <= 0)
 							{
-								$arr_error[] = "Invalid id provided for category " . ($j+1) . " for product " . ($i+1);	
+								$arr_error[] = $this->translate->_('Product_Invalid_Product_Category_Id')." " . ($j+1) . " ".$this->translate->_('Product_For_Product')." " . ($i+1);	
 							}
 							
 							if($categories[$j] > 0)
@@ -533,14 +535,14 @@ class Rest_ProductController extends RestCommonController
 								
 								if($cat_res == "" || $cat_res == null )
 								{
-									$arr_error[] = "Invalid id provided for category " . ($j+1) . " for product " . ($i+1);	
+									$arr_error[] = $this->translate->_('Product_Invalid_Product_Category_Id')." " . ($j+1) . " ".$this->translate->_('Product_For_Product')." " . ($i+1);	
 								}
 							}
 						}
 						
 					}else{
 					
-						$arr_error[] = "Product " . ($i+1) . " must be associated with atleast 1 category";	
+						$arr_error[] = $this->translate->_('Product_Product')." " . ($i+1) . " ".$this->translate->_('Product_Product_Category_Required');	
 					}
 					
 					if(count($attributes > 0))
@@ -551,7 +553,7 @@ class Rest_ProductController extends RestCommonController
 							
 							if($attributes[$j]["name"] == "")
 							{
-								$arr_error[] = "Invalid name provided for attribute " . ($j+1) . " for product " . ($i+1);	
+								$arr_error[] = $this->translate->_('Product_Invalid_Name_For_Attr')." " . ($j+1) . " ".$this->translate->_('Product_For_Product')." " . ($i+1);	
 							}
 							
 							if(is_array($attributes[$j]["options"]["value"]) && isset($attributes[$j]["options"]["value"]["name"]))
@@ -610,25 +612,25 @@ class Rest_ProductController extends RestCommonController
 										$attributes[$j]["options"]["value"][$k]["price"] = 0;
 									}
 								
-									if(isset($attributes[$j]["options"]["value"][$k]["quantity"]))
+									if(isset($attributes[$j]["options"]["value"][$k]["available_qty"]))
 									{
-										$attributes[$j]["options"]["value"][$k]["quantity"] = (int)$filter->filter(trim($attributes[$j]["options"]["value"][$k]["quantity"]));
-										$prod_opt_qty += $attributes[$j]["options"]["value"][$k]["quantity"];
+										$attributes[$j]["options"]["value"][$k]["available_qty"] = (int)$filter->filter(trim($attributes[$j]["options"]["value"][$k]["available_qty"]));
+										$prod_opt_qty += $attributes[$j]["options"]["value"][$k]["available_qty"];
 									}
 									else
 									{
-										$attributes[$j]["options"]["value"][$k]["quantity"] = 0;
+										$attributes[$j]["options"]["value"][$k]["available_qty"] = 0;
 									}
 									
 									if($attributes[$j]["options"]["value"][$k]["name"] == "")
 									{
-										$arr_error[] = "Invalid option value provided for attribute " . ($k+1) . " for product " . ($i+1);
+										$arr_error[] = $this->translate->_('Product_Invalid_Option_Value')." " . ($k+1) . " ".$this->translate->_('Product_For_Product')." " . ($i+1);
 									}
 								}
 								
 								if($prod_opt_qty != $available_qty)
 								{
-									$arr_error[] = "Sum of quantity of product options is not equal to available quantity for product " . ($i+1);
+									$arr_error[] = $this->translate->_('Product_Quantity_Error')." " . ($i+1);
 								}
 							}
 						}
@@ -646,6 +648,7 @@ class Rest_ProductController extends RestCommonController
 					{
 						$products[$i]['name'] = $name;
 						$products[$i]['description'] = $description;
+						$products[$i]['product_external_id'] = $product_external_id;
 						$products[$i]['price'] = $price;
 						$products[$i]['code'] = $code;
 						$products[$i]['weight'] = $weight;
@@ -675,11 +678,11 @@ class Rest_ProductController extends RestCommonController
 			{
 				if(!isset($myparams["Products"]))
 				{
-					$arr_error[] = "Invalid request parameters.";
+					$arr_error[] = $this->translate->_('Product_Invalid_Request');
 				}
 				else
 				{
-					$arr_error[] = "You can add maximum 10 products at a time";
+					$arr_error[] = $this->translate->_('Product_Add_Limit');
 				}
 			}
 			
@@ -725,6 +728,7 @@ class Rest_ProductController extends RestCommonController
 						
 					//insert product and get product id
 					$arr_msg[$i]["id"] = $Product->insertProduct($data);
+					$arr_msg[$i]["product_external_id"] = $products[$i]["product_external_id"];
 					
 					//insert categories for given product
 					if(count($products[$i]["categories"]) > 0)
@@ -772,7 +776,7 @@ class Rest_ProductController extends RestCommonController
 									$det_data['option_weight'] = $products[$i]["attributes"][$j]["options"]["value"][$k]["weight"];
 									$det_data['option_weight_unit_id'] = $Weight->getWeightIdFromKey($products[$i]["attributes"][$j]["options"]["value"][$k]["weight_unit"]);
 									$det_data['option_price'] = $products[$i]["attributes"][$j]["options"]["value"][$k]["price"];
-									$det_data['option_quantity'] = $products[$i]["attributes"][$j]["options"]["value"][$k]["quantity"];
+									$det_data['option_quantity'] = $products[$i]["attributes"][$j]["options"]["value"][$k]["available_qty"];
 									
 									$det_id = $ProdOpt->insertProductOptionsDetail($det_data);
 								}
@@ -782,7 +786,6 @@ class Rest_ProductController extends RestCommonController
 					
 					//create folder for product to insert images
 					$folder_path =  SITE_PRODUCT_IMAGES_FOLDER . "/p".$arr_msg[$i]["id"];
-					
 					
 					$folder_exists = createDirectory($folder_path);
 					
@@ -798,6 +801,7 @@ class Rest_ProductController extends RestCommonController
 					//Insert main image and sub images of product
 					if($products[$i]['main_image'] != "" && $folder_exists)
 					{
+						chmod($folder_path,0777);
 						
 						list($img_width, $img_height, $img_type) = getimagesize($products[$i]['main_image']);
 						
@@ -965,14 +969,16 @@ class Rest_ProductController extends RestCommonController
 					}
 				}
 				
-				$this->view->result = 'Success';
+				$this->view->result = $this->translate->_('Product_Success');
 				$arr_products = array();
 				if(count($arr_msg > 0))
 				{
 					for($i = 0; $i < count($arr_msg); $i++)
 					{
+					
 						$arr_products["Product"][$i]["name"] = $arr_msg[$i]["name"];
 						$arr_products["Product"][$i]["id"] = $arr_msg[$i]["id"];
+						$arr_products["Product"][$i]["product_external_id"] = $arr_msg[$i]["product_external_id"];
 					}
 				}
 				$this->view->Products = array($arr_products);
@@ -982,7 +988,7 @@ class Rest_ProductController extends RestCommonController
 			else
 			{
 				//send error message
-				$this->view->result = 'Failure';
+				$this->view->result = $this->translate->_('Product_Failure');
 				$this->view->errormessage = array('error' => $arr_error);
 	        	$this->getResponse()->setHttpResponseCode(500);
 			}
@@ -1034,10 +1040,7 @@ class Rest_ProductController extends RestCommonController
 			
 			$myparams = $this->getRequest()->getParams();
 			
-			/*print "<pre>";
-			print_r($myparams);
-			print "</pre>";
-			die;*/
+			
 			$products = array();
 			$arr_error = array();
 			$categories = array();
@@ -1123,7 +1126,7 @@ class Rest_ProductController extends RestCommonController
 					
 					if(isset($prod['description']))
 					{
-						$description = 	$filter->filter(trim($prod['description']));
+						$description = 	trim($prod['description']);
 					}
 					
 					if(isset($prod['price']))
@@ -1248,49 +1251,49 @@ class Rest_ProductController extends RestCommonController
 					
 					//check values
 					if($pid <= 0){
-						$arr_error[] = "Invalid id for product";
+						$arr_error[] = $this->translate->_('Product_Invalid_Product_Id');
 					}
 					
 					if($pid > 0 && !$Product->checkProductForUser($pid, $this->user_id))
 					{
-						$arr_error[] = "Invalid id for product";
+						$arr_error[] = $this->translate->_('Product_Invalid_Product_Id');
 					}
 					
 					if($price != "" && $price <= 0)
 					{
-						$arr_error[] = "Invalid price for product";
+						$arr_error[] = $this->translate->_('Product_Invalid_Product_Price');
 					}
 					
 					if($weight != "" && $weight <= 0)
 					{
-						$arr_error[] = "Invalid weight for product";
+						$arr_error[] = $this->translate->_('Product_Invalid_Product_Weight');
 					}
 					
 					if($length != "" && $length <= 0)
 					{
-						$arr_error[] = "Invalid length for product";
+						$arr_error[] = $this->translate->_('Product_Invalid_Product_Length');
 					}
 					
 					if($width != "" && $width <= 0)
 					{
-						$arr_error[] = "Invalid width for product";
+						$arr_error[] = $this->translate->_('Product_Invalid_Product_Width');
 					}
 					
 					if($depth != "" && $depth <= 0)
 					{
-						$arr_error[] = "Invalid depth for product";
+						$arr_error[] = $this->translate->_('Product_Invalid_Product_Depth');
 					}
 					
 					if($available_qty != "" && $available_qty <= 0)
 					{
-						$arr_error[] = "Invalid quantity for product";
+						$arr_error[] = $this->translate->_('Product_Invalid_Product_Quantity');
 					}
 					
 					if($available_date != "")
 					{
 						if(!$date_validator->isValid($available_date))
 						{
-							$arr_error[] = "Invalid available date for product";
+							$arr_error[] = $this->translate->_('Product_Invalid_Product_Ava_Date');
 						}
 					}
 					
@@ -1298,7 +1301,7 @@ class Rest_ProductController extends RestCommonController
 					{
 						if(!$date_validator->isValid($expiration_date))
 						{
-							$arr_error[] = "Invalid expiration date for product";
+							$arr_error[] = $this->translate->_('Product_Invalid_Product_Exp_Date');
 						}
 					}
 					
@@ -1306,7 +1309,7 @@ class Rest_ProductController extends RestCommonController
 					{
 						if(!$date_validator->isValid($promotion_start_date))
 						{
-							$arr_error[] = "Invalid promotion start date for product";
+							$arr_error[] = $this->translate->_('Product_Invalid_Product_Promo_Start_Date');
 						}
 					}
 					
@@ -1314,13 +1317,13 @@ class Rest_ProductController extends RestCommonController
 					{
 						if(!$date_validator->isValid($promotion_end_date))
 						{
-							$arr_error[] = "Invalid promotion end date for product";
+							$arr_error[] = $this->translate->_('Product_Invalid_Product_Promo_End_Date');
 						}
 					}
 					
 					if($main_image != "" && !$url_validator->isValid($main_image))
 					{
-						$arr_error[] = "Invalid main image url for product";
+						$arr_error[] = $this->translate->_('Product_Invalid_Product_Image_Url');
 					}
 					elseif($main_image != "")
 					{
@@ -1329,17 +1332,17 @@ class Rest_ProductController extends RestCommonController
 						
 						if($img_width < 300)
 						{
-							$arr_error[] = "Invalid main image width for product";	
+							$arr_error[] = $this->translate->_('Product_Invalid_Product_Image_Width');
 						}
 						
 						if($img_height < 300)
 						{
-							$arr_error[] = "Invalid main image height for product";	
+							$arr_error[] = $this->translate->_('Product_Invalid_Product_Image_Height');
 						}
 						
 						if($img_type <= 0  ||  $img_type > 3) 
 						{
-							$arr_error[] = "Invalid main image type for product";	
+							$arr_error[] = $this->translate->_('Product_Invalid_Product_Image_Type');
 						}
 						
 						
@@ -1357,7 +1360,7 @@ class Rest_ProductController extends RestCommonController
 							
 							if($images[$j] != "" && !$url_validator->isValid($images[$j]))
 							{
-								$arr_error[] = "Invalid url for image " . ($j+1) . " for product " . ($i+1);	
+								$arr_error[] = $this->translate->_('Product_Invalid_Image_Url')." " . ($j+1) . " ".$this->translate->_('Product_For_Product')." " . ($i+1);	
 							}
 							elseif($images[$j] != "")
 							{
@@ -1366,17 +1369,17 @@ class Rest_ProductController extends RestCommonController
 									 
 								if($img_width < 300)
 								{
-									$arr_error[] = "Invalid width for image " . ($j+1) . " for product";	
+									$arr_error[] = $this->translate->_('Product_Invalid_Image_Width')." " . ($j+1) . " ".$this->translate->_('Product_For_Product')."";	
 								}
 								
 								if($img_height < 300)
 								{
-									$arr_error[] = "Invalid height for image " . ($j+1) . " for product";	
+									$arr_error[] = $this->translate->_('Product_Invalid_Image_Height')." " . ($j+1) . " ".$this->translate->_('Product_For_Product')."";	
 								}
 								
 								if($img_type <= 0  ||  $img_type > 3) 
 								{
-									$arr_error[] = "Invalid type for image " . ($j+1) . " for product";	
+									$arr_error[] = $this->translate->_('Product_Invalid_Image_Type')." " . ($j+1) . " ".$this->translate->_('Product_For_Product')."";	
 								}
 								
 								$img_width = 0;
@@ -1395,7 +1398,7 @@ class Rest_ProductController extends RestCommonController
 							
 							if($categories[$j] <= 0)
 							{
-								$arr_error[] = "Invalid id provided for category " . ($j+1) . " for product";	
+								$arr_error[] = $this->translate->_('Product_Invalid_Product_Category_Id')." " . ($j+1) . " ".$this->translate->_('Product_For_Product')."";	
 							}
 							
 							if($categories[$j] > 0)
@@ -1404,7 +1407,7 @@ class Rest_ProductController extends RestCommonController
 								
 								if($cat_res == "" || $cat_res == null )
 								{
-									$arr_error[] = "Invalid id provided for category " . ($j+1) . " for product";	
+									$arr_error[] = $this->translate->_('Product_Invalid_Product_Category_Id')." " . ($j+1) . " ".$this->translate->_('Product_For_Product')."";	
 								}
 							}
 						}
@@ -1420,7 +1423,7 @@ class Rest_ProductController extends RestCommonController
 							
 							if($attributes[$j]["name"] == "")
 							{
-								$arr_error[] = "Invalid name provided for attribute " . ($j+1) . " for product";	
+								$arr_error[] = $this->translate->_('Product_Invalid_Name_For_Attr')." " . ($j+1) . " ".$this->translate->_('Product_For_Product')."";	
 							}
 							
 							if(is_array($attributes[$j]["options"]["value"]) && isset($attributes[$j]["options"]["value"]["name"]))
@@ -1479,19 +1482,19 @@ class Rest_ProductController extends RestCommonController
 										$attributes[$j]["options"]["value"][$k]["price"] = 0;
 									}
 								
-									if(isset($attributes[$j]["options"]["value"][$k]["quantity"]))
+									if(isset($attributes[$j]["options"]["value"][$k]["available_qty"]))
 									{
-										$attributes[$j]["options"]["value"][$k]["quantity"] = (int)$filter->filter(trim($attributes[$j]["options"]["value"][$k]["quantity"]));
-										$prod_opt_qty += $attributes[$j]["options"]["value"][$k]["quantity"];
+										$attributes[$j]["options"]["value"][$k]["available_qty"] = (int)$filter->filter(trim($attributes[$j]["options"]["value"][$k]["available_qty"]));
+										$prod_opt_qty += $attributes[$j]["options"]["value"][$k]["available_qty"];
 									}
 									else
 									{
-										$attributes[$j]["options"]["value"][$k]["quantity"] = 0;
+										$attributes[$j]["options"]["value"][$k]["available_qty"] = 0;
 									}
 									
 									if($attributes[$j]["options"]["value"][$k]["name"] == "")
 									{
-										$arr_error[] = "Invalid option value provided for attribute " . ($k+1) . " for product " ;
+										$arr_error[] = $this->translate->_('Product_Invalid_Option_Value')." " . ($k+1) . " ".$this->translate->_('Product_For_Product')." " ;
 									}
 								}
 								
@@ -1545,11 +1548,11 @@ class Rest_ProductController extends RestCommonController
 			{
 				if(!isset($myparams["Products"]))
 				{
-					$arr_error[] = "Invalid request parameters.";
+					$arr_error[] = $this->translate->_('Product_Invalid_Request');
 				}
 				else
 				{
-					$arr_error[] = "You can edit maximum 1 product at a time";
+					$arr_error[] = $this->translate->_('Product_Edit_Limit');
 				}
 				
 			}
@@ -1708,7 +1711,7 @@ class Rest_ProductController extends RestCommonController
 									$det_data['option_weight'] = $products[$i]["attributes"][$j]["options"]["value"][$k]["weight"];
 									$det_data['option_weight_unit_id'] = $Weight->getWeightIdFromKey($products[$i]["attributes"][$j]["options"]["value"][$k]["weight_unit"]);
 									$det_data['option_price'] = $products[$i]["attributes"][$j]["options"]["value"][$k]["price"];
-									$det_data['option_quantity'] = $products[$i]["attributes"][$j]["options"]["value"][$k]["quantity"];
+									$det_data['option_quantity'] = $products[$i]["attributes"][$j]["options"]["value"][$k]["available_qty"];
 									
 									$det_id = $ProdOpt->insertProductOptionsDetail($det_data);
 								}
@@ -1722,6 +1725,8 @@ class Rest_ProductController extends RestCommonController
 					
 					$folder_exists = is_dir($folder_path);
 					
+					
+					
 					$thumb = new Thumbnail();
 					
 					$ext = "";
@@ -1734,6 +1739,8 @@ class Rest_ProductController extends RestCommonController
 					//Insert main image and sub images of product
 					if($products[$i]['main_image'] != "" && $folder_exists)
 					{
+						chmod($folder_path,0777);
+						
 						//delete product main image and insert new
 						$ProdImg->deleteImagesByProductId($products[$i]['pid'],1);
 						
@@ -1906,8 +1913,8 @@ class Rest_ProductController extends RestCommonController
 					}
 				}
 				
-				$this->view->result = 'Success';
-				$this->view->message = 'Product updated successfully';
+				$this->view->result = $this->translate->_('Product_Success');
+				$this->view->message = $this->translate->_('Product_Update_Success');
 				
         		$this->getResponse()->setHttpResponseCode(201);
 				
@@ -1915,7 +1922,7 @@ class Rest_ProductController extends RestCommonController
 			else
 			{
 				//send error message
-				$this->view->result = 'Failure';
+				$this->view->result = $this->translate->_('Product_Failure');
 				$this->view->errormessage = array('error' => $arr_error);
 	        	$this->getResponse()->setHttpResponseCode(500);
 			}
@@ -2020,12 +2027,12 @@ class Rest_ProductController extends RestCommonController
 					
 					//check values
 					if($pid <= 0){
-						$arr_error[] = "Invalid id for product " . ($i + 1);
+						$arr_error[] = $this->translate->_('Product_Invalid_Product_Id')." " . ($i + 1);
 					}
 					
 					if($pid > 0 && !$Product->checkProductForUser($pid, $this->user_id))
 					{
-						$arr_error[] = "Invalid id for product " . ($i + 1);
+						$arr_error[] = $this->translate->_('Product_Invalid_Product_Id')." " . ($i + 1);
 					}
 					
 					if(count($arr_error) > 0)
@@ -2043,7 +2050,7 @@ class Rest_ProductController extends RestCommonController
 			}			
 			else
 			{
-				$arr_error[] = "You can delete maximum 50 product at a time";
+				$arr_error[] = $this->translate->_('Product_Delete_Limit');
 			}
 			
 			if(count($arr_error) == 0)
@@ -2069,13 +2076,10 @@ class Rest_ProductController extends RestCommonController
 					$Product->DeleteProductDetail($products[$i]["pid"]);
 					
 					
-						
-					
-					
 				}
 				
-				$this->view->result = 'Success';
-				$this->view->message = 'Product deleted successfully';
+				$this->view->result = $this->translate->_('Product_Success');
+				$this->view->message = $this->translate->_('Product_Delete_Success');
 				
         		$this->getResponse()->setHttpResponseCode(201);
 				
@@ -2083,7 +2087,7 @@ class Rest_ProductController extends RestCommonController
 			else
 			{
 				//send error message
-				$this->view->result = 'Failure';
+				$this->view->result = $this->translate->_('Product_Failure');
 				$this->view->errormessage = array('error' => $arr_error);
 	        	$this->getResponse()->setHttpResponseCode(500);
 			}

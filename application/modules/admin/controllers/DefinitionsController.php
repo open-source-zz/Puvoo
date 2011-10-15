@@ -516,7 +516,7 @@
 				
 				$fh = fopen($dfile['tmp_name'], 'r');
 				
-				$arr_group = array("ADMIN","USER","DEFAULT","FB STORE","FB");
+				$arr_group = array("ADMIN","USER","DEFAULT","FB STORE","FB","REST");
 				
 				$current_group = "";
 				

@@ -50,24 +50,51 @@ class FbCommonController extends Zend_Controller_Action
 	 **/
     public function init() 
 	{
-        global $mysession; 
+        global $mysession, $user_profile; 
 		
  		$db = Zend_Db_Table::getDefaultAdapter();
 		Zend_Registry::set('Db_Adapter', $db);
-		//require_once ("../public/paypalfunctions.php");
-		// Define Site Url for fb folder
-		//define('SITE_FB_URL', 'http://'. $_SERVER['HTTP_HOST']. INSTALL_DIR."fb/");
-		 
-		define('SITE_FB_URL', 'http://apps.facebook.com/pvalpha/');
+ 		// Define Site Url for fb folder
+		
+		if($_SERVER['HTTP_HOST'] == 'rishi')
+		{
+			
+			define('SITE_FB_URL', 'http://'. $_SERVER['HTTP_HOST']. INSTALL_DIR."fb/");
+			define('SITE_AJX_URL', 'http://'. $_SERVER['HTTP_HOST']. INSTALL_DIR."fb/");
+		}else{
+ 			define('SITE_FB_URL', 'http://apps.facebook.com/pvalpha/');
+			define('SITE_AJX_URL', 'http://fbstore.kintudesigns.com/fb/');
+		}
+		//define('SITE_FB_URL', 'http://apps.facebook.com/pvalpha/');
 			
 		// Define Path for images folder FB
-		define('IMAGES_FB_PATH', INSTALL_DIR."images/fb");
+		define('IMAGES_FB_PATH', INSTALL_DIR."public/images/fb");
 
 		// Define Path for css folder for FB
-		define('CSS_FB_PATH', INSTALL_DIR."css/fb" );
+		define('CSS_FB_PATH', INSTALL_DIR."public/css/fb" );
 
 		// Define Path for css folder for FB
-		define('JS_FB_PATH', INSTALL_DIR."js/fb" );
+		define('JS_FB_PATH', INSTALL_DIR."public/js/fb" );
+		
+		// Facebook User Id
+		define('FACEBOOK_USERID', $mysession->FbuserId);
+		
+		define('FBUSER_ID', $mysession->Facebook_UserId);
+		
+		define('DEFAULT_CURRENCY', 2);
+		
+		$tempArray = explode("/",$_SERVER["REQUEST_URI"]);
+		$siteArray = array();
+		foreach( $tempArray as $key => $val )
+		{
+			if( $key != 0 && $key != 1 && $key != 2 ) {
+				$siteArray[] = $val;
+			}
+		}
+		
+		$temp_url = SITE_FB_URL.implode("/",$siteArray);
+		
+		define('FB_REDIRECT_URL', $temp_url);
 		
 		//Get Language array
 		$lang = array();
@@ -89,12 +116,45 @@ class FbCommonController extends Zend_Controller_Action
 		Zend_Registry::set('Zend_Translate', $tr);
 		define('Facebook_Authentication_URL',"https://www.facebook.com/dialog/oauth?client_id=124974344272864&redirect_uri=https://apps.facebook.com/pvalpha/");
 		
-		//$mysession->FbuserId = "xyz@yahoo.com";
+		
 		$mysession->FbuserId = "";
  		$Category = new Models_Category();
 		$Product = new Models_Product();
 		$Common = new Models_Common();
+		$admin_master = new Models_AdminMaster();
 		$catid = $this->_request->getParam('id');
+		
+		$this->view->Facebook_userid = FBUSER_ID;
+		$this->view->facebook_user_numeric_id = FBUSER_ID;
+		
+		if( $user_profile != NULL ) { 
+		
+			$where = '1 = 1';
+			
+			if($admin_master->ValidateTableField("facebook_id",$user_profile['id'],"facebook_user_master",$where)) {
+			
+				if($user_profile['email'] != '' ) {
+					$fbArray = array( 
+									'facebook_id'	 => $user_profile['id'],
+									'facebook_email' =>	$user_profile['email'],
+									'facebook_name'  =>	$user_profile['name']
+								 );
+					$admin_master->insertFacebookUser($fbArray);
+				}
+			}
+			
+		}
+		
+		
+		$currency_value = $Common->GetCurrencyValue(DEFAULT_CURRENCY);
+		
+		$mysession->currency_value = $currency_value['currency_value'];
+		$mysession->currency_id = $currency_value['currency_id'];
+		
+		define('DEFAULT_CURRENCY_SYMBOL', $currency_value['currency_symbol']);
+		
+		
+		define('DEFAULT_CURRENCY_CODE', $currency_value['currency_code']);
 		
 		//Get Request
 		$request = $this->getRequest();
@@ -107,7 +167,7 @@ class FbCommonController extends Zend_Controller_Action
 			}
 			else
 			{
-				//print $catid;die;
+				
 				$CatCombo = $Category->GetSubCategory($catid);
 				if($CatCombo)
 				{
@@ -123,12 +183,11 @@ class FbCommonController extends Zend_Controller_Action
 			
 			$mysession->pagesize1 = 6;
 		}
-		//print $mysession->pagesize1;die;
+		
 		// Left Maenu
 		//to get all main category
 		$Allcategory = $Category->GetMainCategory();
-		//print "<pre>";
-		//print_r($Allcategory);die;
+		
 		$No_category = count($Allcategory);
 		
 		if($No_category > 4)
@@ -144,21 +203,21 @@ class FbCommonController extends Zend_Controller_Action
 			$cat_array[2] = $final_cal;
 			$cat_array[3] = $final_cal;
 			
-			//print_r($cat_array);die;
+			
 			for($i=0; $i< $final_cal; $i++) 
 			{
 				$cat_array[$i] += 1; 	
 			}
 			
 			$new_no = $cat_array[0];
-			// i m here
+			
 			// loop the array by $new_no
 			 
 			$menu_array = array();
 			$increment_no = 0;
 			foreach( $cat_array as $key => $val )
 			{
-				//print_r($val);
+				
 				$row = array();
 				$limit_no = $increment_no + $new_no; 
 				$other_no = 0;
@@ -176,14 +235,10 @@ class FbCommonController extends Zend_Controller_Action
 			$menu_array[] = $Allcategory;
 		}
 		
-		//print "<pre>";
-		//print_r($menu_array);die;
+		
 		$this->view->Mycategory = $menu_array;
 		$this->view->Allcategory = $Allcategory;
 		
-		//$cat = array();
-
-		//print_r($cat);die;
 		//to get selected category
 		$selectCat = $Category->GetTopMainCategory();
 		
@@ -200,16 +255,30 @@ class FbCommonController extends Zend_Controller_Action
 			$SubCatList .= "<div><ul class='submenu'>";
 				for($i=0; $i<count($SubCat); $i++)
 				{
+					if($SubCat[$i]['icon_image'] != '')
+					{
+						$Icon = "<img src='".SITE_ICONS_IMAGES_PATH."/".$SubCat[$i]['icon_image']."' alt='' />";
+					}else{
+						$Icon = "<img src='".IMAGES_FB_PATH."cat_default.png' alt='' />";
+					}
+				
+				
 					$SubCatList .= "<li>";
-					$SubCatList .= "<a href='".SITE_FB_URL."category/subcat/id/".$SubCat[$i]['category_id']."' target='_top'><img src='".SITE_ICONS_IMAGES_PATH."/".$SubCat[$i]['icon_image']."' alt='' />".$SubCat[$i]['category_name']."</a>";
+					$SubCatList .= "<a href='".SITE_FB_URL."category/subcat/id/".$SubCat[$i]['category_id']."' target='_top'>".$Icon.$SubCat[$i]['category_name']."</a>";
 					$SubCatList .= "<div><ul class='submenu'>";
 					$Sub_Cat = $Category->GetSubCategory($SubCat[$i]['category_id']);
-					//print "<pre>";
-					//print_r($Sub_Cat)."<br>";
+					
 					for($j=0; $j<count($Sub_Cat); $j++)
 					{
+						if($Sub_Cat[$i]['icon_image'] != '')
+						{
+							$Icon1 = "<img src='".SITE_ICONS_IMAGES_PATH."/".$Sub_Cat[$i]['icon_image']."' alt='' />";
+						}else{
+							$Icon1 = "<img src='".IMAGES_FB_PATH."cat_default.png' alt='' />";
+						}
+					
 						$SubCatList .= "<li>";
-						$SubCatList .= "<a href='".SITE_FB_URL."category/subcat/id/".$Sub_Cat[$i]['category_id']."' target='_top'><img src='".SITE_ICONS_IMAGES_PATH."/".$Sub_Cat[$i]['icon_image']."' alt='' />".$Sub_Cat[$i]['category_name']."</a>";
+						$SubCatList .= "<a href='".SITE_FB_URL."category/subcat/id/".$Sub_Cat[$i]['category_id']."' target='_top'>".$Icon1.$Sub_Cat[$i]['category_name']."</a>";
 						$SubCatList .= "</li>";
 					}
 					$SubCatList .= "</ul></div>";
@@ -218,39 +287,43 @@ class FbCommonController extends Zend_Controller_Action
 									
    			$SubCatList .="</ul></div></li>";
  			$this->view->Category .= $SubCatList;
-			//print $SubCatList;die;
+			
  		}
-		
-		///CART Controller
 		
  		//To know how many product in Cart
 		$Cart = new Models_Cart();
-		$CartDetails = $Cart->GetProductInCart();
-		//print "<pre>";
-		//print_r($CartDetails);die;
+		$CartDetails = $Cart->GetProductInCart(FBUSER_ID);
+		
 		if($CartDetails){
 			$this->view->cartItems = $CartDetails;
+			
 			
 			$cartId = '';
 			$Price = 0;
 			$CartTotal = '';
 			foreach($CartDetails as $value)
 			{
+				//echo "<pre>";
+				//print_r($value);die;
  				$Price += $value['price']*$value['product_qty'];
 				$cartId = $value['cart_id'];
 				$CartTotal += $value['product_qty'];
+				
+				$currency_symbol = $Common->GetCurrencyValue($value['currId']);
+				
 			}
-			//print $Price;die;
-			$this->view->CartCnt = count($CartDetails);
+			$this->view->currency_symbol = $currency_symbol['currency_symbol'];
+			
+ 			$this->view->CartCnt = count($CartDetails);
  			$this->view->TotalPrice = $Price;
 			$this->view->cartId = $cartId;
 			$mysession->cartId = $cartId;
-			
+			$this->view->currencyId = $currency_symbol['currency_id'];
 			// Get Shipping Information
 			if($cartId) {
 				
 				$ShippingInfo = $Cart->GetShippingInfo($cartId);
-				//print_r($ShippingInfo);die;
+
 				$this->view->firstName = $ShippingInfo['shipping_user_fname'];
 				$this->view->lastName = $ShippingInfo['shipping_user_lname'];
 				$this->view->email = $ShippingInfo['shipping_user_email'];
@@ -274,8 +347,8 @@ class FbCommonController extends Zend_Controller_Action
 				$this->view->zip = $ShippingInfo['shipping_user_zipcode'];
 				
 				$BillingInfo = $Cart->GetBillingInfo($cartId);
-				//print_r($ShippingInfo);die;
-				$this->view->bill_firstName = $BillingInfo['billing_user_fname'];
+ 
+ 				$this->view->bill_firstName = $BillingInfo['billing_user_fname'];
 				$this->view->bill_lastName = $BillingInfo['billing_user_lname'];
 				$this->view->bill_email = $BillingInfo['billing_user_email'];
 				$this->view->bill_phone = $BillingInfo['billing_user_telephone'];
@@ -284,8 +357,14 @@ class FbCommonController extends Zend_Controller_Action
 				$this->view->bill_stateName = $BillingInfo['state_name'];
 				$this->view->bill_countryId = $BillingInfo['billing_user_country_id'];
 				$Billaddress = explode('@',$BillingInfo['billing_user_address']);
- 				$this->view->bill_address = $Billaddress[0];
-				$this->view->bill_address1 = $Billaddress[1];
+				if(isset($Billaddress[0]))
+				{
+					$this->view->bill_address = $Billaddress[0];
+ 				}
+				if(isset($Billaddress[1]))
+				{
+					$this->view->bill_address1 = $Billaddress[1];
+ 				}
 				$this->view->bill_city = $BillingInfo['billing_user_city'];
 				$this->view->bill_state = $BillingInfo['billing_user_state_id'];
 				$this->view->bill_zip = $BillingInfo['billing_user_zipcode'];
@@ -296,11 +375,8 @@ class FbCommonController extends Zend_Controller_Action
 			$this->view->CountryCombo = $Cart->GetCountry();
 			// State combo
 			$this->view->StateCombo = $Cart->GetState($this->view->countryId);
-			
-			
-			$_SESSION['Payment_Amount'] = '1000';
-			
-			
+			/// Currency
+			$this->view->CurrencyCombo = $Common->GetCurrency();
 			
 		}
 		$Id = $this->_request->getParam('id');
@@ -335,59 +411,65 @@ class FbCommonController extends Zend_Controller_Action
 			
 		}
 		
-		// top friends like
+ 		// top friends like
 		$TopFrdsLikeProd = $Product->GetTopFrndsLikeProduct();
 		$this->view->frndstoplike = $TopFrdsLikeProd;
 		
-		//Contact Us Details
-		$ContactDetails = $Common->GetContactUsDetails();
-		//print "<pre>";
-		//print_r($ContactDetails);die;
- 		foreach($ContactDetails as $key=>$detail)
+		
+		//to get paypal details
+		//to check paypal live 
+		$paypalive = $Common->PaypalExist('paypal_live');
+ 		$PaypalLiveDetails = $Common->GetPaypalLiveDetails();
+		
+		if($paypalive['configuration_value'] == 1)
 		{
-			if($detail['configuration_key'] == 'contact_us_address')
+			foreach($PaypalLiveDetails as $plive)
 			{
-				$this->view->ContactAddress = $detail['configuration_value'];
-			}
+						
+				if($plive['configuration_key'] == 'paypallive_api_username')
+				{
+					$mysession->Api_Username = $plive['configuration_value'];
+				}
+				if($plive['configuration_key'] == 'paypallive_api_password')
+				{
+					$mysession->Api_Password = $plive['configuration_value'];
+				}
+				if($plive['configuration_key'] == 'paypallive_api_signature')
+				{
+					$mysession->Api_Signature = $plive['configuration_value'];
+				}
 			
-			if($detail['configuration_key'] == 'contact_us_telephone')
-			{
-				if(stristr($detail['configuration_value'], ',') === FALSE)
-				{
-					$this->view->ContactPhone = $detail['configuration_value'];
-				}
-				else
-				{
-					$phone = explode(',',$detail['configuration_value']);
-					$list = '';
-					foreach($phone as $val)
-					{
-						$list .= $val."<br>";
-					}
-					$this->view->ContactPhone = $list;
-				}
-				
-			}
-			
-			if($detail['configuration_key'] == 'contact_us_email')
-			{
-				if(stristr($detail['configuration_value'], ',') === FALSE)
-				{
-					$this->view->ContactEmail = $detail['configuration_value'];
-				}
-				else
-				{
-					$email = explode(',',$detail['configuration_value']);
-					$list1 = '';
-					foreach($email as $val2)
-					{
-						$list1 .= "<a href='mailto:".$val2."'>".$val2."</a><br>";
-					}
-					$this->view->ContactEmail = $list1;
-				}
 			}
 		}
-  	} 
+		
+		//to check paypal sendbox
+		
+		$sendbox = $Common->PaypalExist('paypal_sandbox');
+		$PaypalSendboxDetails = $Common->GetSendboxDetails();
+		
+		if($sendbox['configuration_value'] == 1)
+		{
+			foreach($PaypalSendboxDetails as $sendbox)
+			{
+					
+				if($sendbox['configuration_key'] == 'sandbox_api_username')
+				{
+					$mysession->Api_Username = $sendbox['configuration_value'];
+				}
+				if($sendbox['configuration_key'] == 'sandbox_api_password')
+				{
+					//print "sfd";
+					$mysession->Api_Password = $sendbox['configuration_value'];
+				}
+				if($sendbox['configuration_key'] == 'sandbox_api_signature')
+				{
+					$mysession->Api_Signature = $sendbox['configuration_value'];
+				}
+			
+			}//die;
+		}
+		//print $mysession->Api_Username;die;
+   	} 
 
 	/**
 	 * Function indexAction

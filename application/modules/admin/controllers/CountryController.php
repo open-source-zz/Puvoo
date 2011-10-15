@@ -621,10 +621,12 @@
 		
 		$filter = new Zend_Filter_StripTags();	
 		$state_id = $filter->filter(trim($this->_request->getPost('hidden_primary_state_id'))); 
-		$country_id = $filter->filter(trim($this->_request->getPost('hidden_primary_country_id'))); 	
+		$country_id = $filter->filter(trim($this->_request->getParam('cid'))); 
+		
 		$this->view->country_data = $Country->getCountryById($country_id);
 		
 		if($state_id > 0 && $state_id != "") {
+			
 			$this->view->records = $Country->GetStateById($state_id);	
 			$this->view->state_id =  $state_id;	
 			$this->view->country_id = $country_id;
@@ -636,6 +638,7 @@
 				$data['state_id']=$filter->filter(trim($this->_request->getPost('state_id')));
 				$data['state_name']=$filter->filter(trim($this->_request->getPost('state_name'))); 
 				$country_id = $filter->filter(trim($this->_request->getPost('country_id'))); 
+				
 				
 				$editErrorMessage = array();
 				if($data['state_name'] == "") {

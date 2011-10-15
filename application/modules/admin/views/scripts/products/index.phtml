@@ -174,7 +174,7 @@
 					</td>					  
 					<td class="FieldLabel2" align="left" style="padding-left:10px;">
 					<?php echo $this->records[$i]['product_name']; ?></td>
-					<td class="FieldLabel2" align="left" style="padding-left:10px;"><?php echo $this->records[$i]['product_description']; ?></td>
+					<td class="FieldLabel2" align="left" style="padding-left:10px;"><?php echo strip_tags($this->records[$i]['product_description']); ?></td>
 					<td class="FieldLabel2" align="center">
 						<?php echo $this->records[$i]['user_name']; ?>
 					</td>

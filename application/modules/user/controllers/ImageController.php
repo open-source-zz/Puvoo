@@ -91,90 +91,98 @@ class User_ImageController extends UserCommonController
 			$ProdImg = new Models_ProductImages();
 			$result = $uploader->handleUpload($folder_path."/");
 			
+			if(!isset($result["error"])) {
 			
-			$ext = "";
-			//$imgname = "p".$this->user_id;
-			$filepath = "/p".$_GET['id'];
-			$arr_imgname = array();
-			$img_data = array();
-			$filename = "";	
-								
-			$arr_imgname = array();
-			$img_content = "";
-			$img_width = 0;
-			$img_height = 0;
-			$img_type = 0;
-			$encname = $result["image_name"];			
+				$ext = "";
+				//$imgname = "p".$this->user_id;
+				$filepath = "/p".$_GET['id'];
+				$arr_imgname = array();
+				$img_data = array();
+				$filename = "";	
+									
+				$arr_imgname = array();
+				$img_content = "";
+				$img_width = 0;
+				$img_height = 0;
+				$img_type = 0;
+				$encname = $result["image_name"];			
+						
+				list($img_width, $img_height, $img_type) = getimagesize($result["filename"]);
 					
-			list($img_width, $img_height, $img_type) = getimagesize($result["filename"]);
+				if($img_type == 1)
+				{
+					$ext = "gif";	
+				}
+						
+				if($img_type == 2)
+				{
+					$ext = "jpg";
+				}
 				
-			if($img_type == 1)
-			{
-				$ext = "gif";	
+				if($img_type == 3)
+				{
+					$ext = "png";
+				}
+				
+				$filename = $encname . "_img." . $ext;
+				
+				//Image of size 350x350
+				$arr_imgname[] = $result["filename"];
+				
+				//Image of size 128x128
+				$arr_imgname[] = $folder_path . "/" . $encname . "_th1.".$ext ;
+				
+				//Image of size 64x64
+				$arr_imgname[] = $folder_path . "/" . $encname . "_th2.".$ext ;
+				
+				//Image of size 28x28
+				$arr_imgname[] = $folder_path . "/" . $encname . "_th3.".$ext ;
+						
+						
+				copy($arr_imgname[0],$arr_imgname[1]);
+				copy($arr_imgname[0],$arr_imgname[2]);
+				copy($arr_imgname[0],$arr_imgname[3]);
+						
+				$thumb->image($arr_imgname[0]);
+				$thumb->size_fix(350,350);
+				$thumb->get($arr_imgname[0]);	
+						
+				$thumb->image($arr_imgname[1]);
+				$thumb->size_fix(128,128);
+				$thumb->get($arr_imgname[1]);	
+				
+				$thumb->image($arr_imgname[2]);
+				$thumb->size_fix(64,64);
+				$thumb->get($arr_imgname[2]);	
+				
+				$thumb->image($arr_imgname[3]);
+				$thumb->size_fix(28,28);
+				$thumb->get($arr_imgname[3]);	
+						
+				$record = $ProdImg->selectProductImages($_GET["id"]);
+				$is_primary_image = 0;
+				if( count($record) > 0 ) {  $is_primary_image = 0; } else { $is_primary_image = 1; } 
+				
+				$img_data = array( 'product_id'  => $_GET["id"],
+								   'image_name' => $filename,
+								   'image_path' => $filepath,
+								   'is_primary_image' => $is_primary_image
+									);
+				
+				$id = $ProdImg->insertProductImages($img_data);	
+				
+				
+				$success = array('success'=>true,'id'=> $id,'is_primary_image' => $is_primary_image, 'filename'=>SITE_PRODUCT_IMAGES_PATH.$filepath.'/'.$encname.'_th1.'.$ext);
+				
+				echo htmlspecialchars(json_encode($success), ENT_NOQUOTES);
+				die;
+			
+			} else { 
+			
+				echo htmlspecialchars(json_encode($result), ENT_NOQUOTES);
+				die;
+			
 			}
-					
-			if($img_type == 2)
-			{
-				$ext = "jpg";
-			}
-			
-			if($img_type == 3)
-			{
-				$ext = "png";
-			}
-			
-			$filename = $encname . "_img." . $ext;
-			
-			//Image of size 350x350
-			$arr_imgname[] = $result["filename"];
-			
-			//Image of size 128x128
-			$arr_imgname[] = $folder_path . "/" . $encname . "_th1.".$ext ;
-			
-			//Image of size 64x64
-			$arr_imgname[] = $folder_path . "/" . $encname . "_th2.".$ext ;
-			
-			//Image of size 28x28
-			$arr_imgname[] = $folder_path . "/" . $encname . "_th3.".$ext ;
-					
-					
-			copy($arr_imgname[0],$arr_imgname[1]);
-			copy($arr_imgname[0],$arr_imgname[2]);
-			copy($arr_imgname[0],$arr_imgname[3]);
-					
-			$thumb->image($arr_imgname[0]);
-			$thumb->size_fix(350,350);
-			$thumb->get($arr_imgname[0]);	
-					
-			$thumb->image($arr_imgname[1]);
-			$thumb->size_fix(128,128);
-			$thumb->get($arr_imgname[1]);	
-			
-			$thumb->image($arr_imgname[2]);
-			$thumb->size_fix(64,64);
-			$thumb->get($arr_imgname[2]);	
-			
-			$thumb->image($arr_imgname[3]);
-			$thumb->size_fix(28,28);
-			$thumb->get($arr_imgname[3]);	
-					
-			$record = $ProdImg->selectProductImages($_GET["id"]);
-			$is_primary_image = 0;
-			if( count($record) > 0 ) {  $is_primary_image = 0; } else { $is_primary_image = 1; } 
-			
-			$img_data = array( 'product_id'  => $_GET["id"],
-							   'image_name' => $filename,
-							   'image_path' => $filepath,
-							   'is_primary_image' => $is_primary_image
-								);
-			
-			$id = $ProdImg->insertProductImages($img_data);	
-			
-			
-			$success = array('success'=>true,'id'=> $id,'is_primary_image' => $is_primary_image, 'filename'=>SITE_PRODUCT_IMAGES_PATH.$filepath.'/'.$encname.'_th1.'.$ext);
-			
-			echo htmlspecialchars(json_encode($success), ENT_NOQUOTES);
-			die;
 			
 		}
 }
@@ -311,6 +319,10 @@ class qqFileUploader {
             return array($translate->_('Err_Image_Upload_Error') => $translate->_('Err_Image_Upload_Large_File'));
         }
         
+		if ($size < (300*300)) {
+			return array($translate->_('Err_Image_Upload_Error') => $translate->_('Err_Image_Upload_Small_File'));
+		}
+		
         $pathinfo = pathinfo($this->file->getName());
         $filename = $pathinfo['filename'] ;
 		//$filename."_". //$filename."_".

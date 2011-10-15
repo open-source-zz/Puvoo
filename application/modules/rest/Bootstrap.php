@@ -54,7 +54,8 @@ class Rest_Bootstrap extends Zend_Application_Module_Bootstrap
 		
 		
 		if(strpos(strtolower($_SERVER['REQUEST_URI']), strtolower(INSTALL_DIR."rest/")) === 0){
-		
+			
+				
 			$bootstrap = $this->getApplication();
 			if ($bootstrap instanceof Zend_Application) {
 				$bootstrap = $this;
@@ -66,6 +67,7 @@ class Rest_Bootstrap extends Zend_Application_Module_Bootstrap
 			//$plugin->setBootstrap($this);
 			$front->registerPlugin($plugin);
 		}
+		
     }
 	
 	/**

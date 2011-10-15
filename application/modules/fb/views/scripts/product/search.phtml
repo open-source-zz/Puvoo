@@ -1,6 +1,6 @@
 
 <div id="rightColumn">
-<form name="frmcatproduct" method="post" id="frmcatproduct">
+<form name="frmcatproduct" method="get" id="frmcatproduct" action="<?php echo $this->temp_url;?>" target="_top" enctype="multipart/form-data">
              	<div class="mainColumnWidget">
                  	<div class="categoryHeader" style="border-top: 1px solid #E2E2E2;">
                        <?php echo $this->Translate('Search')?><?php echo $this->qstring?> 
@@ -53,19 +53,18 @@
 									<a target="_top" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $prodval['product_id'];?>"><?php echo $prodval['product_name'];?></a> 
 								</div>
 								<div class="productPrice">
-								    <?php echo "$".$prodval['product_price']." (USD)";?>
+								    <?php echo "$". $prodval['Prod_convert_price']."&nbsp;";?>
 								</div>
 								<div class="socialbtn">
-									<div class="left">
-										<img src="<?php echo IMAGES_FB_PATH ?>/like_1.jpg" alt="" />
-									</div>
-								   <div style="text-align: right;">
-									   <div class="share" id="shareLinkContGrid_lls1">
-											<a class="shareLinks" rel="Grid_lls1" href="#"><?php echo $this->Translate('Share')?></a>
-									   </div>
-										<div style="clear: both;"></div>
-					
-									</div>
+									<script>(function(d, s, id) {
+										  var js, fjs = d.getElementsByTagName(s)[0];
+										  if (d.getElementById(id)) {return;}
+										  js = d.createElement(s); js.id = id;
+										  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=124974344272864";
+										  fjs.parentNode.insertBefore(js, fjs);
+										}(document, 'script', 'facebook-jssdk'));</script>
+										<fb:like href="<?php echo SITE_FB_URL . "product/view/id/" . $prodval['product_id']; ?>" send="true" layout="button_count" width="181" show_faces="false"></fb:like>
+								   
 									<div style="clear: both"></div>
 								 </div>    
 							 </div>
@@ -79,6 +78,9 @@
 						<?php echo $this->paginationControl($this->paginator, 'Sliding', 'pagination_bottom.phtml'); ?>
 						</div>
 						<input type="hidden" name="page_no" id="page_no" value="<?php echo $this->page_no; ?>" />
+						<input type="hidden" name="q" id="q" value="<?php echo $this->QueryString; ?>" />
+						<input type="hidden" name="search" id="search" value="<?php echo $this->Search; ?>" />
+						<input type="hidden" name="cid" id="cid" value="<?php echo $this->CatId; ?>" />
 	
 						<div style="padding-bottom:10px; clear:both"></div>
 					</div>

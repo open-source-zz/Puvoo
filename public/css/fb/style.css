@@ -121,7 +121,9 @@ a:hover {color:#000000;}
     margin-top: 10px;
 }
 */
-#search { /*margin-bottom:10px;margin-top:46px; */ }
+#search { 
+margin-right:3px;
+/*margin-bottom:10px;margin-top:46px; */ }
 .inputtext, .inputpassword {
     margin: 0;
     padding-bottom: 4px;
@@ -145,6 +147,14 @@ select {
 .searchbtn
 {
 	background:url(../../images/fb/search.png) no-repeat;
+	height:28px;
+	width:65px;
+	cursor:pointer;
+	border:none;
+}
+.sendbtn
+{
+	background:url(../../images/fb/send.png) no-repeat;
 	height:28px;
 	width:65px;
 	cursor:pointer;
@@ -1209,4 +1219,26 @@ color:#CCCCCC;
 .topNav ul li:hover div ul li a {background: #fff;color: #36424a;}
 .topNav ul li div ul li a:hover {background: #36424a;color: #fff;}
 
+.error_msg
+{
+	padding-left: 15px;
+	color:#FF0000;
+}
+.error
+{
+	
+	color:#FF0000;
+}
 
+.confirm
+{
+	background:url(../../images/fb/conti_shopping.png) no-repeat;
+	height:28px;
+	width:80px;
+	cursor:pointer;
+	border:none;
+	margin-left:3px;
+}
+
+.fb_edge_widget_with_comment span.fb_edge_comment_widget iframe.fb_ltr 
+{display: none !important;}

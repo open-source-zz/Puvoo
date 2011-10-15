@@ -23,16 +23,16 @@
 	&lt;Product&gt;
 
 		&lt;pid&gt; INT &lt;/pid&gt;
-		&lt;name&gt; TEXT &lt;/name&gt;
-		&lt;description&gt; TEXT &lt;/description&gt;
+		&lt;name&gt; &lt;![CDATA[TEXT]]&gt; &lt;/name&gt;
+		&lt;description&gt; &lt;![CDATA[TEXT]]&gt; &lt;/description&gt;
 		&lt;price&gt; DECIMAL &lt;/price&gt;
-		&lt;code&gt; TEXT &lt;/code&gt;
+		&lt;code&gt; &lt;![CDATA[TEXT]]&gt; &lt;/code&gt;
 		&lt;weight&gt; DECIMAL &lt;/weight&gt;
 		&lt;length&gt; DECIMAL &lt;/length&gt;
 		&lt;width&gt; DECIMAL &lt;/width&gt;
 		&lt;depth&gt; DECIMAL &lt;/depth&gt;
-		&lt;weight_unit&gt; TEXT &lt;/weight_unit&gt;
-		&lt;length_unit&gt; TEXT &lt;/length_unit&gt;
+		&lt;weight_unit&gt; &lt;![CDATA[TEXT]]&gt; &lt;/weight_unit&gt;
+		&lt;length_unit&gt; &lt;![CDATA[TEXT]]&gt; &lt;/length_unit&gt;
 		&lt;start_sales&gt; BOOLEAN &lt;/start_sales&gt;
 		&lt;available_qty&gt; INT &lt;/available_qty&gt;
 		&lt;main_image&gt; URL &lt;/main_image&gt;
@@ -54,15 +54,15 @@
 		
 		&lt;attributes&gt;
 		  &lt;attribute&gt;
-			&lt;name&gt; TEXT &lt;/name&gt;
+			&lt;name&gt; &lt;![CDATA[TEXT]]&gt; &lt;/name&gt;
 			&lt;options&gt;
 				&lt;value&gt;
-					&lt;name&gt; TEXT &lt;/name&gt;
-					&lt;sku&gt; TEXT &lt;/sku&gt;
+					&lt;name&gt; &lt;![CDATA[TEXT]]&gt; &lt;/name&gt;
+					&lt;sku&gt; &lt;![CDATA[TEXT]]&gt; &lt;/sku&gt;
 					&lt;weight&gt; DECIMAL &lt;/weight&gt;
-					&lt;weight_unit&gt; TEXT &lt;/weight_unit&gt;
+					&lt;weight_unit&gt; &lt;![CDATA[TEXT]]&gt; &lt;/weight_unit&gt;
 					&lt;price&gt; DECIMAL &lt;/price&gt;
-					&lt;quantity&gt; INT &lt;/quantity&gt;
+					&lt;available_qty&gt; &lt;![CDATA[TEXT]]&gt; &lt;/available_qty&gt;
 				&lt;/value&gt;
 				&lt;!-- ... more value nodes here ... --&gt;
 			&lt;/options&gt;
@@ -306,10 +306,10 @@
 		<td valign="top">The price of option to add to the product price</td>
 	</tr>
 	<tr>
-		<td valign="top">quantity</td>
+		<td valign="top">available_qty</td>
 		<td valign="top">INT</td>
 		<td valign="top">Optional,Single</td>
-		<td valign="top">The price of option to add to the product price</td>
+		<td valign="top">The quantity available for option </td>
 	</tr>
 </table>
 <div style="margin-top:20px;">
@@ -378,16 +378,16 @@ $api_key = "<b>your_api_key</b>";
 $data = "&lt;Products&gt;\r\n"
 	. "&lt;Product&gt;\r\n"
 	. "&lt;pid&gt;46&lt;/pid&gt;\r\n"
-	. "&lt;name&gt;first product&lt;/name&gt;\r\n"
-	. "&lt;description&gt;first product description&lt;/description&gt;\r\n"
+	. "&lt;name&gt;&lt;![CDATA[first product]]&gt;&lt;/name&gt;\r\n"
+	. "&lt;description&gt;&lt;![CDATA[first product description]]&gt;&lt;/description&gt;\r\n"
 	. "&lt;price&gt;10.10&lt;/price&gt;\r\n"
-	. "&lt;code&gt;first1&lt;/code&gt;\r\n"
+	. "&lt;code&gt;&lt;![CDATA[first1]]&gt;&lt;/code&gt;\r\n"
 	. "&lt;weight&gt;2&lt;/weight&gt;\r\n"
 	. "&lt;length&gt;10&lt;/length&gt;\r\n"
 	. "&lt;width&gt;5&lt;/width&gt;\r\n"
 	. "&lt;depth&gt;10&lt;/depth&gt;\r\n"
-	. "&lt;weight_unit&gt;Kgs&lt;/weight_unit&gt;\r\n"
-	. "&lt;length_unit&gt;Mt&lt;/length_unit&gt;\r\n"
+	. "&lt;weight_unit&gt;&lt;![CDATA[Kgs]]&gt;&lt;/weight_unit&gt;\r\n"
+	. "&lt;length_unit&gt;&lt;![CDATA[Mt]]&gt;&lt;/length_unit&gt;\r\n"
 	. "&lt;start_sales&gt;0&lt;/start_sales&gt;\r\n"
 	. "&lt;available_qty&gt;10&lt;/available_qty&gt;\r\n"
 	. "&lt;main_image&gt;http://c69282.r82.cf3.rackcdn.com/PALLINE.jpg&lt;/main_image&gt;\r\n"
@@ -405,15 +405,15 @@ $data = "&lt;Products&gt;\r\n"
 	. "&lt;/images&gt;\r\n"
 	. "&lt;attributes&gt;\r\n"
 	. "&lt;attribute&gt;\r\n"
-	. "&lt;name&gt;colors&lt;/name&gt;\r\n"
+	. "&lt;name&gt;&lt;![CDATA[colors]]&gt;&lt;/name&gt;\r\n"
 	. "&lt;options&gt;\r\n"
 	. "&lt;value&gt;"
-	. "&lt;name&gt;sizeM&lt;/name&gt;\r\n"
-	. "&lt;sku&gt;product1_red_m&lt;/sku&gt;\r\n"
+	. "&lt;name&gt;&lt;![CDATA[sizeM]]&gt;&lt;/name&gt;\r\n"
+	. "&lt;sku&gt;&lt;![CDATA[product1_red_m]]&gt;&lt;/sku&gt;\r\n"
 	. "&lt;weight&gt;1&lt;/weight&gt;\r\n"
-	. "&lt;weight_unit&gt;Kgs&lt;/weight_unit&gt;\r\n"
+	. "&lt;weight_unit&gt;&lt;![CDATA[Kgs]]&gt;&lt;/weight_unit&gt;\r\n"
 	. "&lt;price&gt;2&lt;/price&gt;\r\n"
-	. "&lt;quantity&gt;10&lt;/quantity&gt;\r\n"
+	. "&lt;available_qty&gt;10&lt;/available_qty&gt;\r\n"
 	. "&lt;/value&gt;\r\n"
 	. "&lt;/options&gt;\r\n"
 	. "&lt;/attribute&gt;\r\n"
@@ -430,6 +430,8 @@ $fp = fopen('php://temp/', 'w');
 if (!$fp) {
     die('could not open temp memory data');
 }
+$data = urlencode($data);
+
 fwrite($fp, $data);
 fseek($fp, 0); 
 

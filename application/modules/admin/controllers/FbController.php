@@ -190,6 +190,9 @@ class Admin_FbController extends AdminCommonController
 			}
 		}
 		$record = array();
+		
+		echo $id; die;
+		
 		$res = $Configuration->getKeyValueForGroup($id,array("contact_us_address","contact_us_telephone","contact_us_email"));
 		
 		if($res != "" && is_array($res))
@@ -201,6 +204,146 @@ class Admin_FbController extends AdminCommonController
 		}
 		
 		$this->view->record = $record;
+		$this->view->configuration_group_id = $id;
+	}
+	
+	
+	/**
+     * Function paypalAction
+	 *
+	 * This function is used to set paypal seettings.
+	 *
+     * Date Created: 2011-10-15
+     *
+     * @access public
+	 * @param ()  - No parameter
+	 * @return (void) - Return void
+	 *
+     * @author Yogesh
+     *  
+     * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/  
+	 
+	function paypalAction() 
+	{
+		$Configuration = new Models_Configuration();
+		$home = new Models_AdminMaster();
+		
+		$data = array();
+		
+		$request = $this->getRequest();
+		
+		$translate = Zend_Registry::get('Zend_Translate');
+		
+		if($request->isPost())
+		{
+			$filter = new Zend_Filter_StripTags();	
+			
+			$data['paypal_type'] = $filter->filter(trim($request->getPost('paypal_type')));
+			$data['sandbox_api_username'] = $filter->filter(trim($request->getPost('sandbox_api_username')));
+			$data['sandbox_api_password'] = $filter->filter(trim($request->getPost('sandbox_api_password')));
+			$data['sandbox_api_signature'] = $filter->filter(trim($request->getPost('sandbox_api_signature')));
+			$data['paypallive_api_username'] = $filter->filter(trim($request->getPost('paypallive_api_username')));
+			$data['paypallive_api_password'] = $filter->filter(trim($request->getPost('paypallive_api_password')));
+			$data['paypallive_api_signature'] = $filter->filter(trim($request->getPost('paypallive_api_signature')));
+			
+			$id = $filter->filter(trim($request->getPost('configuration_group_id')));
+			
+			$updateError = array();
+			
+			if( $data['paypal_type'] == '' )
+			{
+				$updateError[] = $translate->_('Err_Paypal_Type');
+			}
+			
+			if( $data['paypal_type'] == 'paypal_sandbox' ) {
+			
+				$data['paypal_sandbox'] = 1;
+				$data['paypal_live'] = 0;
+				
+				if( $data['sandbox_api_username'] == "" )
+				{
+					$updateError[] = $translate->_('Err_Paypal_Api_Username');
+				}
+				
+				if( $data['sandbox_api_password'] == "" )
+				{
+					$updateError[] = $translate->_('Err_Paypal_Api_Password');
+				}
+				
+				if( $data['sandbox_api_signature'] == "" )
+				{
+					$updateError[] = $translate->_('Err_Paypal_Signature');
+				}
+				
+			} else if( $data['paypal_type'] == 'paypal_live' ) {
+			
+				$data['paypal_sandbox'] = 0;
+				$data['paypal_live'] = 1;
+				
+				if( $data['paypallive_api_username'] == "" )
+				{
+					$updateError[] = $translate->_('Err_Paypal_Api_Username');
+				}
+				
+				if( $data['paypallive_api_password'] == "" )
+				{
+					$updateError[] = $translate->_('Err_Paypal_Api_Password');
+				}
+				
+				if( $data['paypallive_api_signature'] == "" )
+				{
+					$updateError[] = $translate->_('Err_Paypal_Signature');
+				}
+				
+			}
+			
+			if(count($updateError) == 0)
+			{
+				//update record
+				$Configuration->updateKeyValueForGroup($id,$data);
+				
+				$this->view->updateSuccess = $translate->_('Succ_Paypal');
+			}
+			else
+			{
+				$this->view->updateError = $updateError;
+			}
+			
+			foreach( $data as $key => $val )
+			{
+				$this->view->$key = $val;		
+			}
+			
+			
+		} else 	{
+			
+			$record = array();
+			$id = $Configuration->GetConfigurationGroupId("Facebook Store");
+			
+			$key_array = array(
+								"paypal_sandbox",
+								"paypal_live",
+								"sandbox_api_username",
+								"sandbox_api_password",
+								"sandbox_api_signature",
+								"paypallive_api_username",
+								"paypallive_api_password",
+								"paypallive_api_signature"
+							  ); 
+			
+			$res = $Configuration->getKeyValueForGroup($id,$key_array);
+			
+			if($res != "" && is_array($res))
+			{
+				foreach( $res as $key => $val )
+				{
+					$this->view->$val["configuration_key"] = $val["configuration_value"];		
+				}
+			}
+		}
+		
+		//$this->view->record = $record;
 		$this->view->configuration_group_id = $id;
 	}
 	

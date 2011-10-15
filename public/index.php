@@ -30,7 +30,7 @@
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  **/
  
-// Puvoo Version 
+
 defined('PUVOO_VERSION')
     || define('PUVOO_VERSION', "Puvoo&trade; v. 1.0.0 ALPHA");
 	
@@ -127,8 +127,8 @@ $application = new Zend_Application(
 /**
  * $mysession will be used to store session information
 **/
-global $mysession;
 
+ global $mysession;
 
 //register name spaces to autoload classes
 require_once LIBRARY_PATH."/Zend/Loader/Autoloader.php";
@@ -150,6 +150,13 @@ if(!isset($mysession->language)){
 	$mysession->language = 'en';
 }
 
+$user_profile= array();
+$user_profile['email'] = "";
+$user_profile['id'] = "";
+
+//$mysession->FbuserId = $user_profile['email'];
+$mysession->FbuserId = 'xyz@yahoo.com';
+$mysession->Facebook_UserId = '10150349794714140'; //$user_profile['id'];// Puvoo Version 
 
 //Load Translate class to handle multilanguage part
 Zend_Loader::loadClass('Zend_Translate');

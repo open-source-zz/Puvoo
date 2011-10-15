@@ -129,7 +129,7 @@ class Fb_CategoryController extends FbCommonController
 			
 			if($catExist)
 			{
-			//set current page number
+				//set current page number
 				$page_no = 1;
 				
 				//set no. of records to display on page
@@ -138,9 +138,9 @@ class Fb_CategoryController extends FbCommonController
 				//Get Request
 				$request = $this->getRequest();
 				$Sort = '';
-				if($request->isPost()){
-					$page_no = $request->getPost('page_no');
-					$Sort = $request->getPost('sortBy');
+				if($request->getParam('page_no') != ''){
+					$page_no = $request->getParam('page_no');
+					$Sort = $request->getParam('sortBy');
 					$mysession->pagesize = $pagesize;
 					$this->view->$Sort = "selected='selected'";
 					if($Sort == ''){
@@ -166,9 +166,6 @@ class Fb_CategoryController extends FbCommonController
 				$Product = new Models_Product();
 				$catProd = $Product->GetProductByCategoryId($catid,$Sort);
 				$this->view->ProductList = $catProd;
-				
-		//		print "<pre>";
-		//		print_r($catProd);die;
 				
 				//Set Pagination
 				$paginator = Zend_Paginator::factory($catProd);

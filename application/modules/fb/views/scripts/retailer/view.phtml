@@ -16,14 +16,14 @@
           </div>
 		</div>
 		<div style="clear:both"></div>
-		<form name="frmRetailerProduct" method="post" id="frmRetailerProduct" action="">
+		<form name="frmcatproduct" method="get" id="frmcatproduct" action="<?php echo SITE_FB_URL;?>retailer/view/id/<?php echo $this->retailerId;?>" target="_top">
 		<div class="portlet">
 			 <div class="bluewidgetHeader">
 				   <div style="float:left;">
 						<select id="sortBy" style="width:150px;" name="sortBy" onchange="this.form.submit();">
                                                                         
-							<option value="bestseller" <?php echo $this->bestseller;?>><?php echo $this->Translate('BestSeller')?></option>
-							<option value="most_liked" <?php echo $this->most_liked;?>><?php echo $this->Translate('MostLiked')?></option>
+							<!--<option value="bestseller" <?php echo $this->bestseller;?>><?php echo $this->Translate('BestSeller')?></option>
+							<option value="most_liked" <?php echo $this->most_liked;?>><?php echo $this->Translate('MostLiked')?></option>-->
 							<option value="price_asc" <?php echo $this->price_asc;?>><?php echo $this->Translate('LowToHigh')?></option>
 							<option value="price_desc" <?php echo $this->price_desc;?>><?php echo $this->Translate('HighToLow')?></option>
                          </select>
@@ -55,7 +55,7 @@
 					<a target="_top" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $prodval['product_id'];?>"><?php echo $prodval['product_name'];?></a> 
 				</div>
 				<div class="productPrice">
-				   <?php echo "$".$prodval['product_price']." (USD)";?>
+				  <?php echo DEFAULT_CURRENCY_SYMBOL.$prodval['prod_convert_price']."&nbsp;".DEFAULT_CURRENCY_CODE;?>
 				</div>
 				<div class="socialbtn">
 					<div class="left">

@@ -21,20 +21,20 @@
 
 &lt;store_info&gt;
 	
-	&lt;store_name&gt; TEXT &lt;/store_name&gt;
-	&lt;store_description&gt; TEXT &lt;/store_description&gt;
-	&lt;store_address&gt; TEXT &lt;/store_address&gt;
-	&lt;store_country&gt; TEXT &lt;/store_country&gt;
-	&lt;store_state&gt; TEXT &lt;/store_state&gt;
-	&lt;store_city&gt; TEXT &lt;/store_city&gt;
-	&lt;store_zipcode&gt; TEXT &lt;/store_zipcode&gt;
-	&lt;paypal_address&gt; TEXT &lt;/paypal_address&gt;
-	&lt;currency&gt; TEXT &lt;/currency&gt;
+	&lt;store_name&gt; &lt;![CDATA[TEXT]]&gt; &lt;/store_name&gt;
+	&lt;store_description&gt; &lt;![CDATA[TEXT]]&gt; &lt;/store_description&gt;
+	&lt;store_address&gt; &lt;![CDATA[TEXT]]&gt; &lt;/store_address&gt;
+	&lt;store_country&gt; &lt;![CDATA[TEXT]]&gt; &lt;/store_country&gt;
+	&lt;store_state&gt; &lt;![CDATA[TEXT]]&gt; &lt;/store_state&gt;
+	&lt;store_city&gt; &lt;![CDATA[TEXT]]&gt; &lt;/store_city&gt;
+	&lt;store_zipcode&gt; &lt;![CDATA[TEXT]]&gt; &lt;/store_zipcode&gt;
+	&lt;paypal_address&gt; &lt;![CDATA[TEXT]]&gt; &lt;/paypal_address&gt;
+	&lt;currency&gt; &lt;![CDATA[TEXT]]&gt; &lt;/currency&gt;
 	
 	&lt;shipping_table&gt;
-		&lt;shipping_name&gt; TEXT &lt;/shipping_name&gt;	
-		&lt;shipping_zone&gt; TEXT &lt;/shipping_zone&gt;	
-		&lt;shipping_cost&gt; TEXT &lt;/shipping_cost&gt;	
+		&lt;shipping_name&gt; &lt;![CDATA[TEXT]]&gt; &lt;/shipping_name&gt;	
+		&lt;shipping_zone&gt; &lt;![CDATA[TEXT]]&gt; &lt;/shipping_zone&gt;	
+		&lt;shipping_cost&gt; &lt;![CDATA[TEXT]]&gt; &lt;/shipping_cost&gt;	
 	&lt;/shipping_table&gt;
 	&lt;!-- ... more shipping table nodes here ... --&gt;
 	
@@ -212,23 +212,23 @@
 <pre style="background-color:#E0E0E0;  font-size:12px">
 &lt;?php
 
-$rest_url = "<?php echo SITE_URL.'rest/inventory'; ?>";
+$rest_url = "<?php echo SITE_URL.'rest/store'; ?>";
 $api_key = "<b>your_api_key</b>";
 
 $data = "&lt;store_info&gt;\r\n"
-	. "&lt;store_name&gt;Store name&lt;/store_name&gt;\r\n"
-	. "&lt;store_description&gt;Description of store&lt;/store_description&gt;\r\n"
-	. "&lt;store_address&gt;Address of store&lt;/store_address&gt;\r\n"
-	. "&lt;store_country&gt;US&lt;/store_country&gt;\r\n"
-	. "&lt;store_state&gt;New York&lt;/store_state&gt;\r\n"
-	. "&lt;store_city&gt;New York&lt;/store_city&gt;\r\n"
-	. "&lt;store_zipcode&gt;12345&lt;/store_zipcode&gt;\r\n"
-	. "&lt;paypal_address&gt;paypal@xyz.com&lt;/paypal_address&gt;\r\n"
-	. "&lt;currency&gt;USD&lt;/currency&gt;\r\n"
+	. "&lt;store_name&gt;&lt;![CDATA[Store name]]&gt;&lt;/store_name&gt;\r\n"
+	. "&lt;store_description&gt;&lt;![CDATA[Description of store]]&gt;&lt;/store_description&gt;\r\n"
+	. "&lt;store_address&gt;&lt;![CDATA[Address of store]]&gt;&lt;/store_address&gt;\r\n"
+	. "&lt;store_country&gt;&lt;![CDATA[US]]&gt;&lt;/store_country&gt;\r\n"
+	. "&lt;store_state&gt;&lt;![CDATA[New York]]&gt;&lt;/store_state&gt;\r\n"
+	. "&lt;store_city&gt;&lt;![CDATA[New York]]&gt;&lt;/store_city&gt;\r\n"
+	. "&lt;store_zipcode&gt;&lt;![CDATA[12345]]&gt;&lt;/store_zipcode&gt;\r\n"
+	. "&lt;paypal_address&gt;&lt;![CDATA[paypal@xyz.com]]&gt;&lt;/paypal_address&gt;\r\n"
+	. "&lt;currency&gt;&lt;![CDATA[USD]]&gt;&lt;/currency&gt;\r\n"
 	. "&lt;shipping_table&gt;\r\n"
-	. "&lt;shipping_name&gt;shipping_method&lt;/shipping_name&gt;\r\n"
-	. "&lt;shipping_zone&gt;US,IT,UK&lt;/shipping_zone&gt;\r\n"
-	. "&lt;shipping_cost&gt;5:5.5,10:11,15:20&lt;/shipping_cost&gt;\r\n"
+	. "&lt;shipping_name&gt;&lt;![CDATA[shipping_method]]&gt;&lt;/shipping_name&gt;\r\n"
+	. "&lt;shipping_zone&gt;&lt;![CDATA[US,IT,UK]]&gt;&lt;/shipping_zone&gt;\r\n"
+	. "&lt;shipping_cost&gt;&lt;![CDATA[5:5.5,10:11,15:20]]&gt;&lt;/shipping_cost&gt;\r\n"
 	. "&lt;/shipping_table&gt;\r\n"
 	. "&lt;/store_info&gt;";
 
@@ -242,7 +242,7 @@ $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $rest_url);
 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+curl_setopt($ch, CURLOPT_POSTFIELDS, urlencode($data));
 curl_setopt($ch, CURLOPT_HTTPHEADER, $arr_header);
 
 $result = curl_exec($ch);

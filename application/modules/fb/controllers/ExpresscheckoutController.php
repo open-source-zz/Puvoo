@@ -46,8 +46,8 @@ class Fb_ExpresscheckoutController extends FbCommonController
 		parent::init();
 		 /* Initialize action controller here */
 		Zend_Loader::loadClass('Models_Product');
-		require_once ("../public/paypalfunctions.php");
-
+		require_once ("paypalfunctions.php");
+		
 	 }
 	
 	/**
@@ -79,7 +79,8 @@ class Fb_ExpresscheckoutController extends FbCommonController
 		//' earlier in a session variable 
 		//' by the shopping cart page
 		//'------------------------------------
-		$paymentAmount = $_SESSION["Payment_Amount"];
+		
+		$paymentAmount = $_POST["FinalAmount"];
 		
 		//'------------------------------------
 		//' The currencyCodeType and paymentType 
@@ -94,7 +95,7 @@ class Fb_ExpresscheckoutController extends FbCommonController
 		//'
 		//' This is set to the value entered on the Integration Assistant 
 		//'------------------------------------
-		$returnURL = "http://rishi/Puvoo/fb/";
+		$returnURL = "http://apps.facebook.com/pvalpha/order/confirmorder";
 		
 		//'------------------------------------
 		//' The cancelURL is the location buyers are sent to when they hit the
@@ -102,7 +103,7 @@ class Fb_ExpresscheckoutController extends FbCommonController
 		//'
 		//' This is set to the value entered on the Integration Assistant 
 		//'------------------------------------
-		$cancelURL = "http://rishi/Puvoo/fb/";
+		$cancelURL = "http://apps.facebook.com/pvalpha/order/cancelorder";
 		
 		//'------------------------------------
 		//' Calls the SetExpressCheckout API call

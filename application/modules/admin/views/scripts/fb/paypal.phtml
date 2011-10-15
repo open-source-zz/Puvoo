@@ -1,0 +1,155 @@
+<div class="Breadcrumb" id="PageBreadcrumb">
+	<ul>
+	   <li class="Home SecondLast"><a href="<?php echo SITE_URL; ?>admin/"><?php echo $this->Translate("Administration"); ?></a></li>
+	   <li class="Last"><span><?php echo $this->Translate('Paypal'); ?></span></li>
+	</ul>
+</div>
+
+<div class="BodyContainer DashboardContainer" style="text-align:left;">
+	
+	<!--        Header       -->
+	<div class="Heading1">
+		<?php echo $this->Translate('Paypal'); ?>
+	</div>
+	
+	<!--       Success and Error Message      -->
+	<?php if(count($this->updateError) > 0 ) { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
+				<?php foreach($this->updateError as $key => $val ) { ?>
+					<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+					<strong><?php echo $val; ?></strong></p>
+				<?php } ?>
+			</div>
+		</div>
+	<?php } ?>
+	<?php if($this->updateSuccess != '') { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-highlight ui-corner-all" style="margin-top: 20px; padding: 0 .7em;"> 
+				<p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
+				<strong><?php echo $this->updateSuccess; ?></strong></p>
+			</div>
+		</div>
+	<?php } ?>
+	
+	<!--       Form      -->
+	<form method="post" name="frmpaypal" id="frmpaypal" >
+		<table class="Panel" style="margin-top:10px;">
+			<tr>
+				<td class="Heading2" colspan="2">
+					<?php if( $this->paypal_sandbox == 1 ) { ?>
+					<input type="radio" name="paypal_type" id="paypal_type" checked="checked" value="paypal_sandbox">&nbsp;&nbsp;
+					<?php } else { ?>
+					<input type="radio" name="paypal_type" id="paypal_type" value="paypal_sandbox">&nbsp;&nbsp;
+					<?php } ?>
+					<?php echo $this->Translate('Sandbox'); ?>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<div id="div0" style="padding-bottom:5px">
+						<table class="Panel" width="100%" cellspacing="0" cellpadding="0">
+							<tr>
+								<td class="FieldLabel">
+									<span class="Required">*</span>&nbsp;<?php echo $this->Translate('AP_Username'); ?>:
+								</td>
+								<td>
+									<input type="text" name="sandbox_api_username" id="sandbox_api_username" class="Field250" value="<?php echo $this->sandbox_api_username; ?>" />
+									<span></span>
+								</td>
+							</tr>
+							<tr><td height="5"></td></tr>
+							 <tr>
+								<td class="FieldLabel">
+									<span class="Required">*</span>&nbsp;<?php echo $this->Translate('API_Password'); ?>:
+								</td>
+								<td>
+									<input type="text" name="sandbox_api_password" id="sandbox_api_password" class="Field250" value="<?php echo $this->sandbox_api_password; ?>" />
+									<span></span>
+								</td>
+							</tr>
+							<tr><td height="5"></td></tr>
+							 <tr>
+								<td class="FieldLabel">
+									<span class="Required">*</span>&nbsp;<?php echo $this->Translate('Signature'); ?>:
+								</td>
+								<td>
+									<input type="text" name="sandbox_api_signature" id="sandbox_api_signature" class="Field400" value="<?php echo $this->sandbox_api_signature; ?>" />
+									<span></span>
+								</td>
+							</tr>
+							<tr><td height="15"></td></tr>
+						</table>
+					</div>
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="Heading2" colspan="2">
+					<?php if( $this->paypal_live == 1 ) { ?>
+					<input type="radio" name="paypal_type" checked="checked" id="paypal_type" value="paypal_live">&nbsp;&nbsp;
+					<?php } else { ?>
+					<input type="radio" name="paypal_type" id="paypal_type" value="paypal_live">&nbsp;&nbsp;
+					<?php } ?>
+					
+					<?php echo $this->Translate('Paypal_Live'); ?>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<div id="div0" style="padding-bottom:5px">
+						<table class="Panel" width="100%" cellspacing="0" cellpadding="0">
+							<tr>
+								<td class="FieldLabel">
+									<span class="Required">*</span>&nbsp;<?php echo $this->Translate('AP_Username'); ?>:
+								</td>
+								<td>
+									<input type="text" name="paypallive_api_username" id="paypallive_api_username" class="Field250" value="<?php echo $this->paypallive_api_username; ?>" />
+									<span></span>
+								</td>
+							</tr>
+							<tr><td height="5"></td></tr>
+							 <tr>
+								<td class="FieldLabel">
+									<span class="Required">*</span>&nbsp;<?php echo $this->Translate('API_Password'); ?>:
+								</td>
+								<td>
+									<input type="text" name="paypallive_api_password" id="paypallive_api_password" class="Field250" value="<?php echo $this->paypallive_api_password; ?>" />
+									<span></span>
+								</td>
+							</tr>
+							<tr><td height="5"></td></tr>
+							 <tr>
+								<td class="FieldLabel">
+									<span class="Required">*</span>&nbsp;<?php echo $this->Translate('Signature'); ?>:
+								</td>
+								<td>
+									<input type="text" name="paypallive_api_signature" id="paypallive_api_signature" class="Field400" value="<?php echo $this->paypallive_api_signature; ?>" />
+									<span></span>
+								</td>
+							</tr>
+							<tr><td height="15"></td></tr>
+						</table>
+					</div>
+				</td>
+			</tr>
+			
+			<tr>
+			   <td colspan="2" style="padding-left:10px;">
+					<input type="submit" id="anything"  value="<?php echo $this->Translate('Update'); ?>" />
+					<input type="button" id="anything"  value="<?php echo $this->Translate('Cancle'); ?>" onclick="window.location='<?php echo SITE_URL . 'admin/' ?>'"/>
+				</td>
+			</tr> <tr><td height="15"></td></tr>
+			
+		</table>  
+		<input type="hidden" name="configuration_group_id" id="configuration_group_id" value="<?php echo $this->configuration_group_id; ?>" />
+	</form>             
+</div>
+
+<!--     JS Global Variable for the language    -->
+<script language="javascript" type="text/javascript">
+	var ERR_CONTACT_ADDRESS = "<?php echo $this->Translate('Err_Contact_Address'); ?>";
+	var ERR_CONTACT_TEL = "<?php echo $this->Translate('Err_Contact_Tel'); ?>";
+	var ERR_CONTACT_EMAIL = "<?php echo $this->Translate('Err_Contact_Email'); ?>";
+	
+</script>

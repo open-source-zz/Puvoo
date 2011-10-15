@@ -1,0 +1,30 @@
+
+<!--  Crumb  Start -->
+<div class="Breadcrumb" id="PageBreadcrumb">
+	<ul>
+	   <li class="Home"><a href="#"><?php echo $this->Translate("User_Home"); ?></a></li>
+	   <li class="Last"><span><?php echo $this->Translate("Category_List"); ?></span></li>
+	</ul>
+</div>
+<!--  Crumb  end -->
+
+
+<div class="BodyContainer DashboardContainer" style="text-align:left;">
+	<div class="Heading1"><?php echo $this->Translate('Category_List'); ?></div>
+	
+	<div class="DashboardPanel DashboardLeftColumn" style="margin-top:10px;">
+		<div style="margin-top:10px;padding:5px;">
+			<?php echo $this->catList ?>
+		</div>
+	</div>
+    <div class="Clear"></div>   
+</div>
+
+
+<script language="javascript" type="text/javascript">
+$("#navigation").treeview({
+		persist: "location",
+		collapsed: true,
+		unique: true
+	});	   
+</script>

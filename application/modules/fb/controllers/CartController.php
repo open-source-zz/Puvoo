@@ -92,13 +92,14 @@ class Fb_CartController extends FbCommonController
 		$Cart = new Models_Cart();
 		$prodId = $_POST['prodid'];
 		$CartId = $_POST['cartid'];
+		$FbuId = $_POST['fbuid'];
 		//Delete Product
-		$CartDetails = $Cart->GetCartDetailId($prodId);
+		$CartDetails = $Cart->GetCartDetailId($prodId,$FbuId);
 		$cartDetailId = $CartDetails['cart_detail_id'];
 		
 		$result = $Cart->DeleteCartProduct($prodId,$CartId,$cartDetailId);
 		$CartCnt = array();
-		$CartCnt = count($Cart->GetProductInCart());
+		$CartCnt = count($Cart->GetProductInCart($FbuId));
 		if($result == true){
 			echo json_encode($CartCnt);die;
 		}
@@ -129,6 +130,7 @@ class Fb_CartController extends FbCommonController
 		$this->_helper->layout()->disableLayout();
 		
 		$Cart = new Models_Cart();
+		$Common = new Models_Common();
 		
 		//$prodId = $_POST['prodid'];
 		$CartId = $_POST['cartid'];
@@ -144,6 +146,7 @@ class Fb_CartController extends FbCommonController
 		$State = $_POST['state'];
 		$PostCode = $_POST['postcode'];
 		$IsBilling = $_POST['isbilling'];
+		$fbuid = $_POST['fbuid'];
 		//print $_POST['isbilling'];die;
 		if($IsBilling = 'true')
 		{
@@ -190,7 +193,7 @@ class Fb_CartController extends FbCommonController
 		
 		$ShippingInfo = $Cart->GetShippingInfo($CartId);
 		
-		$CartDetails = $Cart->GetProductInCart();
+		$CartDetails = $Cart->GetProductInCart($fbuid);
 		
 		$CountryCode = $Cart->GetCountryCode($ShippingInfo['shipping_user_country_id']);
 		
@@ -210,11 +213,16 @@ class Fb_CartController extends FbCommonController
 			$Price += $CartDetails[$j]['product_price']*$CartDetails[$j]['product_qty'];
 			$cartId = $CartDetails[$j]['cart_id'];
 			$CartTotal += $CartDetails[$j]['product_qty'];
+			
+			$currency_symbol = $Common->GetCurrencyValue($CartDetails[$j]['currId']);
 			//print $Price;die;
-			$this->view->CartCnt = $CartTotal;
+			$this->view->currency_symbol = $currency_symbol['currency_symbol'];
+			
+ 			$this->view->CartCnt = count($CartDetails);
  			$this->view->TotalPrice = $Price;
 			$this->view->cartId = $cartId;
 			$mysession->cartId = $cartId;
+			$this->view->currencyId = $currency_symbol['currency_id'];
 
 			// For Shipping Method for each product
 			$ShippingMetodInfo = $Cart->GetShippingMethod($CartDetails[$j]['user_id']);
@@ -428,6 +436,7 @@ class Fb_CartController extends FbCommonController
  		
 		$cartId = $_POST['cartid'];
 		$prodId = $_POST['prodid'];
+		$fbuid = $_POST['fbuid'];
 		$prodPrice = $_POST['prodPrice'];
 		$prodData = $Product->GetProductDetails($prodId);
 		$updateData = array(
@@ -437,7 +446,7 @@ class Fb_CartController extends FbCommonController
 		//print_r($updateData);die;
 		$UpdateCartDetails = $Cart->UpdateCart($updateData,$cartId,$prodId);
 		//print_r($StateCombo);die;
-		$CartData = $Cart->GetProductInCart();
+		$CartData = $Cart->GetProductInCart($fbuid);
 		//print "<pre>";
 		//print_r($CartData);die;
 		echo json_encode($CartData);die;
@@ -463,14 +472,19 @@ class Fb_CartController extends FbCommonController
 		global $mysession;
 		$Cart = new Models_Cart();
 		$Product = new Models_Product();
- 		
+ 		$Common = new Models_Common();
 		$methodId = $_POST['shipmethodid'];
 		$prodId = $_POST['prodid'];
+		$filter = new Zend_Filter_StripTags();	
+		
+ 		$current_currencyId = $filter->filter(trim($this->_request->getPost('current_currencyId')));
+		$current_curr_data = $Common->GetCurrencyValue($current_currencyId);
 		
 		$prodData = $Product->GetProductDetails($prodId);
 		
  		$ShippingCostDetails = $Cart->GetShippingCost($methodId);
- 		
+ 		//echo "<pre>";
+		//print_r($ShippingCostDetails);die;
 		$shippingPriceArray = explode(',',$ShippingCostDetails['price']);
 		
 		$start = 0;
@@ -490,7 +504,11 @@ class Fb_CartController extends FbCommonController
  		}
 		if($ShippingCostDetails)
 		{
-			$ShippingValue = $ship_Price;
+			
+			$Shipping_Price = round(($ship_Price*$current_curr_data['currency_value'])/ $ShippingCostDetails['currency_value'],2);
+			$ShippingValue = $Shipping_Price;
+			
+			
 		}else{
 			$ShippingValue = 0;
 		}
@@ -518,9 +536,11 @@ class Fb_CartController extends FbCommonController
 		global $mysession;
 		$Cart = new Models_Cart();
 		$Product = new Models_Product();
+		
  		
 		$methodId = $_POST['shipmethodid'];
 		$prodId = $_POST['prodid'];
+		$fbuid = $_POST['fbuid'];
 		
 		$prodData = $Product->GetProductDetails($prodId);
 		$updateData = array(
@@ -530,7 +550,7 @@ class Fb_CartController extends FbCommonController
 		//print_r($updateData);die;
 		$UpdateCartDetails = $Cart->UpdateShippingCost($updateData,$cartId,$prodId);
 		//print_r($StateCombo);die;
-		$CartData = $Cart->GetProductInCart();
+		$CartData = $Cart->GetProductInCart($fbuid);
 		//print "<pre>";
 		//print_r($CartData);die;
 		echo json_encode($CartData);die;
@@ -557,17 +577,27 @@ class Fb_CartController extends FbCommonController
 		$Cart = new Models_Cart();
 		$Product = new Models_Product();
 		$filter = new Zend_Filter_StripTags();
+		$Common = new Models_Common();
  		
 		$cartId = $_POST['cartid'];
+		$fbuid = $_POST['fbuid'];
 		$prodIds = explode(',',$_POST['prodid']);
 		$methodIds = explode(',',$_POST['methodid']);
 		
 		$taxrates = explode(',',$_POST['taxrate']);
 		
+ 		$current_currencyId = $filter->filter(trim($this->_request->getPost('current_currencyId')));
+		$current_curr_data = $Common->GetCurrencyValue($current_currencyId);
+		//print_r($taxrates);die;
+		$product_total_price = 0;
+		$product_shipping_price = 0;
+		$product_tax_price = 0;
  		for($i=0; $i<count($prodIds); $i++)
 		{
 				
-			$taxRate = $filter->filter(trim($taxrates[$i]));
+			//$taxRate = $filter->filter(trim($taxrates[$i]));
+			$taxRate = preg_replace("/[^0-9,.]/", '', $taxrates[$i]);
+			
 			$prodData = $Product->GetProductDetails($prodIds[$i]);
 			if($methodIds[$i])
 			{
@@ -591,35 +621,199 @@ class Fb_CartController extends FbCommonController
 					
 				}
 			}
-			else{
-				$ship_Price = 0;
+			
+			if($ship_Price)
+			{
+				
+				$Shipping_Price = round(($ship_Price*$current_curr_data['currency_value'])/ $ShippingCostDetails['currency_value'],2);
+				$ShippingValue = $Shipping_Price;
+				
+				
+			}else{
+				$ShippingValue = 0;
 			}
 			
 			$prodData = $Cart->GetCartProductDetail($prodIds[$i],$cartId);
-			$total_cost = round((($prodData['product_price']+$ship_Price)*$prodData['product_qty'])+$taxRate);
+			$total_cost = round((($prodData['product_price']+$ShippingValue)*$prodData['product_qty'])+$taxRate,2);
+			
+			$product_total_price = $product_total_price+($prodData['product_price']*$prodData['product_qty']);
+			
+			$product_shipping_price = $product_shipping_price+($ShippingValue*$prodData['product_qty']);
+			$product_tax_price = $product_tax_price+$taxRate;
+			
 			$updateData = array(
-					'tax_rate' => round($taxRate),
+					'tax_rate' => $taxRate,
 					'shipping_method_id' => $methodIds[$i],
-					'shipping_cost' => round($ship_Price),
+					'shipping_cost' => $ShippingValue,
 					'product_total_cost' => $total_cost
 				);
-			//print "<pre>";
-			//print $taxRate;	
+			
 			$UpdateCartDetails = $Cart->UpdateCart($updateData,$cartId,$prodIds[$i]);
 			
 			
 		}
-		$CartData = $Cart->GetProductInCart();
+		
+		$order_total_amt = $product_total_price+$product_shipping_price+$product_tax_price;
+		$updatePrice = array(
+					'total_product_amount' => round($product_total_price,2),
+					'shipping_cost' => $product_shipping_price,
+					'total_tax_cost' => round($product_tax_price,2),
+					'total_order_amount' => $order_total_amt
+				);
+		
+		$Cart->UpdateCartMaster($updatePrice,$cartId,$fbuid);
+		
+		$CartData = $Cart->GetProductInCart($fbuid);
 		$Final_Amount = 0;
 		foreach($CartData as $value)
 		{
-			$Final_Amount += round($value['product_total_cost']);
+			$Final_Amount += round($value['product_total_cost'],2);
 		
 		}
 		//print $Final_Amount;die;
 		echo json_encode($Final_Amount);die;
   	} 
-
+	
+	
+	/**
+	* Function updatecartcurrency
+	*
+	* This function is used for update cart currency. 
+	*
+	* Date Created: 2011-10-12
+	*
+	* @access public
+	* @param ()  - No parameter
+	* @return (void) - Return void
+	*
+	* @author Jayesh
+	*  
+	* @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	**/  
+	public function updatecartcurrencyAction()
+	{
+		global $mysession;
+		$this->_helper->layout()->disableLayout();
+		$Cart = new Models_Cart();
+		$Product = new Models_Product();
+ 		$Common = new Models_Common();
+		$filter = new Zend_Filter_StripTags();	
+		
+		$cart_currencyId = $filter->filter(trim($this->_request->getPost('currencyId'))); 
+		$current_currencyId = $filter->filter(trim($this->_request->getPost('current_currencyId')));
+		$fbuid = $filter->filter(trim($this->_request->getPost('fbuid')));
+		//print $current_currencyId;die;
+		$curr_data = $Common->GetCurrencyValue($cart_currencyId);
+		$current_curr_data = $Common->GetCurrencyValue($current_currencyId);
+ 		$cartData = $Cart->GetProductInCart($fbuid,$curr_data['currency_value'],$current_curr_data['currency_value']);
+		//echo "<pre>";
+		//print_r($cartData);die;
+		foreach($cartData as $key=>$value)
+		{
+		
+			$updateCuurency = array(
+							'currency_id' => $cart_currencyId
+			);
+			
+			$Cart->UpdateCartMaster($updateCuurency,$value['cart_id'],$fbuid);
+			
+			$updateData = array(
+					'product_price' => $value['Prod_convert_price'],
+					'product_qty' => $value['product_qty'],
+					'product_total_cost' => $value['Prod_convert_price']*$value['product_qty']
+				);
+			//print_r($updateData);die;
+			$UpdateCartDetails = $Cart->UpdateCart($updateData,$value['cart_id'],$value['product_id']);
+		}
+		
+		$CartDetails = $Cart->GetProductInCart($fbuid);
+		
+		if(count($CartDetails) > 0){
+			$this->view->cartItems = $CartDetails;
+			
+			$cartId = '';
+			$Price = 0;
+			$CartTotal = '';
+			foreach($CartDetails as $value)
+			{
+				//echo "<pre>";
+				//print_r($value);die;
+ 				$Price += $value['price']*$value['product_qty'];
+				$cartId = $value['cart_id'];
+				$CartTotal += $value['product_qty'];
+				
+				$currency_symbol = $Common->GetCurrencyValue($value['currId']);
+				
+			}
+			$this->view->currency_symbol = $currency_symbol['currency_symbol'];
+			
+ 			$this->view->CartCnt = count($CartDetails);
+ 			$this->view->TotalPrice = $Price;
+			$this->view->cartId = $cartId;
+			$mysession->cartId = $cartId;
+			$this->view->currencyId = $currency_symbol['currency_id'];
+			
+			if($cartId) {
+				
+				$ShippingInfo = $Cart->GetShippingInfo($cartId);
+				//print_r($ShippingInfo);die;
+				$this->view->firstName = $ShippingInfo['shipping_user_fname'];
+				$this->view->lastName = $ShippingInfo['shipping_user_lname'];
+				$this->view->email = $ShippingInfo['shipping_user_email'];
+				$this->view->phone = $ShippingInfo['shipping_user_telephone'];
+				$this->view->addType = $ShippingInfo['shipping_user_address_type'];
+				$this->view->stateID = $ShippingInfo['shipping_user_state_id'];
+				$this->view->stateName = $ShippingInfo['state_name'];
+				$this->view->countryId = $ShippingInfo['shipping_user_country_id'];
+				$address = explode('@',$ShippingInfo['shipping_user_address']);
+				if(isset($address[0]))
+				{
+					$this->view->address = $address[0];
+ 				}
+				if(isset($address[1]))
+				{
+					$this->view->address1 = $address[1];
+ 				}
+				
+				$this->view->city = $ShippingInfo['shipping_user_city'];
+				$this->view->state = $ShippingInfo['shipping_user_state_id'];
+				$this->view->zip = $ShippingInfo['shipping_user_zipcode'];
+				
+				$BillingInfo = $Cart->GetBillingInfo($cartId);
+				//print_r($ShippingInfo);die;
+				$this->view->bill_firstName = $BillingInfo['billing_user_fname'];
+				$this->view->bill_lastName = $BillingInfo['billing_user_lname'];
+				$this->view->bill_email = $BillingInfo['billing_user_email'];
+				$this->view->bill_phone = $BillingInfo['billing_user_telephone'];
+				$this->view->bill_addType = $BillingInfo['billing_user_address_type'];
+				$this->view->bill_stateID = $BillingInfo['billing_user_state_id'];
+				$this->view->bill_stateName = $BillingInfo['state_name'];
+				$this->view->bill_countryId = $BillingInfo['billing_user_country_id'];
+				$Billaddress = explode('@',$BillingInfo['billing_user_address']);
+ 				//$this->view->bill_address = $Billaddress[0];
+				//$this->view->bill_address1 = $Billaddress[1];
+				if(isset($Billaddress[0]))
+				{
+					$this->view->bill_address = $Billaddress[0];
+ 				}
+				if(isset($Billaddress[1]))
+				{
+					$this->view->bill_address1 = $Billaddress[1];
+ 				}
+				
+				$this->view->bill_city = $BillingInfo['billing_user_city'];
+				$this->view->bill_state = $BillingInfo['billing_user_state_id'];
+				$this->view->bill_zip = $BillingInfo['billing_user_zipcode'];
+				
+			}
+			// Country combo
+			$this->view->CountryCombo = $Cart->GetCountry();
+			// State combo
+			$this->view->StateCombo = $Cart->GetState($this->view->countryId);
+			
+			$this->view->CurrencyCombo = $Common->GetCurrency();
+		}
+  	} 
 	
 }
 

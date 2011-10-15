@@ -1,533 +1,435 @@
-
 <div id="popupContact" >
-<input type="hidden" value="1" id="currentTab" />
-<input type="hidden" id="cartcount" name="cartcount" value="<?php echo $this->CartCnt;?>" />
-	<a id="popupContactClose" style="font-size:12px;"><?php echo $this->Translate('Close')?></a>
-	<?php if( count($this->cartItems) > 0 ){?>
-		<div id="cartarea" style="display:block; visibility:visible;">
-			<div id="popup_head"><h1><?php echo $this->Translate('ShoppingCart')?></h1></div>
-			<div id="breadCrumb_cart">
-				<ul>
-					<li>
-						<a href="javascript:void(0)" class="active" id="tab1"><?php echo $this->Translate('OrderReview')?></a>
-					</li>
-					<li id="shipping_li">
-						<a href="javascript:void(0)" id="tab2"><?php echo $this->Translate('ShippingAddress')?></a>
-					</li>
-					<li id="billing_li" style="display:none;">
-						<a href="javascript:void(0)"><?php echo $this->Translate('BillingAddress')?></a>
-					</li>
-					<li>
-						<a href="javascript:void(0)" id="tab3"><?php echo $this->Translate('ShippingMethod')?></a>
-					</li>
-					<li>
-						<a href="javascript:void(0)" id="tab4"><img src="<?php echo IMAGES_FB_PATH ?>/paypal.png" alt="" style="padding-top:8px;" /></a>
-					</li>
-					<li class="last">
-						<a href="javascript:void(0)" id="tab5"><?php echo $this->Translate('Success')?></a>
-					</li>
-				</ul>
-			</div>
-			<div id="contactArea">
-				<div id="div1">
-					<div class="shoppingCart" id="order_review">
- 					<?php foreach($this->cartItems as $Item){?>
-						<div id="cartRow_<?php echo $Item['product_id'];?>" class="itemAvailable">
-							<div class="cartItemProductImageCell">
-								<img class="cartItemProductImage" src="<?php echo SITE_PRODUCT_IMAGES_PATH.$Item['image_path'] ?>/<?php echo $Item['image_name'] ?>" alt="" />
-							</div>
-							<div class="cartItemDivider cartItemMainContent">
-								<span class="cartItemProductTitle">
-									<a title="<?php echo $Item['store_name'];?>" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $Item['product_id'];?>" target="_top"><?php echo ucfirst($Item['product_name']);?></a>
-								</span>
-								<div id="cartItemDetail_1" class="cartItemDetail" style="display: block">
-									<span class="cartRetailerLabel">
-										<?php echo $this->Translate('Seller')?>
-										<a href="javascript:void(0)" target="_top"><?php echo $Item['store_name'];?></a>
-									</span>
-								</div>
-							
-							</div>
-							<div class="cartItemDivider cartItemMainContent" style="text-align:right;">
-                                            	<b><?php echo $this->Translate('Qty')?></b>&nbsp;<input type="text" style="width:30px;" value="<?php echo $Item['product_qty'];?>" name="ProductQty<?php echo $Item['product_id'];?>" id="ProductQty<?php echo $Item['product_id'];?>" />
-                                                <a href="javascript:void(0)" onclick="updatecart(<?php echo $Item['product_id'];?>,<?php echo $Item['cart_id'];?>);"><img src="<?php echo IMAGES_FB_PATH ?>/refresh_icon.png" alt="" style="vertical-align:middle; padding-bottom:4px; margin-left:5px;" /></a>
-                            </div>
-							<div class="cartItemDivider cartItemDeleteButton">
-								<a href="javascript:void(0)" onclick="DeleteCartProduct(<?php echo $Item['product_id'];?>,<?php echo $Item['cart_id'];?>);"><img src="<?php echo IMAGES_FB_PATH ?>/close_icon.png" alt="" /></a>
-								
-							</div>
-							<div id="itemQtyPrice_1" class="cartItemDivider cartItemPriceDisplay">
-								<div id="itemPrice<?php echo $Item['product_id'];?>" align="right"><?php echo "$".$Item['price']*$Item['product_qty'];?></div>
-								<input type="hidden" value="<?php echo $Item['price'] ?>" name="IndivisualPrice<?php echo $Item['product_id'];?>" id="IndivisualPrice<?php echo $Item['product_id'];?>" />
-								<input type="hidden" value="<?php echo $Item['price'] ?>" name="ProductTotalPrice<?php echo $Item['product_id'];?>" id="ProductTotalPrice<?php echo $Item['product_id'];?>" />
-							</div>
-							<div class="clear"></div>
-						</div>
-					
-					<?php }?>
-					</div>	
-						<div class="cartItemSubtotal" id="SubtotalDiv">
-							<span class="boldText"><?php echo $this->Translate('CartTotal')?></span>
-							<span id="cartSubTotal" class="boldText"><?php echo "$".$this->TotalPrice;?></span>
-							
-						</div>
-						<div class="clear"></div>
-						<div id="buttonArea">
-							   <div class="SharingOptions_Text">
- 							   </div>
-							   <div id="Sharer_btns">
-								<input type="button" value="" class="your_setting" onclick="showsetting(); return false;" />
-								<input type="button" value="" class="checkout" onclick="ShowTab(2); return false;" />
-								
-							   </div>
-						</div>
-				
-			</div>
-			
-			<div id="loader" style="display:none; height:70px; padding:25px;">
- 			</div>
-			<div id="div2" style="display:none;">
-			
-				<form id="frmShipping" name="frmShipping" method="post">
-					<div class="shoppingCart" id="shipping_address" style="display: block; visibility: visible; margin-top: 10px;">
-						<div align="center" style="width:420px; margin:auto;">
-							<table cellpadding="4" cellspacing="0" border="0">
-								<tr>
-									<td>
-										<span class="redText">*</span>
-									</td>
-									<td>
-										<label for="firstName"><?php echo $this->Translate('FirstName')?></label>
-									</td>
-									<td>
-										<input id="firstname" class="inputtext" type="text" name="firstname" value="<?php echo $this->firstName?>" size="35" />
-									</td>
-								</tr>
-								<tr><td height="8"></td></tr>
-								<tr>
-									<td>
-										<span class="redText">*</span>
-									</td>
-									<td>
-										<label for="lastName"><?php echo $this->Translate('LastName')?></label>
-									</td>
-									<td>
-										<input id="lastname" class="inputtext" type="text" name="lastname"  value="<?php echo $this->lastName?>" size="35" />
-									</td>
-								</tr>
-								<tr><td height="8"></td></tr>
-								<tr>
-									<td>
-										<span class="redText">*</span>
-									</td>
-									<td>
-										<label for="lastName"><?php echo $this->Translate('Email')?></label>
-									</td>
-									<td>
-										<input id="email" class="inputtext" type="text" name="email"  value="<?php echo $this->email?>" size="35" />
-									</td>
-								</tr>
-								<tr><td height="8"></td></tr>
-								<tr>
-									<td>
-										
-									</td>
-									<td>
-										
-									</td>
-									<td>
-										Your receipts will be sent to this email address.
-									</td>
-								</tr>
-								<tr><td height="8"></td></tr>
-								<tr>
-									<td>
-										
-									</td>
-									<td>
-										<label for="lastName"><?php echo $this->Translate('Telephone')?></label>
-									</td>
-									<td>
-										<input id="phone" class="inputtext" type="text" name="phone" value="<?php echo $this->phone?>" size="35" />
-									</td>
-								</tr>
-								<tr><td height="8"></td></tr>
- 								<tr>
-									<td>
-										<span class="redText">*</span>
-									</td>
-									<td>
-										<label for="lastName"><?php echo $this->Translate('AddressType')?></label>
-									</td>
-									<td>
-										
-											<select name="addressType" id="addressType" name="addressType" >
-											<option value="0"><?php echo $this->Translate('Select')?></option>
-											<option value="Residencial"  <?php if($this->addType == 'Residencial'){?> selected="selected" <?php }?> >Residencial</option>
-										</select>
-									</td>
-								</tr>
-								<tr><td height="8"></td></tr>
-								<tr>
-									<td>
-										<span class="redText">*</span>
-									</td>
-									<td>
-										<label for="lastName"><?php echo $this->Translate('Country')?></label>
-									</td>
-									<td>
-										<select name="Shippingcountry" id="Shippingcountry" onchange="GetStateforCountry(this.value)">
-											<option value="0"><?php echo $this->Translate('SelectCountry')?></option>
-											
-											<?php foreach($this->CountryCombo as $value){?> 
-											<option  value="<?php echo $value['country_id']; ?>" <?php if($value['country_id'] == $this->countryId){?> selected="selected"<?php }?>><?php echo $value['country_name']; ?></option>
-											<?php }?>
-										</select>
-									</td>
-								</tr>
-								<tr><td height="8"></td></tr>
-								 <tr>
-									<td>
-										<span class="redText">*</span>
-									</td>
-									<td>
-										<label for="lastName"><?php echo $this->Translate('Address')?></label>
-									</td>
-									<td>
-										<input id="address" class="inputtext" type="text" name="address"  value="<?php echo $this->address?>" size="35" />
-									</td>
-								</tr>
-								<tr><td height="8"></td></tr>
-								 <tr>
-									<td></td>
-									<td></td>
-									<td>
-										<input id="address1" class="inputtext" type="text" name="address1" value="<?php echo $this->address1?>" size="35" />
-									</td>
-								</tr>
-								<tr><td height="8"></td></tr>
-								 <tr>
-									<td>
-										<span class="redText">*</span>
-									</td>
-									<td>
-										<label for="lastName"><?php echo $this->Translate('City')?></label>
-									</td>
-									<td>
-										<input id="city" class="inputtext" type="text" name="city" value="<?php echo $this->city?>" size="35" />
-									</td>
-								</tr>
-								<tr><td height="8"></td></tr>
-								 <tr>
-									<td>
-										<span class="redText">*</span>
-									</td>
-									<td>
-										<label for="lastName"><?php echo $this->Translate('State')?></label>
-									</td>
-									<td>
-										<select name="Shippingstate" id="Shippingstate">
-											<option value="0"><?php echo $this->Translate('SelectState')?></option>
-											
-											<?php foreach($this->StateCombo as $val){?>
-											<option  value="<?php echo $val['state_id']; ?>" <?php if($val['state_id'] == $this->stateID){?> selected="selected"<?php }?> ><?php echo $val['state_name']; ?></option>
-											<?php }?>
-										</select>
-									</td>
-								</tr>
-								<tr><td height="8"></td></tr>
-								 <tr>
-									<td>
-										<span class="redText">*</span>
-									</td>
-									<td>
-										<label for="lastName"><?php echo $this->Translate('PostCode')?></label>
-									</td>
-									<td>
-										<input id="postcode" class="inputtext" type="text" name="postcode" value="<?php echo $this->zip?>" size="35" />
-									</td>
-								</tr>
-								<tr><td height="8"></td></tr>
-								<tr>
-									<td>&nbsp;
-										
-									</td>
-									<td>&nbsp;
-										
-									</td>
-									<td>
-										<input type="checkbox"  name="IsBilling" id="IsBilling" value="" />&nbsp;&nbsp;<label><?php echo $this->Translate('BillingText')?></label>
-									</td>
-								</tr>
-							</table>
-						</div>
-					</div>
-					
-					
-					<div id="buttonArea">
-					   <div class="SharingOptions_Text">
-						
-					   </div>
-					   <div id="Sharer_btns">
-						<input type="button" value="" class="your_setting" onclick="showsetting(); return false;" />
-						
-						
-							<input type="button" value="" id="shipping"  name="shipping" class="continuecheckout" onclick="addShippingDetail(<?php echo $this->cartId;?>);" />
-					
-						
-					   </div>
-					</div>
-				</form>
-			</div>
-			<div id="div8" style="display:none;">
-			
-				<form id="frmBilling" name="frmBilling" method="post">
-					<div class="shoppingCart" id="billing_address" style="display: done; visibility: visible; margin-top: 10px;">
-						<div align="center" style="width:420px; margin:auto;">
-							<table cellpadding="4" cellspacing="0" border="0">
-								<tr>
-									<td>
-										<span class="redText">*</span>
-									</td>
-									<td>
-										<label for="firstName"><?php echo $this->Translate('FirstName')?></label>
-									</td>
-									<td>
-										<input id="bfirstname" class="inputtext" type="text" name="bfirstname" value="<?php echo $this->bill_firstName?>" size="35" />
-									</td>
-								</tr>
-								<tr><td height="8"></td></tr>
-								<tr>
-									<td>
-										<span class="redText">*</span>
-									</td>
-									<td>
-										<label for="lastName"><?php echo $this->Translate('LastName')?></label>
-									</td>
-									<td>
-										<input id="blastname" class="inputtext" type="text" name="blastname"  value="<?php echo $this->bill_lastName?>" size="35" />
-									</td>
-								</tr>
-								<tr><td height="8"></td></tr>
-								<tr>
-									<td>
-										<span class="redText">*</span>
-									</td>
-									<td>
-										<label for="lastName"><?php echo $this->Translate('Email')?></label>
-									</td>
-									<td>
-										<input id="bemail" class="inputtext" type="text" name="bemail"  value="<?php echo $this->bill_email?>" size="35" />
-									</td>
-								</tr>
-								<tr><td height="8"></td></tr>
-								<tr>
-									<td>
-										
-									</td>
-									<td>
-										
-									</td>
-									<td>
-										<?php echo $this->Translate('ReceiptInfo')?>
-									</td>
-								</tr>
-								<tr><td height="8"></td></tr>
-								<tr>
-									<td>
-										
-									</td>
-									<td>
-										<label for="lastName"><?php echo $this->Translate('Telephone')?></label>
-									</td>
-									<td>
-										<input id="bphone" class="inputtext" type="text" name="bphone" value="<?php echo $this->bill_phone?>" size="35" />
-									</td>
-								</tr>
-								<tr><td height="8"></td></tr>
- 								<tr>
-									<td>
-										<span class="redText">*</span>
-									</td>
-									<td>
-										<label for="lastName"><?php echo $this->Translate('AddressType')?></label>
-									</td>
-									<td>
-										
-											<select name="baddressType" id="baddressType" >
-											<option value="0"><?php echo $this->Translate('Select')?></option>
-											<option value="Residencial"  <?php if($this->addType == 'Residencial'){?> selected="selected" <?php }?> ><?php echo $this->Translate('Residencial')?></option>
-										</select>
-									</td>
-								</tr>
-								<tr><td height="8"></td></tr>
-								<tr>
-									<td>
-										<span class="redText">*</span>
-									</td>
-									<td>
-										<label for="lastName"><?php echo $this->Translate('Country')?></label>
-									</td>
-									<td>
-										<select name="Billingcountry" id="Billingcountry" onchange="GetStateforCountry2(this.value)">
-											<option value="0"><?php echo $this->Translate('SelectCountry')?></option>
-											
-											<?php foreach($this->CountryCombo as $value){?> 
-											<option  value="<?php echo $value['country_id']; ?>" <?php if($value['country_id'] == $this->countryId){?> selected="selected"<?php }?>><?php echo $value['country_name']; ?></option>
-											<?php }?>
-										</select>
-									</td>
-								</tr>
-								<tr><td height="8"></td></tr>
-								 <tr>
-									<td>
-										<span class="redText">*</span>
-									</td>
-									<td>
-										<label for="lastName"><?php echo $this->Translate('Address')?></label>
-									</td>
-									<td>
-										<input id="baddress" class="inputtext" type="text" name="baddress"  value="<?php echo $this->bill_address?>" size="35" />
-									</td>
-								</tr>
-								<tr><td height="8"></td></tr>
-								 <tr>
-									<td>
-									   
-									</td>
-									<td>
-										
-									</td>
-									<td>
-										<input id="baddress1" class="inputtext" type="text" name="baddress1" value="<?php echo $this->bill_address1?>" size="35" />
-									</td>
-								</tr>
-								<tr><td height="8"></td></tr>
-								 <tr>
-									<td>
-										<span class="redText">*</span>
-									</td>
-									<td>
-										<label for="lastName"><?php echo $this->Translate('City')?></label>
-									</td>
-									<td>
-										<input id="bcity" class="inputtext" type="text" name="bcity" value="<?php echo $this->bill_city?>" size="35" />
-									</td>
-								</tr>
-								<tr><td height="8"></td></tr>
-								 <tr>
-									<td>
-										<span class="redText">*</span>
-									</td>
-									<td>
-										<label for="lastName"><?php echo $this->Translate('State')?></label>
-									</td>
-									<td>
-										<select name="Billingstate" id="Billingstate">
-											<option value="0"><?php echo $this->Translate('SelectState')?></option>
-											
-											<?php foreach($this->StateCombo as $val){?>
-											<option  value="<?php echo $val['state_id']; ?>" <?php if($val['state_id'] == $this->stateID){?> selected="selected"<?php }?> ><?php echo $val['state_name']; ?></option>
-											<?php }?>
-										</select>
-									</td>
-								</tr>
-								<tr><td height="8"></td></tr>
-								 <tr>
-									<td>
-										<span class="redText">*</span>
-									</td>
-									<td>
-										<label for="lastName"><?php echo $this->Translate('PostCode')?></label>
-									</td>
-									<td>
-										<input id="bpostcode" class="inputtext" type="text" name="bpostcode" value="<?php echo $this->bill_zip?>" size="35" />
-									</td>
-								</tr>
-							</table>
-						</div>
-					</div>
-					
-					
-					<div id="buttonArea">
-					   <div class="SharingOptions_Text">
-						
-					   </div>
-					   <div id="Sharer_btns">
-						<input type="button" value="" class="your_setting" onclick="showsetting(); return false;" />
-						
-						
-							<input type="button" value="" id="shipping"  name="shipping" class="continuecheckout" onclick="addBillingDetail(<?php echo $this->cartId;?>);" />
-					
-						
-					   </div>
-					</div>
-				</form>
-			</div>			
-			<div id="div3" style="display:none;">
-			<form action='expresscheckout.php' method='POST'>
- 				<div class="shoppingCart" id="shipping_method">
-				
-					<?php $total_price = floatval(0.00);
+ <input type="hidden" name="CurrentCurrencyId" id="CurrentCurrencyId" value="<?php echo $this->currencyId;?>" />
+  <input type="hidden" value="1" id="currentTab" />
+  <input type="hidden" id="cartcount" name="cartcount" value="<?php echo $this->CartCnt;?>" />
+  <?php if( count($this->cartItems) > 0 ){?>
+  <div id="cartarea" style="display:block; visibility:visible;"> <a id="popupContactClose" style="font-size:12px;"><?php echo $this->Translate('Close')?></a>
+    <div id="popup_head">
+      <h1><?php echo $this->Translate('ShoppingCart')?></h1>
+    </div>
+    <div id="breadCrumb_cart">
+      <ul>
+        <li> <a href="javascript:void(0)" class="active" id="tab1"><?php echo $this->Translate('OrderReview')?></a> </li>
+        <li id="shipping_li"> <a href="javascript:void(0)" id="tab2"><?php echo $this->Translate('ShippingAddress')?></a> </li>
+        <li id="billing_li" style="display:none;"> <a href="javascript:void(0)"><?php echo $this->Translate('BillingAddress')?></a> </li>
+        <li> <a href="javascript:void(0)" id="tab3"><?php echo $this->Translate('ShippingMethod')?></a> </li>
+        <li> <a href="javascript:void(0)" id="tab4"><?php echo $this->Translate('PaymentDetails')?></a> </li>
+        <li class="last"> <a href="javascript:void(0)" id="tab5"><?php echo $this->Translate('Success')?></a> </li>
+      </ul>
+    </div>
+    <div id="contactArea">
+      <div id="div1">
+        <div class="shoppingCart" id="order_review">
+          <?php foreach($this->cartItems as $Item){?>
+          <div id="cartRow_<?php echo $Item['product_id'];?>" class="itemAvailable">
+            <div class="cartItemProductImageCell"> <img class="cartItemProductImage" src="<?php echo SITE_PRODUCT_IMAGES_PATH.$Item['image_path'] ?>/<?php echo $Item['image_name'] ?>" alt="" /> </div>
+            <div class="cartItemDivider cartItemMainContent"> <span class="cartItemProductTitle"> <a title="<?php echo $Item['store_name'];?>" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $Item['product_id'];?>" target="_top"><?php echo ucfirst($Item['product_name']);?></a> </span>
+              <div id="cartItemDetail_1" class="cartItemDetail" style="display: block"> <span class="cartRetailerLabel"> <?php echo $this->Translate('Seller')?> <a href="javascript:void(0)" target="_top"><?php echo $Item['store_name'];?></a> </span> </div>
+            </div>
+            <div class="cartItemDivider cartItemMainContent" style="text-align:right;"> <b><?php echo $this->Translate('Qty')?></b>&nbsp;
+              <input type="text" style="width:30px;" value="<?php echo $Item['product_qty'];?>" name="ProductQty<?php echo $Item['product_id'];?>" id="ProductQty<?php echo $Item['product_id'];?>" />
+              <a href="javascript:void(0)" onclick="updatecart(<?php echo $Item['product_id'];?>,<?php echo $Item['cart_id'];?>);"><img src="<?php echo IMAGES_FB_PATH ?>/refresh_icon.png" alt="" style="vertical-align:middle; padding-bottom:4px; margin-left:5px;" /></a> </div>
+            <div class="cartItemDivider cartItemDeleteButton"> <a href="javascript:void(0)" onclick="DeleteCartProduct(<?php echo $Item['product_id'];?>,<?php echo $Item['cart_id'];?>);"><img src="<?php echo IMAGES_FB_PATH ?>/close_icon.png" alt="" /></a> </div>
+            <div id="itemQtyPrice_1" class="cartItemDivider cartItemPriceDisplay">
+              <div id="itemPrice<?php echo $Item['product_id'];?>" align="right"><?php echo $this->currency_symbol."&nbsp;".$Item['price']*$Item['product_qty'];?></div>
+              <input type="hidden" value="<?php echo $Item['price'] ?>" name="IndivisualPrice<?php echo $Item['product_id'];?>" id="IndivisualPrice<?php echo $Item['product_id'];?>" />
+              <input type="hidden" value="<?php echo $Item['price'] ?>" name="ProductTotalPrice<?php echo $Item['product_id'];?>" id="ProductTotalPrice<?php echo $Item['product_id'];?>" />
+            </div>
+            <div class="clear"></div>
+          </div>
+          <?php }?>
+        </div>
+        <div class="cartItemSubtotal" id="SubtotalDiv"> <span class="boldText"><?php echo $this->Translate('CartTotal')?></span> <span id="cartSubTotal" class="boldText"><?php echo $this->currency_symbol."&nbsp;".$this->TotalPrice;?></span> </div>
+        <div class="clear"></div>
+        <div id="buttonArea">
+          <div class="SharingOptions_Text"> </div>
+          <div id="Sharer_btns">
+            <input type="button" value="" class="your_setting" onclick="showsetting(); return false;" />
+            <input type="button" value="" class="checkout" onclick="ShowTab(2); return false;" />
+          </div>
+        </div>
+      </div>
+      <div id="loader" style="display:none; height:70px; padding:25px;"> </div>
+      <div id="div2" style="display:none;">
+        <form id="frmShipping" name="frmShipping" method="post">
+          <input type="hidden" name="cartID" id="cartID" value="<?php echo $this->cartId;?>" />
+          <div class="shoppingCart" id="shipping_address" style="display: block; visibility: visible; margin-top: 10px;">
+            <div align="center" style="width:520px; margin:auto;">
+              <table cellpadding="4" cellspacing="0" border="0" width="100%">
+                <tr>
+                  <td><span class="redText">*</span> </td>
+                  <td><label for="firstName"><?php echo $this->Translate('FirstName')?></label>
+                  </td>
+                  <td ><input id="firstname" class="inputtext" type="text" name="firstname" value="<?php echo $this->firstName?>" size="35" />
+                    <label class="error_msg"></label>
+                  </td>
+                </tr>
+                <tr>
+                  <td height="8"></td>
+                </tr>
+                <tr>
+                  <td><span class="redText">*</span> </td>
+                  <td><label for="lastName"><?php echo $this->Translate('LastName')?></label>
+                  </td>
+                  <td ><input id="lastname" class="inputtext" type="text" name="lastname"  value="<?php echo $this->lastName?>" size="35" />
+                    <label class="error_msg"></label>
+                  </td>
+                </tr>
+                <tr>
+                  <td height="8"></td>
+                </tr>
+                <tr>
+                  <td><span class="redText">*</span> </td>
+                  <td><label for="email"><?php echo $this->Translate('Email')?></label>
+                  </td>
+                  <td ><input id="email" class="inputtext" type="text" name="email"  value="<?php echo $this->email?>" size="35" />
+                    <label class="error_msg"></label>
+                  </td>
+                </tr>
+                <tr>
+                  <td height="8"></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td > Your receipts will be sent to this email address. </td>
+                </tr>
+                <tr>
+                  <td height="8"></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td><label for="Telephone"><?php echo $this->Translate('Telephone')?></label>
+                  </td>
+                  <td ><input id="phone" class="inputtext" type="text" name="phone" value="<?php echo $this->phone?>" size="35" />
+                  </td>
+                </tr>
+                <tr>
+                  <td height="8"></td>
+                </tr>
+                <tr>
+                  <td><span class="redText">*</span> </td>
+                  <td><label for="addressType"><?php echo $this->Translate('AddressType')?></label>
+                  </td>
+                  <td ><select name="addressType" id="addressType">
+                      <option value=""><?php echo $this->Translate('Select')?></option>
+                      <option value="Residencial"  <?php if($this->addType == 'Residencial'){?> selected="selected" <?php }?> >Residencial</option>
+                    </select>
+                    <label class="error_msg"></label>
+                  </td>
+                </tr>
+                <tr>
+                  <td height="8"></td>
+                </tr>
+                <tr>
+                  <td><span class="redText">*</span> </td>
+                  <td><label for="country"><?php echo $this->Translate('Country')?></label>
+                  </td>
+                  <td ><select name="Shippingcountry" id="Shippingcountry" onchange="GetStateforCountry(this.value)">
+                      <option value=""><?php echo $this->Translate('SelectCountry')?></option>
+                      <?php foreach($this->CountryCombo as $value){?>
+                      <option  value="<?php echo $value['country_id']; ?>" <?php if($value['country_id'] == $this->countryId){?> selected="selected"<?php }?>><?php echo $value['country_name']; ?></option>
+                      <?php }?>
+                    </select>
+                    <label class="error_msg"></label>
+                  </td>
+                </tr>
+                <tr>
+                  <td height="8"></td>
+                </tr>
+                <tr>
+                  <td><span class="redText">*</span> </td>
+                  <td><label for="address"><?php echo $this->Translate('Address')?></label>
+                  </td>
+                  <td ><input id="address" class="inputtext" type="text" name="address"  value="<?php echo $this->address?>" size="35" />
+                    <label class="error_msg"></label>
+                  </td>
+                </tr>
+                <tr>
+                  <td height="8"></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td ><input id="address1" class="inputtext" type="text" name="address1" value="<?php echo $this->address1?>" size="35" />
+                  </td>
+                </tr>
+                <tr>
+                  <td height="8"></td>
+                </tr>
+                <tr>
+                  <td><span class="redText">*</span> </td>
+                  <td><label for="city"><?php echo $this->Translate('City')?></label>
+                  </td>
+                  <td ><input id="city" class="inputtext" type="text" name="city" value="<?php echo $this->city?>" size="35" />
+                    <label class="error_msg"></label>
+                  </td>
+                </tr>
+                <tr>
+                  <td height="8"></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td><label for="state"><?php echo $this->Translate('State')?></label>
+                  </td>
+                  <td ><select name="Shippingstate" id="Shippingstate">
+                      <option value="0"><?php echo $this->Translate('SelectState')?></option>
+                      <?php foreach($this->StateCombo as $val){?>
+                      <option  value="<?php echo $val['state_id']; ?>" <?php if($val['state_id'] == $this->stateID){?> selected="selected"<?php }?> ><?php echo $val['state_name']; ?></option>
+                      <?php }?>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td height="8"></td>
+                </tr>
+                <tr>
+                  <td><span class="redText">*</span> </td>
+                  <td><label for="postcode"><?php echo $this->Translate('PostCode')?></label>
+                  </td>
+                  <td ><input id="postcode" class="inputtext" type="text" name="postcode" value="<?php echo $this->zip?>" size="35" />
+                    <label class="error_msg"></label>
+                  </td>
+                </tr>
+                <tr>
+                  <td height="8"></td>
+                </tr>
+                <tr>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                  <td ><input type="checkbox"  name="IsBilling" id="IsBilling" value="" />
+                    &nbsp;&nbsp;
+                    <label><?php echo $this->Translate('BillingText')?></label>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <div id="buttonArea">
+            <div class="SharingOptions_Text"> </div>
+            <div id="Sharer_btns">
+              <input type="button" value="" class="your_setting" onclick="showsetting(); return false;" />
+              <input type="submit" value="" id="shipping"  name="shipping" class="continuecheckout" />
+            </div>
+          </div>
+        </form>
+      </div>
+      <div id="div8" style="display:none;">
+        <form id="frmBilling" name="frmBilling" method="post">
+          <div class="shoppingCart" id="billing_address" style="display: done; visibility: visible; margin-top: 10px;">
+            <div align="center" style="width:520px; margin:auto;">
+              <table cellpadding="4" cellspacing="0" border="0" width="100%">
+                <tr>
+                  <td><span class="redText">*</span> </td>
+                  <td><label for="firstName"><?php echo $this->Translate('FirstName')?></label>
+                  </td>
+                  <td ><input id="bfirstname" class="inputtext" type="text" name="bfirstname" value="<?php echo $this->bill_firstName?>" size="35" />
+                    <label class="error_msg"></label>
+                  </td>
+                </tr>
+                <tr>
+                  <td height="8"></td>
+                </tr>
+                <tr>
+                  <td><span class="redText">*</span> </td>
+                  <td><label for="lastName"><?php echo $this->Translate('LastName')?></label>
+                  </td>
+                  <td ><input id="blastname" class="inputtext" type="text" name="blastname"  value="<?php echo $this->bill_lastName?>" size="35" />
+                    <label class="error_msg"></label>
+                  </td>
+                </tr>
+                <tr>
+                  <td height="8"></td>
+                </tr>
+                <tr>
+                  <td><span class="redText">*</span> </td>
+                  <td><label for="email"><?php echo $this->Translate('Email')?></label>
+                  </td>
+                  <td ><input id="bemail" class="inputtext" type="text" name="bemail"  value="<?php echo $this->bill_email?>" size="35" />
+                    <label class="error_msg"></label>
+                  </td>
+                </tr>
+                <tr>
+                  <td height="8"></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td ><?php echo $this->Translate('ReceiptInfo')?> </td>
+                </tr>
+                <tr>
+                  <td height="8"></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td><label for="telephone"><?php echo $this->Translate('Telephone')?></label>
+                  </td>
+                  <td ><input id="bphone" class="inputtext" type="text" name="bphone" value="<?php echo $this->bill_phone?>" size="35" />
+                    <label class="error_msg"></label>
+                  </td>
+                </tr>
+                <tr>
+                  <td height="8"></td>
+                </tr>
+                <tr>
+                  <td><span class="redText">*</span> </td>
+                  <td><label for="addressType"><?php echo $this->Translate('AddressType')?></label>
+                  </td>
+                  <td ><select name="baddressType" id="baddressType" >
+                      <option value=""><?php echo $this->Translate('Select')?></option>
+                      <option value="Residencial"  <?php if($this->addType == 'Residencial'){?> selected="selected" <?php }?> ><?php echo $this->Translate('Residencial')?></option>
+                    </select>
+                    <label class="error_msg"></label>
+                  </td>
+                </tr>
+                <tr>
+                  <td height="8"></td>
+                </tr>
+                <tr>
+                  <td><span class="redText">*</span> </td>
+                  <td><label for="country"><?php echo $this->Translate('Country')?></label>
+                  </td>
+                  <td ><select name="Billingcountry" id="Billingcountry" onchange="GetStateforCountry2(this.value)">
+                      <option value="" ><?php echo $this->Translate('SelectCountry')?></option>
+                      <?php foreach($this->CountryCombo as $value){?>
+                      <option  value="<?php echo $value['country_id']; ?>" <?php if($value['country_id'] == $this->countryId){?> selected="selected"<?php }?>><?php echo $value['country_name']; ?></option>
+                      <?php }?>
+                    </select>
+                    <label class="error_msg"></label>
+                  </td>
+                </tr>
+                <tr>
+                  <td height="8"></td>
+                </tr>
+                <tr>
+                  <td><span class="redText">*</span> </td>
+                  <td><label for="address"><?php echo $this->Translate('Address')?></label>
+                  </td>
+                  <td ><input id="baddress" class="inputtext" type="text" name="baddress"  value="<?php echo $this->bill_address?>" size="35" />
+                    <label class="error_msg"></label>
+                  </td>
+                </tr>
+                <tr>
+                  <td height="8"></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td ><input id="baddress1" class="inputtext" type="text" name="baddress1" value="<?php echo $this->bill_address1?>" size="35" />
+                  </td>
+                </tr>
+                <tr>
+                  <td height="8"></td>
+                </tr>
+                <tr>
+                  <td><span class="redText">*</span> </td>
+                  <td><label for="city"><?php echo $this->Translate('City')?></label>
+                  </td>
+                  <td ><input id="bcity" class="inputtext" type="text" name="bcity" value="<?php echo $this->bill_city?>" size="35" />
+                    <label class="error_msg"></label>
+                  </td>
+                </tr>
+                <tr>
+                  <td height="8"></td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td><label for="state"><?php echo $this->Translate('State')?></label>
+                  </td>
+                  <td ><select name="Billingstate" id="Billingstate">
+                      <option value="0"><?php echo $this->Translate('SelectState')?></option>
+                      <?php foreach($this->StateCombo as $val){?>
+                      <option  value="<?php echo $val['state_id']; ?>" <?php if($val['state_id'] == $this->stateID){?> selected="selected"<?php }?> ><?php echo $val['state_name']; ?></option>
+                      <?php }?>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td height="8"></td>
+                </tr>
+                <tr>
+                  <td><span class="redText">*</span> </td>
+                  <td><label for="postcode"><?php echo $this->Translate('PostCode')?></label>
+                  </td>
+                  <td ><input id="bpostcode" class="inputtext" type="text" name="bpostcode" value="<?php echo $this->bill_zip?>" size="35" />
+                    <label class="error_msg"></label>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <div id="buttonArea">
+            <div class="SharingOptions_Text"> </div>
+            <div id="Sharer_btns">
+              <input type="button" value="" class="your_setting" onclick="showsetting(); return false;" />
+              <input type="submit" value="" id="shipping"  name="shipping" class="continuecheckout" />
+            </div>
+          </div>
+        </form>
+      </div>
+      <div id="div3" style="display:none;">
+        <div class="shoppingCart" id="shipping_method">
+          <?php $total_price = floatval(0.00);
 						$totalAmout = array();
 						$prodIdArray = array();
 						 ?>
-					<?php foreach($this->cartItems as $Item){?>
-						<table class="merchantTable" style="border: medium none; border-bottom:1px solid #E2E2E2;" id="merchantProd<?php echo $Item['product_id'];?>">
-							<tr>
-								<td class="storeNameHeader" colspan="2"><a class="" href="javascript:void(0)"><?php echo $Item['store_name'] ?></a></td>
-							</tr>
-							<tr><td height="4"></td></tr>
-							<tr>
-								<td width="200">
-									<label for="lastName"><?php echo $this->Translate('SubTotal')?></label>
-								</td>
-								<td>
-									<?php echo "$".floatval($Item['product_price']*$Item['product_qty']);?>
-								</td>
-							</tr>
-							<tr><td height="4"></td></tr>	
-							
-							<?php 
+          <?php foreach($this->cartItems as $Item){?>
+          <table class="merchantTable" style="border: medium none; border-bottom:1px solid #E2E2E2;" id="merchantProd<?php echo $Item['product_id'];?>">
+            <tr>
+              <td class="storeNameHeader" colspan="2"><a class="" href="javascript:void(0)"><?php echo $Item['store_name'] ?></a></td>
+            </tr>
+            <tr>
+              <td height="4"></td>
+            </tr>
+            <tr>
+              <td width="200"><label for="lastName"><?php echo $this->Translate('SubTotal')?></label>
+              </td>
+              <td><?php echo $this->currency_symbol."&nbsp;".floatval($Item['product_price']*$Item['product_qty']);?> </td>
+            </tr>
+            <tr>
+              <td height="4"></td>
+            </tr>
+            <?php 
 							 $flag  = "";
-								foreach($this->Ship_Method_Combo as $key => $val ){
-									if($key == $Item['product_id'] ){
-										$flag = $val;
+							 	if($this->Ship_Method_Combo)
+								{
+									foreach($this->Ship_Method_Combo as $key => $val ){
+										if($key == $Item['product_id'] ){
+											$flag = $val;
+										}
 									}
 								}
 							?>
-							
-							<?php if($flag != "" ) {  ?>	
-   							<tr>
-								<td width="200"> 
-									<label for="lastName"><?php echo $this->Translate('ShippingMethod')?>:</label>
-								</td>
-								<td>
-									<select name="Shipping_Method_<?php echo $Item['product_id'];?>" id="Shipping_Method_<?php echo $Item['product_id'];?>" style="width:130px;">
-										<option value="0" selected="selected" onclick="GetShippingCost('0',<?php echo $Item['product_id'];?>)"><?php echo $this->Translate('ChooseShipping')?></option>
-										<?php 
+            <?php if($flag != "" ) {  ?>
+            <tr>
+              <td width="200"><label for="lastName"><?php echo $this->Translate('ShippingMethod')?>:</label>
+              </td>
+              <td><select name="Shipping_Method_<?php echo $Item['product_id'];?>" id="Shipping_Method_<?php echo $Item['product_id'];?>" style="width:130px;">
+                  <option value="0" selected="selected" onclick="GetShippingCost('0',<?php echo $Item['product_id'];?>)"><?php echo $this->Translate('ChooseShipping')?></option>
+                  <?php 
 											echo $flag;
 										?>
- 									</select>
-								</td>
-							</tr>
- 							<tr id="ShippingSpace<?php echo $Item['product_id'];?>" style="display:none;"><td height="4"></td></tr>
-							<tr id="ShippingRow<?php echo $Item['product_id'];?>">
-								<td width="200"> 
-									<label for="lastName"><?php echo $this->Translate('ShippingCost')?>:</label>
-								</td>
-								<td id="ShippingCost<?php echo $Item['product_id'];?>">
-									$0
-								</td>
-							</tr>
-							<tr><td height="4"></td></tr>
-							<?php }  ?>	
-							<tr>
-								<td width="200">
-									<label for="lastName"><?php echo $this->Translate('Tax')?></label>
-								</td>
-								<td id="taxRate<?php echo $Item['product_id'];?>">
-									<?php 
+                </select>
+              </td>
+            </tr>
+            <tr id="ShippingSpace<?php echo $Item['product_id'];?>" style="display:none;">
+              <td height="4"></td>
+            </tr>
+            <tr id="ShippingRow<?php echo $Item['product_id'];?>">
+              <td width="200"><label for="lastName"><?php echo $this->Translate('ShippingCost')?>:</label>
+              </td>
+              <td id="ShippingCost<?php echo $Item['product_id'];?>"> <?php echo $this->currency_symbol."&nbsp;"."0";?> </td>
+            </tr>
+            <tr>
+              <td height="4"></td>
+            </tr>
+            <?php }  ?>
+            <tr>
+              <td width="200"><label for="lastName"><?php echo $this->Translate('Tax')?></label>
+              </td>
+              <td id="taxRate<?php echo $Item['product_id'];?>"><?php 
+										if($this->taxRate)
+										{
  											foreach($this->taxRate as $key => $val){
 												if($key == $Item['product_id'] ){
 													if($val){
@@ -535,62 +437,73 @@
 														foreach($val as $val2){
 															$taxrate = (($Item['product_price']*$Item['product_qty'])*$val2)/100;
 															$totalAmout[$Item['product_id']] =  floatval(($Item['product_price']*$Item['product_qty']))+floatval($taxrate); 
-															echo "$".$taxrate;
+															echo $this->currency_symbol."&nbsp;".round($taxrate,2);
 														}
 													}else{
 														
-														echo "$0";
+														echo $this->currency_symbol."&nbsp;"."$0";
 														
 													}
 												}
 											}
-										?>
-								</td>
-							</tr>
-						
-							<tr><td height="4"></td></tr>
-							<tr>
-								<td width="200">
-									<label for="lastName"><?php echo $this->Translate('HandlingTime')?></label>
-								</td>
-								<td>
-									<?php 
+										}else{
+ 											echo $this->currency_symbol."&nbsp;"."$0";
+										}
+									?>
+              </td>
+            </tr>
+            <tr>
+              <td height="4"></td>
+            </tr>
+            <tr>
+              <td width="200"><label for="lastName"><?php echo $this->Translate('HandlingTime')?></label>
+              </td>
+              <td><?php 
+										if($this->ship_handel_day)
+										{
 											foreach($this->ship_handel_day as $key => $val ){
 												if($key == $Item['product_id'] ){
 												
 													echo $val."&nbsp;Days";
 												}
 											}
-										?>
-								</td>
-							</tr>
-							<tr><td height="4"></td></tr>
-							<?php if($flag == "" ) { ?>
-							<tr>
-								<td width="200" colspan="2">
-									<b><?php echo $this->Translate('NoShippingError')?></b>
-								</td>
-							</tr>
-							<?php } ?>
-<!--							<tr>
+										}else{
+											echo $this->Translate('Nodays');
+										}
+									?>
+              </td>
+            </tr>
+            <tr>
+              <td height="4"></td>
+            </tr>
+            <?php if($flag == "" ) { ?>
+            <tr>
+              <td width="200" colspan="2"><b><?php echo $this->Translate('NoShippingError')?></b> </td>
+            </tr>
+            <?php } ?>
+            <!--							<tr>
 								<td width="200">
-									<label for="lastName"><?php echo $this->Translate('ItemTotal')?></label>
-								</td>
-								<td>
-									<?php
+									<label for="lastName"><?php echo $this->
+            Translate('ItemTotal')?>
+            </label>
+            
+            </td>
+            
+            <td><?php
 										 $total = $taxrate+$Item['product_total_cost']+0;
 										 echo "$".$total;
 										?>
-								</td>
-							</tr>
-							<tr><td height="4"></td></tr>
-		-->					<tr>
-								<td colspan="2" style="line-height:20px;">
-									<label for="lastName" ><a href="javascript:void(0)" id="ShippingItem<?php echo $Item['product_id'] ?>" style="font-size:12px; font-weight:normal; text-decoration:underline;" onclick="ShowImage(<?php echo $Item['product_id'] ?>)"><?php echo $this->Translate('Item')?></a></label>
-								</td>
-							</tr>
-							
-							<script type="text/javascript">
+              </td>
+            </tr>
+            <tr>
+              <td height="4"></td>
+            </tr>
+            -->
+            <tr>
+              <td colspan="2" style="line-height:20px;"><label for="lastName" ><a href="javascript:void(0)" id="ShippingItem<?php echo $Item['product_id'] ?>" style="font-size:12px; font-weight:normal; text-decoration:underline;" onclick="ShowImage(<?php echo $Item['product_id'] ?>)"><?php echo $this->Translate('Item')?></a></label>
+              </td>
+            </tr>
+            <script type="text/javascript">
 							
 								function ShowImage(id)
 								{
@@ -604,414 +517,210 @@
 									}
  								}
 							</script>
-	
-							<tr id="ItemList<?php echo $Item['product_id'] ?>" style="display:none;">
-								<td colspan="2">
-									<table cellpadding="0" cellspacing="0">
-										<tr>
-											<td>
-												<?php echo SITE_PRODUCT_IMAGES_PATH; ?>
-												<div class="cartItemProductImageCell">
-													<img class="cartItemProductImage" src="<?php echo SITE_PRODUCT_IMAGES_PATH.$Item['image_path'] ?>/<?php echo $Item['image_name'] ?>" alt="" />
-												</div>
-												<div class="cartItemDivider cartItemMainContent">
-													<span class="cartItemProductTitle">
-														<a title="Mini TailSuga " href="javascript:void(0)" target="_top"><?php echo $Item['product_name'] ?></a>
-													</span>
-													<div id="cartItemDetail_1" class="cartItemDetail" style="display: block">
-														<span class="cartRetailerLabel">
-															<?php echo $this->Translate('Quantity')?>:
-															<a href="javascript:void(0)" target="_top"><?php echo $Item['product_qty'] ?></a>
-														</span>
-													</div>
-												</div>
-											</td>
-										</tr>
-									</table>
-								</td>
-							</tr>
-						</table>
-						
-						
-						<!--<?php $total_price +=  (float)$Item['product_total_cost']; ?>-->
-						<?php $prodIdArray[$Item['product_id']] += $Item['product_id'];?>
- 						<?php $total_price +=  floatval($totalAmout); ?>
-					<?php }?>
-				</div>
-				<div id="buttonArea">
-					   <div class="SharingOptions_Text">
-						
-					   </div>
-					   <div id="Sharer_btns">
+            <tr id="ItemList<?php echo $Item['product_id'] ?>" style="display:none;">
+              <td colspan="2"><table cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td><div class="cartItemProductImageCell"> <img class="cartItemProductImage" src="<?php echo SITE_PRODUCT_IMAGES_PATH.$Item['image_path'] ?>/<?php echo $Item['image_name'] ?>" alt="" /> </div>
+                      <div class="cartItemDivider cartItemMainContent"> <span class="cartItemProductTitle"> <a title="Mini TailSuga " href="javascript:void(0)" target="_top"><?php echo $Item['product_name'] ?></a> </span>
+                        <div id="cartItemDetail_1" class="cartItemDetail" style="display: block"> <span class="cartRetailerLabel"> <?php echo $this->Translate('Quantity')?>: <a href="javascript:void(0)" target="_top"><?php echo $Item['product_qty'] ?></a> </span> </div>
+                      </div></td>
+                  </tr>
+                </table></td>
+            </tr>
+          </table>
+          <!--<?php $total_price +=  (float)$Item['product_total_cost']; ?>-->
+          <!--<?php $prodIdArray[$Item['product_id']] += $Item['product_id'];?>-->
+          <?php $total_price +=  floatval($totalAmout); ?>
+          <?php }?>
+        </div>
+        <div id="buttonArea">
+          <div class="SharingOptions_Text"> </div>
+          <div id="Sharer_btns">
 					   
 					   <input type="hidden"  name="totalAmount" id="totalAmount" value="<?php echo $total_price;?>" />
 					   <input type="hidden" name="ShippingtotalAmount" id="ShippingtotalAmount" value="0" />
 						<input type="button" value="" class="your_setting" onclick="showsetting(); return false;" />
 						<?php if($flag != "" ) { ?>
 						<input type="button" value="" class="continuecheckout" onclick="UpdateShipping('<?php echo $this->cartId; ?>','<?php echo $prodIdArray; ?>')" />
-						<?php }?>
-						
-					   </div>
-				</div>
-				</form>
-				</div>
-				<div id="div4" style="display:none;">
-					<div class="shoppingCart" id="paypal" style="margin-top: 15px; margin-bottom: 15px;">
-						<form action='/Puvoo/public/expresscheckout.php' method='POST'>
-<input type='image' name='submit' src='https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif' border='0' align='top' alt='Check out with PayPal'/>
-					<input type="hidden"  name="FinalAmount" id="FinalAmount" />
-				   
-						</form>
-					</div>
-			   </div>
-			   <div id="div5" style="display:none;">
-				   <div class="shoppingCart" id="success">
-						<div class="sucesstext"><?php echo $this->Translate('Success')?></div>
-				   </div>
-				   <div id="buttonArea">
-				   <div class="SharingOptions_Text">
-					
-				   </div>
-				   <div id="Sharer_btns">
-					<input type="button" value="" class="your_setting" onclick="showsetting(); return false;" />
-					<input type="button" value="" class="checkout" />
-					
-				   </div>
-				</div>
-				</div>
-			</div>
-		<div class="clear"></div>
-		
-		</div> 
-		
-	 <div id="settingarea" style="display:none; visibility:hidden;">
-		<div id="popup_head"><h1><?php echo $this->Translate('YourSetting')?></h1></div>
-		<div id="contactArea">
-			<div style="width:570px;margin:auto; margin-top:15px;" >
+          <?php }?>
+        </div>
+        
+        </div>
+    </div>
+    <div id="div4" style="display:none;">
+      <div class="shoppingCart" id="paypal" style="margin-top: 15px; margin-bottom: 15px;">
+        <form action='<?php echo SITE_URL; ?>expresscheckout.php' method='POST' target="_top">
+          <input type='image' name='submit' src='https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif' border='0' align='top' alt='Check out with PayPal'/>
+          <input type="hidden"  name="FinalAmount" id="FinalAmount" />
+        </form>
+      </div>
+    </div>
+    <div id="div5" style="display:none;">
+      <div class="shoppingCart" id="success">
+        <div class="sucesstext"><?php echo $this->Translate('Success')?></div>
+      </div>
+      <div id="buttonArea">
+        <div class="SharingOptions_Text"> </div>
+        <div id="Sharer_btns">
+          <input type="button" value="" class="your_setting" onclick="showsetting(); return false;" />
+          <input type="button" value="" class="checkout" />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="clear"></div>
+</div>
+<div id="settingarea" style="display:none; visibility:hidden;">
+	<!-- <form name="frncurrency" id="frncurrency" method="post" action="" enctype="multipart/form-data" >-->
+	  <div id="popup_head">
+		<h1><?php echo $this->Translate('YourSetting')?></h1>
+	  </div>
+  
+	  <div id="contactArea">
+		<div style="width:570px;margin:auto; margin-top:15px;" >
+		  <table cellspacing="0" cellpadding="10" border="0">
+			<tr>
+			  <td><a href="javascript:void(0)" style="margin-right:25px;"><img src="<?php echo IMAGES_FB_PATH ?>/picture.gif" alt="" /></a> </td>
+			  <td><?php echo $this->Translate('TempDetail1')?> </td>
+			</tr>
+		  </table>
+		  <div id="fb_tabs" class="usual">
+			<ul>
+			  <li><a href="javascript:void(0)" id="tab6" class="selected" onclick="ShowFbTab(6);"><?php echo $this->Translate('Currency')?></a></li>
+			  <!--<li><a href="javascript:void(0)" id="tab7" onclick="ShowFbTab(7);"><?php echo $this->
+			  Translate('ShippingAddress')?></a>
+			  </li>
+			  -->
+			</ul>
+			<div id="div6">
+			 
 				<table cellspacing="0" cellpadding="10" border="0">
-					<tr>
-						<td>
-							<a href="javascript:void(0)" style="margin-right:25px;"><img src="<?php echo IMAGES_FB_PATH ?>/picture.gif" alt="" /></a>
-						</td>
-						<td>
-							<?php echo $this->Translate('TempDetail1')?>
-						</td>
-					</tr>
+				  <tr>
+					<td><label for="lastName"><?php echo $this->Translate('CartCurrency')?></label>
+					</td>
+					<td><select name="CartCurrency" id="CartCurrency">
+						<?php foreach($this->CurrencyCombo as $value){?>
+						<option  value="<?php echo $value['currency_id']; ?>" <?php if($value['currency_id'] == $this->currencyId){?> selected="selected"<?php }?>><?php echo $value['currency_name']; ?></option>
+						<?php }?>
+					  </select>
+					  <input type="hidden" name="CurrentCurrencyId" id="CurrentCurrencyId" value="<?php echo $this->currencyId;?>" />
+					</td>
+				  </tr>
+				  <tr>
+					<td height="10"></td>
+				  </tr>
+				  <tr>
+					<td colspan="2"><?php echo $this->Translate('TempDetail2')?> </td>
+				  </tr>
 				</table>
-				<div id="fb_tabs" class="usual">
-					<ul>
-						<li><a href="javascript:void(0)" id="tab6" class="selected" onclick="ShowFbTab(6);"><?php echo $this->Translate('Currency')?></a></li>
-						<li><a href="javascript:void(0)" id="tab7" onclick="ShowFbTab(7);"><?php echo $this->Translate('ShippingAddress')?></a></li>
-					</ul>
-					<div id="div6">
-						<table cellspacing="0" cellpadding="10" border="0">
-							<tr>
-								<td>
-									<label for="lastName"><?php echo $this->Translate('CartCurrency')?>Your Cart's Currency:</label>
-								</td>
-								<td>
-									<select name="address">
-										<option value="0"><?php echo $this->Translate('Select')?></option>
-									</select>
-								</td>
-							</tr>
-							<tr><td height="10"></td></tr>
-							<tr>
-								<td colspan="2">
-									<?php echo $this->Translate('TempDetail2')?>
-								</td>
-							</tr>
-						</table>
-					</div>
-					<div id="div7" style="display:none;">
-					<form id="frmShipping1" name="frmShipping1" method="post">
-						<div align="center" style="width:420px; margin:auto;">
-							<table cellpadding="4" cellspacing="0" border="0">
-								<tr>
-									<td>
-										<span class="redText">*</span>
-									</td>
-									<td>
-										<label for="firstName"><?php echo $this->Translate('FirstName')?></label>
-									</td>
-									<td>
-										<input id="firstname1" class="inputtext" type="text" name="firstname1" value="<?php echo $this->firstName?>" size="35" />
-									</td>
-								</tr>
-								<tr><td height="8"></td></tr>
-								<tr>
-									<td>
-										<span class="redText">*</span>
-									</td>
-									<td>
-										<label for="lastName"><?php echo $this->Translate('LastName')?></label>
-									</td>
-									<td>
-										<input id="lastname1" class="inputtext" type="text" name="lastname1"  value="<?php echo $this->lastName?>" size="35" />
-									</td>
-								</tr>
-								<tr><td height="8"></td></tr>
-								<tr>
-									<td>
-										<span class="redText">*</span>
-									</td>
-									<td>
-										<label for="lastName"><?php echo $this->Translate('Email')?></label>
-									</td>
-									<td>
-										<input id="email1" class="inputtext" type="text" name="email1"  value="<?php echo $this->email?>" size="35" />
-									</td>
-								</tr>
-								<tr><td height="8"></td></tr>
-								<tr>
-									<td>
-										
-									</td>
-									<td>
-										
-									</td>
-									<td>
-										<?php echo $this->Translate('ReceiptInfo')?>
-									</td>
-								</tr>
-								<tr><td height="8"></td></tr>
-								<tr>
-									<td>
-										
-									</td>
-									<td>
-										<label for="lastName"><?php echo $this->Translate('Telephone')?></label>
-									</td>
-									<td>
-										<input id="phone1" class="inputtext" type="text" name="phone1" value="<?php echo $this->phone?>" size="35" />
-									</td>
-								</tr>
-								<tr><td height="8"></td></tr>
-								<tr>
-									<td>
-										<span class="redText">*</span>
-									</td>
-									<td>
-										<label for="lastName"><?php echo $this->Translate('AddressType')?></label>
-									</td>
-									<td>
-										
-											<select name="addressType1" id="addressType1" name="addressType" >
-											<option value="0"><?php echo $this->Translate('Select')?></option>
-											<option value="Residencial"  <?php if($this->addType == 'Residencial'){?> selected="selected" <?php }?> ><?php echo $this->Translate('Residencial')?></option>
-										</select>
-									</td>
-								</tr>
-								<tr><td height="8"></td></tr>
-								<tr>
-									<td>
-										<span class="redText">*</span>
-									</td>
-									<td>
-										<label for="lastName">Country</label>
-									</td>
-									<td>
-										<select name="Shippingcountry1" id="Shippingcountry1"  onchange="GetStateforCountry1(this.value)">
-											<option value="0"><?php echo $this->Translate('SelectCountry')?></option>
-											
-											<?php foreach($this->CountryCombo as $value){?>
-											<option value="<?php echo $value['country_id']; ?>" <?php if($value['country_id'] == $this->countryId){?> selected="selected"<?php }?>><?php echo $value['country_name']; ?></option>
-											<?php }?>
-										</select>
-										
-									</td>
-								</tr>
-								<tr><td height="8"></td></tr>
-								 <tr>
-									<td>
-										<span class="redText">*</span>
-									</td>
-									<td>
-										<label for="lastName"><?php echo $this->Translate('Address')?></label>
-									</td>
-									<td>
-										<input id="address2" class="inputtext" type="text" name="address2"  value="<?php echo $this->address?>" size="35" />
-									</td>
-								</tr>
-								<tr><td height="8"></td></tr>
-								 <tr>
-									<td>
-									   
-									</td>
-									<td>
-										
-									</td>
-									<td>
-										
-										<input id="address3" class="inputtext" type="text" name="address3" value="<?php echo $this->address1?>" size="35" />
-									</td>
-								</tr>
-								<tr><td height="8"></td></tr>
-								 <tr>
-									<td>
-										<span class="redText">*</span>
-									</td>
-									<td>
-										<label for="lastName"><?php echo $this->Translate('City')?></label>
-									</td>
-									<td>
-										<input id="city1" class="inputtext" type="text" name="city1" value="<?php echo $this->city?>" size="35" />
-									</td>
-								</tr>
-								<tr><td height="8"></td></tr>
-								 <tr>
-									<td>
-										<span class="redText">*</span>
-									</td>
-									<td>
-										<label for="lastName"><?php echo $this->Translate('State')?></label>
-										
-									</td>
-									<td>
-										
-										<select name="Shippingstate1" id="Shippingstate1">
-											<option value="0"><?php echo $this->Translate('SelectState')?></option>
-											
-											<?php foreach($this->StateCombo as $value){?>
-											
-											<option value="<?php echo $value['state_id']; ?>" <?php if($value['state_id'] == $this->stateID){?> selected="selected"<?php }?>><?php echo $value['state_name']; ?></option>
-											<?php }?>
-										</select>
-									</td>
-								</tr>
-								<tr><td height="8"></td></tr>
-								 <tr>
-									<td>
-										<span class="redText">*</span>
-									</td>
-									<td>
-										<label for="lastName"><?php echo $this->Translate('PostCode')?></label>
-									</td>
-									<td>
-										<input id="postcode1" class="inputtext" type="text" name="postcode1" value="<?php echo $this->zip?>" size="35" />
-									</td>
-								</tr>
-								<tr><td height="8"></td></tr>
-							</table>
-						</div>
-					</div>
-				</div>
+			  
 			</div>
-		</div>
-	   <div id="buttonArea">
-		   <div class="SharingOptions_Text">
-			
 		   </div>
-		   <div id="Sharer_btns">
-			   <input type="button" value="" class="save" onclick="addShippingDetail1(<?php echo $this->cartId;?>);" />
-			   <input type="button" value="" class="cancel" onclick="showcart(); return false;" />
-		   </div>
-		  
 		</div>
-		</form>
-
-	 </div> 
-			<div id="loader2" style="display:none; height:70px; padding:25px;">
- 			</div>
-		<div id="sellerarea" style="display:none;">
-			<!--<div id="popup_head"><h1>Seller Information</h1></div>-->
-				
-					<ul class="tabs" style="margin-top:10px;">
-						<li class="active"><a href="#tab8"><?php echo $this->Translate('About')?></a></li>
-						 <li class=""><a href="#tab9"><?php echo $this->Translate('TermsPolicies')?></a></li>
-						 <li class=""><a href="#tab10"><?php echo $this->Translate('ReturnPolicy')?></a></li>
-						<li class=""><a href="#tab11"><?php echo $this->Translate('ContactSeller')?></a></li>
- 					</ul>
-				
-				<div class="tab_container">
-				<div id="tab8" class="tab_content">
-					<?php echo $this->storeDescription;?>
-				</div>
-							
-				<div style="display: none;" id="tab9" class="tab_content">
-				   <?php echo $this->terms;?>        
-				</div>
-				<div style="display: none;" id="tab10" class="tab_content">
-				   <?php echo $this->returnPolicy;?>        
-				</div>
-
-				<!--<div style="display: none;" id="tab12" class="tab_content">
+	  </div>
+   <div id="buttonArea">
+    <div class="SharingOptions_Text"> </div>
+    <div id="Sharer_btns">
+      <input type="submit" value="" class="save" onclick="ChangeCartCurrency()"  />
+      <input type="button" value="" class="cancel" onclick="showcart(); return false;" />
+    </div>
+  </div>
+ 
+</div>
+<div id="loader2" style="display:none; height:70px; padding:25px;"> </div>
+<div id="sellerarea" style="display:none;">
+	<a id="popupContactClose" style="font-size:12px; color:#000000;"><?php echo $this->Translate('Close')?></a>
+  <!--<div id="popup_head"><h1>Seller Information</h1></div>-->
+  <ul class="tabs" style="margin-top:10px;">
+    <li class="active"><a href="#tab8"><?php echo $this->Translate('About')?></a></li>
+    <li class=""><a href="#tab9"><?php echo $this->Translate('TermsPolicies')?></a></li>
+    <li class=""><a href="#tab10"><?php echo $this->Translate('ReturnPolicy')?></a></li>
+    <li class=""><a href="#tab11"><?php echo $this->Translate('ContactSeller')?></a></li>
+  </ul>
+  <div class="tab_container">
+    <div id="tab8" class="tab_content"> <?php echo $this->storeDescription;?> </div>
+    <div style="display: none;" id="tab9" class="tab_content"> <?php echo $this->terms;?> </div>
+    <div style="display: none;" id="tab10" class="tab_content"> <?php echo $this->returnPolicy;?> </div>
+    <!--<div style="display: none;" id="tab12" class="tab_content">
 					<table width="100%">
 						<tr>
 							<td width="30%" style="text-align: center">
-								<h3 style="text-align:center; font-size:18px;"><?php echo $this->Translate('NewSeller')?>  </h3>
-								
-							</td>
-							<td>
-								<table width="100%" cellspacing="0" cellpadding="5" border="0">
-									<tr>
-										<td><?php echo $this->Translate('Positive')?></td>
-										<td><span class="sellerRatingThumbs positiveThumb"></span></td>
-										<td>
-											<img style="background-position: -102px 0pt;" 
+								<h3 style="text-align:center; font-size:18px;"><?php echo $this->
+    Translate('NewSeller')?>
+    </h3>
+    </td>
+    <td><table width="100%" cellspacing="0" cellpadding="5" border="0">
+        <tr>
+          <td><?php echo $this->Translate('Positive')?></td>
+          <td><span class="sellerRatingThumbs positiveThumb"></span></td>
+          <td><img style="background-position: -102px 0pt;" 
 												class="percentGreen" alt="0%"
 												src="<?php echo IMAGES_FB_PATH ?>/percentImage.png"
-												id="greenProgressBar" border="0" />
-											
-										</td>
-					
-										<td>0%</td>
-									</tr>
-									<tr><td height="10"></td></tr>
-									<tr>
-										<td>Neutral</td>
-										<td><span class="sellerRatingThumbs neutralThumb"></span></td>
-										<td>
-											<img style="background-position: -102px 0pt;" 
+												id="greenProgressBar" border="0" /> </td>
+          <td>0%</td>
+        </tr>
+        <tr>
+          <td height="10"></td>
+        </tr>
+        <tr>
+          <td>Neutral</td>
+          <td><span class="sellerRatingThumbs neutralThumb"></span></td>
+          <td><img style="background-position: -102px 0pt;" 
 												class="percentYellow" alt="0%"
 												src="<?php echo IMAGES_FB_PATH ?>/percentImage.png"
-												id="yellowProgressBar" border="0" />
-											
-					
-										</td>
-										<td>0%</td>
-									</tr>
-									 <tr><td height="10"></td></tr>
-									<tr>
-										<td>Negative</td>
-										<td><span class="sellerRatingThumbs negativeThumb"></span></td>
-										<td>
-											<img style="background-position: -102px 0pt;" 
+												id="yellowProgressBar" border="0" /> </td>
+          <td>0%</td>
+        </tr>
+        <tr>
+          <td height="10"></td>
+        </tr>
+        <tr>
+          <td>Negative</td>
+          <td><span class="sellerRatingThumbs negativeThumb"></span></td>
+          <td><img style="background-position: -102px 0pt;" 
 												class="percentRed" alt="0%"
 												src="<?php echo IMAGES_FB_PATH ?>/percentImage.png"
-												id="redProgressBar" border="0" />
-											
-											
-										</td>
-										<td>0%</td>
-									</tr>
-								</table>
-								<hr/>
-								<table width="100%" cellspacing="0" cellpadding="5" border="0">
-								</table>
-					
-							</td>
-						</tr>
-					</table>        
-				</div>-->
-				<div style="display: none;" id="tab11" class="tab_content">
-				   <input type="button" class="send_email" value="" />
-				</div>
-				
-			</div>
-		</div>
- 			 <?php }else{?>
-		 <div style="height:100px;" id="EmptyCart">
-		 <div id="popup_head"><h1><?php echo $this->Translate('ShoppingCart')?></h1></div><br />
-		 	<h3 style="text-align:center;" ><?php echo $this->Translate('NoItem')?></h3>
-		 </div>
-	 <?php }?>
-	 	<div id="popup_head" style="display:none;"><h1><?php echo $this->Translate('ShoppingCart')?></h1></div>
-		<div id="loader" style="display:none; height:70px; padding:25px;"></div>
-	 	<div style="height:100px; display:none;" id="EmptyCart">
-			<div>&nbsp;</div>
-		 	<h3 style="text-align:center;" ><?php echo $this->Translate('NoItem')?></h3>
-		 </div>
+												id="redProgressBar" border="0" /> </td>
+          <td>0%</td>
+        </tr>
+      </table>
+      <hr/>
+      <table width="100%" cellspacing="0" cellpadding="5" border="0">
+      </table></td>
+    </tr>
+    </table>
+  </div>
+  -->
+  <div style="display: none;" id="tab11" class="tab_content">
+    <input type="button" class="send_email" value="" />
+  </div>
+</div>
+</div>
+<div style="padding-top: 30px; height: 50px; display:none;" id="EmptyCart">
+  
+  <h3 style="text-align:center;" ><?php echo $this->Translate('NoItem')?></h3>
+</div>
+<?php }else{?>
+<div style="height:100px;" id="EmptyCart">
+<a id="popupContactClose" style="font-size:12px;"><?php echo $this->Translate('Close')?></a>
+  <div id="popup_head">
+    <h1><?php echo $this->Translate('ShoppingCart')?></h1>
+  </div>
+  
+  <br />
+  <h3 style="text-align:center;" ><?php echo $this->Translate('NoItem')?></h3>
+</div>
+<?php }?>
+<!--	 	<div id="popup_head" style="display:none;"><h1><?php echo $this->
+Translate('ShoppingCart')?>
+</h1>
+</div>
+<div id="loader" style="display:none; height:70px; padding:25px;"></div>
+<div style="height:100px; display:none;" id="EmptyCart">
+  <div>&nbsp;</div>
+  <h3 style="text-align:center;" ><?php echo $this->Translate('NoItem')?></h3>
+</div>
+-->
 <script type="text/javascript">
 
 		$(document).ready(function() {
@@ -1033,8 +742,8 @@
 		
 		});
 	</script>
-	 <script type="text/javascript">
-	 
+<script type="text/javascript">
+	 var cartCurrSymbol = '<?php echo $this->currency_symbol;?>';
 	 			function ShowTab(T)
 				{
 					
@@ -1085,6 +794,186 @@
 			document.getElementById('cartarea').style.display='block';
 			document.getElementById('cartarea').style.visibility='visible';
 		}
+		
+		$(document).ready(function()
+		{
+			 $("#popupContactClose").click(function()
+			 {
+				 disablePopup();
+			 });
+		 
+		});
+	
+	
+$(document).ready(function() {
+
+
+$("#frmShipping").validate({							  
+	rules: {
+     firstname: "required",
+	 lastname: "required",
+	 email: {
+       required: true,
+       email: true
+     },
+ 	 addressType: {
+		 required: true
+	 },
+ 	 Shippingcountry: {
+		 required: true
+	 },
+	 //Shippingcountry: "required",
+	 address: "required",
+	 city: "required",
+	 postcode: "required"
+	
+   },
+   messages: {
+	 firstname: "Please enter First name.",
+     lastname: "Please enter Last name.",
+ 	 email: {
+       required: "Email address require.",
+       email: "Please enter valid email address."
+     },
+	 addressType: {
+       required: "Please select address type."
+      },
+ 	 Shippingcountry: {
+       required: "Please select country."
+ 	   
+     },
+
+	// addressType: "Please select address type.",
+    // Shippingcountry: "Please select country.",
+	 address: "Please enter address.",
+     city: "Please enter city name.",
+	 postcode: "Please enter postcode."
+   },
+	errorPlacement: function(error, element) { 
+					//console.log(element);
+					error.appendTo(element.next());
+				},  
 				
+	submitHandler: function() {  
+			addShippingDetail();
+			}, 
+	success: function(label) {
+			//console.log(label);
+			label.html("&nbsp;").addClass("valid_small"); 					
+			} 
+	
+});
+
+	//$("#flash_msg" ).hide().css({visibility: "hidden", display: "none"});
+$("#frmBilling").validate({							  
+	rules: {
+     bfirstname: "required",
+	 blastname: "required",
+	 bemail: {
+       required: true,
+       email: true
+     },
+ 	 baddressType: {
+		 required: true
+	 },
+ 	 Billingcountry: {
+		 required: true
+	 },
+// 	 baddressType: "required",
+//	 bShippingcountry: "required",
+	 baddress: "required",
+	 bcity: "required",
+	 bpostcode: "required"
+	
+   },
+   messages: {
+	 bfirstname: "Please enter First name.",
+     blastname: "Please enter Last name.",
+ 	 bemail: {
+       required: "Email address require.",
+       email: "Please enter valid email address."
+     },
+	 baddressType: {
+       required: "Please select address type."
+      },
+ 	 Billingcountry: {
+       required: "Please select country."
+ 	   
+     },
+	 baddress: "Please enter address.",
+     bcity: "Please enter city name.",
+	 bpostcode: "Please enter postcode."
+   },
+	errorPlacement: function(error, element) { 
+					console.log(element);
+					error.appendTo(element.next());
+				},  
+				
+	submitHandler: function() {  
+			addBillingDetail();
+			}, 
+	success: function(label) {
+			//console.log(label);
+			label.html("&nbsp;").addClass("valid_small"); 					
+			} 
+	
+});
+
+
+				  
+$("#frmShipping1").validate({							  
+	rules: {
+     	firstname1: "required",
+		lastname1: "required",
+		email1: {
+		   required: true,
+		   email: true
+     	},
+		 addressType1: {
+		   required: true
+		 },
+		 Shippingcountry1: {
+		   required: true
+		 },
+		 address1: "required",
+		 city1: "required",
+		 postcode1: "required"
+	
+   	},
+   messages: {
+	 firstname1: "Please enter First name.",
+	 lastname1: "Please enter Last name.",
+	 email1: {
+	   required: "Email address require.",
+	   email: "Please enter valid email address."
+	 },
+	 addressType1: {
+	   required: "Please select address type."
+	  },
+	 Shippingcountry1: {
+	   required: "Please select country."
+	   
+	 },
+	 address1: "Please enter address.",
+	 city1: "Please enter city name.",
+	 postcode1: "Please enter postcode."
+   },
+	errorPlacement: function(error, element) { 
+					console.log(element);
+					error.appendTo(element.next());
+				},  
+				
+	submitHandler: function() {  
+			addShippingDetail1();
+			}, 
+	success: function(label) {
+			//console.log(label);
+			label.html("&nbsp;").addClass("valid_small"); 					
+			} 
+	
+    });
+	
+}); 
+
    </script>
 </div>

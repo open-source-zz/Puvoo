@@ -1,45 +1,20 @@
 
 <!--<script type="text/javascript" src="<?php echo JS_FB_PATH ?>/jquery.jscrollpane.min.js"></script>-->
-<script type="text/javascript">
-						$.noConflict();
-						$(window).load(function() {
-						  $('#slider').nivoSlider ({
-								effect:'fade', 
-								slices:15,
-								animSpeed:500,
-								pauseTime:4000,
-								startSlide:0, //Set starting Slide (0 index)
-								directionNav:false, //Next & Prev
-								directionNavHide:true, //Only show on hover
-								controlNav:true, //1,2,3...
-								controlNavThumbs:false, //Use thumbnails for Control Nav
-								controlNavThumbsFromRel:false, //Use image rel for thumbs
-								controlNavThumbsSearch: '.jpg', //Replace this with...
-								controlNavThumbsReplace: '_thumb.jpg', //...this in thumb Image src
-								keyboardNav:true, //Use left & right arrows
-								pauseOnHover:true, //Stop animation while hovering
-								manualAdvance:false, //Force manual transitions
-								captionOpacity:0.8, //Universal caption opacity
-								beforeChange: function(){},
-								afterChange: function(){},
-								slideshowEnd: function(){}, //Triggers after all slides have been shown
-								prevText: 'Prev',
-								nextText: 'Next'
-						
-							});
-						});
-
-				</script>
+    <script type="text/javascript">
+    $(window).load(function() {
+        $('#slider').nivoSlider();
+    });
+    </script>
 
 <div id="rightColumn">
 	<?php if($this->bannerCnt > 0){?>
-		<div class="nivoSlider_wrapper">
-			<div id="slider" class="nivoSlider">
-				<?php foreach($this->banner as $banner){?>
-				<a href="<?php echo $banner['banner_link'];?>" target="_blank"><img src="<?php echo SITE_BANNER_IMAGES_PATH ?>/<?php echo $banner['banner_image'];?>" width="547" height="264" /></a>
+   
+            <div id="slider" class="theme-default">
+                <?php foreach($this->banner as $banner){?>
+				<a href="<?php echo $banner['banner_link'];?>" target="_top"><img src="<?php echo SITE_BANNER_IMAGES_PATH ?>/<?php echo $banner['banner_image'];?>" width="547" height="264" /></a>
 				<?php }?>
-			</div>
-		</div>
+            </div>
+            
 	<?php }?>
 	<div id="gallery">
 		<div id="slides">
@@ -58,7 +33,7 @@
 						<div class="productTitle">
 							<a href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $val2['product_id'];?>" target="_top"><?php echo $val2['product_name'];?></a>
 						</div>
-						<div class="productPrice"><?php echo "$".$val1['product_price']." (USD)";?> </div>
+						<div class="productPrice"><?php echo DEFAULT_CURRENCY_SYMBOL.$val2['converted_price']."&nbsp;".DEFAULT_CURRENCY_CODE;?> </div>
 					</div>
 				<?}?>
 				
@@ -79,7 +54,7 @@
 						<div class="productTitle">
 							<a href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $val1['product_id'];?>" target="_top"><?php echo $val1['product_name'];?> </a>
 						</div>
-						<div class="productPrice"><?php echo "$".$val1['product_price']." (USD)";?> </div>
+						<div class="productPrice"><?php echo DEFAULT_CURRENCY_SYMBOL.$val1['converted_price']."&nbsp;".DEFAULT_CURRENCY_CODE;?> </div>
 					</div>
 				<?php }?>
 		</div>
@@ -113,7 +88,7 @@
 							<div class="productTitle">
 								<a href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $prod['product_id'];?>" target="_top"><?php echo $prod['product_name']; ?></a>
 							</div>
-							<div class="productPrice"><?php echo "$".$prod['product_price']." (USD)";?> </div>
+							<div class="productPrice"><?php echo DEFAULT_CURRENCY_SYMBOL.$prod['converted_price']."&nbsp;".DEFAULT_CURRENCY_CODE;?> </div>
 						
 						</div>
 					</li>

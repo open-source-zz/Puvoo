@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
@@ -10,11 +10,16 @@
 <link rel="stylesheet" href="<?php echo CSS_FB_PATH ?>/demo.css" />
 <link rel="stylesheet" href="<?php echo CSS_FB_PATH ?>/flag.css" />
 <link rel="stylesheet" href="<?php echo CSS_FB_PATH ?>/nivo-slider.css" />
+<link rel="stylesheet" href="<?php echo CSS_FB_PATH ?>/nivostyle.css" />
+<link rel="stylesheet" href="<?php echo CSS_FB_PATH ?>/themes/default/default.css" type="text/css" media="screen" />
 <![if  IE 6]> <link href="<?php echo CSS_FB_PATH ?>/ie6.css" rel="stylesheet" type="text/css" />  <![endif]>
-<script type = "text/javascript" src = "<?php echo JS_PATH ?>/jquery-1.5.1.min.js"></script>
+<script type="text/javascript" src="<?php echo JS_FB_PATH ?>/jquery-1.6.1.min.js"></script>
+<script type="text/javascript" src="<?php echo JS_FB_PATH ?>/jquery.nivo.slider.pack.js"></script>
+<script type = "text/javascript" src = "<?php echo JS_PATH ?>/jquery.validate.js"></script>
+<script type="text/javascript" src="http://connect.facebook.net/en_US/all.js"></script>
 <script type="text/javascript" src="<?php echo JS_FB_PATH ?>/jquery.mousewheel.js"></script>
 <script type="text/javascript" src="<?php echo JS_FB_PATH ?>/script.js"></script>
-<script type="text/javascript" src="<?php echo JS_FB_PATH ?>/jquery.nivo.slider.js"></script>
+
 <style type="text/css" id="page-css">
 			/* Styles specific to this particular page */
 			.scroll-pane
@@ -33,6 +38,8 @@
 <title>Puvoo</title>
 </head>
 <body id="body">
+<input type="hidden" name="facebook_userid" id="facebook_userid" value="<?php echo $this->facebook_user_numeric_id; ?>">
+<input type="hidden" name="facebook_user_numeric_id" id="facebook_user_numeric_id" value="<?php echo $this->facebook_user_numeric_id; ?>">
 	<?php echo $this->render('cart/index.phtml') ?>
 	<div class="width">
     	<?php echo $this->render('header.phtml') ?>
@@ -51,10 +58,16 @@
 
 <script type="text/javascript" src="<?php echo JS_FB_PATH ?>/functions.js"></script>
 <script type="text/javascript" src="<?php echo JS_FB_PATH ?>/search.js"></script>
-<script type="text/javascript">
-	var site_url = '<?php echo SITE_FB_URL;?>';
 
-	window.fbAsyncInit = function() {
+
+<script type="text/javascript">
+	var site_url = '<?php echo SITE_AJX_URL;?>';
+	var site_fb_url = '<?php echo SITE_FB_URL;?>';
+	var def_curr_symbol = '<?php echo DEFAULT_CURRENCY_SYMBOL;?>';
+	var def_curr_code = '<?php echo DEFAULT_CURRENCY_CODE;?>';
+	
+
+	/*window.fbAsyncInit = function() {
 	
 	FB.Canvas.setSize({ height: 1078 });
 	
@@ -66,16 +79,21 @@
 	
 	FB.Canvas.setSize({ height: 1078 });
 	
-	}
+	}*/
+	
+	$(document).ready(function(){
+           FB.Canvas.setAutoResize();
+        });
+
 </script>
 
-<script type="text/javascript" src="http://connect.facebook.net/en_US/all.js"></script>
+
 
 <script type="text/javascript">
 
 FB.init({
 
-appId : '236169479754038',
+appId : '124974344272864',
 
 status : true, // check login status
 
@@ -85,6 +103,40 @@ xfbml : true // parse XFBML
 
 });
 
+FB.Event.subscribe('edge.create', function(href, widget) {
+ // Do something, e.g. track the click on the "Like" button here
+	/*for (var i in widget['_subscribersMap'])
+	{
+		alert('widgetsub[\''+i+'\'] is ' + widget['_subscribersMap'][i])
+	}*/
+	
+	addUserLike(href, widget);
+});
+
+ 
+ FB.Event.subscribe('edge.remove', function(href, widget) {
+ // Do something, e.g. track the click on the "Like" button here
+ 	removeUserLike(href, widget);
+ });
+
+/*FB.Event.subscribe('auth.login', function(response) {
+	// Do something, e.g. track the click on the "Like" button here 	
+	//removeUserLike(href, widget);
+});*/
+ 
+FB.Event.subscribe('auth.login', function(href) {
+	if( $("#facebook_user_numeric_id").val() == '' ) {
+		window.top.location.href = '<?php echo FB_REDIRECT_URL; ?>';
+	}
+}); 
+ 
+FB.Event.subscribe('auth.authResponseChange', function(response) {
+	// Do something, e.g. track the click on the "Like" button here
+	//alert("authResponseChange = " + response);
+	//removeUserLike(href, widget);
+});
+ 
 </script>
+
 </body>
 </html>

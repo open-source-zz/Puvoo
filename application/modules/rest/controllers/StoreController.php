@@ -40,6 +40,7 @@ class Rest_StoreController extends RestCommonController
 {
 	protected $api_key = "";
 	protected $user_id = 0;
+	protected $translate = NULL;
 	
 	/**
 	 * Function init
@@ -58,12 +59,13 @@ class Rest_StoreController extends RestCommonController
 	public function init(){
 		parent::init();
 		
+		$this->translate = Zend_Registry::get('Zend_Translate');
 		//Get api key from header
 		$this->api_key = $this->getRequest()->getHeader('apikey');
 		
 		if($this->api_key == "" || $this->api_key == null)
 		{
-			$this->view->message = 'Access Denied';
+			$this->view->message = $this->translate->_('Store_Access_Denied');
         	$this->getResponse()->setHttpResponseCode(401);
 			
 		}
@@ -74,7 +76,7 @@ class Rest_StoreController extends RestCommonController
 		}
 		
 		if($this->user_id <= 0){
-			$this->view->message = 'Access Denied';
+			$this->view->message = $this->translate->_('Store_Access_Denied');
         	$this->getResponse()->setHttpResponseCode(401);
 		}	
 		
@@ -97,7 +99,7 @@ class Rest_StoreController extends RestCommonController
 	 **/
 	public function optionsAction()
     {
-        $this->view->message = 'Resource Options';
+        $this->view->message = $this->translate->_('Store_Resource_Options');
         $this->getResponse()->setHttpResponseCode(200);
     }
 
@@ -123,7 +125,7 @@ class Rest_StoreController extends RestCommonController
 		if($this->user_id > 0)
 		{
 			$this->view->resources = array('mykey' => $this->api_key);
-			$this->view->message = 'Resource Index';
+			$this->view->message = $this->translate->_('Store_Resource_Index');
         	$this->getResponse()->setHttpResponseCode(200);
 		}
     }
@@ -194,7 +196,7 @@ class Rest_StoreController extends RestCommonController
     {
         if($this->user_id > 0)
 		{
-			$this->view->message = 'Resource Created';
+			$this->view->message = $this->translate->_('Store_Resource_Created');
         	$this->getResponse()->setHttpResponseCode(201);
 		}
     }
@@ -268,7 +270,7 @@ class Rest_StoreController extends RestCommonController
 				//check if store name exists for other user
 				if(!$UserMaster->ValidateTableField("store_name",$store_name,"user_master","user_id != " . $this->user_id))
 				{
-					$arr_error[] = "Store with same name already exists";	
+					$arr_error[] = $this->translate->_('Store_Store_Name_Exists');
 				}
 			}
 			
@@ -279,7 +281,7 @@ class Rest_StoreController extends RestCommonController
 				
 				if($store_country == 0)
 				{
-					$arr_error[] = "Invalid country code";
+					$arr_error[] = $this->translate->_('Store_Invalid_Country_Code');
 				}
 				else
 				{
@@ -290,7 +292,7 @@ class Rest_StoreController extends RestCommonController
 						
 						if($store_state == 0)
 						{
-							$arr_error[] = "Invalid state code";
+							$arr_error[] = $this->translate->_('Store_Invalid_State_Code');
 						}		
 					}
 				}
@@ -298,12 +300,12 @@ class Rest_StoreController extends RestCommonController
 			
 			if($store_country == 0 && $store_state > 0)
 			{
-				$arr_error[] = "Country is necessary for state";
+				$arr_error[] = $this->translate->_('Store_Country_Need_For_State');
 			}
 			
 			if( $paypal_address != "" && !$validator->isValid($paypal_address))
 			{
-				$arr_error[] = "Invalid paypal email address";
+				$arr_error[] = $this->translate->_('Store_Invalid_Paypal_Email');
 			}
 			
 			if($currency != "")
@@ -314,7 +316,7 @@ class Rest_StoreController extends RestCommonController
 				
 				if($currency == 0)
 				{
-					$arr_error[] = "Currency not supported";
+					$arr_error[] = $this->translate->_('Store_Country_Not_Support');
 				}
 				
 			}
@@ -338,7 +340,7 @@ class Rest_StoreController extends RestCommonController
 						
 						if($shipping_name == "")
 						{
-							$arr_error[] = "Invalid shipping name for shipping mehthod " . ($i+1);
+							$arr_error[] = $this->translate->_('Store_Invalid_Name_For_Shipping_Method')." " . ($i+1);
 						}
 						else
 						{
@@ -347,7 +349,7 @@ class Rest_StoreController extends RestCommonController
 						
 						if($shipping_zone == "")
 						{
-							$arr_error[] = "Invalid shipping zone for shipping mehthod " . ($i+1);
+							$arr_error[] = $this->translate->_('Store_Invalid_Zone_For_Shipping_Method')." " . ($i+1);
 						}
 						else
 						{
@@ -356,7 +358,7 @@ class Rest_StoreController extends RestCommonController
 						
 						if($shipping_cost == "")
 						{
-							$arr_error[] = "Invalid shipping cost for shipping mehthod " . ($i+1);
+							$arr_error[] = $this->translate->_('Store_Invalid_Cost_For_Shipping_Method')." " . ($i+1);
 						}
 						else
 						{
@@ -473,13 +475,13 @@ class Rest_StoreController extends RestCommonController
 					}
 				}
 				
-				$this->view->result = 'Success';
-				$this->view->message = 'Store information updated successfully';
+				$this->view->result = $this->translate->_('Store_Success');
+				$this->view->message = $this->translate->_('Store_Update_Success');
         		$this->getResponse()->setHttpResponseCode(201);
 					
 			}else{
 				//send error message
-				$this->view->result = 'Failure';
+				$this->view->result = $this->translate->_('Store_Failure');
 				$this->view->errormessage = array('error' => $arr_error);
 	        	$this->getResponse()->setHttpResponseCode(500);
 			}
@@ -507,7 +509,7 @@ class Rest_StoreController extends RestCommonController
     {
 		if($this->user_id > 0)
 		{
-        	$this->view->message = sprintf('Resource #%s Deleted', $this->_getParam('id'));
+        	$this->view->message = sprintf($this->translate->_('Store_Resource_Delete'), $this->_getParam('id'));
         	$this->getResponse()->setHttpResponseCode(200);
 		}
     }

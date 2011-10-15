@@ -1,4 +1,4 @@
- 
+
 <div id="rightColumn">
 	<div class="mainColumnWidget">
 		<?php if($this->parentcat_id == '0'){?>
@@ -34,7 +34,7 @@
 		<div class="categoryHeader">
 		   <?php echo $this->Translate('Category')?>: <?php echo $this->catname?> 
 		</div>
-		<form name="frmcatproduct" method="post" id="frmcatproduct" action="">
+		<form name="frmcatproduct" method="get" id="frmcatproduct" action="<?php echo SITE_FB_URL;?>category/subcat/id/<?php echo $this->cat_id ?>" target="_top">
 		<?php if(count($this->records) > 0){?>
 		<div class="portlet">
 			 <div class="bluewidgetHeader">
@@ -79,29 +79,18 @@
 					<a target="_top" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $prodval['product_id'];?>"><?php echo $prodval['product_name'];?></a> 
 				</div>
 				<div class="productPrice">
-				   <?php echo "$".$prodval['product_price']." (USD)";?>
+				   <?php echo DEFAULT_CURRENCY_SYMBOL.$prodval['prod_convert_price']."&nbsp;".DEFAULT_CURRENCY_CODE;?>
 				</div>
 				<div class="socialbtn">
-					<div class="left">
-						<iframe src="//www.facebook.com/plugins/like.php?href=<?php echo urlencode(SITE_FB_URL . "product/view/id/" . $prodval['product_id']); ?>&amp;send=true&amp;layout=button_count&amp;width=90&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:90px; height:21px;" allowTransparency="true"></iframe>
-					</div>
-				   <div style="text-align: right;">
-					   <div class="share" id="shareLinkContGrid_lls1">
-							<div id="fb-root"></div>
-							<script>(function(d, s, id) {
-							  var js, fjs = d.getElementsByTagName(s)[0];
-							  if (d.getElementById(id)) {return;}
-							  js = d.createElement(s); js.id = id;
-							  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
-							  fjs.parentNode.insertBefore(js, fjs);
-							}(document, 'script', 'facebook-jssdk'));</script>
-							
-							<fb:send href="<?php echo SITE_FB_URL . "product/view/id/" . $prodval['product_id']; ?>"></fb:send>
-
-					   </div>
-						<div style="clear: both;"></div>
-	
-					</div>
+					<script>(function(d, s, id) {
+						  var js, fjs = d.getElementsByTagName(s)[0];
+						  if (d.getElementById(id)) {return;}
+						  js = d.createElement(s); js.id = id;
+						  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=124974344272864";
+						  fjs.parentNode.insertBefore(js, fjs);
+						}(document, 'script', 'facebook-jssdk'));</script>
+						<fb:like href="<?php echo SITE_FB_URL . "product/view/id/" . $prodval['product_id']; ?>" send="true" layout="button_count" width="181" show_faces="false"></fb:like>
+				   
 					<div style="clear: both"></div>
 				 </div>    
 			 </div>
