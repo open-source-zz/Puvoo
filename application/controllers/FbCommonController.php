@@ -63,7 +63,7 @@ class FbCommonController extends Zend_Controller_Action
 			define('SITE_AJX_URL', 'http://'. $_SERVER['HTTP_HOST']. INSTALL_DIR."fb/");
 		}else{
  			define('SITE_FB_URL', 'http://apps.facebook.com/pvalpha/');
-			define('SITE_AJX_URL', 'http://fbstore.kintudesigns.com/fb/');
+			
 		}
 		//define('SITE_FB_URL', 'http://apps.facebook.com/pvalpha/');
 			
@@ -251,7 +251,7 @@ class FbCommonController extends Zend_Controller_Action
 		  	$SubCat = $Category->GetSubCategory($val['category_id']);
  			
 			$SubCatList .= "<li class=''>";
-			$SubCatList .= "<a class='sf-with-ul' href='".SITE_FB_URL."category/subcat/id/".$val['category_id']."' target='_top'>".$val['category_name']."				                            <span class='sf-sub-indicator'> »</span></a>";
+			$SubCatList .= "<a class='sf-with-ul' href='".SITE_FB_URL."category/subcat/id/".$val['category_id']."' target='_top'>".$val['category_name']."				                            <span class='sf-sub-indicator'> ï¿½</span></a>";
 			$SubCatList .= "<div><ul class='submenu'>";
 				for($i=0; $i<count($SubCat); $i++)
 				{
