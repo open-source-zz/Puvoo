@@ -251,7 +251,7 @@ class FbCommonController extends Zend_Controller_Action
 		  	$SubCat = $Category->GetSubCategory($val['category_id']);
  			
 			$SubCatList .= "<li class=''>";
-			$SubCatList .= "<a class='sf-with-ul' href='".SITE_FB_URL."category/subcat/id/".$val['category_id']."' target='_top'>".$val['category_name']."				                            <span class='sf-sub-indicator'> ï¿½</span></a>";
+			$SubCatList .= "<a class='sf-with-ul' href='".SITE_FB_URL."category/subcat/id/".$val['category_id']."' target='_top'>".$val['category_name']."				                            <span class='sf-sub-indicator'> »</span></a>";
 			$SubCatList .= "<div><ul class='submenu'>";
 				for($i=0; $i<count($SubCat); $i++)
 				{
@@ -308,6 +308,8 @@ class FbCommonController extends Zend_Controller_Action
  				$Price += $value['price']*$value['product_qty'];
 				$cartId = $value['cart_id'];
 				$CartTotal += $value['product_qty'];
+				
+				$this->view->cartuserId = $value['user_id'];
 				
 				$currency_symbol = $Common->GetCurrencyValue($value['currId']);
 				
@@ -378,6 +380,18 @@ class FbCommonController extends Zend_Controller_Action
 			/// Currency
 			$this->view->CurrencyCombo = $Common->GetCurrency();
 			
+			
+			if($this->view->cartuserId != '' ){
+			
+				$paypalUrl = $Common->GetPaypalUrl('paypal_url');
+				$PaypalDetails = $Common->GetPaypalDetails($this->view->cartuserId);
+			
+				$mysession->Paypal_Url = $paypalUrl['configuration_value'];
+				$mysession->Api_Username = $PaypalDetails['paypal_email'];
+				$mysession->Api_Password = $PaypalDetails['paypal_password'];
+				$mysession->Api_Signature = $PaypalDetails['paypal_signature'];
+			}
+			
 		}
 		$Id = $this->_request->getParam('id');
 		
@@ -415,61 +429,7 @@ class FbCommonController extends Zend_Controller_Action
 		$TopFrdsLikeProd = $Product->GetTopFrndsLikeProduct();
 		$this->view->frndstoplike = $TopFrdsLikeProd;
 		
-		
-		//to get paypal details
-		//to check paypal live 
-		$paypalive = $Common->PaypalExist('paypal_live');
- 		$PaypalLiveDetails = $Common->GetPaypalLiveDetails();
-		
-		if($paypalive['configuration_value'] == 1)
-		{
-			foreach($PaypalLiveDetails as $plive)
-			{
-						
-				if($plive['configuration_key'] == 'paypallive_api_username')
-				{
-					$mysession->Api_Username = $plive['configuration_value'];
-				}
-				if($plive['configuration_key'] == 'paypallive_api_password')
-				{
-					$mysession->Api_Password = $plive['configuration_value'];
-				}
-				if($plive['configuration_key'] == 'paypallive_api_signature')
-				{
-					$mysession->Api_Signature = $plive['configuration_value'];
-				}
-			
-			}
-		}
-		
-		//to check paypal sendbox
-		
-		$sendbox = $Common->PaypalExist('paypal_sandbox');
-		$PaypalSendboxDetails = $Common->GetSendboxDetails();
-		
-		if($sendbox['configuration_value'] == 1)
-		{
-			foreach($PaypalSendboxDetails as $sendbox)
-			{
-					
-				if($sendbox['configuration_key'] == 'sandbox_api_username')
-				{
-					$mysession->Api_Username = $sendbox['configuration_value'];
-				}
-				if($sendbox['configuration_key'] == 'sandbox_api_password')
-				{
-					//print "sfd";
-					$mysession->Api_Password = $sendbox['configuration_value'];
-				}
-				if($sendbox['configuration_key'] == 'sandbox_api_signature')
-				{
-					$mysession->Api_Signature = $sendbox['configuration_value'];
-				}
-			
-			}//die;
-		}
-		//print $mysession->Api_Username;die;
-   	} 
+    } 
 
 	/**
 	 * Function indexAction

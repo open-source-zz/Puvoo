@@ -40,6 +40,7 @@
 <body id="body">
 <input type="hidden" name="facebook_userid" id="facebook_userid" value="<?php echo $this->facebook_user_numeric_id; ?>">
 <input type="hidden" name="facebook_user_numeric_id" id="facebook_user_numeric_id" value="<?php echo $this->facebook_user_numeric_id; ?>">
+<input type="hidden" name="cart_userId" id="cart_userId" value="<?php echo $this->cartuserId; ?>">
 	<?php echo $this->render('cart/index.phtml') ?>
 	<div class="width">
     	<?php echo $this->render('header.phtml') ?>
@@ -65,6 +66,7 @@
 	var site_fb_url = '<?php echo SITE_FB_URL;?>';
 	var def_curr_symbol = '<?php echo DEFAULT_CURRENCY_SYMBOL;?>';
 	var def_curr_code = '<?php echo DEFAULT_CURRENCY_CODE;?>';
+	var request_url = '<?php echo FB_REDIRECT_URL;?>';
 	
 
 	/*window.fbAsyncInit = function() {
@@ -82,8 +84,8 @@
 	}*/
 	
 	$(document).ready(function(){
-           FB.Canvas.setAutoResize();
-        });
+			setTimeout("FB.Canvas.setAutoResize()",1000); 
+    });
 
 </script>
 

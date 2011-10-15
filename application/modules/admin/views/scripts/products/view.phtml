@@ -176,7 +176,7 @@
 			</div>
 			<div class="box-content" >
 				<p class="p_left" style="padding-left:5px;"><strong><h5><?php echo $detail["product_name"]; ?>:</h5></strong>
-					<br/><?php echo $detail["product_description"]; ?>
+					<br/><?php if(strlen($detail["product_description"]) > 80 ) { echo substr(strip_tags($detail["product_description"]), 0, 80)."..."; } else { echo substr(strip_tags($detail["product_description"]), 0, 80); } ?>
 				</p>
 				<hr/>
 			</div>

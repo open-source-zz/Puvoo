@@ -116,13 +116,14 @@ class Models_Cart
 		);
 		//print_r($ProductMaster);die;
 		$facebookUser = $this->UserExist($ProductInfo['fbid']);
-		//print_r(count($facebookUser));die;
-		if(count($facebookUser) < 2){
+		//print_r($facebookUser);die;
+		if(!$facebookUser){
 					
 			$db->insert('cart_master', $ProductMaster);
 			
 		}
 		$facebookUser1 = $this->GetCartId($ProductInfo['fbid']);
+		//print_r($facebookUser1);die;
 		$id = $facebookUser1['cart_id'];
 		//Insert information in cart Details table
 		
@@ -216,17 +217,17 @@ class Models_Cart
 	 *
 	 * Date created: 2011-09-02
 	 *
-	 * @param () - No parameter.
+	 * @param (Int) -$fbuid- facebook user id.
 	 * @return (Array) - Return true on success
 	 * @author  Jayesh 
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 */
-	public function UserExist()
+	public function UserExist($fbuid)
 	{	
 		global $mysession;
 		$db= $this->db;
 		
-		$sql = "SELECT * FROM cart_master WHERE facebook_user_id = '".FBUSER_ID."'";
+		$sql = "SELECT * FROM cart_master WHERE facebook_user_id = '".$fbuid."'";
 		//print $sql;die;
 		$result = $db->fetchRow($sql);
 		
@@ -235,9 +236,9 @@ class Models_Cart
 	}
 
 	/**
-	 * function UserExist
+	 * function GetCartProductDetail
 	 *
-	 * It is used find the user that have in the cart.
+	 * It is used get cart product details.
 	 *
 	 * Date created: 2011-09-02
 	 *

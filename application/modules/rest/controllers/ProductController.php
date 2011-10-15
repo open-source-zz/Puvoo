@@ -303,7 +303,10 @@ class Rest_ProductController extends RestCommonController
 					$description = 	trim($prod['description']);
 					$product_external_id = 	$filter->filter(trim($prod['product_external_id']));
 					$price = 	(float) $filter->filter(trim($prod['price']));
-					$code = 	$filterChain2->filter(trim($prod['code']));
+					if(isset($prod['code']))
+					{
+						$code = 	$filterChain2->filter(trim($prod['code']));
+					}
 					$weight = 	(float) $filter->filter(trim($prod['weight']));
 					$length = 	(float) $filter->filter(trim($prod['length']));
 					$width = 	(float) $filter->filter(trim($prod['width']));
@@ -851,20 +854,20 @@ class Rest_ProductController extends RestCommonController
 						copy($arr_imgname[0],$arr_imgname[3]);
 						
 						$thumb->image($arr_imgname[0]);
-				  		$thumb->size_fix(350,350);
+				  		$thumb->size_auto(350);
 						$thumb->get($arr_imgname[0]);	
 						
 						
 						$thumb->image($arr_imgname[1]);
-				  		$thumb->size_fix(128,128);
+				  		$thumb->size_auto(128);
 						$thumb->get($arr_imgname[1]);	
 						
 						$thumb->image($arr_imgname[2]);
-				  		$thumb->size_fix(64,64);
+				  		$thumb->size_auto(64);
 						$thumb->get($arr_imgname[2]);	
 						
 						$thumb->image($arr_imgname[3]);
-				  		$thumb->size_fix(28,28);
+				  		$thumb->size_auto(28);
 						$thumb->get($arr_imgname[3]);	
 						
 						//Insert record in database table
@@ -940,20 +943,20 @@ class Rest_ProductController extends RestCommonController
 							copy($arr_imgname[0],$arr_imgname[3]);
 							
 							$thumb->image($arr_imgname[0]);
-							$thumb->size_fix(350,350);
+							$thumb->size_auto(350);
 							$thumb->get($arr_imgname[0]);	
 							
 							
 							$thumb->image($arr_imgname[1]);
-							$thumb->size_fix(128,128);
+							$thumb->size_auto(128);
 							$thumb->get($arr_imgname[1]);	
 							
 							$thumb->image($arr_imgname[2]);
-							$thumb->size_fix(64,64);
+							$thumb->size_auto(64);
 							$thumb->get($arr_imgname[2]);	
 							
 							$thumb->image($arr_imgname[3]);
-							$thumb->size_fix(28,28);
+							$thumb->size_auto(28);
 							$thumb->get($arr_imgname[3]);	
 							
 							//Insert record in database table

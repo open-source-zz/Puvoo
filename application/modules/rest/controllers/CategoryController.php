@@ -197,11 +197,6 @@ class Rest_CategoryController extends RestCommonController
 		{
 			$myparams = $this->getRequest()->getParams();
 			
-			print "<pre>";
-			print_r($myparams);
-			print "</pre>";
-			die;
-			
 			$categories = array();
 			$arr_error = array();
 			
@@ -210,9 +205,9 @@ class Rest_CategoryController extends RestCommonController
 			//create objects
 			$Category = new Models_Category();
 			
-			if(isset($myparams["Category"]["id"]))
+			if(isset($myparams["Category"]["Id"]))
 			{
-				$cid = (int) trim($myparams["Category"]["id"]));
+				$cid = (int) trim($myparams["Category"]["Id"]);
 				
 				if($cid > 0)
 				{
@@ -224,7 +219,11 @@ class Rest_CategoryController extends RestCommonController
 				
 				if(count($arr_error) == 0)
 				{
-				
+					$categories["Category"] = $Category->getCategoryTreeForAPI($cid);
+					
+					/*print "<pre>";
+					print_r($categories);
+					print "</pre>";die;*/
 				} 
 			}
 			else
@@ -234,7 +233,8 @@ class Rest_CategoryController extends RestCommonController
 			
 			if(count($arr_error) == 0)
 			{
-				$categories = $Category->getCategoryTreeForAPI($cid);
+				$this->view->Categories = $categories;
+        		$this->getResponse()->setHttpResponseCode(201);
 				
 			}
 			else

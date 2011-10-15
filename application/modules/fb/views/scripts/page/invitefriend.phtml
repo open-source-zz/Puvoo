@@ -1,138 +1,173 @@
-<div id="rightColumn">
-                    <div class="mainColumnWidget" style="border-bottom:1px solid #e2e2e2;">
-                        <div id="breadCrumb">
-                            <ul>
-                                <li>
-                                    <a target="_top" href="<?php echo SITE_FB_URL ?>">
-                                        <img title="home" alt="home" src="<?php echo IMAGES_FB_PATH ?>/home.png">
-                                    </a>
-                                </li>
-                                <li>
-                                    <a target="_top" href="<?php echo SITE_FB_URL ?>page/invitefriend/">Invite</a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="portlet">
-                            <div class="bluewidgetHeader">
-                                Add People to Your Network
-                            </div>
-                        </div>
-						<?php if( $this->userlogin == 1 )  { ?>
-                        <div class="content" style="padding-bottom:0px;">
-                        	<div id="findfrnd">
-							<form method="post" action="" name="invitefriendfrm" id="invitefriendfrm">
-                                <table cellspacing="0" width="100%" cellpadding="0" border="0">
-									<tr>
-										<td style="padding-right:5px;">
-										    <strong>Find Friends:&nbsp;</strong>
-											<table cellspacing="5" width="100%" cellpadding="3">
-												<tr>
-													<td colspan="2">
-														<?php if( count($this->addError) > 0 ) { ?>
-														<?php 	foreach($this->addError as $key => $val ) { ?>
-																	<h5 style="color:#FF0000;font-size:12px;"><?php echo $val; ?></h5>
-														<?php 	}?>
-														<?php } ?>
-														<?php if($this->success != '' ) { ?>
-															<h5 style="color:#009900; font-size:12px;"><?php echo $this->success; ?></h5>
-														<?php } ?>
-													</td>
-												</tr>
-												<tr>
-													<td width="30%">Email Id:</td>
-													<td width="70%">
-														<input id="q" class="inputtext" type="text" title="Start typing a friend's email id" style="height: 18px; width: 235px;width: 230px\0/; color: rgb(119, 119, 119);" value="Start typing a friend's name" onblur="if (this.value=='') { this.value='Start typing a friend\'s email id'; } " onfocus="this.value='';" name="friends_email" id="friends_email" />
-													</td>
-												</tr>
-												<tr>
-													<td width="30%" valign="top">Comments:</td>
-													<td width="70%">
-														<textarea cols="45" rows="7" name="friends_mailtext" id="friends_mailtext"></textarea>
-													</td>
-												</tr>
-												<tr>
-													<td></td>
-													<td valign="middle">
-													<label class="uiButton">
-														<input type="submit" style="width:65px;" value="" class="sendbtn" />
-													</label>
-													</td>
-												</tr>
-											</table>
-										</td>
-									</tr>
-                                 </table>   
-								</form>
-                            </div>
-                          	<div id="network">
-                            	<!--<div class="addfrnd">
-                                	<div class="thumnail"><img src="<?php echo IMAGES_FB_PATH ?>/picture.gif" alt="" /></div>
-                                    <div class="frndname">
-                                    	Maria France Lanza
-                                    </div>
-                                    <div class="invitebtn">
-                                    	<input type="button" value="" class="invite" /><input type="button" value="" class="skip" />
-                                    </div>
-                                    <div class="clear"></div>
-                                </div>
-                                <div class="addfrnd">
-                                	<div class="thumnail"><img src="<?php echo IMAGES_FB_PATH ?>/picture.gif" alt="" /></div>
-                                    <div class="frndname">
-                                    	Macro camisani calzolari calzolari
-                                    </div>
-                                    <div class="invitebtn">
-                                    	<input type="button" value="" class="invite" /><input type="button" value="" class="skip" />
-                                    </div>
-                                    <div class="clear"></div>
-                                </div>-->
-                            </div>
-                            <div class="clear" style="height:0px;"></div>
-                        </div>
-                        <?php } else { ?>
-						<div class="content" style="padding-bottom:0px;">
-							<div id="findfrnd">
-								<fb:login-button></fb:login-button>
-							</div>
-						</div>
-						<?php } ?>
-                    </div>
-                    
-                   
-                </div>
-				
-<script type="text/javascript">
-$(document).ready(
-function(){
-/*FB.ui({method:'permissions.request',perms:''},function(response){
-			if(response.status=="connected"){
-				
-				return false;
-			}else if(response.status=="notConnected"){
-				
-				return false;
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<link rel="stylesheet" href="<?php echo CSS_FB_PATH ?>/style.css" />
+<link rel="stylesheet" href="<?php echo CSS_FB_PATH ?>/menu.css" />
+<link rel="stylesheet" href="<?php echo CSS_FB_PATH ?>/popup.css" />
+<link rel="stylesheet" href="<?php echo CSS_FB_PATH ?>/jquery.jscrollpane.css" />
+<link rel="stylesheet" href="<?php echo CSS_FB_PATH ?>/demo.css" />
+<link rel="stylesheet" href="<?php echo CSS_FB_PATH ?>/flag.css" />
+<link rel="stylesheet" href="<?php echo CSS_FB_PATH ?>/nivo-slider.css" />
+<link rel="stylesheet" href="<?php echo CSS_FB_PATH ?>/nivostyle.css" />
+<link rel="stylesheet" href="<?php echo CSS_FB_PATH ?>/themes/default/default.css" type="text/css" media="screen" />
+<![if  IE 6]> <link href="<?php echo CSS_FB_PATH ?>/ie6.css" rel="stylesheet" type="text/css" />  <![endif]>
+<script type="text/javascript" src="<?php echo JS_FB_PATH ?>/jquery-1.6.1.min.js"></script>
+<script type="text/javascript" src="<?php echo JS_FB_PATH ?>/jquery.nivo.slider.pack.js"></script>
+<script type = "text/javascript" src = "<?php echo JS_PATH ?>/jquery.validate.js"></script>
+<script type="text/javascript" src="http://connect.facebook.net/en_US/all.js"></script>
+<script type="text/javascript" src="<?php echo JS_FB_PATH ?>/jquery.mousewheel.js"></script>
+<script type="text/javascript" src="<?php echo JS_FB_PATH ?>/script.js"></script>
+
+<style type="text/css" id="page-css">
+			/* Styles specific to this particular page */
+			.scroll-pane
+			{
+				width: 100%;
+				height: 255px;
+				overflow: auto;
 			}
-		});*/
+			.horizontal-only
+			{
+				height: auto;
+				max-height: 255px;
+			}
+		</style> 
+
+<title>Puvoo</title>
+</head>
+<body id="body">
+<input type="hidden" name="facebook_userid" id="facebook_userid" value="<?php echo $this->facebook_user_numeric_id; ?>">
+<input type="hidden" name="facebook_user_numeric_id" id="facebook_user_numeric_id" value="<?php echo $this->facebook_user_numeric_id; ?>">
+<input type="hidden" name="cart_userId" id="cart_userId" value="<?php echo $this->cartuserId; ?>">
+	<?php echo $this->render('cart/index.phtml') ?>
+	<div class="width">
+    	<?php echo $this->render('header.phtml') ?>
+		<?php echo $this->render('menu.phtml') ?>
+         <div id="mainbody">
+			<div id="mainwhitebg">				
+					<div class="mainColumnWidget" style="border-bottom:1px solid #e2e2e2; width:744px;">
+					  <div id="breadCrumb" >
+						<ul>
+						  <li> <a target="_top" href="<?php echo SITE_FB_URL ?>"> <img title="home" alt="home" src="<?php echo IMAGES_FB_PATH ?>/home.png"> </a> </li>
+						  <li> <a target="_top" href="<?php echo SITE_FB_URL ?>page/invitefriend/">Invite</a> </li>
+						</ul>
+					  </div>
+					  <div class="portlet">
+						<div class="bluewidgetHeader"> Add People to Your Network </div>
+					  </div>
+					  <fb:serverfbml>
+						  <script type='text/fbml'>
+							<fb:request-form 
+							  action="<?php echo SITE_FB_URL ?>" 
+							  content="Your friend invites you to Test site &lt;fb:req-choice label=&quot;Accept&quot; url=&quot;<?php echo SITE_FB_URL ?>&quot; /&gt;" 
+							  invite="true" 
+							  method="post" 
+							  type="Test site">
+							  <fb:multi-friend-selector 
+								actiontext="Invite your friends to Test site" 
+								bypass="cancel" 
+								condensed="false" 
+								email_invite="false" 
+								exclude_ids="" 
+								max="20" 
+								showborder="true" />
+							</fb:request-form>
+						  </script>
+						</fb:serverfbml>
+					</div>
+				<div class="clear"></div>
+			</div>
+			<?php echo $this->render('footer.phtml')?>
+         </div>
 		
-		/*
-		FB.ui({
-        client_id: '124974344272864',
-        method: 'oauth',
-        scope: 'email,user_birthday',
-        redirect_uri: 'http://apps.facebook.com/pvalpha/',
-        response_type: 'token'
-      });*/
-	  
-	 /* FB.ui({
-                'method': 'permissions.request',
-                'perms': 'user_birthday,user_interests,user_likes,offline_access', 'display': 'iframe'
-            },
-            function(response) {
-                if (response.perms == 'user_birthday,user_interests,user_likes,offline_access') { window.top.location.href = 'https://apps.facebook.com/pvalpha/page/invitefriend';
-                } else {
-                    //alert('Error requesting permission');
-                }
-            });*/
-				
-}
-);
+    </div>
+	<div id="fb-root"></div>
+
+<script type="text/javascript" src="<?php echo JS_FB_PATH ?>/functions.js"></script>
+<script type="text/javascript" src="<?php echo JS_FB_PATH ?>/search.js"></script>
+
+
+<script type="text/javascript">
+	var site_url = '<?php echo SITE_AJX_URL;?>';
+	var site_fb_url = '<?php echo SITE_FB_URL;?>';
+	var def_curr_symbol = '<?php echo DEFAULT_CURRENCY_SYMBOL;?>';
+	var def_curr_code = '<?php echo DEFAULT_CURRENCY_CODE;?>';
+	var request_url = '<?php echo FB_REDIRECT_URL;?>';
+	
+
+	/*window.fbAsyncInit = function() {
+	
+	FB.Canvas.setSize({ height: 1078 });
+	
+	}
+	
+	// Do things that will sometimes call sizeChangeCallback()
+	
+	function sizeChangeCallback() {
+	
+	FB.Canvas.setSize({ height: 1078 });
+	
+	}*/
+	
+	$(document).ready(function(){
+			setTimeout("FB.Canvas.setAutoResize()",1000); 
+    });
+
 </script>
+
+
+
+<script type="text/javascript">
+
+FB.init({
+
+appId : '124974344272864',
+
+status : true, // check login status
+
+cookie : true, // enable cookies to allow the server to access the session
+
+xfbml : true // parse XFBML
+
+});
+
+FB.Event.subscribe('edge.create', function(href, widget) {
+ // Do something, e.g. track the click on the "Like" button here
+	/*for (var i in widget['_subscribersMap'])
+	{
+		alert('widgetsub[\''+i+'\'] is ' + widget['_subscribersMap'][i])
+	}*/
+	
+	addUserLike(href, widget);
+});
+
+ 
+ FB.Event.subscribe('edge.remove', function(href, widget) {
+ // Do something, e.g. track the click on the "Like" button here
+ 	removeUserLike(href, widget);
+ });
+
+/*FB.Event.subscribe('auth.login', function(response) {
+	// Do something, e.g. track the click on the "Like" button here 	
+	//removeUserLike(href, widget);
+});*/
+ 
+FB.Event.subscribe('auth.login', function(href) {
+	if( $("#facebook_user_numeric_id").val() == '' ) {
+		window.top.location.href = '<?php echo FB_REDIRECT_URL; ?>';
+	}
+}); 
+ 
+FB.Event.subscribe('auth.authResponseChange', function(response) {
+	// Do something, e.g. track the click on the "Like" button here
+	//alert("authResponseChange = " + response);
+	//removeUserLike(href, widget);
+});
+ 
+</script>
+
+</body>
+</html>

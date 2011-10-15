@@ -186,62 +186,37 @@ class Models_Common
 	
 	}
 
-	/**
-	 * function GetPaypalLiveDetails 
+ 	/**
+	 * function GetPaypalDetails 
 	 *
-	 * It is used to get paypal live details.
+	 * It is used to get paypal details of cart user.
 	 *
 	 * Date created: 2011-10-15
 	 *
- 	 * @return (Array) - Return number of records
+ 	 * @param (int) $userId- User Id.
+	 *
+	 * @return (Array) - Return number of records
+	 *
 	 *
 	 * @author Jayesh 
 	 *
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
-	public function GetPaypalLiveDetails()
+	public function GetPaypalDetails($userId)
 	{
 		$db= $this->db;
 		
- 		$sql = "SELECT * FROM configuration
-				LEFT JOIN configuration_group ON configuration_group.configuration_group_id = configuration.configuration_group_id
-				WHERE configuration_group.configuration_group_key = 'Facebook Store' AND configuration_key IN ('paypal_live', 'paypallive_api_username', 'paypallive_api_password', 'paypallive_api_signature')";
+ 		$sql = "SELECT * FROM user_master WHERE user_id=".$userId."";
 		//print $sql;die;		
- 		$result = $db->fetchAll($sql);
+ 		$result = $db->fetchRow($sql);
 		 
  		return $result;
 	}
 	
 	/**
-	 * function GetSendboxDetails 
+	 * function GetPaypalUrl 
 	 *
-	 * It is used to get paypal sendbox details.
-	 *
-	 * Date created: 2011-10-15
-	 *
- 	 * @return (Array) - Return number of records
-	 *
-	 * @author Jayesh 
-	 *
-	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
-	 **/
-	public function GetSendboxDetails()
-	{
-		$db= $this->db;
-		
- 		$sql = "SELECT * FROM configuration
-				LEFT JOIN configuration_group ON configuration_group.configuration_group_id = configuration.configuration_group_id
-				WHERE configuration_group.configuration_group_key = 'Facebook Store' AND configuration_key IN ('paypal_sandbox', 'sandbox_api_username', 'sandbox_api_password', 'sandbox_api_signature')";
-		//print $sql;die;		
- 		$result = $db->fetchAll($sql);
-		 
- 		return $result;
-	}
-	
-	/**
-	 * function PaypalExist 
-	 *
-	 * It is used to check which paypal account on.
+	 * It is used to get paypal url that merchant set at admin.
 	 *
 	 * Date created: 2011-10-15
 	 *
@@ -251,7 +226,7 @@ class Models_Common
 	 *
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
-	public function PaypalExist($pname)
+	public function GetPaypalUrl($pname)
 	{
 		$db= $this->db;
 		
