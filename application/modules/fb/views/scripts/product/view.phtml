@@ -96,16 +96,12 @@
 						<input type="button" class="add_cartbtn" value="" id="btn" onclick="validateAddToCart()" />
 					</div>
 						<input id="productId" name="productId" type="hidden" value="<?php echo $this->ProdId;?>"/>
-						<input id="command" name="command" type="hidden" value="addStoreItem"/>
-						 <input id="currencyField" name="itemCurrency" type="hidden" value="USD"/>
-						<input id="itemDiscountPrice" name="itemDiscountPrice" type="hidden" value=""/>
-						<input id="signed_request" name="signed_request" type="hidden" value=""/>
-						<input id="permissionGranted" name="permissionGranted" type="hidden" value="0" />
 						<input id="productPrice" name="productPrice" type="hidden" value="<?php echo $this->ProdPrice;?>" />
 						<input type="hidden" name="hiddenPrice" id="hiddenPrice" value="0" />
 						<input type="hidden" name="DefaultPrice" id="DefaultPrice" value="<?php echo $this->ProdPrice; ?> " />
 						<input type="hidden" name="TotalPrice" id="TotalPrice" value="<?php echo $this->ProdPrice; ?> " />
 						<input type="hidden" name="FbuserId" id="FbuserId" value="<?php echo $this->FB_userid;?>" />
+						<input id="product_userId" name="product_userId" type="hidden" value="<?php echo $this->ProdUserId;?>"/>
 				</form>
 			</div>
 			<div id="backgroundPopup"></div>

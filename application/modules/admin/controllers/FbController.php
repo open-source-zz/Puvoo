@@ -239,63 +239,15 @@ class Admin_FbController extends AdminCommonController
 		{
 			$filter = new Zend_Filter_StripTags();	
 			
-			$data['paypal_type'] = $filter->filter(trim($request->getPost('paypal_type')));
-			$data['sandbox_api_username'] = $filter->filter(trim($request->getPost('sandbox_api_username')));
-			$data['sandbox_api_password'] = $filter->filter(trim($request->getPost('sandbox_api_password')));
-			$data['sandbox_api_signature'] = $filter->filter(trim($request->getPost('sandbox_api_signature')));
-			$data['paypallive_api_username'] = $filter->filter(trim($request->getPost('paypallive_api_username')));
-			$data['paypallive_api_password'] = $filter->filter(trim($request->getPost('paypallive_api_password')));
-			$data['paypallive_api_signature'] = $filter->filter(trim($request->getPost('paypallive_api_signature')));
+			$data['paypal_url'] = $filter->filter(trim($request->getPost('paypal_url')));
 			
 			$id = $filter->filter(trim($request->getPost('configuration_group_id')));
 			
 			$updateError = array();
 			
-			if( $data['paypal_type'] == '' )
+			if( $data['paypal_url'] == '' )
 			{
-				$updateError[] = $translate->_('Err_Paypal_Type');
-			}
-			
-			if( $data['paypal_type'] == 'paypal_sandbox' ) {
-			
-				$data['paypal_sandbox'] = 1;
-				$data['paypal_live'] = 0;
-				
-				if( $data['sandbox_api_username'] == "" )
-				{
-					$updateError[] = $translate->_('Err_Paypal_Api_Username');
-				}
-				
-				if( $data['sandbox_api_password'] == "" )
-				{
-					$updateError[] = $translate->_('Err_Paypal_Api_Password');
-				}
-				
-				if( $data['sandbox_api_signature'] == "" )
-				{
-					$updateError[] = $translate->_('Err_Paypal_Signature');
-				}
-				
-			} else if( $data['paypal_type'] == 'paypal_live' ) {
-			
-				$data['paypal_sandbox'] = 0;
-				$data['paypal_live'] = 1;
-				
-				if( $data['paypallive_api_username'] == "" )
-				{
-					$updateError[] = $translate->_('Err_Paypal_Api_Username');
-				}
-				
-				if( $data['paypallive_api_password'] == "" )
-				{
-					$updateError[] = $translate->_('Err_Paypal_Api_Password');
-				}
-				
-				if( $data['paypallive_api_signature'] == "" )
-				{
-					$updateError[] = $translate->_('Err_Paypal_Signature');
-				}
-				
+				$updateError[] = $translate->_('Err_Paypal_Url');
 			}
 			
 			if(count($updateError) == 0)
@@ -322,14 +274,7 @@ class Admin_FbController extends AdminCommonController
 			$id = $Configuration->GetConfigurationGroupId("Facebook Store");
 			
 			$key_array = array(
-								"paypal_sandbox",
-								"paypal_live",
-								"sandbox_api_username",
-								"sandbox_api_password",
-								"sandbox_api_signature",
-								"paypallive_api_username",
-								"paypallive_api_password",
-								"paypallive_api_signature"
+								"paypal_url",
 							  ); 
 			
 			$res = $Configuration->getKeyValueForGroup($id,$key_array);

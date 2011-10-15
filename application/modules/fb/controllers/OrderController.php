@@ -133,7 +133,7 @@ class Fb_OrderController extends FbCommonController
 							'total_tax_cost'		 	 => $OrderCart["total_tax_cost"],		
 							'total_order_amount'		 => $OrderCart["total_order_amount"],		
 							'currency_id'		 		 => $OrderCart["currency_id"],
-							'order_status'				 => 1,	
+							'order_status'				 => 0,	
 							'order_creation_date'		 => date("Y-m-d H:i:s"),
 							'language_id'				 => 1,
 							'payment_method'			 => 'Express Checkout',

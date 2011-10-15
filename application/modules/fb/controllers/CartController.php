@@ -222,8 +222,11 @@ class Fb_CartController extends FbCommonController
  			$this->view->TotalPrice = $Price;
 			$this->view->cartId = $cartId;
 			$mysession->cartId = $cartId;
+			$cartuserId = $CartDetails[$j]['user_id'];
+			$this->view->cartuserId = $cartuserId;
 			$this->view->currencyId = $currency_symbol['currency_id'];
-
+			
+			$this->view->cartuserId = $CartDetails[$j]['user_id'];
 			// For Shipping Method for each product
 			$ShippingMetodInfo = $Cart->GetShippingMethod($CartDetails[$j]['user_id']);
 			
@@ -234,38 +237,59 @@ class Fb_CartController extends FbCommonController
 			{
  				
 				$shippingZone = explode(',',$ship['zone']);
+				
  				for($k=0; $k < count($shippingZone); $k++)
 				{
- 					$shippingState = explode(':',$shippingZone[$k]);
+					//echo "<pre>";
+					//print_r($shippingZone[$k]);
 					
-					foreach($shippingState as $key => $val )
+ 					
+					if($shippingZone[$k] == 'Worldwide')
 					{
-						if($key == 0 ) {
+					
+						$Ship_Method_Combo_Str[$ship['shipping_method_id']] = $ship['shipping_method_name'];
+						
+					}else
+					{
+						$shippingState = explode(':',$shippingZone[$k]);
+						foreach($shippingState as $key => $val )
+						{
+							if($key == 0 ) {
+								
+								if($val == $CountryCode['country_iso2']) {
+									
+									$Ship_Method_Combo_Str[$ship['shipping_method_id']] = $ship['shipping_method_name'];
+									
+								}
+								
+							} else {
 							
-							if($val == $CountryCode['country_iso2']) {
-								
-								$Ship_Method_Combo_Str[$ship['shipping_method_id']] = $ship['shipping_method_name'];
-								
+								if( $val == $ShippingInfo['state_name'] ) {
+							
+									$Ship_Method_Combo_Str[$ship['shipping_method_id']] = $ship['shipping_method_name'];
+								}
+							
 							}
 							
-						} else {
-						
-							if( $val == $ShippingInfo['state_name'] ) {
-						
-								$Ship_Method_Combo_Str[$ship['shipping_method_id']] = $ship['shipping_method_name'];
-							}
-						
 						}
-						
 					}
 				}
 				$Ship_handling_day = $ship['shipping_handling_time'];
-			}
+			}//die;
 			
 			$Ship_Handel_Day[$CartDetails[$j]['product_id']] = $Ship_handling_day;
 			
 			$Ship_Method_Combo[$CartDetails[$j]['product_id']] = $Ship_Method_Combo_Str;
 			
+			//to get paypal details
+			$paypalUrl = $Common->GetPaypalUrl('paypal_url');
+			
+			$PaypalDetails = $Common->GetPaypalDetails($this->view->cartuserId);
+	
+			$mysession->Paypal_Url = $paypalUrl['configuration_value'];
+			$mysession->Api_Username = $PaypalDetails['paypal_email'];
+			$mysession->Api_Password = $PaypalDetails['paypal_password'];
+			$mysession->Api_Signature = $PaypalDetails['paypal_signature'];
 			// For Tax rate for each product
 			$TaxInfo = $Cart->GetTaxName($CartDetails[$j]['user_id']);
 			
@@ -344,7 +368,8 @@ class Fb_CartController extends FbCommonController
 	
 		global $mysession;
 		$Cart = new Models_Cart();
-		
+		$Common = new Models_Common();
+		$this->_helper->layout()->disableLayout();
 		//$prodId = $_POST['prodid'];
 		$CartId = $_POST['Bill_cartid'];
 		$FirstName = $_POST['Bill_fname'];
@@ -358,6 +383,7 @@ class Fb_CartController extends FbCommonController
 		$City = $_POST['Bill_city'];
 		$State = $_POST['Bill_state'];
 		$PostCode = $_POST['Bill_postcode'];
+		$fbuid = $_POST['fbuid'];
 		
 			$BillingDetail = array(
 				'billing_user_fname' 		 => $FirstName,
@@ -376,12 +402,155 @@ class Fb_CartController extends FbCommonController
 		//print $CartId;die;
 		$result = $Cart->UpdateShippingInfo($BillingDetail,$CartId);
   		
-		if($result == true)
+		$ShippingInfo = $Cart->GetShippingInfo($CartId);
+		
+		$CartDetails = $Cart->GetProductInCart($fbuid);
+		
+		$CountryCode = $Cart->GetCountryCode($ShippingInfo['shipping_user_country_id']);
+		
+		$this->view->CountryCode = $CountryCode['country_iso2'];
+		$Ship_Method_Combo = array();
+		$Ship_Handel_Day = array();
+		
+		$this->view->cartItems = $CartDetails;
+		
+		$cartId = '';
+		$Price = 0;
+		$CartTotal = '';
+
+		for($j=0; $j < count($CartDetails); $j++)
 		{
-			echo json_encode("Success");die;
-		}else{
-			echo json_encode("Fail");die;
+		
+			$Price += $CartDetails[$j]['product_price']*$CartDetails[$j]['product_qty'];
+			$cartId = $CartDetails[$j]['cart_id'];
+			$CartTotal += $CartDetails[$j]['product_qty'];
+			
+			$currency_symbol = $Common->GetCurrencyValue($CartDetails[$j]['currId']);
+			//print $Price;die;
+			$this->view->currency_symbol = $currency_symbol['currency_symbol'];
+			
+ 			$this->view->CartCnt = count($CartDetails);
+ 			$this->view->TotalPrice = $Price;
+			$this->view->cartId = $cartId;
+			$mysession->cartId = $cartId;
+			$cartuserId = $CartDetails[$j]['user_id'];
+			$this->view->cartuserId = $cartuserId;
+			$this->view->currencyId = $currency_symbol['currency_id'];
+			
+			$this->view->cartuserId = $CartDetails[$j]['user_id'];
+			// For Shipping Method for each product
+			$ShippingMetodInfo = $Cart->GetShippingMethod($CartDetails[$j]['user_id']);
+			
+			
+			$start = 0;
+			$Ship_Method_Combo_Str = array();
+			
+			foreach($ShippingMetodInfo as $ship)
+			{
+ 				
+				$shippingZone = explode(',',$ship['zone']);
+ 				for($k=0; $k < count($shippingZone); $k++)
+				{
+					
+ 					
+					if($shippingZone[$k] == 'Worldwide')
+					{
+					
+						$Ship_Method_Combo_Str[$ship['shipping_method_id']] = $ship['shipping_method_name'];
+						
+					}else
+					{
+						$shippingState = explode(':',$shippingZone[$k]);
+						foreach($shippingState as $key => $val )
+						{
+							if($key == 0 ) {
+								
+								if($val == $CountryCode['country_iso2']) {
+									
+									$Ship_Method_Combo_Str[$ship['shipping_method_id']] = $ship['shipping_method_name'];
+									
+								}
+								
+							} else {
+							
+								if( $val == $ShippingInfo['state_name'] ) {
+							
+									$Ship_Method_Combo_Str[$ship['shipping_method_id']] = $ship['shipping_method_name'];
+								}
+							
+							}
+							
+						}
+					}
+				}
+				$Ship_handling_day = $ship['shipping_handling_time'];
+			}
+			
+			$Ship_Handel_Day[$CartDetails[$j]['product_id']] = $Ship_handling_day;
+			
+			$Ship_Method_Combo[$CartDetails[$j]['product_id']] = $Ship_Method_Combo_Str;
+			
+			//to get paypal details
+			$paypalUrl = $Common->GetPaypalUrl('paypal_url');
+			
+			$PaypalDetails = $Common->GetPaypalDetails($this->view->cartuserId);
+	
+			$mysession->Paypal_Url = $paypalUrl['configuration_value'];
+			$mysession->Api_Username = $PaypalDetails['paypal_email'];
+			$mysession->Api_Password = $PaypalDetails['paypal_password'];
+			$mysession->Api_Signature = $PaypalDetails['paypal_signature'];
+			// For Tax rate for each product
+			$TaxInfo = $Cart->GetTaxName($CartDetails[$j]['user_id']);
+			
+ 			$tax_rate = array();
+			foreach($TaxInfo as $tax)
+			{
+				$taxZone = explode(',',$tax['zone']);
+ 				for($k=0; $k < count($taxZone); $k++)
+				{
+ 					$taxState = explode(':',$taxZone[$k]);
+ 					foreach($taxState as $key => $val )
+					{
+						if($key == 0 ) {
+							
+							if($val == $CountryCode['country_iso2']) {
+								
+								$tax_rate[$tax['tax_rate_id']] = $tax['rate'];
+								
+							}
+							
+						} else {
+						
+							if( $val == $ShippingInfo['state_name'] ) {
+						
+								$tax_rate[$tax['tax_rate_id']] = $tax['rate'];
+							}
+						
+						}
+						
+					}
+				}
+			}
+			
+			$taxe_rate_value[$CartDetails[$j]['product_id']] = $tax_rate;
+	
 		}
+		
+		$combo_array = array();
+		foreach( $Ship_Method_Combo as $key => $val ) 
+		{
+			$str = '';
+			foreach( $val as $key2 => $val2 ) 
+			{
+				$str .= "<option name='' value='".$key2."' onclick='GetShippingCost(".$key2.",".$key.")'>".$val2."</option>";
+				
+			}
+			$combo_array[$key] = $str;
+		}
+		
+ 		$this->view->taxRate = $taxe_rate_value;
+		$this->view->ship_handel_day = $Ship_Handel_Day;
+		$this->view->Ship_Method_Combo = $combo_array;
 		
 		
 	}	
@@ -742,9 +911,12 @@ class Fb_CartController extends FbCommonController
 				$cartId = $value['cart_id'];
 				$CartTotal += $value['product_qty'];
 				
+				$cartuserId = $value['user_id'];
 				$currency_symbol = $Common->GetCurrencyValue($value['currId']);
 				
 			}
+			
+			$this->view->cartuserId = $cartuserId;
 			$this->view->currency_symbol = $currency_symbol['currency_symbol'];
 			
  			$this->view->CartCnt = count($CartDetails);

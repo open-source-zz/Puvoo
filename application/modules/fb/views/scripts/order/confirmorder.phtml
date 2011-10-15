@@ -28,13 +28,13 @@
           </div>
           <div class="clear"></div>
         </div>
+		
+        <?php } ?>
 		<div id="SubtotalDiv" class="" style="margin-top: 10px; text-align: right;  margin-bottom: 20px;">
 			<span class="boldText"><?php echo $this->Translate('OrderTotal')?></span>
 			<span id="cartSubTotal" ><?php echo $this->currency_symbol."&nbsp;".$Item['total_order_amount'] ?></span>
 							
 		</div>
-        <?php } ?>
-		
 		<input type="hidden" name="payment_token" id="payment_token" value="<?php echo $this->token; ?>">
 		<input type="hidden" name="payment_payerId" id="payment_payerId" value="<?php echo $this->PayerID; ?>">
         <div style="margin-top:10px; margin-bottom:10px;" align="right">

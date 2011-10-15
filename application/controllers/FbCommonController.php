@@ -63,7 +63,7 @@ class FbCommonController extends Zend_Controller_Action
 			define('SITE_AJX_URL', 'http://'. $_SERVER['HTTP_HOST']. INSTALL_DIR."fb/");
 		}else{
  			define('SITE_FB_URL', 'http://apps.facebook.com/pvalpha/');
-			define('SITE_AJX_URL', 'http://fbstore.kintudesigns.com/fb/');
+			
 		}
 		//define('SITE_FB_URL', 'http://apps.facebook.com/pvalpha/');
 			
@@ -309,6 +309,8 @@ class FbCommonController extends Zend_Controller_Action
 				$cartId = $value['cart_id'];
 				$CartTotal += $value['product_qty'];
 				
+				$this->view->cartuserId = $value['user_id'];
+				
 				$currency_symbol = $Common->GetCurrencyValue($value['currId']);
 				
 			}
@@ -378,6 +380,18 @@ class FbCommonController extends Zend_Controller_Action
 			/// Currency
 			$this->view->CurrencyCombo = $Common->GetCurrency();
 			
+			
+			if($this->view->cartuserId != '' ){
+			
+				$paypalUrl = $Common->GetPaypalUrl('paypal_url');
+				$PaypalDetails = $Common->GetPaypalDetails($this->view->cartuserId);
+			
+				$mysession->Paypal_Url = $paypalUrl['configuration_value'];
+				$mysession->Api_Username = $PaypalDetails['paypal_email'];
+				$mysession->Api_Password = $PaypalDetails['paypal_password'];
+				$mysession->Api_Signature = $PaypalDetails['paypal_signature'];
+			}
+			
 		}
 		$Id = $this->_request->getParam('id');
 		
@@ -415,61 +429,7 @@ class FbCommonController extends Zend_Controller_Action
 		$TopFrdsLikeProd = $Product->GetTopFrndsLikeProduct();
 		$this->view->frndstoplike = $TopFrdsLikeProd;
 		
-		
-		//to get paypal details
-		//to check paypal live 
-		$paypalive = $Common->PaypalExist('paypal_live');
- 		$PaypalLiveDetails = $Common->GetPaypalLiveDetails();
-		
-		if($paypalive['configuration_value'] == 1)
-		{
-			foreach($PaypalLiveDetails as $plive)
-			{
-						
-				if($plive['configuration_key'] == 'paypallive_api_username')
-				{
-					$mysession->Api_Username = $plive['configuration_value'];
-				}
-				if($plive['configuration_key'] == 'paypallive_api_password')
-				{
-					$mysession->Api_Password = $plive['configuration_value'];
-				}
-				if($plive['configuration_key'] == 'paypallive_api_signature')
-				{
-					$mysession->Api_Signature = $plive['configuration_value'];
-				}
-			
-			}
-		}
-		
-		//to check paypal sendbox
-		
-		$sendbox = $Common->PaypalExist('paypal_sandbox');
-		$PaypalSendboxDetails = $Common->GetSendboxDetails();
-		
-		if($sendbox['configuration_value'] == 1)
-		{
-			foreach($PaypalSendboxDetails as $sendbox)
-			{
-					
-				if($sendbox['configuration_key'] == 'sandbox_api_username')
-				{
-					$mysession->Api_Username = $sendbox['configuration_value'];
-				}
-				if($sendbox['configuration_key'] == 'sandbox_api_password')
-				{
-					//print "sfd";
-					$mysession->Api_Password = $sendbox['configuration_value'];
-				}
-				if($sendbox['configuration_key'] == 'sandbox_api_signature')
-				{
-					$mysession->Api_Signature = $sendbox['configuration_value'];
-				}
-			
-			}//die;
-		}
-		//print $mysession->Api_Username;die;
-   	} 
+    } 
 
 	/**
 	 * Function indexAction

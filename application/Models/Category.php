@@ -653,13 +653,13 @@ class Models_Category
 	{
 		$db= $this->db;
 		
-		$tree["Category"] = array();
+		
 	
 		$sql = "SELECT * FROM category_master WHERE is_active = 1 and parent_id = ". $parent;
-		
+		//print $sql . "<br>";
 		$data = $db->fetchAll($sql);
 		
-		$lvl = $lvl + 1;
+		
 		
 		foreach($data as $key => $value)
 		{
@@ -669,14 +669,16 @@ class Models_Category
 			
 			if($cnt > 0)
 			{
-					$tree["Category"]["Name"] = $value['category_name'];
-					$tree["Category"]["Id"] = $value['category_id'];
-					$tree["Category"]["Category"] = $this->getCategoryTreeView($value['category_id'],$lvl);
+					$tree[$value['category_id']]["Name"] = $value['category_name'];
+					$tree[$value['category_id']]["Id"] = $value['category_id'];
+					
+					//array_push($tree, $this->getCategoryTreeForAPI($value['category_id'],$lvl,$tree)	); 
+					$tree[$value['category_id']]["Category"] = $this->getCategoryTreeForAPI($value['category_id'],$lvl+1);
 			}
 			else
 			{
-				$tree["Category"]["Name"] = $value['category_name'];
-				$tree["Category"]["Id"] = $value['category_id'];
+				$tree[$value['category_id']]["Name"] = $value['category_name'];
+				$tree[$value['category_id']]["Id"] = $value['category_id'];
 			}
 			
 		}

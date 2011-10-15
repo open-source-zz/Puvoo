@@ -127,6 +127,8 @@ class Fb_ProductController extends FbCommonController
 				$productDetail = $Product->GetProductDetails($Poductid);
 				//print "<pre>";
 				//print_r($productDetail);die;
+				
+				$this->view->ProdUserId = $productDetail['user_id'];
 				$this->view->ProdName = ucfirst($productDetail['product_name']);
 				$ProdPrice = $productDetail['prod_convert_price'];
 				$this->view->ProdPrice = $ProdPrice;
@@ -145,7 +147,7 @@ class Fb_ProductController extends FbCommonController
 				{
 					$SmallImg = explode('_',$img['image_name']);
 					$tinyImage = SITE_PRODUCT_IMAGES_PATH.$img['image_path']."/".$SmallImg[0]."_th2.jpg";
-					if($key == 0)
+					if($img["is_primary_image"] == 1)
 					{
 						$this->view->DefaultImagePath = SITE_PRODUCT_IMAGES_PATH.$img['image_path']."/".$img['image_name']."";
 					}
@@ -153,7 +155,7 @@ class Fb_ProductController extends FbCommonController
 					if(count($productImages) > 1){
 						$tinyImageList .= "<li id='TinyImageBox_".$key."' onclick='showProductThumbImage(".$key.",&#39;".$img['image_path']."&#39;,&#39;".$img['image_name']."&#39;)'>";
 						$tinyImageList .= "<a href='javascript:void(0)' id='link".$key."' class='activelink'>";
-						if($key == 0)
+						if($img["is_primary_image"] == 1)
 						{
 							$tinyImageList .= "<div id='Tiny".$key."' class='active'>";
 						}else{
@@ -420,10 +422,11 @@ class Fb_ProductController extends FbCommonController
  				$Price += $value['price']*$value['product_qty'];
 				$cartId = $value['cart_id'];
 				$CartTotal += $value['product_qty'];
-				
+				$cartuserId = $value['user_id'];
 				$currency_symbol = $Common->GetCurrencyValue($value['currId']);
 				
 			}
+			$this->view->cartuserId = $cartuserId;
 			$this->view->currency_symbol = $currency_symbol['currency_symbol'];
 			
  			$this->view->CartCnt = count($CartDetails);
@@ -491,7 +494,16 @@ class Fb_ProductController extends FbCommonController
 			$this->view->StateCombo = $Cart->GetState($this->view->countryId);
 			
 			$this->view->CurrencyCombo = $Common->GetCurrency();
-
+			
+			//to get paypal details
+			$paypalUrl = $Common->GetPaypalUrl('paypal_url');
+			
+			$PaypalDetails = $Common->GetPaypalDetails($this->view->cartuserId);
+	
+			$mysession->Paypal_Url = $paypalUrl['configuration_value'];
+			$mysession->Api_Username = $PaypalDetails['paypal_email'];
+			$mysession->Api_Password = $PaypalDetails['paypal_password'];
+			$mysession->Api_Signature = $PaypalDetails['paypal_signature'];
 		}		
 
 		

@@ -178,6 +178,10 @@ class Fb_PageController extends FbCommonController
 	 public function invitefriendAction()
 	 {
 	 	global $user,$facebook;
+		
+		//Disable layout
+		$this->_helper->layout()->disableLayout();
+		/*
 		$flag = 0;
 		if ($user) {
 		  $flag = 1;
@@ -197,7 +201,7 @@ class Fb_PageController extends FbCommonController
 		
 		$request = $this->getRequest();
 		
-		if($request->isPost() && $request->isPost("yourlike_user_id") != '' ){
+		if($request->isPost() && $request->isPost("friends_email") != '' ){
 			
 			$filter = new Zend_Filter_StripTags();	
 			
@@ -245,7 +249,7 @@ class Fb_PageController extends FbCommonController
 			}
 			
 			$this->view->success = $success;
-		}
+		}*/
 		
 	 }
 }

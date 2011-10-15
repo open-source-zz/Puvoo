@@ -1,8 +1,9 @@
  <input type="hidden" name="CurrentCurrencyId" id="CurrentCurrencyId" value="<?php echo $this->currencyId;?>" />
 <input type="hidden" value="1" id="currentTab" />
 <input type="hidden" id="cartcount" name="cartcount" value="<?php echo $this->CartCnt;?>" />
+<a id="popupContactClose" style="font-size:12px;"><?php echo $this->Translate('Close')?></a>
 <?php if( count($this->cartItems) > 0 ){?>
-<div id="cartarea" style="display:block; visibility:visible;"> <a id="popupContactClose" style="font-size:12px;"><?php echo $this->Translate('Close')?></a>
+<div id="cartarea" style="display:block; visibility:visible;"> 
   <div id="popup_head">
     <h1><?php echo $this->Translate('ShoppingCart')?></h1>
   </div>
@@ -691,18 +692,28 @@
   </div>
 </div>
 </div>
+<div style="height: 100px; display:none;" id="userExist">
+ 
+  <div id="popup_head">
+    <h1><?php echo $this->Translate('ShoppingCart')?></h1>
+  </div>
+   <br />
+  <h3 style="text-align:center;" ><?php echo $this->Translate('UserProductExist')?></h3>
+</div>
+
 <div style="padding-top: 30px; height: 50px; display:none;" id="EmptyCart">
   
   <h3 style="text-align:center;" ><?php echo $this->Translate('NoItem')?></h3>
 </div>
 <?php }else{?>
-	<a id="popupContactClose" style="font-size:12px;"><?php echo $this->Translate('Close')?></a>
-<div style="height:100px;" id="EmptyCart">
+	
+<div style="height: 120px;" id="EmptyCart">
   <div id="popup_head">
     <h1><?php echo $this->Translate('ShoppingCart')?></h1>
   </div>
+  <div id="loader2" style="display:none; padding:25px; padding-top:50px;"></div>
   <br />
-  <h3 style="text-align:center;" ><?php echo $this->Translate('NoItem')?></h3>
+   <h3 style="text-align:center;" id="Noitem" ><?php echo $this->Translate('NoItem')?></h3>
 </div>
 <?php }?>
 <!--	 	<div id="popup_head" style="display:none;"><h1><?php echo $this->
@@ -779,10 +790,12 @@ Translate('ShoppingCart')?>
 			document.getElementById('settingarea').style.visibility='visible';
 			document.getElementById('cartarea').style.display='none';
 			document.getElementById('cartarea').style.visibility='hidden';
+			$('#popupContactClose').hide();
 		}
 		
 		function showcart()
 		{
+			$('#popupContactClose').show();
 			document.getElementById('settingarea').style.display='none';
 			document.getElementById('settingarea').style.visibility='hidden';
 			document.getElementById('cartarea').style.display='block';

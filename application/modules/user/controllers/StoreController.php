@@ -95,7 +95,9 @@ class User_StoreController extends UserCommonController
 			$data["user_id"] = $mysession->User_Id;
 			$data["store_name"] = $filter->filter(trim($this->_request->getPost('story_name'))); 	
 			$data["store_description"] = $filter->filter(trim($this->_request->getPost('story_desc'))); 	
-			$data["paypal_email"] = $filter->filter(trim($this->_request->getPost('story_email'))); 	
+			$data["paypal_email"] = $filter->filter(trim($this->_request->getPost('story_email'))); 
+			$data["paypal_password"] = $filter->filter(trim($this->_request->getPost('paypal_password'))); 
+			$data["paypal_signature"] = $filter->filter(trim($this->_request->getPost('paypal_signature'))); 	
 			$data["currency_id"] = $filter->filter(trim($this->_request->getPost('story_currency'))); 	
 			$data["country_id"] = $filter->filter(trim($this->_request->getPost('store_country'))); 	
 			$data["store_address"] = $filter->filter(trim($this->_request->getPost('story_address'))); 	
@@ -120,10 +122,16 @@ class User_StoreController extends UserCommonController
 			if($data['paypal_email'] == "" ) {
 				$addErrorMessage[] = $translate->_('Err_Store_Paypal_Email');			
 			}
-			$validator = new Zend_Validate_EmailAddress();
+			if($data['paypal_password'] == "" ) {
+				$addErrorMessage[] = $translate->_('Err_Store_Paypal_Password');			
+			}
+			if($data['paypal_signature'] == "" ) {
+				$addErrorMessage[] = $translate->_('Err_Store_Paypal_Signature');			
+			}
+			/*$validator = new Zend_Validate_EmailAddress();
 			if ($validator->isValid($data['paypal_email'])) { } else {
 				$addErrorMessage[] = $translate->_('Err_Store_Paypal_Email_Invalid');
-			}
+			}*/
 			if($data['currency_id'] == "" ) {
 				$addErrorMessage[] = $translate->_('Err_Store_Currency');
 			}		
