@@ -303,7 +303,9 @@ class Rest_ProductController extends RestCommonController
 					$description = 	trim($prod['description']);
 					$product_external_id = 	$filter->filter(trim($prod['product_external_id']));
 					$price = 	(float) $filter->filter(trim($prod['price']));
-					$code = 	$filterChain2->filter(trim($prod['code']));
+					if(isset($prod['code'])){
+						$code = $filterChain2->filter(trim($prod['code']));
+					}
 					$weight = 	(float) $filter->filter(trim($prod['weight']));
 					$length = 	(float) $filter->filter(trim($prod['length']));
 					$width = 	(float) $filter->filter(trim($prod['width']));
