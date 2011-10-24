@@ -467,6 +467,7 @@
 		$filter = new Zend_Filter_StripTags();	
 		
 		$validator = new Zend_Validate_Regex(array('pattern' => '/^[a-zA-Z0-9_]+$/'));
+		$db = Zend_Registry::get('Db_Adapter');
 		
 		//Get available languages
 		$this->view->languages = $Language->getActiveLanguages();
@@ -551,7 +552,8 @@
 							}
 							else
 							{
-								$sql .= "(" . $data['language_id'] . ", '".$current_group."', '".trim($arr_str[0])."', '".mysql_real_escape_string(trim($arr_str[1]))."', 1),";	
+							
+								$sql .= "(" . $data['language_id'] . ", '".$current_group."', '".mysql_real_escape_string(trim($arr_str[0]))."', '".mysql_real_escape_string(trim($arr_str[1]))."', 1),";	
 								$x++;
 							}
 						}
@@ -564,7 +566,9 @@
 					
 					if($x == 100)
 					{
+					
 						$sql = rtrim($sql,",");
+						
 						$Definitions->executeQuery($sql);
 						$x = 0;
 						$sql = "Insert ignore into language_definitions (language_id, content_group, definition_key, definition_value, status) values ";
@@ -577,6 +581,7 @@
 				
 				if($x > 0)
 				{
+					
 					$sql = rtrim($sql,",");
 					
 					$Definitions->executeQuery($sql);

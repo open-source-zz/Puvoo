@@ -345,7 +345,8 @@ class Models_LanguageDefinitions
 	{
 		$db = $this->db;	
 		
-		$db->query($sql);
+		
+		$db->getConnection()->exec($sql);
 		
 		return true;
 	}

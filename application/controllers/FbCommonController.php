@@ -523,6 +523,7 @@ class FbCommonController extends Zend_Controller_Action
 			if ( $userId != '' ) {  
 
 				$sellerInfo = $Product->GetSellerInformation($userId);
+
 				if($sellerInfo['StoreTermsPolicy'] != '')
 				{
 					$this->view->terms = $sellerInfo['StoreTermsPolicy'];

@@ -252,6 +252,7 @@ class Rest_StoreController extends RestCommonController
 			
 			$objparams = $this->getRequest()->getParams();
 			
+			
 			$myparams = $objparams['store_info'];
 			
 			if(isset($myparams['store_name']))
@@ -653,9 +654,6 @@ class Rest_StoreController extends RestCommonController
 					}
 				}
 				
-				
-
-
 				//add language
 				$this->view->result = $this->translate->_('Store_Success');
 				$this->view->message = $this->translate->_('Store_Update_Success');

@@ -414,8 +414,8 @@
             <tr>
               <td width="200"><label for="lastName"><?php echo $this->Translate('ShippingMethod')?>:</label>
               </td>
-              <td><select name="Shipping_Method_<?php echo $Item['product_id'];?>" id="Shipping_Method_<?php echo $Item['product_id'];?>" style="width:130px;">
-                  <option value="0" selected="selected" onclick="GetShippingCost('0',<?php echo $Item['product_id'];?>)"><?php echo $this->Translate('ChooseShipping')?></option>
+              <td><select name="Shipping_Method_<?php echo $Item['product_id'];?>" id="Shipping_Method_<?php echo $Item['product_id'];?>" style="width:130px;" onchange="GetShippingCost(this.value,<?php echo $Item['product_id']; ?>)" >
+                  <option value="0" selected="selected"><?php echo $this->Translate('ChooseShipping')?></option>
                   <?php 
 											echo $flag;
 										?>

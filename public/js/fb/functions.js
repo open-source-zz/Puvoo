@@ -247,7 +247,7 @@ function DeleteCartProduct(prodId,cartId)
 
 		
 				$('#cartCounterNumber').html(data['Item']);
-				if(data != ''){
+				if(data['Item'] != ''){
 					$('#loader').hide();
 					$('#loader').removeClass('ui-widget-loading');
 					$('#breadCrumb_cart').show();

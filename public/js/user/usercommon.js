@@ -106,6 +106,9 @@ function deleteRecord(id,formname,action){
 		}
 	});		
 	
+	$("#dialog-confirm").next().find(".ui-dialog-buttonset button:first-child span").html(RECO_DELETE);
+	$("#dialog-confirm").next().find(".ui-dialog-buttonset button:nth-child(2) span").html(RECO_CANCLE);
+	
 }
 
 //////////////////////////	For Multiple Delete Category ///////////////////
@@ -126,4 +129,7 @@ function deleteAllRecords(formname,action)
 			}
 		}
 	});
+	
+	$("#dialog-confirm2").next().find(".ui-dialog-buttonset button:first-child span").html(RECO_DELETEALL);
+	$("#dialog-confirm2").next().find(".ui-dialog-buttonset button:nth-child(2) span").html(RECO_CANCLE);
 }

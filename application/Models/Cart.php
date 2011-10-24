@@ -103,7 +103,7 @@ class Models_Cart
 	{
 		global $mysession;
 		$db= $this->db;
-		
+		$Common = new Models_Common();
 		
 		//Insert information in cart master table
 		$ProductMaster = array(
@@ -121,12 +121,16 @@ class Models_Cart
 		}
 		$facebookUser1 = $this->GetCartId($ProductInfo['fbid']);
 		
-		$id = $facebookUser1['cart_id'];
 		
+		$id = $facebookUser1['cart_id'];
+		$curr_id = $facebookUser1['currency_id'];
+		$cart_curr_value = $Common->GetCurrencyValue($curr_id);
 		//Insert information in cart Details table
 		$UserDetail = $this->GetCartUser($id);
 		
 		$productUserDetail = $this->GetProductUser($ProductInfo['product_id']);
+		
+		$prod_curr_value = $Common->GetCurrencyValue(DEFAULT_CURRENCY);
 		
 		if($UserDetail['user_id'] == $productUserDetail['user_id'] || $UserDetail == '' )
 		{
@@ -138,14 +142,15 @@ class Models_Cart
 			}else{
 				$prodName = $ProductInfo['product_name'];
 			}	
-				
+			$prodPrice = round( ($ProductInfo['price'] * $cart_curr_value['currency_value']) / $prod_curr_value['currency_value'], 2 );
+			//echo $prodPrice;die;
 			$ProductDetails = array(
 					'cart_id' => $id,
 					'product_id' => $ProductInfo['product_id'],
 					'product_name' => $prodName,
-					'product_price' => $ProductInfo['price'],
+					'product_price' => $prodPrice,
 					'product_qty' => $productQty,
-					'product_total_cost' => $ProductInfo['price']*1
+					'product_total_cost' => $prodPrice*$productQty
 			);
 			
 			$db->insert('cart_detail', $ProductDetails);
@@ -689,7 +694,7 @@ class Models_Cart
 		global $mysession;
 		$db = $this->db;
 		
-		$sql = "SELECT cart_id FROM cart_master WHERE facebook_user_id = '".$userId."'";
+		$sql = "SELECT * FROM cart_master WHERE facebook_user_id = '".$userId."'";
 		
 		$result = $db->fetchRow($sql);
 		

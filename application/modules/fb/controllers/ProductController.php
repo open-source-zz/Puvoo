@@ -98,6 +98,7 @@ class Fb_ProductController extends FbCommonController
 		$Category = new Models_Category();
  		$Poductid = $this->_request->getParam('id');
 		$this->view->FB_userid = FBUSER_ID;
+		$translate = Zend_Registry::get('Zend_Translate');
 		
 		if($Poductid)
 		{
@@ -198,14 +199,14 @@ class Fb_ProductController extends FbCommonController
 							//print_r($option);die;
 							
 							$Opt .= "<tr>";
-							$Opt .= "<td><b>".ucfirst($option['option_title'])." Choice:</b><br />";
-							$Opt .= "<select class='optionText inputtext' name='OptionCombo".$key."' id='OptionCombo".$key."' >";
-							$Opt .= "<option value='0' onclick='javascript:changePrice(0,".$Poductid.",".$option['product_options_id'].")'>Choose ".$option['option_title']."</option>";
+							$Opt .= "<td><b>".ucfirst($option['option_title'])." ".$translate->_('Choice').":</b><br />";
+							$Opt .= "<select class='optionText inputtext' name='OptionCombo".$key."' id='OptionCombo".$key."' onchange='javascript:changePrice(this.value,".$Poductid.",".$option['product_options_id'].")' >";
+							$Opt .= "<option value='0' >".$translate->_('Choose')." ".$option['option_title']."</option>";
 							
 							foreach($OptionsValue as $val){
 								//print_r($val);die;
 								//$TotalPrice += $val['option_price'];
-								$Opt .= "<option value='".$val['product_options_detail_id']."' onclick='javascript:changePrice(".$val['product_options_detail_id'].",".$Poductid.",".$option['product_options_id'].")'>".$val['option_name']."</option>";
+								$Opt .= "<option value='".$val['product_options_detail_id']."' >".$val['option_name']."</option>";
 								
 							}
 							//print $TotalPrice."+".$ProdPrice;die;
@@ -257,14 +258,14 @@ class Fb_ProductController extends FbCommonController
 			$Search = 1;
  			$CatId = $this->_request->getParam('ccatid');
 		}else{
-			$QueryString = $_GET['q'];
-			$Search = $_GET['search'];
- 			$CatId = $_GET['cid'];
+			$QueryString = $this->_request->getParam('q');
+			$Search = $this->_request->getParam('search');
+ 			$CatId = $this->_request->getParam('cid');
 			
 			
-			$this->view->QueryString = $_GET['q'];
-			$this->view->Search = $_GET['search'];
- 			$this->view->CatId = $_GET['cid'];
+			$this->view->QueryString = $QueryString;
+			$this->view->Search = $Search;
+ 			$this->view->CatId = $CatId;
 		}
 		
 		if($this->_request->getParam('sortBy') !='')
@@ -307,9 +308,9 @@ class Fb_ProductController extends FbCommonController
 			//$this->view->ProductList = $catProd;
 		}
 		
-		$QueryString = $_GET['q'];
-		$Search = $_GET['search'];
-		$CatId = $_GET['cid'];
+		$QueryString =$this->_request->getParam('q');
+		$Search = $this->_request->getParam('search');
+		$CatId = $this->_request->getParam('cid');
 		
 		$SearchDetails = $Product->GetProductSearch($QueryString,$Search,$CatId,$sort);
 //		print "<pre>";

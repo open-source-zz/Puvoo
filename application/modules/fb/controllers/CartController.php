@@ -349,7 +349,7 @@ class Fb_CartController extends FbCommonController
 			$str = '';
 			foreach( $val as $key2 => $val2 ) 
 			{
-				$str .= "<option name='' value='".$key2."' onclick='GetShippingCost(".$key2.",".$key.")'>".$val2."</option>";
+				$str .= "<option name='' value='".$key2."' >".$val2."</option>";
 				
 			}
 			$combo_array[$key] = $str;

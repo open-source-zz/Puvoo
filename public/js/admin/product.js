@@ -163,6 +163,8 @@ function EditProductOption(option_id)
 		}
 	});	
 	
+	$("#dialog-product-option").next().find(".ui-dialog-buttonset button:first-child span").html(UPDATE);
+	$("#dialog-product-option").next().find(".ui-dialog-buttonset button:nth-child(2) span").html(CANCEL);
 	
 }
 
@@ -284,6 +286,9 @@ function DeleteProductOption(id)
 			}
 		}
 	});	
+	
+	$("#dialog-confirm").next().find(".ui-dialog-buttonset button:first-child span").html(DELETE);
+	$("#dialog-confirm").next().find(".ui-dialog-buttonset button:nth-child(2) span").html(CANCEL);
 }
 
 var counter = 1;
@@ -371,6 +376,10 @@ function AddMoreOptionValue(id)
 			}
 		}
 	});	
+	
+	$("#dialog-product-option-add").next().find(".ui-dialog-buttonset button:first-child span").html(ADD);
+	$("#dialog-product-option-add").next().find(".ui-dialog-buttonset button:nth-child(2) span").html(CANCLE);
+	
 }
 
 function ValidateAddProductOptionFrom(Option_Id)
@@ -484,4 +493,8 @@ function DeleteProductOptionValue(id)
 			}
 		}
 	});	
+	
+	$("#dialog-confirm-delete-pod").next().find(".ui-dialog-buttonset button:first-child span").html(DELETE);
+	$("#dialog-confirm-delete-pod").next().find(".ui-dialog-buttonset button:nth-child(2) span").html(CANCLE);
+	
 }
