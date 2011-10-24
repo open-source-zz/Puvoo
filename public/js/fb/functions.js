@@ -175,11 +175,7 @@ function validateAddToCart()
 			}
 			if(prodUserId == cartUserId || cartUserId == '')
 			{
-				alert(fb_useremailid);
-				alert($('#productId').val());
-				alert(value);
-				alert($('#TotalPrice').val());
-				
+			
 			addTocart(fb_useremailid, $('#productId').val(), value, $('#TotalPrice').val());
 				loadPopup2();
 				centerPopup();

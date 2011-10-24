@@ -125,10 +125,10 @@ class FbCommonController extends Zend_Controller_Action
 		
 		if(isset($user_profile)) {
 			
-			//$Facebook_UserId = $user_profile['id']; 
+			$Facebook_UserId = $user_profile['id']; 
 			
 		} 
-		$Facebook_UserId = '10150349794714140';
+		
 		// Facebook User Id
 		define('FACEBOOK_USERID', $Facebook_UserId);		
 		define('FBUSER_ID', $Facebook_UserId);
