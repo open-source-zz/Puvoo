@@ -1,0 +1,437 @@
+<!--  Crumb  Start -->
+<div class="Breadcrumb" id="PageBreadcrumb">
+	<ul>
+	   <li class="Home SecondLast"><a href="<?php echo SITE_URL; ?>user/"><?php echo $this->Translate("User_Home"); ?></a></li>
+	   <li class="Last1"><a href="<?php echo SITE_URL; ?>user/apihelp/"><?php echo $this->Translate("Api_Help"); ?></a></li>
+	   <li class="Last"><span><?php echo $this->Translate("Get_Order_Api_Help"); ?></span></li>
+	</ul>
+</div>
+<!--  Crumb  end -->
+
+<div class="BodyContainer DashboardContainer" style="text-align:left;"> 
+	<div class="Heading1">
+		<?php echo $this->Translate('Get_Order_Api_Help'); ?>
+	</div>
+<div style="margin-top:20px;"><h4><?php echo $this->Translate('Api_Get_Order_Rest_Url'); ?> : <?php echo SITE_URL."rest/GetOrder"; ?></h4> </div>
+<div style="margin-top:20px;"><h4><?php echo $this->Translate('Api_Get_Order_Input'); ?></h4></div>
+<div style="margin-top:20px;"><?php echo $this->Translate('Api_Get_Order_Input_Title'); ?></div>
+<pre style="background-color:#E0E0E0;  font-size:12px">
+
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+
+&lt;Order&gt;
+	&lt;Id&gt;0&lt;/Id&gt;
+&lt;/Order>
+</pre>
+<div style="margin-top:20px;">
+<h4><?php echo $this->Translate('Api_Get_Order_Input_Detail'); ?></h4>
+</div>
+<table border="1" cellspacing="2" cellpadding="4" width="100%">
+	<tr>
+		<th><?php echo $this->Translate('Api_Get_Order_Input_Argument'); ?></th>
+		<th><?php echo $this->Translate('Api_Get_Order_Input_Type'); ?></th>
+ 		<th><?php echo $this->Translate('Api_Get_Order_Input_Occurrence'); ?></th>
+		<th><?php echo $this->Translate('Api_Get_Order_Input_Meaning'); ?></th>
+	</tr>
+	<tr>
+		<td valign="top">Order</td>
+		<td valign="top">XML Node</td>
+		<td valign="top"><?php echo $this->Translate('Api_Get_Order_Input_O_Order'); ?></td>
+		<td valign="top"><?php echo $this->Translate('Api_Get_Order_Input_M_Order'); ?></td>
+	</tr>
+	<tr>
+		<td valign="top">Id</td>
+		<td valign="top">INT</td>
+		<td valign="top"><?php echo $this->Translate('Api_Get_Order_Input_O_Id'); ?></td>
+		<td valign="top"><?php echo $this->Translate('Api_Get_Order_Input_M_Id'); ?></td>
+	</tr>
+</table>
+<div style="margin-top:20px;">
+<h4><?php echo $this->Translate('Api_Get_Order_Output'); ?></h4>
+</div>
+<pre style="background-color:#E0E0E0;  font-size:12px">
+&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+
+&lt;response&gt;
+  &lt;result&gt; TEXT &lt;/result&gt;
+  &lt;error&gt; TEXT &lt;/error&gt;
+  &lt;Orders&gt;
+    &lt;Order&gt;
+      &lt;id&gt; INT &lt;/id&gt;
+      &lt;order_creation_date&gt; DATE &lt;/order_creation_date&gt;
+      &lt;shipping_user_first_name&gt; TEXT &lt;/shipping_user_first_name&gt;
+      &lt;shipping_user_last_name&gt; TEXT &lt;/shipping_user_last_name&gt;
+      &lt;shipping_user_email&gt; TEXT &lt;/shipping_user_email&gt;
+      &lt;shipping_user_telephone&gt; TEXT &lt;/shipping_user_telephone&gt;
+      &lt;shipping_user_address_type&gt; TEXT &lt;/shipping_user_address_type&gt;
+      &lt;shipping_user_country&gt; TEXT &lt;/shipping_user_country&gt;
+      &lt;shipping_user_address&gt;TEXT &lt;/shipping_user_address&gt;
+      &lt;shipping_user_state&gt; TEXT &lt;/shipping_user_state&gt;
+      &lt;shipping_user_city&gt; TEXT &lt;/shipping_user_city&gt;
+      &lt;shipping_user_zipcode&gt; TEXT &lt;/shipping_user_zipcode&gt;
+      &lt;billing_user_first_name&gt; TEXT &lt;/billing_user_first_name&gt;
+      &lt;billing_user_last_name&gt; TEXT &lt;/billing_user_last_name&gt;
+      &lt;billing_user_email&gt; TEXT &lt;/billing_user_email&gt;
+      &lt;billing_user_telephone&gt; TEXT &lt;/billing_user_telephone&gt;
+      &lt;billing_user_address_type&gt; TEXT &lt;/billing_user_address_type&gt;
+      &lt;billing_user_country&gt; TEXT &lt;/billing_user_country&gt;
+      &lt;billing_user_address&gt; TEXT &lt;/billing_user_address&gt;
+      &lt;billing_user_state&gt; TEXT &lt;/billing_user_state&gt;
+      &lt;billing_user_city&gt; TEXT &lt;/billing_user_city&gt;
+      &lt;billing_user_zipcode&gt; TEXT &lt;/billing_user_zipcode&gt;
+      &lt;payment_method&gt; TEXT &lt;/payment_method&gt;
+      &lt;shipping_cost&gt; DEC &lt;/shipping_cost&gt;
+      &lt;total_tax_cost&gt; DEC &lt;/total_tax_cost&gt;
+      &lt;total_order_amount&gt; DEC &lt;/total_order_amount&gt;
+      &lt;currency&gt; TEXT &lt;/currency&gt;
+      &lt;products&gt;
+        &lt;product&gt;
+          &lt;product_id&gt; INT &lt;/product_id&gt;
+          &lt;product_name&gt; TEXT &lt;/product_name&gt;
+          &lt;product_price&gt; DEC &lt;/product_price&gt;
+          &lt;product_qty&gt; INT &lt;/product_qty&gt;
+          &lt;options&gt;
+            &lt;option&gt;
+            &lt;option_title&gt; TEXT &lt;/option_title&gt;
+            &lt;option_value&gt; TEXT &lt;/option_value&gt;
+            &lt;option_code&gt; TEXT &lt;/option_code&gt;
+            &lt;option_weight&gt; DEC &lt;/option_weight&gt;
+            &lt;option_weight_unit&gt; TEXT &lt;/option_weight_unit&gt;
+            &lt;option_price&gt; DEC &lt;/option_price&gt;
+            &lt;/option&gt;
+          &lt;/options&gt;
+        &lt;/product&gt;
+      &lt;/products&gt;
+    &lt;/Order&gt;
+&lt;/Orders&gt;
+&lt;/response&gt;
+
+</pre>
+<div style="margin-top:20px;">
+<h4><?php echo $this->Translate('Api_Get_Order_Output_Detail'); ?></h4>
+</div>
+<table border="1" cellspacing="2" cellpadding="4" width="100%">
+	<tr>
+		<th><?php echo $this->Translate('Api_Get_Order_Output_Return_Value'); ?></th>
+		<th><?php echo $this->Translate('Api_Get_Order_Output_Type'); ?></th>
+ 		<th><?php echo $this->Translate('Api_Get_Order_Output_Occurrence'); ?></th>
+		<th><?php echo $this->Translate('Api_Get_Order_Output_Meaning'); ?></th>
+	</tr>
+	<tr>
+		<td >response</td>
+		<td >XML Node</td>
+		<td ><?php echo $this->Translate('Api_Get_Order_Output_O_Response'); ?></td>
+		<td><?php echo $this->Translate('Api_Get_Order_Output_M_Response'); ?></td>
+	</tr>
+	<tr>
+		<td >result</td>
+		<td >TEXT</td>
+		<td ><?php echo $this->Translate('Api_Get_Order_Output_O_Result'); ?></td>
+		<td><?php echo $this->Translate('Api_Get_Order_Output_M_Result'); ?></td>
+	</tr>
+	<tr>
+		<td >error</td>
+		<td >TEXT</td>
+		<td ><?php echo $this->Translate('Api_Get_Order_Output_O_Error'); ?></td>
+		<td><?php echo $this->Translate('Api_Get_Order_Output_M_Error'); ?></td>
+	</tr>
+	<tr>
+		<td >Orders</td>
+		<td >XML Node</td>
+		<td ><?php echo $this->Translate('Api_Get_Order_Output_O_Odrs'); ?></td>
+		<td ><?php echo $this->Translate('Api_Get_Order_Output_M_Odrs'); ?></td>
+	</tr>
+	<tr>
+		<td >Order</td>
+		<td >XML Node</td>
+		<td ><?php echo $this->Translate('Api_Get_Order_Output_O_Odrs_Order'); ?></td>
+		<td ><?php echo $this->Translate('Api_Get_Order_Output_M_Odrs_Order'); ?></td>
+	</tr>
+	<tr>
+		<td >id</td>
+		<td >INT</td>
+		<td ><?php echo $this->Translate('Api_Get_Order_Output_O_Odrs_Order_id'); ?></td>
+		<td ><?php echo $this->Translate('Api_Get_Order_Output_M_Odrs_Order_id'); ?></td>
+	</tr>
+	<tr>
+		<td >order_creation_date</td>
+		<td >DATE</td>
+		<td ><?php echo $this->Translate('Api_Get_Order_Output_O_Odrs_Order_Creation_Date'); ?></td>
+		<td ><?php echo $this->Translate('Api_Get_Order_Output_M_Odrs_Order_Creation_Date'); ?></td>
+	</tr>
+	<tr>
+		<td >shipping_user_first_name</td>
+		<td >TEXT</td>
+		<td ><?php echo $this->Translate('Api_Get_Order_Output_O_Odrs_Order_Ship_First_Name'); ?></td>
+		<td ><?php echo $this->Translate('Api_Get_Order_Output_M_Odrs_Order_Ship_First_Name'); ?></td>
+	</tr>
+	<tr>
+		<td >shipping_user_last_name</td>
+		<td >TEXT</td>
+		<td ><?php echo $this->Translate('Api_Get_Order_Output_O_Odrs_Order_Ship_Last_Name'); ?></td>
+		<td ><?php echo $this->Translate('Api_Get_Order_Output_M_Odrs_Order_Ship_Last_Name'); ?></td>
+	</tr>
+	<tr>
+		<td >shipping_user_email</td>
+		<td >TEXT</td>
+		<td ><?php echo $this->Translate('Api_Get_Order_Output_M_Odrs_Order_Ship_Email'); ?></td>
+		<td ><?php echo $this->Translate('Api_Get_Order_Output_M_Odrs_Order_Ship_Email'); ?></td>
+	</tr>
+	<tr>
+		<td >shipping_user_telephone</td>
+		<td >TEXT</td>
+		<td ><?php echo $this->Translate('Api_Get_Order_Output_O_Odrs_Order_Ship_Telephone'); ?></td>
+		<td ><?php echo $this->Translate('Api_Get_Order_Output_M_Odrs_Order_Ship_Telephone'); ?></td>
+	</tr>
+	<tr>
+		<td >shipping_user_address_type</td>
+		<td >TEXT</td>
+		<td ><?php echo $this->Translate('Api_Get_Order_Output_O_Odrs_Order_Ship_Add_Type'); ?></td>
+		<td ><?php echo $this->Translate('Api_Get_Order_Output_M_Odrs_Order_Ship_Add_Type'); ?></td>
+	</tr>
+	<tr>
+		<td >shipping_user_country</td>
+		<td >TEXT</td>
+		<td ><?php echo $this->Translate('Api_Get_Order_Output_O_Odrs_Order_Ship_Country'); ?></td>
+		<td ><?php echo $this->Translate('Api_Get_Order_Output_M_Odrs_Order_Ship_Country'); ?></td>
+	</tr>
+	<tr>
+		<td >shipping_user_address</td>
+		<td >TEXT</td>
+		<td ><?php echo $this->Translate('Api_Get_Order_Output_O_Odrs_Order_Ship_Address'); ?></td>
+		<td ><?php echo $this->Translate('Api_Get_Order_Output_M_Odrs_Order_Ship_Address'); ?></td>
+	</tr>
+	<tr>
+		<td >shipping_user_state</td>
+		<td >TEXT</td>
+		<td ><?php echo $this->Translate('Api_Get_Order_Output_O_Odrs_Order_Ship_State'); ?></td>
+		<td ><?php echo $this->Translate('Api_Get_Order_Output_M_Odrs_Order_Ship_State'); ?></td>
+	</tr>
+	<tr>
+		<td >shipping_user_city</td>
+		<td >TEXT</td>
+		<td ><?php echo $this->Translate('Api_Get_Order_Output_O_Odrs_Order_Ship_City'); ?></td>
+		<td ><?php echo $this->Translate('Api_Get_Order_Output_M_Odrs_Order_Ship_City'); ?></td>
+	</tr>
+	<tr>
+		<td >shipping_user_zipcode</td>
+		<td >TEXT</td>
+		<td ><?php echo $this->Translate('Api_Get_Order_Output_O_Odrs_Order_Ship_Zipcode'); ?></td>
+		<td ><?php echo $this->Translate('Api_Get_Order_Output_M_Odrs_Order_Ship_Zipcode'); ?></td>
+	</tr>
+	<tr>
+		<td >billing_user_first_name</td>
+		<td >TEXT</td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_O_order_billing_user_first_name'); ?></td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_M_order_billing_user_first_name'); ?></td>
+	</tr>
+	<tr>
+		<td >billing_user_last_name</td>
+		<td >TEXT</td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_O_order_billing_user_last_name'); ?></td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_M_order_billing_user_last_name'); ?></td>
+	</tr>
+	<tr>
+		<td >billing_user_email</td>
+		<td >TEXT</td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_O_order_billing_user_email'); ?></td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_M_order_billing_user_email'); ?></td>
+	</tr>
+	<tr>
+		<td >billing_user_telephone</td>
+		<td >TEXT</td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_O_order_billing_user_telephone'); ?></td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_M_order_billing_user_telephone'); ?></td>
+	</tr>
+	<tr>
+		<td >billing_user_address_type</td>
+		<td >TEXT</td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_O_order_billing_user_address_type'); ?></td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_M_order_billing_user_address_type'); ?></td>
+	</tr>
+	<tr>
+		<td >billing_user_country</td>
+		<td >TEXT</td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_O_order_billing_user_country'); ?></td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_M_order_billing_user_country'); ?></td>
+	</tr>
+	<tr>
+		<td >billing_user_address</td>
+		<td >TEXT</td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_O_order_billing_user_address'); ?></td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_M_order_billing_user_address'); ?></td>
+	</tr>
+	<tr>
+		<td >billing_user_state</td>
+		<td >TEXT</td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_O_order_billing_user_state'); ?></td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_M_order_billing_user_state'); ?></td>
+	</tr>
+	<tr>
+		<td >billing_user_city</td>
+		<td >TEXT</td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_O_order_billing_user_city'); ?></td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_M_order_billing_user_city'); ?></td>
+	</tr>
+	<tr>
+		<td >billing_user_zipcode</td>
+		<td >TEXT</td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_O_order_billing_user_zipcode'); ?></td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_M_order_billing_user_zipcode'); ?></td>
+	</tr>
+	<tr>
+		<td >payment_method</td>
+		<td >TEXT</td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_O_order_payment_method'); ?></td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_M_order_payment_method'); ?></td>
+	</tr>
+	<tr>
+		<td >shipping_cost</td>
+		<td >DEC</td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_O_order_shipping_cost'); ?></td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_M_order_shipping_cost'); ?></td>
+	</tr>
+	<tr>
+		<td >total_tax_cost</td>
+		<td >DEC</td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_O_order_total_tax_cost'); ?></td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_M_order_total_tax_cost'); ?></td>
+	</tr>
+	<tr>
+		<td >total_order_amount</td>
+		<td >DEC</td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_O_order_total_order_amount'); ?></td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_M_order_total_order_amount'); ?></td>
+	</tr>
+	<tr>
+		<td >currency</td>
+		<td >TEXT</td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_O_order_currency'); ?></td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_M_order_currency'); ?></td>
+	</tr>
+	<tr>
+		<td >products</td>
+		<td >XML Node</td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_O_products'); ?></td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_M_products'); ?></td>
+	</tr>
+	<tr>
+		<td >product</td>
+		<td >XML Node</td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_O_product'); ?></td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_M_product'); ?></td>
+	</tr>
+	<tr>
+		<td >product_id</td>
+		<td >INT</td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_O_product_id'); ?></td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_M_product_id'); ?></td>
+	</tr>
+	<tr>
+		<td >product_name</td>
+		<td >TEXT</td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_O_product_name'); ?></td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_M_product_name'); ?></td>
+	</tr>
+	<tr>
+		<td >product_price</td>
+		<td >DEC</td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_O_product_price'); ?></td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_M_product_price'); ?></td>
+	</tr>
+	<tr>
+		<td >product_qty</td>
+		<td >INT</td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_O_product_qty'); ?></td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_M_product_qty'); ?></td>
+	</tr>
+	<tr>
+		<td >options</td>
+		<td >XML Node</td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_O_Options'); ?></td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_M_Options'); ?></td>
+	</tr>
+	<tr>
+		<td >option</td>
+		<td >XML Node</td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_O_Option'); ?></td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_M_Option'); ?></td>
+	</tr>
+	<tr>
+		<td >option_title</td>
+		<td >TEXT</td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_O_po_option_title'); ?></td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_M_po_option_title'); ?></td>
+	</tr>
+	<tr>
+		<td >option_value</td>
+		<td >TEXT</td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_O_po_option_value'); ?></td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_M_po_option_value'); ?></td>
+	</tr>
+	<tr>
+		<td >option_code</td>
+		<td >TEXT</td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_O_po_option_code'); ?></td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_M_po_option_code'); ?></td>
+	</tr>
+	<tr>
+		<td >option_weight</td>
+		<td >DEC</td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_O_po_weight'); ?></td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_M_po_weight'); ?></td>
+	</tr>
+	<tr>
+		<td >option_weight_unit</td>
+		<td >TEXT</td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_O_po_option_weight_unit'); ?></td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_M_po_option_weight_unit'); ?></td>
+	</tr>
+	<tr>
+		<td >option_price</td>
+		<td >DEC</td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_O_po_option_price'); ?></td>
+		<td ><?php echo $this->Translate('API_Get_Order_Output_M_po_option_price'); ?></td>
+	</tr>
+	
+	
+</table>
+
+<div style="margin-top: 20px;">
+	<h4><?php echo $this->Translate('Get_Order_Api_Help'); ?></h4>
+</div>
+<pre style="background-color:#E0E0E0;  font-size:12px">
+&lt;?php
+
+$rest_url = "<?php echo SITE_URL.'rest/GetOrder'; ?>";
+$api_key = "<b>your_api_key</b>";
+
+$data = "&lt;Order&gt;\r\n"
+			. "&lt;Id>0&lt;/Id&gt;\r\n"
+		. "&lt;/Order&gt;";
+
+$arr_header = array();
+$arr_header[] = "Content-Type: text/xml;charset=UTF-8";
+$arr_header[] = "Accept: text/xml";
+$arr_header[] = "apikey: " . $api_key;
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $rest_url);
+curl_setopt($ch, CURLOPT_POST, 1);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($ch, CURLOPT_POSTFIELDS, urlencode($data));
+curl_setopt($ch, CURLOPT_HTTPHEADER, $arr_header);
+
+$result = curl_exec($ch);
+
+if(curl_errno($ch)){
+   echo 'Curl error: ' . curl_error($ch);
+}
+
+curl_close($ch);
+echo $result;
+
+?&gt;
+</pre>
+</div> 
+

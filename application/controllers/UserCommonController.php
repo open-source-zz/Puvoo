@@ -78,8 +78,12 @@ class UserCommonController extends Zend_Controller_Action
 		$lang = array();
 		
 		$lang_def = new Models_LanguageDefinitions();
+		$master = new Models_AdminMaster();
 		
-		$lang = $lang_def->getGroupLanguage('USER', 1);
+		$language_id = $master->getDefaultLanguage();
+		define("DEFAULT_LANGUAGE", $language_id);
+		
+		$lang = $lang_def->getGroupLanguage('USER', DEFAULT_LANGUAGE);
 		
 		//Set Default language for site
 		$tr = new Zend_Translate(

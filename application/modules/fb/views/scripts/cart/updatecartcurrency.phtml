@@ -21,9 +21,17 @@
       <div id="div1">
         <div class="shoppingCart" id="order_review">
           <?php foreach($this->cartItems as $Item){?>
+			<?php 
+				if($Item['ProdName'] != '')
+				{
+					$prodName = ucfirst($Item['ProdName']);
+				}else{
+					$prodName = ucfirst($Item['product_name']);
+				}
+			?>
           <div id="cartRow_<?php echo $Item['product_id'];?>" class="itemAvailable">
-            <div class="cartItemProductImageCell"> <img class="cartItemProductImage" src="<?php echo SITE_PRODUCT_IMAGES_PATH.$Item['image_path'] ?>/<?php echo $Item['image_name'] ?>" alt="" /> </div>
-            <div class="cartItemDivider cartItemMainContent"> <span class="cartItemProductTitle"> <a title="<?php echo $Item['store_name'];?>" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $Item['product_id'];?>" target="_top"><?php echo ucfirst($Item['product_name']);?></a> </span>
+            <div class="cartItemProductImageCell"> <img class="cartItemProductImage" src="<?php echo SITE_PRODUCT_IMAGES_PATH.$Item['image_path'] ?>/<?php echo $Item['image_name'] ?>" alt="<?php echo $prodName;?>" title="<?php echo $prodName;?>" /> </div>
+            <div class="cartItemDivider cartItemMainContent"> <span class="cartItemProductTitle"> <a title="<?php echo $Item['store_name'];?>" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $Item['product_id'];?>" target="_top"><?php echo $prodName; ?></a> </span>
               <div id="cartItemDetail_1" class="cartItemDetail" style="display: block"> <span class="cartRetailerLabel"> <?php echo $this->Translate('Seller')?> <a href="javascript:void(0)" target="_top"><?php echo $Item['store_name'];?></a> </span> </div>
             </div>
             <div class="cartItemDivider cartItemMainContent" style="text-align:right;"> <b><?php echo $this->Translate('Qty')?></b>&nbsp;
@@ -127,7 +135,7 @@
                   </td>
                   <td ><select name="Shippingcountry" id="Shippingcountry" onchange="GetStateforCountry(this.value)">
                       <option value=""><?php echo $this->Translate('SelectCountry')?></option>
-                      <?php foreach($this->CountryCombo as $value){?>
+                      <?php foreach($this->ShipCountryCombo as $value){?>
                       <option  value="<?php echo $value['country_id']; ?>" <?php if($value['country_id'] == $this->countryId){?> selected="selected"<?php }?>><?php echo $value['country_name']; ?></option>
                       <?php }?>
                     </select>
@@ -291,7 +299,7 @@
                   </td>
                   <td ><select name="Billingcountry" id="Billingcountry" onchange="GetStateforCountry2(this.value)">
                       <option value="" ><?php echo $this->Translate('SelectCountry')?></option>
-                      <?php foreach($this->CountryCombo as $value){?>
+                      <?php foreach($this->ShipCountryCombo as $value){?>
                       <option  value="<?php echo $value['country_id']; ?>" <?php if($value['country_id'] == $this->countryId){?> selected="selected"<?php }?>><?php echo $value['country_name']; ?></option>
                       <?php }?>
                     </select>
@@ -521,8 +529,8 @@
             <tr id="ItemList<?php echo $Item['product_id'] ?>" style="display:none;">
               <td colspan="2"><table cellpadding="0" cellspacing="0">
                   <tr>
-                    <td><div class="cartItemProductImageCell"> <img class="cartItemProductImage" src="<?php echo SITE_PRODUCT_IMAGES_PATH.$Item['image_path'] ?>/<?php echo $Item['image_name'] ?>" alt="" /> </div>
-                      <div class="cartItemDivider cartItemMainContent"> <span class="cartItemProductTitle"> <a title="Mini TailSuga " href="javascript:void(0)" target="_top"><?php echo $Item['product_name'] ?></a> </span>
+                    <td><div class="cartItemProductImageCell"> <img class="cartItemProductImage" src="<?php echo SITE_PRODUCT_IMAGES_PATH.$Item['image_path'] ?>/<?php echo $Item['image_name'] ?>" alt="<?php echo $prodName;?>" title="<?php echo $prodName;?>" /> </div>
+                      <div class="cartItemDivider cartItemMainContent"> <span class="cartItemProductTitle"> <a title="Mini TailSuga " href="javascript:void(0)" target="_top"><?php echo $prodName; ?></a> </span>
                         <div id="cartItemDetail_1" class="cartItemDetail" style="display: block"> <span class="cartRetailerLabel"> <?php echo $this->Translate('Quantity')?>: <a href="javascript:void(0)" target="_top"><?php echo $Item['product_qty'] ?></a> </span> </div>
                       </div></td>
                   </tr>
@@ -550,9 +558,15 @@
      </div>
     <div id="div4" style="display:none;">
       <div class="shoppingCart" id="paypal" style="margin-top: 15px; margin-bottom: 15px;">
-        <form action='<?php echo SITE_URL; ?>expresscheckout.php' method='POST' target="_top">
+        <form action='<?php echo SITE_URL; ?>public/expresscheckout.php' method='POST' target="_top">
           <input type='image' name='submit' src='https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif' border='0' align='top' alt='Check out with PayPal'/>
           <input type="hidden"  name="FinalAmount" id="FinalAmount" />
+		  <input type="hidden"  name="App_username" id="App_username"  value="<?php echo $this->Api_Username; ?>"/>
+		  <input type="hidden"  name="App_password" id="App_password" value="<?php echo $this->Api_Password; ?>"/>
+		  <input type="hidden"  name="App_signature" id="App_signature" value="<?php echo $this->Api_Signature; ?>" />
+		  <input type="hidden"  name="paypal_url" id="paypal_url" value="<?php echo $this->Paypal_Url; ?>" />
+		  <input type="hidden"  name="return_url" id="return_url" value="<?php echo SITE_FB_URL; ?>" />
+		  <input type="hidden"  name="paypal_currency" id="paypal_currency" value="<?php echo $this->paypal_currency; ?>" />
         </form>
       </div>
     </div>
@@ -629,8 +643,32 @@
  
 </div>
 <div id="loader2" style="display:none; height:70px; padding:25px;"> </div>
+
+<div style="height: 100px; display:none;" id="userExist">
+  
+  <div id="popup_head">
+    <h1><?php echo $this->Translate('ShoppingCart')?></h1>
+  </div>
+   <br />
+  <h3 style="text-align:center;" ><?php echo $this->Translate('UserProductExist')?></h3>
+</div>
+
+<div style="padding-top: 30px; height: 50px; display:none;" id="EmptyCart">
+  
+  <h3 style="text-align:center;" ><?php echo $this->Translate('NoItem')?></h3>
+</div>
+<?php }else{?>
+<div style="height: 120px;" id="EmptyCart">
+  <div id="popup_head">
+    <h1><?php echo $this->Translate('ShoppingCart')?></h1>
+  </div>
+  <div id="loader2" style="display:none; padding:25px; padding-top:50px;"></div>
+  <br />
+   <h3 style="text-align:center;" id="Noitem" ><?php echo $this->Translate('NoItem')?></h3>
+</div>
+<?php }?>
 <div id="sellerarea" style="display:none;">
-	<a id="popupContactClose" style="font-size:12px; color:#000000;"><?php echo $this->Translate('Close')?></a>
+	
   <!--<div id="popup_head"><h1>Seller Information</h1></div>-->
   <ul class="tabs" style="margin-top:10px;">
     <li class="active"><a href="#tab8"><?php echo $this->Translate('About')?></a></li>
@@ -697,29 +735,6 @@
   </div>
 </div>
 </div>
-<div style="height: 100px; display:none;" id="userExist">
-  
-  <div id="popup_head">
-    <h1><?php echo $this->Translate('ShoppingCart')?></h1>
-  </div>
-   <br />
-  <h3 style="text-align:center;" ><?php echo $this->Translate('UserProductExist')?></h3>
-</div>
-
-<div style="padding-top: 30px; height: 50px; display:none;" id="EmptyCart">
-  
-  <h3 style="text-align:center;" ><?php echo $this->Translate('NoItem')?></h3>
-</div>
-<?php }else{?>
-<div style="height: 120px;" id="EmptyCart">
-  <div id="popup_head">
-    <h1><?php echo $this->Translate('ShoppingCart')?></h1>
-  </div>
-  <div id="loader2" style="display:none; padding:25px; padding-top:50px;"></div>
-  <br />
-   <h3 style="text-align:center;" id="Noitem" ><?php echo $this->Translate('NoItem')?></h3>
-</div>
-<?php }?>
 <!--	 	<div id="popup_head" style="display:none;"><h1><?php echo $this->
 Translate('ShoppingCart')?>
 </h1>

@@ -214,11 +214,13 @@ class Models_Common
 	}
 	
 	/**
-	 * function GetPaypalUrl 
+	 * function GetConfigureValue 
 	 *
-	 * It is used to get paypal url that merchant set at admin.
+	 * It is used to get configuration value that merchant set at admin.
 	 *
 	 * Date created: 2011-10-15
+	 *
+	 * @param (int) $pname- Keyname.
 	 *
  	 * @return (Array) - Return number of records
 	 *
@@ -226,7 +228,7 @@ class Models_Common
 	 *
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
-	public function GetPaypalUrl($pname)
+	public function GetConfigureValue($pname)
 	{
 		$db= $this->db;
 		
@@ -238,6 +240,56 @@ class Models_Common
 		 
  		return $result;
 	}
-
+	
+	/**
+	 * function GetConfigValue 
+	 *
+	 * It is used to get configuration value as per select country.
+	 *
+	 * Date created: 2011-10-19
+	 *
+	 * @param (int) $CountryId- Country Id.
+	 *
+ 	 * @return (Array) - Return number of records
+	 *
+	 * @author Jayesh 
+	 *
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	public function GetConfigValue($CountryId)
+	{
+		$db= $this->db;
+		
+ 		$sql = "SELECT * FROM language_master WHERE country_id = ".$CountryId."";
+		//print $sql;die;		
+ 		$result = $db->fetchRow($sql);
+		 
+ 		return $result;
+	}
+	
+	/**
+	 * function GetDefaultConfigureValue 
+	 *
+	 * It is used to get default configuration value.
+	 *
+	 * Date created: 2011-10-19
+	 *
+  	 * @return (Array) - Return number of records
+	 *
+	 * @author Jayesh 
+	 *
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	public function GetDefaultConfigValue()
+	{
+		$db= $this->db;
+		
+ 		$sql = "SELECT * FROM language_master WHERE is_default = 1";
+		//print $sql;die;		
+ 		$result = $db->fetchRow($sql);
+		 
+ 		return $result;
+	}
+	
 }
 ?>

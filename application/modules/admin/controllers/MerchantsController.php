@@ -193,6 +193,7 @@
 			$data['user_status']=$filter->filter(trim($this->_request->getPost('user_status'))); 
 			$data['registration_date']=date("Y-m-d H:i:s"); 
 			$data['user_api_token']=md5($data['user_email'].date("Y-m-d H:i:s"));
+			$data['user_api_token_expiry'] = new Zend_Db_Expr('DATE_ADD( NOW( ) , INTERVAL 18 MONTH )');
 			
 			$addErrorMessage = array();
 			if($data['user_fname'] == "" ) {

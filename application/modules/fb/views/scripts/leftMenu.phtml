@@ -26,6 +26,14 @@
                         <div class="widgetHeader_menu"><?php echo $this->Translate('TopTradingLike')?></div>
                         <div class="widget">
 							<?php foreach($this->frndstoplike as $val){?>
+								<?php 
+									if($val['ProdName'] != '')
+									{
+										$prodName = $val['ProdName'];
+									}else{
+										$prodName = $val['product_name'];
+									}
+								?>
 								<div class="productWidgetLineItem">
 									<div class="productWidgetThumbnail">
 										<div>
@@ -35,15 +43,15 @@
 										?>
 											<a href="<?php echo SITE_FB_URL?>product/view/id/<?php echo $val['product_id'];?>" target="_top">
 											<?php if($val['image_name']){?>
-												<img src="<?php echo $tinyImage; ?>" alt="" />
+												<img src="<?php echo $tinyImage; ?>" alt="<?php echo $prodName; ?>" title="<?php echo $prodName; ?>" />
 											<?php }else{?>
-												<img src="<?php echo IMAGES_FB_PATH ?>/coming.jpeg" alt="" />
+												<img src="<?php echo IMAGES_FB_PATH ?>/coming.jpeg" alt="Default" title="Default" />
 											<?php }?>
 											</a>
 										</div>
 									</div>
 									<div class="productWidgetDesc">
-									<a title="" href="<?php echo SITE_FB_URL?>product/view/id/<?php echo $val['product_id'];?>" target="_top"><?php echo $val['product_name'];?></a>
+									<a title="" href="<?php echo SITE_FB_URL?>product/view/id/<?php echo $val['product_id'];?>" target="_top"><?php echo $prodName; ?></a>
 									</div>
 									<div style="clear:both;"></div>
 								</div>

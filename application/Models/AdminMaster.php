@@ -261,4 +261,28 @@ class Models_AdminMaster
 		return true;
 	}
 	
+	/**
+	 * Function getDefaultLanguage
+	 *
+	 * This function is used to fetch the default language id.
+     *
+	 * Date created: 2011-10-20
+	 *
+	 * @access public
+	 * @return (array) - Return true on success
+	 * @author Yogesh
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	 
+	public function getDefaultLanguage()
+	{
+		$db = $this->db;
+		
+		$Sql = "SELECT language_id
+				FROM language_master
+				WHERE is_default = 1";
+		
+		return $db->fetchOne($Sql); 	 	
+	}
+	
 }

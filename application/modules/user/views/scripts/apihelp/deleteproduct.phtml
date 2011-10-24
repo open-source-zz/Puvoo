@@ -12,9 +12,9 @@
 	<div class="Heading1">
 		<?php echo $this->Translate('Delete_Product_Api_Help'); ?>
 	</div>
-<div style="margin-top:20px;"><h4>REST URL : <?php echo SITE_URL."rest/product"; ?></h4> </div>
-<div style="margin-top:20px;"><h4>deleteproduct Input</h4></div>
-<div style="margin-top:20px;">The box below lists all fields that could be included in the call request. To learn more about an individual field or its type scroll down to find it in the table below the box.</div>
+<div style="margin-top:20px;"><h4><?php echo $this->Translate('Api_Delete_Product_Rest_Url'); ?> : <?php echo SITE_URL."rest/product"; ?></h4> </div>
+<div style="margin-top:20px;"><h4><?php echo $this->Translate('Api_Delete_Product_Input'); ?></h4></div>
+<div style="margin-top:20px;"><?php echo $this->Translate('Api_Delete_Product_Title'); ?></div>
 <pre style="background-color:#E0E0E0;  font-size:12px">
 
 &lt;?xml version="1.0" encoding="utf-8"?&gt;
@@ -23,45 +23,40 @@
 	&lt;Product&gt;
 		&lt;pid&gt; INT &lt;/pid&gt;
 	&lt;/Product&gt;
-	&lt;!-- ... more Product nodes here ... --&gt;
+	&lt;!-- ... <?php echo $this->Translate('Api_Delete_Product_Comment'); ?> ... --&gt;
 &lt;/Products&gt;
 </pre>
 <div style="margin-top:20px;">
-<h4>Input argument detail</h4>
+<h4><?php echo $this->Translate('Api_Delete_Product_Input_Detail'); ?></h4>
 </div>
 <table border="1" cellspacing="2" cellpadding="4" width="100%">
 	<tr>
-		<th >Argument</th>
-		<th >Type</th>
- 		<th>Occurrence</th>
-		<th>Meaning</th>
+		<th ><?php echo $this->Translate('Api_Delete_Product_Input_Argument'); ?></th>
+		<th ><?php echo $this->Translate('Api_Delete_Product_Input_Type'); ?></th>
+ 		<th><?php echo $this->Translate('Api_Delete_Product_Input_Occurrence'); ?></th>
+		<th><?php echo $this->Translate('Api_Delete_Product_Input_Meaning'); ?></th>
 	</tr>
 	<tr>
 		<td valign="top">Products</td>
 		<td valign="top">XML Node</td>
-		<td valign="top">Always,Single</td>
-		<td valign="top">It is a compulsary node. It will occur only once. It is an xml node that will contain all product nodes to delete.</td>
+		<td valign="top"><?php echo $this->Translate('Api_Delete_Product_Input_O_Products'); ?></td>
+		<td valign="top"><?php echo $this->Translate('Api_Delete_Product_Input_M_Products'); ?></td>
 	</tr>
 	<tr>
 		<td valign="top">Product</td>
 		<td valign="top">XML Node</td>
-		<td valign="top">Always,Repeatable</td>
-		<td valign="top">It is a compulsary node. 
-			It will appear atleast once. 
-			You can repeat this node to delete more than 1 product. 
-			you can delete maximum 50 products at a time.
-			It will contain all inputs necessary to delete single product
-		</td>
+		<td valign="top"><?php echo $this->Translate('Api_Delete_Product_Input_O_Product'); ?></td>
+		<td valign="top"><?php echo $this->Translate('Api_Delete_Product_Input_M_Product'); ?></td>
 	</tr>
 	<tr>
 		<td valign="top">pid</td>
 		<td valign="top">INT</td>
-		<td valign="top">Always,Single</td>
-		<td valign="top">It will contain product id to identify product in the system.</td>
+		<td valign="top"><?php echo $this->Translate('Api_Delete_Product_Input_O_Pid'); ?></td>
+		<td valign="top"><?php echo $this->Translate('Api_Delete_Product_Input_M_Pid'); ?></td>
 	</tr>
 </table>
 <div style="margin-top:20px;">
-<h4>deleteproduct Output</h4>
+<h4><?php echo $this->Translate('Api_Delete_Product_Output'); ?></h4>
 </div>
 <pre style="background-color:#E0E0E0;  font-size:12px">
 &lt;?xml version="1.0" encoding="utf-8" ?&gt;
@@ -73,49 +68,45 @@
 &lt;/response&gt;
 </pre>
 <div style="margin-top:20px;">
-<h4>Output return values detail</h4>
+<h4><?php echo $this->Translate('Api_Delete_Product_Output_Detail'); ?></h4>
 </div>
 <table border="1" cellspacing="2" cellpadding="4" width="100%">
 	<tr>
-		<th >Return Value</th>
-		<th >Type</th>
- 		<th>Occurrence</th>
-		<th>Meaning</th>
+		<th><?php echo $this->Translate('Api_Delete_Product_Output_Return_Value'); ?></th>
+		<th><?php echo $this->Translate('Api_Delete_Product_Output_Type'); ?></th>
+ 		<th><?php echo $this->Translate('Api_Delete_Product_Output_Occurrence'); ?></th>
+		<th><?php echo $this->Translate('Api_Delete_Product_Output_Meaning'); ?></th>
 	</tr>
 	<tr>
 		<td >response</td>
 		<td >XML Node</td>
-		<td >Always,Single</td>
-		<td>It is a compulsary node. It will occur only once. It is an xml node that will contain result of the call made.</td>
+		<td><?php echo $this->Translate('Api_Delete_Product_Output_O_Response'); ?></td>
+		<td><?php echo $this->Translate('Api_Delete_Product_Output_M_Response'); ?></td>
 	</tr>
 	<tr>
 		<td >result</td>
 		<td >TEXT</td>
-		<td >Always,Single</td>
-		<td>It is a compulsary node. 
-			It will occur only once.<br/> 
-			It can have any of the value below<br />
-			<b>Success</b> = Your call executed successfully.<br />
-			<b>Failure</b> = Your call failed due to some error.
+		<td><?php echo $this->Translate('Api_Delete_Product_Output_O_Result'); ?></td>
+		<td><?php echo $this->Translate('Api_Delete_Product_Output_M_Result'); ?>
 		</td>
 	</tr>
 	<tr>
 		<td >error</td>
 		<td >TEXT</td>
-		<td >Conditional,Repeatable</td>
-		<td>It will occur only if your call is failed due to some error. It will contain error text. It can repeat for more than 1 errors.</td>
+		<td ><?php echo $this->Translate('Api_Delete_Product_Output_O_Error'); ?></td>
+		<td><?php echo $this->Translate('Api_Delete_Product_Output_M_Error'); ?></td>
 	</tr>
 	<tr>
 		<td >message</td>
 		<td >TEXT</td>
-		<td >Conditional,Single</td>
-		<td >It will occur only if your call is successfull. It will contain success message.</td>
+		<td ><?php echo $this->Translate('Delete_Product_Api_Help'); ?></td>
+		<td ><?php echo $this->Translate('Delete_Product_Api_Help'); ?></td>
 	</tr>
 	
 </table>
 
 <div style="margin-top: 20px;">
-	<h4>PHP Sample Code</h4>
+	<h4><?php echo $this->Translate('Api_Delete_Product_Php_Code'); ?></h4>
 </div>
 <pre style="background-color:#E0E0E0;  font-size:12px">
 &lt;?php
@@ -153,4 +144,3 @@ echo $result;
 ?&gt;
 </pre>
 </div> 
-

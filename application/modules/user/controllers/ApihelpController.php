@@ -58,6 +58,7 @@ class User_ApihelpController extends UserCommonController
 		
    }
    
+   
    /**
      * Function addproductAction
 	 *
@@ -77,6 +78,7 @@ class User_ApihelpController extends UserCommonController
    {
 		
    }
+   
    
    /**
      * Function editproductAction
@@ -119,6 +121,7 @@ class User_ApihelpController extends UserCommonController
 		
    }
    
+   
    /**
      * Function inventoryAction
 	 *
@@ -139,6 +142,7 @@ class User_ApihelpController extends UserCommonController
 		
    }
    
+   
    /**
      * Function setstoreAction
 	 *
@@ -158,5 +162,50 @@ class User_ApihelpController extends UserCommonController
    {
 		
    }
+   
+   
+   /**
+     * Function categoryAction
+	 *
+	 * This function is used to display help for get category api in system.
+	 *
+     * Date Created: 2011-10-16
+     *
+     * @access public
+	 * @param ()  - No parameter
+	 * @return (void) - Return void
+	 *
+     * @author Amar
+     *  
+     * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+     **/  
+   function categoryAction() 
+   {
+		
+   }
+   
+   
+   /**
+     * Function getorderAction
+	 *
+	 * This function is used to display help for get order api in system.
+	 *
+     * Date Created: 2011-10-20
+     *
+     * @access public
+	 * @param ()  - No parameter
+	 * @return (void) - Return void
+	 *
+     * @author Amar
+     *  
+     * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+     **/  
+   function getorderAction() 
+   {
+		
+   }
+   
+   
+   
 }
 ?>

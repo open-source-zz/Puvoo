@@ -34,7 +34,7 @@
 		<?php }?>
 		<div class="categoryHeader">
 			<div class="left">
-				<?php echo $this->ProdName?>
+				<?php echo $this->ProdName;?>
 			</div>
 			<div class="right" id="prod_price">
 				<?php echo DEFAULT_CURRENCY_SYMBOL.$this->ProdPrice; ?> 
@@ -42,7 +42,7 @@
 			<div class="clear"></div>
 		</div>  
 		<div class="right" style="width:350px; padding-right: 10px;">
-			<div id="bigimg1" style="visibility:visible;display:block;"><img src="<?php echo $this->DefaultImagePath; ?>" border="0" alt="" /></div>
+			<div id="bigimg1" style="visibility:visible;display:block;"><img src="<?php echo $this->DefaultImagePath; ?>" border="0" alt="<?php echo $this->ProdName;?>" title="<?php echo $this->ProdName;?>" /></div>
 																
 			<div class="smallimg_1">
 				 <ul>
@@ -72,7 +72,7 @@
 					  var js, fjs = d.getElementsByTagName(s)[0];
 					  if (d.getElementById(id)) {return;}
 					  js = d.createElement(s); js.id = id;
-					  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+					  //js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
 					  fjs.parentNode.insertBefore(js, fjs);
 					}(document, 'script', 'facebook-jssdk'));</script>
 					
@@ -125,7 +125,7 @@
 		
 		<div class="clear"></div>
 		
-		<div style="border-top:solid 1px #E2E2E2;background:#F2F2F2; padding-bottom:12px;">  
+		<div style="border-top:solid 1px #E2E2E2; border-bottom:solid 1px #E2E2E2; background:#F2F2F2; padding-bottom:12px;">  
 			<div class="left" style="padding-left: 10px;">
 				<div class="productInfoBox">
 					<div>
@@ -147,7 +147,7 @@
 					<div style="clear:both;padding-bottom:5px"></div>
 					<div>
 						<img class="sellerInfo" src="<?php echo IMAGES_FB_PATH ?>/card_graphic.png" alt="" />
-						<a id="btn1" href="#" style="color: #3B5998;"><?php echo $this->Translate('SellerInfo')?></a>
+						<a id="btn1" href="javascript:void(0)" style="color: #3B5998;"><?php echo $this->Translate('SellerInfo')?></a>
 					</div>
 					<div style="clear: both; padding-bottom: 5px;"></div>
 					<div class="retailerPositiveReviewWidget">
@@ -162,14 +162,14 @@
 					  var js, fjs = d.getElementsByTagName(s)[0];
 					  if (d.getElementById(id)) {return;}
 					  js = d.createElement(s); js.id = id;
-					  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=124974344272864";
+					  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=<?php echo FACEBOOK_APP_API_ID; ?>";
 					  fjs.parentNode.insertBefore(js, fjs);
 					}(document, 'script', 'facebook-jssdk'));</script>
 					<fb:like href="<?php echo SITE_FB_URL . "product/view/id/" . $this->ProdId; ?>" send="true" layout="button_count" width="500" show_faces="false"></fb:like>
 					
 			</div>
 		</div>
-		<div style="border-top:solid 1px #E2E2E2;">
+		<div style="border-top:solid 1px #E2E2E2; border-bottom:solid 1px #E2E2E2;">
 			<div id="fb-root"></div>
 			<script>(function(d, s, id) {
 			  var js, fjs = d.getElementsByTagName(s)[0];
@@ -191,7 +191,6 @@
 			 {
 				 disablePopup();
 			 });
-		 
 		});
 
 </script>

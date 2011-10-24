@@ -29,13 +29,20 @@
 		</div>
 		<?php } ?>
 		
-		<?php if( $this->userlogin == 1 ) { ?>
+		<?php if( FACEBOOK_USERID != '' ) { ?>
 		
 		<div id="productGridView" class="portlet">
 			
 			<?php if( count($this->records) > 0 ) { ?>
 			<?php 	foreach($this->records as $key => $val ) { ?>
-			
+				<?php 
+					if($val['ProdName'] != '')
+					{
+						$prodName = $val['ProdName'];
+					}else{
+						$prodName = $val['product_name'];
+					}
+				?>
 			<div class="productGridItem productGridItemTopRow firstborder" style="height:220px;">
 				
 				<div class="thumbnailImage" style="margin-top:14px;">
@@ -43,11 +50,11 @@
 					
 						<?php if( $val['image_name'] == '' ){ ?>
 					
-							<img class="img" src="<?php echo IMAGES_FB_PATH ?>/Default.gif"/>
+							<img class="img" src="<?php echo IMAGES_FB_PATH ?>/Default.gif" alt="Default" title="Default"/>
 					
 						<?php } else { ?>
 					
-							<img class="img" src="<?php echo SITE_PRODUCT_IMAGES_PATH.$val['image_path'] ?>/<?php echo $val['image_name'] ?>" width="128"/>
+							<img class="img" src="<?php echo SITE_PRODUCT_IMAGES_PATH.$val['image_path'] ?>/<?php echo $val['image_name'] ?>" width="128" alt="<?php echo $prodName;?>" title="<?php echo $prodName;?>" />
 					
 						<?php } ?>
 					
@@ -56,12 +63,12 @@
 				
 				<div class="productTitle">
 					<a target="_top" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $val['product_id'];?>">
-						<?php echo $val['product_name'];?>
+						<?php echo $prodName;?>
 					</a> 
 				</div>
 				
 				<div class="productPrice">
-				   <?php echo DEFAULT_CURRENCY_SYMBOL.$val['converted_price']."&nbsp; ( ".DEFAULT_CURRENCY_CODE." )";?>
+				   <?php echo DEFAULT_CURRENCY_SYMBOL.$val['converted_price']."&nbsp;".DEFAULT_CURRENCY_CODE;?>
 				</div>
 			 </div>
 			 
@@ -90,13 +97,15 @@
 				<fb:login-button></fb:login-button>
 		 
 		 </div>
-		 
+		  <div style="clear:both"></div>
 		 <?php } ?>
 		 
-		 <div style="padding-bottom:10px; clear:both"></div>
+		
 		
 			<?php if(count($this->records) > 0){?>
-				<div class="portlet" style="border-bottom: 1px solid #E2E2E2;">
+			 <div style="clear:both"></div>
+			 
+				<div class="portlet" style="border-bottom: 1px solid #E2E2E2; height:35px; border-top: 1px solid #E2E2E2;">
 					<div class="productListingNav">
 					   
 						<?php echo $this->paginationControl($this->paginator, 'Sliding', 'pagination_bottom.phtml'); ?>
@@ -105,7 +114,7 @@
 					
 					<input type="hidden" name="page_no" id="page_no" value="<?php echo $this->page_no; ?>" />
 					
-					<div style="padding-bottom:10px; clear:both"></div>
+					
 				</div>
 			<?php }?>
 		 

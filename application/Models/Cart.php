@@ -71,21 +71,18 @@ class Models_Cart
 	 * @author Jayesh 
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
-	public function ProductExist($prodId)
+	public function ProductExist($prodId,$fbuid)
 	{
 		global $mysession;
 		$db= $this->db;
 		
 		$where = array();
 		
-		$sql = "SELECT count(*) as cnt1 FROM cart_detail
-				WHERE product_id=".$prodId."";
-//		$sql = $db->select()
-//					 ->from('cart_detail', array('cnt1' => new Zend_Db_Expr('COUNT(*)')))
-//					 ->where('product_id = ?', $prodId);
-					
-		//print $sql;die;		
- 		$count = $db->fetchRow($sql);
+		$sql = "SELECT count(*) as cnt1 FROM cart_detail as cd
+				LEFT JOIN cart_master as cm ON (cm.cart_id = cd.cart_id)
+				WHERE product_id=".$prodId." and facebook_user_id = ".$fbuid."";
+				
+  		$count = $db->fetchRow($sql);
 		 
  		return($count['cnt1']);
 	}
@@ -114,32 +111,45 @@ class Models_Cart
 				'currency_id' => DEFAULT_CURRENCY,
 				'cart_status' => 1
 		);
-		//print_r($ProductMaster);die;
-		$facebookUser = $this->UserExist($ProductInfo['fbid']);
-		//print_r($facebookUser);die;
-		if(!$facebookUser){
+ 
+ 		$facebookUser = $this->UserExist($ProductInfo['fbid']);
+ 
+ 		if(!$facebookUser){
 					
 			$db->insert('cart_master', $ProductMaster);
 			
 		}
 		$facebookUser1 = $this->GetCartId($ProductInfo['fbid']);
-		//print_r($facebookUser1);die;
+		
 		$id = $facebookUser1['cart_id'];
+		
 		//Insert information in cart Details table
+		$UserDetail = $this->GetCartUser($id);
 		
-		$productQty = '1';
+		$productUserDetail = $this->GetProductUser($ProductInfo['product_id']);
+		
+		if($UserDetail['user_id'] == $productUserDetail['user_id'] || $UserDetail == '' )
+		{
+			$productQty = '1';
 			
-		$ProductDetails = array(
-				'cart_id' => $id,
-				'product_id' => $ProductInfo['product_id'],
-				'product_name' => $ProductInfo['product_name'],
-				'product_price' => $ProductInfo['price'],
-				'product_qty' => $productQty,
-				'product_total_cost' => $ProductInfo['price']*1
-		);
-		//print_r($ProductDetails);die;
-		$db->insert('cart_detail', $ProductDetails);
-		
+			if($ProductInfo['ProdName'] != '')
+			{
+				$prodName = $ProductInfo['ProdName'];
+			}else{
+				$prodName = $ProductInfo['product_name'];
+			}	
+				
+			$ProductDetails = array(
+					'cart_id' => $id,
+					'product_id' => $ProductInfo['product_id'],
+					'product_name' => $prodName,
+					'product_price' => $ProductInfo['price'],
+					'product_qty' => $productQty,
+					'product_total_cost' => $ProductInfo['price']*1
+			);
+			
+			$db->insert('cart_detail', $ProductDetails);
+		}
 		return true;
 	}
 	
@@ -172,7 +182,7 @@ class Models_Cart
 				'option_price' => $productOptions['Opt_convert_price']
 				//'option_quantity' => $productOptions['option_quantity']
 		);
-		//print_r($ProductOptionDetails);die;
+		
 		$db->insert('cart_product_options', $ProductOptionDetails);
 		
 		return true;
@@ -195,15 +205,16 @@ class Models_Cart
 		global $mysession;
 		$db= $this->db;
 		
-		$sql = "SELECT cd.*,cd.product_price as price,cm.currency_id as currId,cm.*,pi.image_path,pi.image_name,pm.*,um.*,ROUND( (cd.product_price * ".$curr_value.") / ".$current_curr_data.", 2 ) as Prod_convert_price FROM cart_detail as cd
+		$sql = "SELECT cd.*,cd.product_price as price,cm.currency_id as currId,cm.*,cm.currency_id as CurrId,pi.image_path,pi.image_name,pm.*,um.*,ROUND( (cd.product_price * ".$curr_value.") / ".$current_curr_data.", 2 ) as Prod_convert_price,pml.product_name as ProdName FROM cart_detail as cd
 				LEFT JOIN cart_master as cm ON (cd.cart_id = cm.cart_id)
 				LEFT JOIN product_images as pi ON (cd.product_id = pi.product_id and pi.is_primary_image = 1)
 				LEFT JOIN product_master as pm ON (pi.product_id = pm.product_id)
+				LEFT JOIN product_master_lang as pml ON (pm.product_id = pml.product_id and pml.language_id= ".DEFAULT_LANGUAGE.")
 				LEFT JOIN user_master as um ON (pm.user_id = um.user_id)
  				LEFT JOIN currency_master as crm ON (crm.currency_id = um.currency_id)
 
 				WHERE cm.facebook_user_id ='".$facebook_id."'";
-		//print $sql;die;
+		
 		$result = $db->fetchAll($sql);
 		
 		
@@ -228,7 +239,7 @@ class Models_Cart
 		$db= $this->db;
 		
 		$sql = "SELECT * FROM cart_master WHERE facebook_user_id = '".$fbuid."'";
-		//print $sql;die;
+		
 		$result = $db->fetchRow($sql);
 		
 		return $result;
@@ -252,7 +263,7 @@ class Models_Cart
 		$db= $this->db;
 		
 		$sql = "SELECT * FROM cart_detail WHERE product_id = ".$prodId." and cart_id=".$cartId."";
-		//print $sql;die;
+		
 		$result = $db->fetchRow($sql);
 		
 		return $result;
@@ -282,8 +293,6 @@ class Models_Cart
 		);
 		
 		$where1 = "cart_detail_id = ".$cartDetailId."";
-		//$sql = "DELETE FROM cart_detail WHERE cart_id = ".$cartId." and product_id = ".$prodId."";
-		//print $sql;die;
 		
 		$db->delete('cart_detail',$where);
 		$db->delete('cart_product_options',$where1);
@@ -336,7 +345,7 @@ class Models_Cart
 		$sql = "SELECT cm.*,sm.* FROM cart_master as cm
 				LEFT JOIN state_master as sm ON (cm.shipping_user_state_id = sm.state_id) 
 				WHERE cart_id=".$cartId."";
-		//print $sql;die;
+		
 		$result = $db->fetchRow($sql);
 		
 		return $result;
@@ -362,7 +371,7 @@ class Models_Cart
 		$sql = "SELECT cm.*,sm.* FROM cart_master as cm
 				LEFT JOIN state_master as sm ON (cm.billing_user_state_id = sm.state_id) 
 				WHERE cart_id=".$cartId."";
-		//print $sql;die;
+		
 		$result = $db->fetchRow($sql);
 		
 		return $result;
@@ -385,13 +394,39 @@ class Models_Cart
 	{
 		$db= $this->db;
 		
-		$sql = "SELECT * FROM country_master";
-		//print $sql;die;
+		$sql = "SELECT CM.* FROM language_master as LM 
+				LEFT JOIN country_master as CM ON(LM.country_id = CM.country_id)";
+		
 		$result = $db->fetchAll($sql);
 		
 		return $result;
 	
 	}
+
+	/**
+	 * function GetCountryCombo
+	 *
+	 * It is used to get all countires names.
+	 *
+	 * Date created: 2011-09-17
+	 *
+	 * @param () - No parameter
+	 * @return (Array) - Return array of records
+	 * @author  Jayesh 
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 */
+	public function GetCountryCombo()
+	{
+		$db= $this->db;
+		
+		$sql = "SELECT * FROM country_master";
+		
+		$result = $db->fetchAll($sql);
+		
+		return $result;
+	
+	}
+
 
 	/**
 	 * function GetState
@@ -411,7 +446,7 @@ class Models_Cart
 		$db= $this->db;
 		
 		$sql = "SELECT * FROM state_master where country_id = '".$id."'";
-		//print $sql;die;
+		
 		$result = $db->fetchAll($sql);
 		
 		return $result;
@@ -435,7 +470,7 @@ class Models_Cart
 		$db= $this->db;
 		
 		$sql = "SELECT * FROM country_master WHERE country_id=".$countryId."";
-		//print $sql;die;
+		
 		$result = $db->fetchRow($sql);
 		
 		return $result;
@@ -459,7 +494,8 @@ class Models_Cart
 		$db= $this->db;
 		
  		
-		$sql = "SELECT um.*,usm.*,usd.* FROM user_shipping_method usm
+		$sql = "SELECT um.*,usm.*,usd.*,usml.shipping_method_name as ShippingName FROM user_shipping_method usm
+				LEFT JOIN user_shipping_method_lang usml ON (usm.shipping_method_id = usml.shipping_method_id and usml.language_id = ".DEFAULT_LANGUAGE.")
 				LEFT JOIN user_master as um ON (um.user_id = usm.user_id)
 				LEFT JOIN user_shipping_method_detail usd ON (usm.shipping_method_id = usd.shipping_method_id)
 				WHERE usm.user_id =".$userId."";
@@ -489,7 +525,7 @@ class Models_Cart
 		$sql = "SELECT tr.*,trd.* FROM tax_rate tr
 				LEFT JOIN tax_rate_detail trd ON (tr.tax_rate_id = trd.tax_rate_id)
 				WHERE tr.user_id =".$userId."";
-		//print $sql;die;
+		
 		$result = $db->fetchAll($sql);
 		
 		return $result;
@@ -520,7 +556,7 @@ class Models_Cart
 				LEFT JOIN user_shipping_method usm ON (um.user_id = usm.user_id) 
 				LEFT JOIN user_shipping_method_detail usd ON (usm.shipping_method_id = usd.shipping_method_id)
 				WHERE cd.product_id=".$prodId."";
-		//print $sql;die;
+		
 		$result = $db->fetchAll($sql);
 		
 		return $result;
@@ -545,7 +581,7 @@ class Models_Cart
 	{
 		$db = $this->db;
 		
-		//print_r($data);die;
+		
 		$where = "cart_id=".$cartId." and product_id=".$prodId."";
 	
 		$result = $db->update('cart_detail', $data, $where);
@@ -572,7 +608,6 @@ class Models_Cart
 	{
 		$db = $this->db;
 		
-		//print_r($data);die;
 		$where = "cart_id=".$cartId." and facebook_user_id='".$fbuid."'";
 	
 		$result = $db->update('cart_master', $data, $where);
@@ -604,8 +639,6 @@ class Models_Cart
 				LEFT JOIN currency_master as cm ON (cm.currency_id = um.currency_id)
 				WHERE usmd.shipping_method_id=".$methodId."";
 				
-		//$sql = "SELECT * FROM user_shipping_method_detail WHERE shipping_method_id=".$methodId."";
-		//print $sql;die;
 		$result = $db->fetchRow($sql);
 		
 		return $result;
@@ -632,7 +665,7 @@ class Models_Cart
 		$sql = "SELECT cd.cart_detail_id FROM cart_master as cm
 				LEFT JOIN cart_detail as cd ON (cm.cart_id = cd.cart_id)
 				WHERE cd.product_id=".$prodId." and cm.	facebook_user_id = '".$fbuid."'";
-		//print $sql;die;
+		
 		$result = $db->fetchRow($sql);
 		
 		return $result;
@@ -657,10 +690,67 @@ class Models_Cart
 		$db = $this->db;
 		
 		$sql = "SELECT cart_id FROM cart_master WHERE facebook_user_id = '".$userId."'";
-		//print $sql;die;
+		
 		$result = $db->fetchRow($sql);
 		
 		return $result;
+	
+	}
+	
+	/**
+	 * function GetCartUser
+	 *
+	 * It is used to get user info that product is already in cart.
+	 *
+	 * Date created: 2011-10-16
+	 *
+	 * @param (int) - $cartId : cart Id
+	 * @return (Array) - Return array of records
+	 * @author Jayesh 
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	public function GetCartUser($cartId)
+	{
+		global $mysession;
+		$db = $this->db;
+		
+		$sql = "SELECT um.user_id,pm.* FROM cart_detail as cd
+				LEFT JOIN product_master as pm ON(pm.product_id = cd.product_id)
+				LEFT JOIN user_master as um ON(um.user_id = pm.user_id)
+		 		WHERE cd.cart_id = '".$cartId."'";
+		
+		$result = $db->fetchRow($sql);
+		
+		return $result;
+	
+	
+	}
+	
+	/**
+	 * function GetProductUser
+	 *
+	 * It is used to get user info using product id.
+	 *
+	 * Date created: 2011-10-16
+	 *
+	 * @param (int) - $prodId : product Id
+	 * @return (Array) - Return array of records
+	 * @author Jayesh 
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	public function GetProductUser($prodId)
+	{
+		global $mysession;
+		$db = $this->db;
+		
+		$sql = "SELECT um.*,pm.* FROM product_master as pm
+				LEFT JOIN user_master as um ON(um.user_id = pm.user_id)
+		 		WHERE pm.product_id = '".$prodId."'";
+		
+		$result = $db->fetchRow($sql);
+		
+		return $result;
+	
 	
 	}
 }

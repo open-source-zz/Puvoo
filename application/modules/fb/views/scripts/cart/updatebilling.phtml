@@ -1,0 +1,206 @@
+<div class="shoppingCart" id="shipping_method">
+	<?php $total_price = 0;
+		$totalAmout = array();
+		$prodIdArray = array();
+		 ?>
+	<?php foreach($this->cartItems as $keycart=>$Item){?>
+		<table class="merchantTable" style="border: medium none; border-bottom:1px solid #E2E2E2;" id="merchantProd<?php echo $Item['product_id'];?>">
+			<tr>
+				<td class="storeNameHeader" colspan="2"><a class="" href="javascript:void(0)"><?php echo $Item['store_name'] ?></a></td>
+			</tr>
+			<tr><td height="4"> </td></tr>
+			<tr>
+				<td width="200">
+					<label for="lastName"><?php echo $this->Translate('SubTotal')?></label>
+				</td>
+				<td>
+					<?php echo $this->currency_symbol."&nbsp;".floatval($Item['price']*$Item['product_qty']);?>
+				</td>
+			</tr>
+			<tr><td height="4"></td></tr>	
+			
+			<?php 
+			 $flag  = "";
+			 	if($this->Ship_Method_Combo)
+				{
+					foreach($this->Ship_Method_Combo as $key => $val ){
+						if($key == $Item['product_id'] ){
+							$flag = $val;
+						}
+					}
+				}
+			?>
+ 			<?php if($flag != "" ) {  ?>	
+			<tr>
+				<td width="200"> 
+					<label for="lastName"><?php echo $this->Translate('ShippingMethod')?>:</label>
+				</td>
+				<td>
+					<select name="Shipping_Method_<?php echo $Item['product_id'];?>" id="Shipping_Method_<?php echo $Item['product_id'];?>" style="width:130px;">
+						<option value="0" selected="selected" onclick="GetShippingCost('0',<?php echo $Item['product_id'];?>)"><?php echo $this->Translate('ChooseShipping')?></option>
+						<?php 
+							echo $flag;
+						?>
+					</select>
+				</td>
+			</tr>
+			<tr id="ShippingSpace<?php echo $Item['product_id'];?>" style="display:none;"><td height="4"></td></tr>
+			<tr id="ShippingRow<?php echo $Item['product_id'];?>">
+				<td width="200"> 
+					<label for="lastName"><?php echo $this->Translate('ShippingCost')?>:</label>
+				</td>
+				<td id="ShippingCost<?php echo $Item['product_id'];?>">
+					<?php echo $this->currency_symbol."&nbsp;"."0";?>
+				</td>
+			</tr>
+			<tr><td height="4"></td></tr>
+		
+			<?php }  ?>	
+			<tr>
+				<td width="200">
+					<label for="lastName"><?php echo $this->Translate('Tax')?></label>
+				</td>
+				<td id="taxRate<?php echo $Item['product_id'];?>">
+					<?php 
+						if($this->taxRate)
+						{
+ 							foreach($this->taxRate as $key => $val){
+								if($key == $Item['product_id'] ){
+									if($val){
+ 										foreach($val as $val2){
+ 											$taxrate = (($Item['price']*$Item['product_qty'])*$val2)/100;
+											$totalAmout[$Item['product_id']] =  floatval(($Item['price']*$Item['product_qty']))+floatval($taxrate); 
+ 											echo $this->currency_symbol."&nbsp;".round($taxrate,2);
+ 										}
+ 									}else{
+ 										$totalAmout[$Item['product_id']] =  $Item['product_total_cost']; 
+ 										echo $this->currency_symbol."&nbsp;"."0";
+ 									}
+								}
+							}
+						}else{
+							echo $this->currency_symbol."&nbsp;"."0";
+						}
+					?>
+				</td>
+			</tr>
+			
+			<tr><td height="4"></td></tr>
+			<tr>
+				<td width="200">
+					<label for="lastName"><?php echo $this->Translate('HandlingTime')?></label>
+				</td>
+				<td>
+					<?php
+						if($this->ship_handel_day)
+						{
+							foreach($this->ship_handel_day as $key => $val ){
+								if($key == $Item['product_id'] ){
+								
+									echo $val."&nbsp;Days";
+								}
+							}
+						}else{
+							echo $this->Translate('Nodays');
+						}
+						?>
+				</td>
+			</tr>
+			<tr><td height="4"></td></tr>
+			<?php if($flag == "" ) { ?>
+			<tr>
+				<td width="200" colspan="2">
+					<b><?php echo $this->Translate('NoShippingError')?></b>
+				</td>
+			</tr>
+			<?php } ?>
+<!--							<tr>
+				<td width="200">
+					<label for="lastName"><?php echo $this->Translate('ItemTotal')?></label>
+				</td>
+				<td>
+					<?php
+						 $total = $taxrate+$Item['product_total_cost']+0;
+						 echo "$".$total;
+						?>
+				</td>
+			</tr>
+			<tr><td height="4"></td></tr>
+-->					<tr>
+				<td colspan="2" style="line-height:20px;">
+					<label for="lastName" ><a href="javascript:void(0)" id="ShippingItem<?php echo $Item['product_id'] ?>" style="font-size:12px; font-weight:normal; text-decoration:underline;" onclick="ShowImage(<?php echo $Item['product_id'] ?>)"><?php echo $this->Translate('Item')?></a></label>
+				</td>
+			</tr>
+			
+			<script type="text/javascript">
+			
+				function ShowImage(id)
+				{
+					var productId = id;
+					//alert($('#ItemList'+productId).attr('style'));
+					if($('#ItemList'+productId).attr('style') == '' || $('#ItemList'+productId).attr('style') == 'display: table-row;')
+					{
+						$('#ItemList'+productId).hide();
+					}else{
+						$('#ItemList'+productId).show();
+					}
+				}
+			</script>
+
+			<tr id="ItemList<?php echo $Item['product_id'] ?>" style="display:none;">
+				<td colspan="2">
+					<table cellpadding="0" cellspacing="0">
+						<tr>
+							<td>
+								<div class="cartItemProductImageCell">
+									<img class="cartItemProductImage" src="<?php echo SITE_PRODUCT_IMAGES_PATH.$Item['image_path'] ?>/<?php echo $Item['image_name'] ?>" alt="" />
+								</div>
+								<div class="cartItemDivider cartItemMainContent">
+									<span class="cartItemProductTitle">
+										<a title="Mini TailSuga " href="javascript:void(0)" target="_top"><?php echo $Item['product_name'] ?></a>
+									</span>
+									<div id="cartItemDetail_1" class="cartItemDetail" style="display: block">
+										<span class="cartRetailerLabel">
+											<?php echo $this->Translate('Quantity')?>:
+											<a href="javascript:void(0)" target="_top"><?php echo $Item['product_qty'] ?></a>
+										</span>
+									</div>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+		<?php 
+		
+				$prodIdArray[$keycart] = $Item['product_id'];
+				
+		?>
+	<?php }
+		$json = Zend_Json::encode($prodIdArray);
+ 		$total_price = 0;
+		//print_r($totalAmout);
+		foreach($totalAmout as $key => $val)
+		{
+			$total_price += round((float)$val,2); 	
+		}
+		
+	?>
+</div>
+<div id="buttonArea">
+	   <div class="SharingOptions_Text">
+		
+	   </div>
+	   <div id="Sharer_btns">
+	   
+	   <input type="hidden"  name="totalAmount" id="totalAmount" value="<?php echo $total_price;?>" />
+	   <input type="hidden" name="ShippingtotalAmount" id="ShippingtotalAmount" value="0" />
+		<input type="button" value="" class="your_setting" onclick="showsetting(); return false;" />
+		<?php if($flag != "" ) { ?>
+		<input type="button" value="" class="continuecheckout" onclick='UpdateShipping("<?php echo $this->cartId; ?>",<?php echo $json; ?>)' />
+		<?php }?>
+		
+	   </div>
+</div>
+		

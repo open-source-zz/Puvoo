@@ -90,16 +90,25 @@ class Fb_CartController extends FbCommonController
 	{
 		global $mysession;
 		$Cart = new Models_Cart();
-		$prodId = $_POST['prodid'];
-		$CartId = $_POST['cartid'];
-		$FbuId = $_POST['fbuid'];
-		//Delete Product
+		$prodId = $this->_request->getParam('prodid');
+		$CartId = $this->_request->getParam('cartid');
+		$FbuId =  $this->_request->getParam('fbuid');
+			//Delete Product
 		$CartDetails = $Cart->GetCartDetailId($prodId,$FbuId);
 		$cartDetailId = $CartDetails['cart_detail_id'];
 		
 		$result = $Cart->DeleteCartProduct($prodId,$CartId,$cartDetailId);
+		
+		$details = $Cart->GetProductInCart($FbuId);
+		
 		$CartCnt = array();
-		$CartCnt = count($Cart->GetProductInCart($FbuId));
+		$CartCnt['total_price'] = 0;
+		
+		$CartCnt['Item'] = count($details);
+		foreach($details as $val)
+		{
+			$CartCnt['total_price'] += $val['product_total_cost'];
+		}
 		if($result == true){
 			echo json_encode($CartCnt);die;
 		}
@@ -132,22 +141,22 @@ class Fb_CartController extends FbCommonController
 		$Cart = new Models_Cart();
 		$Common = new Models_Common();
 		
-		//$prodId = $_POST['prodid'];
-		$CartId = $_POST['cartid'];
-		$FirstName = $_POST['fname'];
-		$LastName = $_POST['lname'];
-		$Email = $_POST['email'];
-		$Phone = $_POST['telephone'];
-		//$CarrEmail = $_POST['carr_email'];
-		$AddressType = $_POST['add_type'];
-		$Country = $_POST['country'];
-		$Address = $_POST['add'];
-		$City = $_POST['city'];
-		$State = $_POST['state'];
-		$PostCode = $_POST['postcode'];
-		$IsBilling = $_POST['isbilling'];
-		$fbuid = $_POST['fbuid'];
-		//print $_POST['isbilling'];die;
+		//$prodId = $this->_request->getParam('prodid');
+		$CartId = $this->_request->getParam('cartid');
+		$FirstName = $this->_request->getParam('fname');
+		$LastName = $this->_request->getParam('lname');
+		$Email = $this->_request->getParam('email');
+		$Phone = $this->_request->getParam('telephone');
+		//$CarrEmail = $this->_request->getParam('carr_email');
+		$AddressType = $this->_request->getParam('add_type');
+		$Country = $this->_request->getParam('country');
+		$Address = $this->_request->getParam('add');
+		$City = $this->_request->getParam('city');
+		$State = $this->_request->getParam('state');
+		$PostCode = $this->_request->getParam('postcode');
+		$IsBilling = $this->_request->getParam('isbilling');
+		$fbuid = $this->_request->getParam('fbuid');
+		//print $this->_request->getParam('isbilling');die;
 		if($IsBilling = 'true')
 		{
 			$ShippingDetail = array(
@@ -235,7 +244,14 @@ class Fb_CartController extends FbCommonController
 			
 			foreach($ShippingMetodInfo as $ship)
 			{
- 				
+ 				if($ship['ShippingName'] != '')
+				{
+					$Ship_Method_name = $ship['ShippingName'];
+				}
+				else
+				{
+					$Ship_Method_name = $ship['shipping_method_name'];
+				}
 				$shippingZone = explode(',',$ship['zone']);
 				
  				for($k=0; $k < count($shippingZone); $k++)
@@ -247,7 +263,7 @@ class Fb_CartController extends FbCommonController
 					if($shippingZone[$k] == 'Worldwide')
 					{
 					
-						$Ship_Method_Combo_Str[$ship['shipping_method_id']] = $ship['shipping_method_name'];
+						$Ship_Method_Combo_Str[$ship['shipping_method_id']] = $Ship_Method_name;
 						
 					}else
 					{
@@ -258,7 +274,7 @@ class Fb_CartController extends FbCommonController
 								
 								if($val == $CountryCode['country_iso2']) {
 									
-									$Ship_Method_Combo_Str[$ship['shipping_method_id']] = $ship['shipping_method_name'];
+									$Ship_Method_Combo_Str[$ship['shipping_method_id']] = $Ship_Method_name;
 									
 								}
 								
@@ -266,7 +282,7 @@ class Fb_CartController extends FbCommonController
 							
 								if( $val == $ShippingInfo['state_name'] ) {
 							
-									$Ship_Method_Combo_Str[$ship['shipping_method_id']] = $ship['shipping_method_name'];
+									$Ship_Method_Combo_Str[$ship['shipping_method_id']] = $Ship_Method_name;
 								}
 							
 							}
@@ -282,7 +298,7 @@ class Fb_CartController extends FbCommonController
 			$Ship_Method_Combo[$CartDetails[$j]['product_id']] = $Ship_Method_Combo_Str;
 			
 			//to get paypal details
-			$paypalUrl = $Common->GetPaypalUrl('paypal_url');
+			$paypalUrl = $Common->GetConfigureValue('paypal_url');
 			
 			$PaypalDetails = $Common->GetPaypalDetails($this->view->cartuserId);
 	
@@ -370,20 +386,20 @@ class Fb_CartController extends FbCommonController
 		$Cart = new Models_Cart();
 		$Common = new Models_Common();
 		$this->_helper->layout()->disableLayout();
-		//$prodId = $_POST['prodid'];
-		$CartId = $_POST['Bill_cartid'];
-		$FirstName = $_POST['Bill_fname'];
-		$LastName = $_POST['Bill_lname'];
-		$Email = $_POST['Bill_email'];
-		$Phone = $_POST['Bill_telephone'];
-		//$CarrEmail = $_POST['carr_email'];
-		$AddressType = $_POST['Bill_add_type'];
-		$Country = $_POST['Bill_country'];
-		$Address = $_POST['Bill_add'];
-		$City = $_POST['Bill_city'];
-		$State = $_POST['Bill_state'];
-		$PostCode = $_POST['Bill_postcode'];
-		$fbuid = $_POST['fbuid'];
+		//$prodId = $this->_request->getParam('prodid');
+		$CartId = $this->_request->getParam('Bill_cartid');
+		$FirstName = $this->_request->getParam('Bill_fname');
+		$LastName = $this->_request->getParam('Bill_lname');
+		$Email = $this->_request->getParam('Bill_email');
+		$Phone = $this->_request->getParam('Bill_telephone');
+		//$CarrEmail = $this->_request->getParam('carr_email');
+		$AddressType = $this->_request->getParam('Bill_add_type');
+		$Country = $this->_request->getParam('Bill_country');
+		$Address = $this->_request->getParam('Bill_add');
+		$City = $this->_request->getParam('Bill_city');
+		$State = $this->_request->getParam('Bill_state');
+		$PostCode = $this->_request->getParam('Bill_postcode');
+		$fbuid = $this->_request->getParam('fbuid');
 		
 			$BillingDetail = array(
 				'billing_user_fname' 		 => $FirstName,
@@ -451,12 +467,19 @@ class Fb_CartController extends FbCommonController
 				$shippingZone = explode(',',$ship['zone']);
  				for($k=0; $k < count($shippingZone); $k++)
 				{
-					
+					if($ship['ShippingName'] != '')
+					{
+						$Ship_Method_name = $ship['ShippingName'];
+					}
+					else
+					{
+						$Ship_Method_name = $ship['shipping_method_name'];
+					}
  					
 					if($shippingZone[$k] == 'Worldwide')
 					{
 					
-						$Ship_Method_Combo_Str[$ship['shipping_method_id']] = $ship['shipping_method_name'];
+						$Ship_Method_Combo_Str[$ship['shipping_method_id']] = $Ship_Method_name;
 						
 					}else
 					{
@@ -467,7 +490,7 @@ class Fb_CartController extends FbCommonController
 								
 								if($val == $CountryCode['country_iso2']) {
 									
-									$Ship_Method_Combo_Str[$ship['shipping_method_id']] = $ship['shipping_method_name'];
+									$Ship_Method_Combo_Str[$ship['shipping_method_id']] = $Ship_Method_name;
 									
 								}
 								
@@ -475,7 +498,7 @@ class Fb_CartController extends FbCommonController
 							
 								if( $val == $ShippingInfo['state_name'] ) {
 							
-									$Ship_Method_Combo_Str[$ship['shipping_method_id']] = $ship['shipping_method_name'];
+									$Ship_Method_Combo_Str[$ship['shipping_method_id']] = $Ship_Method_name;
 								}
 							
 							}
@@ -491,7 +514,7 @@ class Fb_CartController extends FbCommonController
 			$Ship_Method_Combo[$CartDetails[$j]['product_id']] = $Ship_Method_Combo_Str;
 			
 			//to get paypal details
-			$paypalUrl = $Common->GetPaypalUrl('paypal_url');
+			$paypalUrl = $Common->GetConfigureValue('paypal_url');
 			
 			$PaypalDetails = $Common->GetPaypalDetails($this->view->cartuserId);
 	
@@ -603,14 +626,14 @@ class Fb_CartController extends FbCommonController
 		$Cart = new Models_Cart();
 		$Product = new Models_Product();
  		
-		$cartId = $_POST['cartid'];
-		$prodId = $_POST['prodid'];
-		$fbuid = $_POST['fbuid'];
-		$prodPrice = $_POST['prodPrice'];
+		$cartId = $this->_request->getParam('cartid');
+		$prodId = $this->_request->getParam('prodid');
+		$fbuid = $this->_request->getParam('fbuid');
+		$prodPrice = $this->_request->getParam('prodPrice');
 		$prodData = $Product->GetProductDetails($prodId);
 		$updateData = array(
- 				'product_qty' => $_POST['prodQty'],
-				'product_total_cost' => $prodPrice*$_POST['prodQty']
+ 				'product_qty' => $this->_request->getParam('prodQty'),
+				'product_total_cost' => $prodPrice*$this->_request->getParam('prodQty')
  			);
 		//print_r($updateData);die;
 		$UpdateCartDetails = $Cart->UpdateCart($updateData,$cartId,$prodId);
@@ -642,8 +665,8 @@ class Fb_CartController extends FbCommonController
 		$Cart = new Models_Cart();
 		$Product = new Models_Product();
  		$Common = new Models_Common();
-		$methodId = $_POST['shipmethodid'];
-		$prodId = $_POST['prodid'];
+		$methodId = $this->_request->getParam('shipmethodid');
+		$prodId = $this->_request->getParam('prodid');
 		$filter = new Zend_Filter_StripTags();	
 		
  		$current_currencyId = $filter->filter(trim($this->_request->getPost('current_currencyId')));
@@ -707,14 +730,14 @@ class Fb_CartController extends FbCommonController
 		$Product = new Models_Product();
 		
  		
-		$methodId = $_POST['shipmethodid'];
-		$prodId = $_POST['prodid'];
-		$fbuid = $_POST['fbuid'];
+		$methodId = $this->_request->getParam('shipmethodid');
+		$prodId = $this->_request->getParam('prodid');
+		$fbuid = $this->_request->getParam('fbuid');
 		
 		$prodData = $Product->GetProductDetails($prodId);
 		$updateData = array(
  				'shipping_method_id' => $methodId,
-				'shipping_cost' => $prodData['product_price']*$_POST['prodQty']
+				'shipping_cost' => $prodData['product_price']*$this->_request->getParam('prodQty')
  			);
 		//print_r($updateData);die;
 		$UpdateCartDetails = $Cart->UpdateShippingCost($updateData,$cartId,$prodId);
@@ -748,12 +771,12 @@ class Fb_CartController extends FbCommonController
 		$filter = new Zend_Filter_StripTags();
 		$Common = new Models_Common();
  		
-		$cartId = $_POST['cartid'];
-		$fbuid = $_POST['fbuid'];
-		$prodIds = explode(',',$_POST['prodid']);
-		$methodIds = explode(',',$_POST['methodid']);
+		$cartId = $this->_request->getParam('cartid');
+		$fbuid = $this->_request->getParam('fbuid');
+		$prodIds = explode(',',$this->_request->getParam('prodid'));
+		$methodIds = explode(',',$this->_request->getParam('methodid'));
 		
-		$taxrates = explode(',',$_POST['taxrate']);
+		$taxrates = explode(',',$this->_request->getParam('taxrate'));
 		
  		$current_currencyId = $filter->filter(trim($this->_request->getPost('current_currencyId')));
 		$current_curr_data = $Common->GetCurrencyValue($current_currencyId);
@@ -833,12 +856,37 @@ class Fb_CartController extends FbCommonController
 		$Cart->UpdateCartMaster($updatePrice,$cartId,$fbuid);
 		
 		$CartData = $Cart->GetProductInCart($fbuid);
-		$Final_Amount = 0;
+		$Final_Amount = array();
+		$amt = 0;
 		foreach($CartData as $value)
 		{
-			$Final_Amount += round($value['product_total_cost'],2);
-		
+			$amt += round($value['product_total_cost'],2);
+			
+			$currency_value = $Common->GetCurrencyValue($value['CurrId']);
+			
+			$Final_Amount['paypal_currency'] = $currency_value['currency_code'];
+			$mysession->paypal_currency = $currency_value['currency_code'];
+			
+			if($value['user_id'] != '' ){
+				
+				$paypalUrl = $Common->GetConfigureValue('paypal_url');
+				$PaypalDetails = $Common->GetPaypalDetails($value['user_id']);
+				
+				$Final_Amount['Paypal_Url'] = $paypalUrl['configuration_value'];
+				$Final_Amount['Api_Username'] = $PaypalDetails['paypal_email'];
+				$Final_Amount['Api_Password'] = $PaypalDetails['paypal_password'];
+				$Final_Amount['Api_Signature'] = $PaypalDetails['paypal_signature'];
+				
+				$mysession->Paypal_Url = $paypalUrl['configuration_value'];
+				$mysession->Api_Username = $PaypalDetails['paypal_email'];
+				$mysession->Api_Password = $PaypalDetails['paypal_password'];
+				$mysession->Api_Signature = $PaypalDetails['paypal_signature'];
+			}
+			
 		}
+		$Final_Amount['final_amount'] = $amt;
+		$mysession->final_amount = $amt;
+		$mysession->return_url = SITE_FB_URL;
 		//print $Final_Amount;die;
 		echo json_encode($Final_Amount);die;
   	} 
@@ -982,6 +1030,8 @@ class Fb_CartController extends FbCommonController
 			$this->view->CountryCombo = $Cart->GetCountry();
 			// State combo
 			$this->view->StateCombo = $Cart->GetState($this->view->countryId);
+			
+			$this->view->ShipCountryCombo = $Cart->GetCountryCombo();
 			
 			$this->view->CurrencyCombo = $Common->GetCurrency();
 		}

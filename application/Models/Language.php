@@ -173,6 +173,13 @@ class Models_Language
 		
 		$id = 0;
 		
+		if( $data["is_default"] == 1 ) {
+			
+			$data1["is_default"] = 0;
+			$where1 = "1=1";
+			$db->update("language_master", $data1, $where1); 	
+		}
+		
 		$db->insert("language_master", $data); 	 
 		
 		$id = $db->lastInsertId();
@@ -209,6 +216,13 @@ class Models_Language
 	{
 		$db = $this->db;
 		
+		if( $data["is_default"] == 1 ) {
+			
+			$data1["is_default"] = 0;
+			$where1 = "1=1";
+			$db->update("language_master", $data1, $where1); 	
+		}
+		
 		$db->update("language_master", $data, $where); 	
 		return true;
 	}
@@ -233,25 +247,43 @@ class Models_Language
 	{
 		$db = $this->db;	
 		
-		//delete all data from languages table for given language
-		//delete data from language definitions table
-		$db->delete("language_definitions", 'language_id = ' .$id);
+		$where = "is_default = 1"; 
 		
-		//delete data from category_master_lang table
-		$db->delete("category_master_lang", 'language_id = ' .$id);	
+		$validator = new Zend_Validate_Db_NoRecordExists(
+				array(
+						'table' => "language_master",
+						'field' => "language_id",
+						'exclude' => $where
+				)
+		);
 		
-		//delete data from product_master_lang table
-		$db->delete("product_master_lang", 'language_id = ' .$id);		
+		if ($validator->isValid($id)) {
+				
+			//delete all data from languages table for given language
+			//delete data from language definitions table
+			$db->delete("language_definitions", 'language_id = ' .$id);
+			
+			//delete data from category_master_lang table
+			$db->delete("category_master_lang", 'language_id = ' .$id);	
+			
+			//delete data from product_master_lang table
+			$db->delete("product_master_lang", 'language_id = ' .$id);		
+			
+			//delete data from user_master_lang table
+			$db->delete("user_master_lang", 'language_id = ' .$id);
+			
+			//delete data from user_shipping_method_lang table
+			$db->delete("user_shipping_method_lang", 'language_id = ' .$id);
+			
+			$db->delete("language_master", 'language_id = ' .$id);		
+			
+			return true;		
+				
+		} else {
 		
-		//delete data from user_master_lang table
-		$db->delete("user_master_lang", 'language_id = ' .$id);
-		
-		//delete data from user_shipping_method_lang table
-		$db->delete("user_shipping_method_lang", 'language_id = ' .$id);
-		
-		$db->delete("language_master", 'language_id = ' .$id);		
-		
-		return true;		
+			return false;
+		}
+				
 	}
 	
 	/**
@@ -272,10 +304,26 @@ class Models_Language
 	public function deleteMultipleLanguages($ids)
 	{
 		$db = $this->db;	
-		$where = 'language_id in ('.$ids.')'; 			
-		$db->delete("language_master",$where);	 
 		
-		return true;
+		$where = 'language_id in ('.$ids.')'; 			
+		
+		$validator = new Zend_Validate_Db_NoRecordExists(
+				array(
+						'table' => "language_master",
+						'field' => "is_default",
+						'exclude' => $where
+				)
+		);
+		
+		if ($validator->isValid(1)) {
+		
+			$db->delete("language_master",$where);	 
+			return true;
+			
+		} else {
+		
+			return false;	
+		}
 	}
 	
 	/**
@@ -335,5 +383,85 @@ class Models_Language
 		return $result;
 	}
 	
+	/**
+	 * Function checkLanguageByCode
+	 *
+	 * This function is used to check language by code.
+     *
+	 * Date created: 2011-10-20
+	 *
+	 * @access public
+	 * @param (String) - $code: code of language
+	 * @return (Boolean) - Return True or False
+	 * @author Amar
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	public function checkLanguageByCode($code)
+	{
+		$db = $this->db;
+		
+		$sql = "select count(*) as cnt from language_master where code = '" . $code . "'";
+		
+ 		$result = $db->fetchOne($sql);
+		
+		if($result > 0)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+		
+	}
+	
+	/**
+	 * Function getLanguageIdByCode
+	 *
+	 * This function is used to get language id by code.
+     *
+	 * Date created: 2011-10-20
+	 *
+	 * @access public
+	 * @param (String) - $code: code of language
+	 * @return (Boolean) - Return language id
+	 * @author Amar
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	public function getLanguageIdByCode($code)
+	{
+		$db = $this->db;
+		
+		$sql = "select language_id from language_master where code = '" . $code . "'";
+		
+ 		return $db->fetchOne($sql);
+		
+	}
+	
+	/**
+	 * Function getDefaultLanguageId
+	 *
+	 * This function is used to get language id of default language.
+     *
+	 * Date created: 2011-10-20
+	 *
+	 * @access public
+	 * @param () - No parameter
+	 * @return (Boolean) - Return language id
+	 * @author Amar
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	public function getDefaultLanguageId()
+	{
+		$db = $this->db;
+		
+		$sql = "select language_id from language_master where is_default = 1";
+		
+ 		return $db->fetchOne($sql);
+		
+	}
 }
 ?>

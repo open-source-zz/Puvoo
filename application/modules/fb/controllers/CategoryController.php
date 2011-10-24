@@ -68,31 +68,6 @@ class Fb_CategoryController extends FbCommonController
      {
 		global $mysession;
 		 
-		// action body
-		$Category = new Models_Category();
-		 
-		//to get all main category
-		$Allcategory = $Category->GetMainCategory();
-		$this->view->Allcategory = $Category->GetMainCategory();
-		 
-		//for display category list on all categories page.
-		foreach($Allcategory as $val)
-		{
- 			$pagecatlist = "";
- 		 	$SubCat = $Category->GetSubCategory($val['category_id']);
-			
-			$pagecatlist .= "<div class='categoryItem'>";
-			$pagecatlist .=	"<div class='bluewidgetHeader'>".$val['category_name']."</div>";
-			$pagecatlist .=	"<ul class='categorySubItem'>";
-				for($i=0; $i < count($SubCat); $i++)
-					{
-						$pagecatlist .= "<li>&raquo;&nbsp;&nbsp;<a href='".SITE_FB_URL."category/subcat/id/".$SubCat[$i]['category_id']."' target='_top'>".$SubCat[$i]['category_name']."</a></li>";
-						
-					}
-			$pagecatlist .= "</ul></div>";
-			//print_r($pagecatlist);
-			$this->view->PageCatlist .= $pagecatlist;
-		}// die;
 		 
       }
 
@@ -155,16 +130,35 @@ class Fb_CategoryController extends FbCommonController
 				// to get parentcategory details
 				$parentcat_details = $Category->GetCategoryDetail($parentid);
 				$this->view->parentcat_id = $parentid;
-				$this->view->parentcat_name = $parentcat_details['category_name'];
+				if($parentcat_details['CatName'] != ''){
+					$this->view->parentcat_name = $parentcat_details['CatName'];
+				}else{
+					$this->view->parentcat_name = $parentcat_details['category_name'];
+				}
 				
 				//to get subcategory
 				$subcat =$Category->GetSubCategory($catid); 
-				$this->view->subcatlist = $subcat;
-				$this->view->catname = $catdetails['category_name'];
+				
+ 				if($catdetails['CatName'] != ''){
+					$this->view->catname = $catdetails['CatName'];
+				}else{
+					$this->view->catname = $catdetails['category_name'];
+				}
+				
 				 
+				if($parentid == 0)
+				{
+					$catIdString = $Category->getCategoryTreeString($catid);
+					
+					$catid_String = $catIdString.$catid;
+				}
+				else
+				{
+					$catid_String = $catid;
+				}
 				//to get category product
 				$Product = new Models_Product();
-				$catProd = $Product->GetProductByCategoryId($catid,$Sort);
+				$catProd = $Product->GetProductByCategoryId($catid_String,$Sort);
 				$this->view->ProductList = $catProd;
 				
 				//Set Pagination

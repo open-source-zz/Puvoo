@@ -65,9 +65,10 @@ class Models_Like
 		
 		$db = $this->db;
 		
-		$select = "SELECT upl.*,pm.product_id, pm.product_name, pm.product_price, cm.currency_symbol, cm.currency_code, round( ( pm.product_price * ".$mysession->currency_value.") / cm.currency_value, 2 ) as converted_price, pi.image_name, pi.image_path 
+		$select = "SELECT upl.*,pm.product_id, pm.product_name, pm.product_price, cm.currency_symbol, cm.currency_code, round( ( pm.product_price * ".$mysession->currency_value.") / cm.currency_value, 2 ) as converted_price, pi.image_name, pi.image_path,pml.product_name as ProdName
 				   FROM user_product_likes as upl
 				   JOIN product_master as pm ON(pm.product_id = upl.product_id)
+				   LEFT JOIN product_master_lang as pml ON (pm.product_id = pml.product_id and pml.language_id= ".DEFAULT_LANGUAGE.")
 				   LEFT JOIN user_master as um ON ( um.user_id = pm.user_id )
 				   LEFT JOIN currency_master as cm ON (um.currency_id = cm.currency_id)
 				   LEFT JOIN product_images as pi ON ( pm.product_id = pi.product_id AND pi.is_primary_image = 1)
@@ -84,9 +85,10 @@ class Models_Like
 		
 		$db = $this->db;
 		
-		$select = "SELECT upl.*,pm.product_id, pm.product_name, pm.product_price, cm.currency_symbol, cm.currency_code, round( ( pm.product_price * ".$mysession->currency_value.") / cm.currency_value, 2 ) as converted_price, pi.image_name, pi.image_path 
+		$select = "SELECT upl.*,pm.product_id, pm.product_name, pm.product_price, cm.currency_symbol, cm.currency_code, round( ( pm.product_price * ".$mysession->currency_value.") / cm.currency_value, 2 ) as converted_price, pi.image_name, pi.image_path,pml.product_name as ProdName
 				   FROM user_product_likes as upl
 				   JOIN product_master as pm ON(pm.product_id = upl.product_id)
+				   LEFT JOIN product_master_lang as pml ON (pm.product_id = pml.product_id and pml.language_id= ".DEFAULT_LANGUAGE.")
 				   LEFT JOIN user_master as um ON ( um.user_id = pm.user_id )
 				   LEFT JOIN currency_master as cm ON (um.currency_id = cm.currency_id)
 				   LEFT JOIN product_images as pi ON ( pm.product_id = pi.product_id AND pi.is_primary_image = 1)

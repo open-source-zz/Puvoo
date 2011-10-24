@@ -1,0 +1,137 @@
+<div class="Breadcrumb" id="PageBreadcrumb">
+	<ul>
+	   <li class="Home SecondLast"><a href="<?php echo SITE_URL; ?>admin/"><?php echo $this->Translate("Administration"); ?></a></li>
+	   <li class="Last"><span><?php echo $this->Translate('App_Settings'); ?></span></li>
+	</ul>
+</div>
+
+<div class="BodyContainer DashboardContainer" style="text-align:left;">
+	
+	<!--        Header       -->
+	<div class="Heading1">
+		<?php echo $this->Translate('App_Settings'); ?>
+	</div>
+	
+	<!--       Success and Error Message      -->
+	<?php if(count($this->updateError) > 0 ) { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
+				<?php foreach($this->updateError as $key => $val ) { ?>
+					<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+					<strong><?php echo $val; ?></strong></p>
+				<?php } ?>
+			</div>
+		</div>
+	<?php } ?>
+	<?php if($this->updateSuccess != '') { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-highlight ui-corner-all" style="margin-top: 20px; padding: 0 .7em;"> 
+				<p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
+				<strong><?php echo $this->updateSuccess; ?></strong></p>
+			</div>
+		</div>
+	<?php } ?>
+	
+	<!--       Form      -->
+	<form method="post" name="frmFbAppSettings" id="frmFbAppSettings" >
+		<table class="Panel" style="margin-top:10px;">
+			<tr>
+				<td class="Heading2" colspan="2">					
+					<?php echo $this->Translate('App_Settings'); ?>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<div id="div0" style="padding-bottom:5px">
+						<table class="Panel" width="100%" cellspacing="0" cellpadding="0">
+							<tr>
+								<td class="FieldLabel">
+									<span class="Required">*</span>&nbsp;<?php echo $this->Translate('Application_Hosting_Url'); ?>:
+								</td>
+								<td>
+									<input type="text" name="host_url" id="host_url" class="Field400" value="<?php echo $this->application_hosting_url; ?>" />
+									<span></span>
+								</td>
+							</tr>
+							<tr><td height="15"></td></tr>
+							<tr>
+								<td class="FieldLabel">
+									<span class="Required">*</span>&nbsp;<?php echo $this->Translate('Application_Url'); ?>:
+								</td>
+								<td>
+									<input type="text" name="app_url" id="app_url" class="Field400" value="<?php echo $this->facebook_application_url; ?>" />
+									<span></span>
+								</td>
+							</tr>
+							<tr><td height="15"></td></tr>
+							<tr>
+								<td class="FieldLabel">
+									<span class="Required">*</span>&nbsp;<?php echo $this->Translate('App_API_Id'); ?>:
+								</td>
+								<td>
+									<input type="text" name="app_api_id" id="app_api_id" class="Field400" value="<?php echo $this->application_api_id; ?>" />
+									<span></span>
+								</td>
+							</tr>
+							<tr><td height="15"></td></tr>
+							<tr>
+								<td class="FieldLabel">
+									<span class="Required">*</span>&nbsp;<?php echo $this->Translate('App_Secret_Key'); ?>:
+								</td>
+								<td>
+									<input type="text" name="app_secret_key" id="app_secret_key" class="Field400" value="<?php echo $this->application_secret_key; ?>" />
+									<span></span>
+								</td>
+							</tr>
+							<tr><td height="15"></td></tr>
+						</table>
+					</div>
+				</td>
+			</tr>
+			
+			<tr>
+			   <td colspan="2" style="padding-left:10px;">
+					<input type="submit" id="anything"  value="<?php echo $this->Translate('Update'); ?>" />
+					<input type="button" id="anything"  value="<?php echo $this->Translate('Cancle'); ?>" onclick="window.location='<?php echo SITE_URL . 'admin/' ?>'"/>
+				</td>
+			</tr> <tr><td height="15"></td></tr>
+			
+		</table>  
+		<input type="hidden" name="configuration_group_id" id="configuration_group_id" value="<?php echo $this->configuration_group_id; ?>" />
+	</form>             
+</div>
+
+<!--     JS Global Variable for the language    -->
+<script language="javascript" type="text/javascript">
+	var ERR_HOST_URL = "<?php echo $this->Translate('Err_application_hosting_url'); ?>";
+	var ERR_APP_URL = "<?php echo $this->Translate('Err_facebook_application_url'); ?>";
+	var ERR_API_ID = "<?php echo $this->Translate('Err_application_api_id'); ?>";
+	var ERR_SECRET_KEY = "<?php echo $this->Translate('Err_application_secret_key'); ?>";
+	
+	
+$(document).ready(function(){
+			
+	$("#frmFbAppSettings").validate({
+							
+		rules: { 
+			host_url: {  required: true  },
+			app_url: {  required: true  },
+			app_api_id: {  required: true  },
+			app_secret_key: {  required: true  } 
+			},
+			   
+		messages:{ 
+			host_url: {  required: ERR_HOST_URL  },
+			app_url: {  required: ERR_APP_URL  },
+			app_api_id: {  required: ERR_API_ID  },
+			app_secret_key: {  required: ERR_SECRET_KEY  }  
+			}, 
+		errorPlacement: function(error, element) 
+		{ 
+			error.appendTo( element.next() ); 
+		}
+	});
+
+});
+
+</script>

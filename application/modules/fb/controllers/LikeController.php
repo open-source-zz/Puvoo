@@ -88,27 +88,7 @@ class Fb_LikeController extends FbCommonController
 		global $mysession,$user,$facebook;
 		$likes = new Models_Like();
 		
-		$flag = 0;
-		if ($user) {  
-			$flag = 1;  
-			
-			try {
-				
-				$uprofile = $facebook->api('/me');
-				$this->view->yourlike_user_id = $uprofile["id"];
-				
-			  } catch (FacebookApiException $e) {
-			  
-					error_log($e);
-					$user = null;
-			  }
-			
-		} else {  
-		
-			$flag = 0; 	
-		}
-		
-		$this->view->userlogin = $flag;
+		$this->view->yourlike_user_id = FACEBOOK_USERID;
 		
 		//set current page number
 		$page_no = 1;
@@ -167,11 +147,20 @@ class Fb_LikeController extends FbCommonController
 		
 		$likes = new Models_Like();
 		
+		
+		$this->view->yourlike_user_id = FACEBOOK_USERID;
+		
 		$flag = 0;
-		if ($user) {  
+		if (FACEBOOK_USERID != '' ) {  
 			$flag = 1;  
 			
 			try {
+				
+				$facebook = new Facebook(array(
+					  'appId'  => FACEBOOK_APP_API_ID,
+					  'secret' => FACEBOOK_APP_SECRET_KEY,
+					  'cookie' => true,
+				));
 				
 				$uprofile = $facebook->api('/me/friends'); 
 				
@@ -216,24 +205,15 @@ class Fb_LikeController extends FbCommonController
 				
 			  } catch (FacebookApiException $e) {
 			  
-					error_log($e);
-					$user = null;
+					
 			  }
 			
 		} else {  
 		
 			$flag = 0; 	
 		}
-		$this->view->userlogin = $flag;
 		
 		$request = $this->getRequest();
-		
-		if($request->isPost() && $request->getPost("friends_email") !=  '' ){
-		
-		
-		
-		}
-		
 		
 	}
 	

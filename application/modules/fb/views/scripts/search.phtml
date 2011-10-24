@@ -1,5 +1,5 @@
 
-<form name="frmSearch" id="frmSearch" method="post" onsubmit="PerformSearch();" style="margin-right:3px;" target="_top" >
+<form name="frmSearch" id="frmSearch" method="post" onsubmit="return PerformSearch();" style="margin-right:3px;" target="_top" >
 	<div id="search">
 		<table cellspacing="0" cellpadding="0" border="0">
 			<tbody>
@@ -11,9 +11,9 @@
 					<td style="padding-right:5px;">
 						<select id="catid" style="height:26px; width:185px; " name="catid" class="inputtext">
 							<option value="0"><?php echo $this->Translate('AllCategory')?></option>
-							<?php foreach($this->SerchCategoryCombo as $val){ ?>
-							<option value="<?php echo $val['category_id'];?>" <?php if($val['category_id'] == $this->catid){?>selected="selected"<?php }?>><?php echo $val['category_name'];?></option>
-							<?php }?>
+							
+							<?php echo $this->SerchCategoryCombo; ?>
+						
 						</select>
 					</td>
 					<td style="" valign="middle">

@@ -141,7 +141,6 @@ $autoloader->setFallbackAutoloader(true);
 $registry = new Zend_Registry();
 Zend_Registry::setInstance($registry);
 
-
 //Initializing Zend Session
 $mysession = new Zend_Session_Namespace('Puvoo');
 
@@ -149,14 +148,6 @@ $mysession = new Zend_Session_Namespace('Puvoo');
 if(!isset($mysession->language)){
 	$mysession->language = 'en';
 }
-
-$user_profile= array();
-$user_profile['email'] = "";
-$user_profile['id'] = "";
-
-//$mysession->FbuserId = $user_profile['email'];
-$mysession->FbuserId = 'xyz@yahoo.com';
-$mysession->Facebook_UserId = '10150349794714140'; //$user_profile['id'];// Puvoo Version 
 
 //Load Translate class to handle multilanguage part
 Zend_Loader::loadClass('Zend_Translate');

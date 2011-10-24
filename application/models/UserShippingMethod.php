@@ -85,7 +85,14 @@ class Models_UserShippingMethod
 		$sql = "SELECT SM.*,SMD.zone, SMD.price 
 				FROM user_shipping_method as SM, user_shipping_method_detail as SMD 
 				WHERE SM.shipping_method_id = SMD.shipping_method_id AND SM.shipping_method_id = ".$id;		
-		$data = $db->fetchRow($sql);
+				
+		$sql2= "SELECT *
+				FROM user_shipping_method_lang
+				WHERE shipping_method_id = ".$id;				
+		
+		$data["shipping"] = $db->fetchRow($sql);
+		$data["language"] = $db->fetchAll($sql2);
+		
 		return $data;
 	}
 	
@@ -191,13 +198,29 @@ class Models_UserShippingMethod
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
-	public function insertShippingMethod($data,$table = "user_shipping_method")
+	public function insertShippingMethod($data,$table = "user_shipping_method", $langArray = array())
 	{
 		$db = $this->db;
 		
 		$db->insert($table, $data); 	 
 		
-		return $db->lastInsertId();
+		$shipping_method_id = $db->lastInsertId();
+		
+		if($langArray != NULL ) {
+			
+			$sql = "INSERT into user_shipping_method_lang (shipping_method_id, language_id, shipping_method_name) values ";
+			
+			foreach( $langArray as $key => $val )
+			{
+				$sql .= "(" . $shipping_method_id . ",". $key. ", '".$val["shipping_method_name"]."' ),";
+			}
+			
+			$sql = rtrim($sql,",");
+			
+			$db->query($sql);
+		}
+		
+		return $shipping_method_id;
 	}
 	
 	/**
@@ -217,10 +240,46 @@ class Models_UserShippingMethod
 	 **/
 	
 	
-	public function updateShippingMethod($data,$where,$table="user_shipping_method")
+	public function updateShippingMethod($data,$where,$table="user_shipping_method", $lang_array = array())
 	{
 		$db = $this->db;		
+		
 		$db->update($table, $data, $where); 	
+		
+		if($lang_array != NULL ) {
+			
+			$validator = new Zend_Validate_Db_NoRecordExists(
+					array(
+							'table' => "user_shipping_method_lang",
+							'field' => "language_id",
+							'exclude' => $where
+					)
+			);
+			
+			foreach( $lang_array as $key => $val )
+			{
+				if ($validator->isValid($key)) {
+					
+					$data1["shipping_method_id"] = $data["shipping_method_id"];
+					$data1["language_id"] = $key;
+					$data1["shipping_method_name"] = $val["shipping_method_name"];
+					
+					$db->insert("user_shipping_method_lang", $data1);	
+					
+				} else {
+					
+					$data2["shipping_method_id"] = $data["shipping_method_id"];
+					$data2["language_id"] = $key;
+					$data2["shipping_method_name"] = $val["shipping_method_name"];
+					
+					$where2 = $where." and language_id = ".$key;
+					
+					$db->update("user_shipping_method_lang", $data2, $where2); 	
+					
+				}	
+			}
+		}
+		
 		return true;
 	}
 	
@@ -244,6 +303,7 @@ class Models_UserShippingMethod
 		$db = $this->db;	
 		
 		if($db->delete("user_shipping_method", 'shipping_method_id = ' .$id)){
+			$db->delete("user_shipping_method_lang", 'shipping_method_id = ' .$id);
 			return true;	
 		} else {
 			return false;
@@ -271,6 +331,7 @@ class Models_UserShippingMethod
 		$db = $this->db;	
 		$where = 'shipping_method_id in ('.$ids.')'; 			
 		$db->delete("user_shipping_method",$where);	 		
+		$db->delete("user_shipping_method_lang", $where);
 		return true;	
 	}
 	

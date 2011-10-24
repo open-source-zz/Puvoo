@@ -10,7 +10,14 @@
 									<ul>
 										<?php foreach($record[$i] as $key => $val ) { ?>
 											<li>
-												<a href="<?php echo SITE_FB_URL ?>category/subcat/id/<?php echo $val['category_id']; ?>"><?php echo $val["category_name"]; ?></a>
+												<a href="<?php echo SITE_FB_URL ?>category/subcat/id/<?php echo $val['category_id']; ?>"><?php 
+												if($val["catName"] != '')
+												{
+													echo $val["catName"];
+												}else{
+													echo $val['category_name'];
+												}
+											?></a>
 											</li>	
 										<?php } ?>
 									</ul>
@@ -19,8 +26,8 @@
                             </div>
                         </div>
                     </li>
-                    <li><a href="<?php echo SITE_FB_URL ?>page/invitefriend" target="_top"><?php echo $this->Translate('InviteFriends')?></a></li>
-					<!--<li><a href="#" onclick="javascript: inviteClick();"><?php echo $this->Translate('InviteFriends')?></a></li>-->
+                   <!-- <li><a href="<?php echo SITE_FB_URL ?>page/invitefriend"  target="_top"><?php echo $this->Translate('InviteFriends')?></a></li>-->
+					<li><a href="#" onclick="javascript: sendRequestToManyRecipients();"><?php echo $this->Translate('InviteFriends')?></a></li>
                     <li><a href="<?php echo SITE_FB_URL ?>page/aboutus" target="_top"><?php echo $this->Translate('AboutUs')?></a></li>
                     <li><a href="<?php echo SITE_FB_URL ?>page/contactus" target="_top"><?php echo $this->Translate('ContactUs')?></a></li>
                  </ul>

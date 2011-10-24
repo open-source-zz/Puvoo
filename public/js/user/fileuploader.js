@@ -624,7 +624,6 @@ qq.extend(qq.FileUploader.prototype, {
 				ImageDiv += '		<img src="'+result.filename+'" alt="" />';
 				ImageDiv += '	</div>';
 				ImageDiv += '	<div class="borderbottom1">';
-				alert(result.is_primary_image);
 				if(result.is_primary_image == 1 ) {				
 					ImageDiv += '		<div style="float:left;"><input type="radio" value="'+result.id+'" name="product_primary_image" checked="checked" /></div>';
 				} else {					

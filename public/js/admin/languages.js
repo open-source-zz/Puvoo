@@ -11,6 +11,8 @@ function ValidateAddForm()
 					charset: { required: true },
 					numeric_separator_decimal: { required: true },
 					numeric_separator_thousands: { required: true },
+					country_id: { required: true },
+					currency_id: { required: true },
 			   },
 			   
 		messages:{
@@ -19,6 +21,8 @@ function ValidateAddForm()
 					charset: { required: ERR_LANGUAGE_CHARSET },
 					numeric_separator_decimal: { required: ERR_LANGUAGE_DECIMAL },
 					numeric_separator_thousands: { required: ERR_LANGUAGE_THOUSANDS },
+					country_id: { required: ERR_LANGUAGE_COUNTRY },
+					currency_id: { required: ERR_LANGUAGE_CURRENCY },
 				 },
 				 
 		errorPlacement: function(error, element) 
@@ -50,6 +54,8 @@ function ValidateEditForm()
 					charset: { required: true },
 					numeric_separator_decimal: { required: true },
 					numeric_separator_thousands: { required: true },
+					country_id: { required: true },
+					currency_id: { required: true },
 			   },
 			   
 		messages:{
@@ -58,6 +64,8 @@ function ValidateEditForm()
 					charset: { required: ERR_LANGUAGE_CHARSET },
 					numeric_separator_decimal: { required: ERR_LANGUAGE_DECIMAL },
 					numeric_separator_thousands: { required: ERR_LANGUAGE_THOUSANDS },
+					country_id: { required: ERR_LANGUAGE_COUNTRY },
+					currency_id: { required: ERR_LANGUAGE_CURRENCY },
 				 },
 				 
 		errorPlacement: function(error, element) 

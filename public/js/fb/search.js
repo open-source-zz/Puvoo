@@ -8,7 +8,8 @@ function PerformSearch()
 	 
  	if(searchtext == 'Search the Mall'){
 		alert('Please Enter Proper Text');
- 		return false;
+		return false;
+ 		//window.top.location = request_url;
 	}else{
 		 
 		$('#frmSearch').attr('action',''+site_fb_url+'product/search?q='+searchtext+'&search=1&cid='+catid+'');

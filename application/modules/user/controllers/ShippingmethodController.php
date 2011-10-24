@@ -176,9 +176,11 @@ class User_ShippingmethodController extends UserCommonController
 		$request = $this->getRequest();
 		$shipping_method = new Models_UserShippingMethod();
 		$home = new Models_UserMaster();
+		$lang = new Models_Language(); 
 		
 		// Initial values
 		$this->view->country = $shipping_method->selectAllRecord("country_master");
+		$this->view->language = $lang->getAllLanguages();
 		
 		// On Form Submit
 		if($request->isPost())	{
@@ -204,13 +206,27 @@ class User_ShippingmethodController extends UserCommonController
 				$addErrorMessage[] = $translate->_('Err_Shipping_Method_Rate');
 			} 
 			
+			$langArray = array();
+					
+			$langArray[DEFAULT_LANGUAGE]["shipping_method_name"] = $data['shipping_method_name'];
+		
+			foreach( $this->view->language as $key => $val ) 
+			{ 
+				if($val['language_id'] != DEFAULT_LANGUAGE ) { 
+					
+					$name_lagn_index = 'shipping_method_name_'.$val['language_id'];
+					$langArray[$val['language_id']]["shipping_method_name"]=$filter->filter(trim($this->_request->getPost($name_lagn_index)));
+				}		
+			}
+			
+			
 			if( count($addErrorMessage) == 0 || $addErrorMessage == "" ) {
 				
 				$where = "user_id = ".$mysession->User_Id;
 				
 				if($home->ValidateTableField("shipping_method_name",$data['shipping_method_name'],"user_shipping_method",$where)) {
 					// Insert Records
-					$shipping_method_id = $shipping_method->insertShippingMethod($data);
+					$shipping_method_id = $shipping_method->insertShippingMethod($data, "user_shipping_method", $langArray);
 					
 					if($shipping_method_id > 0) {
 					
@@ -264,19 +280,31 @@ class User_ShippingmethodController extends UserCommonController
 		
 		$shipping_method = new Models_UserShippingMethod();
 		$home = new Models_UserMaster();
+		$lang = new Models_Language(); 
 		$request = $this->getRequest();
 		
 		$shipping_method_id = $filter->filter(trim($this->_request->getPost('hidden_primary_id'))); 
 		
 		// Initial values
 		$this->view->country = $shipping_method->selectAllRecord("country_master");
-			
+		$this->view->language = $lang->getAllLanguages();			
 		
 		// Fetch records 
 		if($shipping_method_id > 0 && $shipping_method_id != "") {
 			
-			$this->view->records = $shipping_method->GetShippingMethodById($shipping_method_id);	
+			$records = $shipping_method->GetShippingMethodById($shipping_method_id);	
 			$this->view->shipping_method_id =  $shipping_method_id;	
+			
+			$langArray = array();
+			if( $records["language"] != NULL ) {
+				foreach($records["language"] as $key => $val )
+				{
+					$langArray[$val["language_id"]]["shipping_method_name"] = $val["shipping_method_name"];
+				}
+			}
+			
+			$this->view->records = $records["shipping"];
+			$this->view->langdata = $langArray;	
 			
 		} else {
 			
@@ -287,6 +315,7 @@ class User_ShippingmethodController extends UserCommonController
 				$primary_id = $filter->filter(trim($this->_request->getPost('shipping_method_id')));
 				// Fetch all record here
 				$data['user_id']=$mysession->User_Id;
+				$data['shipping_method_id'] = $primary_id; 
 				$data['shipping_method_name']=$filter->filter(trim($this->_request->getPost('shipping_method_name'))); 	
 				$data2['zone']=$filter->filter(trim($this->_request->getPost('shipping_zone'))); 	
 				$data2['price']=$filter->filter(trim($this->_request->getPost('shipping_price'))); 
@@ -304,6 +333,20 @@ class User_ShippingmethodController extends UserCommonController
 					$editErrorMessage[] = $translate->_('Err_Shipping_Method_Rate');
 				} 
 				
+				$langArray = array();
+					
+				$langArray[DEFAULT_LANGUAGE]["shipping_method_name"] = $data['shipping_method_name'];
+			
+				foreach( $this->view->language as $key => $val ) 
+				{ 
+					if($val['language_id'] != DEFAULT_LANGUAGE ) { 
+						
+						$name_lagn_index = 'shipping_method_name_'.$val['language_id'];
+						$langArray[$val['language_id']]["shipping_method_name"]=$filter->filter(trim($this->_request->getPost($name_lagn_index)));
+						
+					}		
+				}
+				
 				
 				if( count($editErrorMessage) == 0 || $editErrorMessage == "") {
 					// Update Records
@@ -311,7 +354,7 @@ class User_ShippingmethodController extends UserCommonController
 					if($home->ValidateTableField("shipping_method_name",$data['shipping_method_name'],"user_shipping_method",$cond)) 					{
 						
 						$where = "shipping_method_id = ".$primary_id;		
-						$update1 = $shipping_method->updateShippingMethod($data,$where);
+						$update1 = $shipping_method->updateShippingMethod($data,$where, "user_shipping_method", $langArray);
 						$update2 = $shipping_method->updateShippingMethod($data2,$where,"user_shipping_method_detail");			
 
 						if($update1 = TRUE || $update2 = TRUE) {
@@ -334,6 +377,7 @@ class User_ShippingmethodController extends UserCommonController
 				
 				$this->view->editErrorMessage = $editErrorMessage;	
 				$this->view->records = $row;	
+				$this->view->langdata = $langArray;	
 				$this->view->shipping_method_id =  $primary_id;		
 			}  
 		}

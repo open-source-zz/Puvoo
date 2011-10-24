@@ -217,9 +217,15 @@ class qqUploadedFileXhr {
         
         return true;
     }
-    function getName() {
+    function getName() 
+	{
         return $_GET['qqfile'];
     }
+	function getWidthHeight()
+	{
+		$img = getimagesize($_GET['qqfile']);
+		return $img;
+	}
     function getSize() {
 		$translate = Zend_Registry::get('Zend_Translate');
         if (isset($_SERVER["CONTENT_LENGTH"])){
@@ -243,8 +249,9 @@ class qqUploadedFileForm {
             return false;
         }
         return true;
-    }
+    }	
     function getName() {
+		
         return $_FILES['qqfile']['name'];
     }
     function getSize() {
@@ -318,25 +325,16 @@ class qqFileUploader {
         if ($size > $this->sizeLimit) {
             return array($translate->_('Err_Image_Upload_Error') => $translate->_('Err_Image_Upload_Large_File'));
         }
-        
-		if ($size < (300*300)) {
-			return array($translate->_('Err_Image_Upload_Error') => $translate->_('Err_Image_Upload_Small_File'));
-		}
+		
 		
         $pathinfo = pathinfo($this->file->getName());
         $filename = $pathinfo['filename'] ;
 		//$filename."_". //$filename."_".
 		$filename = md5(microtime());
 		
-		 $ext = $pathinfo['extension'];
-		 
-		 
+		$ext = $pathinfo['extension'];
 		global $mysession;
-	
-
-        //$filename = md5(uniqid());
-       
-
+		
         if($this->allowedExtensions && !in_array(strtolower($ext), $this->allowedExtensions)){
             $these = implode(', ', $this->allowedExtensions);
             return array($translate->_('Err_Image_Upload_Error') => $translate->_('Err_Image_Upload_Invalid_Ext_File'). $these . '.');
@@ -352,7 +350,21 @@ class qqFileUploader {
 		$mysession->FileName=($filename.'.'.$ext);
 			
         if ($this->file->save($uploadDirectory . $filename . '_img.' . $ext)){
-            return array('success'=>true,'image_name' => $filename,'image_path'=> $filename . '_img.' . $ext,'filename'=>$uploadDirectory.$filename.'_img.'. $ext);
+		
+			list( $width, $height ) = getimagesize($uploadDirectory . $filename . '_img.' . $ext);
+			
+			if ($width < 350 && $height < 350 ) {
+			
+				deleteAllFiles($uploadDirectory . $filename . '_img.' . $ext);
+				
+				return array($translate->_('Err_Image_Upload_Error') => $translate->_('Err_Image_Upload_Small_File'));
+				
+			} else {
+		
+            	return array('success'=>true,'image_name' => $filename,'image_path'=> $filename . '_img.' . $ext,'filename'=>$uploadDirectory.$filename.'_img.'. $ext);
+			
+			}
+			
         } else {
             return array($translate->_('Err_Image_Upload_Error')=> $translate->_('Err_Image_Upload_Cancel'));
         }

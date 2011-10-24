@@ -37,30 +37,38 @@
 						<?php }?> 
 						<div id="productGridView" class="portlet">
 						<?php foreach($this->records as $prodval){?>
+							<?php 
+								if($prodval['ProdName'] != '')
+								{
+									$prodName = $prodval['ProdName'];
+								}else{
+									$prodName = $prodval['product_name'];
+								}
+							?>
 							<div class="productGridItem productGridItemTopRow">
 								<div class="thumbnailImage" style="margin-top:14px;">
 									<a target="_top" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $prodval['product_id'];?>">
 									
 									<?php if(!$prodval['image_name']){?>
-										<img class="img" src="<?php echo IMAGES_FB_PATH ?>/Default.gif"/>
+										<img class="img" src="<?php echo IMAGES_FB_PATH ?>/Default.gif" alt="Default" title="Default"/>
 									<?}else{?>
 									
-										<img class="img" src="<?php echo SITE_PRODUCT_IMAGES_PATH.$prodval['image_path'] ?>/<?php echo $prodval['image_name'] ?>" width="128"/>
+										<img class="img" src="<?php echo SITE_PRODUCT_IMAGES_PATH.$prodval['image_path'] ?>/<?php echo $prodval['image_name'] ?>" width="128" alt="<?php echo $prodName;?>" title="<?php echo $prodName;?>"/>
 									<?}?>
 									</a>
 								</div>
 								<div class="productTitle">
-									<a target="_top" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $prodval['product_id'];?>"><?php echo $prodval['product_name'];?></a> 
+									<a target="_top" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $prodval['product_id'];?>"><?php echo $prodName;?></a> 
 								</div>
 								<div class="productPrice">
-								    <?php echo "$". $prodval['Prod_convert_price']."&nbsp;";?>
+								    <?php echo DEFAULT_CURRENCY_SYMBOL. $prodval['Prod_convert_price']."&nbsp;".DEFAULT_CURRENCY_CODE;?>
 								</div>
 								<div class="socialbtn">
 									<script>(function(d, s, id) {
 										  var js, fjs = d.getElementsByTagName(s)[0];
 										  if (d.getElementById(id)) {return;}
 										  js = d.createElement(s); js.id = id;
-										  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=124974344272864";
+										  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=<?php echo FACEBOOK_APP_API_ID; ?>";
 										  fjs.parentNode.insertBefore(js, fjs);
 										}(document, 'script', 'facebook-jssdk'));</script>
 										<fb:like href="<?php echo SITE_FB_URL . "product/view/id/" . $prodval['product_id']; ?>" send="true" layout="button_count" width="181" show_faces="false"></fb:like>

@@ -12,9 +12,9 @@
 	<div class="Heading1">
 		<?php echo $this->Translate('Add_Product_Api_Help'); ?>
 	</div>
-<div style="margin-top:20px;"><h4>REST URL : <?php echo SITE_URL."rest/product"; ?></h4> </div>
-<div style="margin-top:20px;"><h4>Add Product Input</h4></div>
-<div style="margin-top:20px;">The box below lists all fields that could be included in the call request. To learn more about an individual field scroll down to find it in the table below the box.</div>
+<div style="margin-top:20px;"><h4><?php echo $this->Translate('Api_Add_Product_Rest_Url'); ?> : <?php echo SITE_URL."rest/product"; ?></h4> </div>
+<div style="margin-top:20px;"><h4><?php echo $this->Translate('Api_Add_Product_Input'); ?></h4></div>
+<div style="margin-top:20px;"><?php echo $this->Translate('Api_Add_Product_Title'); ?></div>
 <pre style="background-color:#E0E0E0;  font-size:12px">
 
 &lt;?xml version="1.0" encoding="utf-8"?&gt;
@@ -44,12 +44,12 @@
 		
 		&lt;categories&gt;
 		  &lt;id&gt; INT &lt;/id&gt;
-		  &lt;!-- ... more id nodes here ... --&gt;
+		  &lt;!-- ... <?php echo $this->Translate('Api_Add_Product_Category_Comment'); ?> ... --&gt;
 		&lt;/categories&gt;
 		
 		&lt;images&gt;
 		  &lt;image&gt; URL &lt;/image&gt;
-		  &lt;!-- ... more image nodes here ... --&gt;
+		  &lt;!-- ... <?php echo $this->Translate('Api_Add_Product_Image_Comment'); ?> ... --&gt;
 		&lt;/images&gt;
 		
 		&lt;attributes&gt;
@@ -64,258 +64,285 @@
 					&lt;price&gt; DECIMAL &lt;/price&gt;
 					&lt;available_qty&gt; INT &lt;/available_qty&gt;
 				&lt;/value&gt;
-				&lt;!-- ... more value nodes here ... --&gt;
+				&lt;!-- ... <?php echo $this->Translate('Api_Add_Product_Image_Comment'); ?> ... --&gt;
 			&lt;/options&gt;
 		  &lt;/attribute&gt;
-		  &lt;!-- ... more attribute nodes here ... --&gt;
+		  &lt;!-- ... <?php echo $this->Translate('Api_Add_Product_Attribute_Comment'); ?> ... --&gt;
 		&lt;/attributes&gt;
 		
+		&lt;languages&gt;
+			&lt;language&gt;
+				&lt;code&gt; &lt;![CDATA[TEXT]]&gt; &lt;/code&gt;
+				&lt;name&gt; &lt;![CDATA[TEXT]]&gt; &lt;/name&gt;
+				&lt;description&gt; &lt;![CDATA[TEXT]]&gt; &lt;/description&gt;
+			&lt;/language&gt;
+			&lt;!-- ... <?php echo $this->Translate('Api_Add_Product_Language_Comment'); ?> ... --&gt;
+		&lt;/languages&gt;
+	
 	&lt;/Product&gt;
-	&lt;!-- ... more Product nodes here ... --&gt;
+	&lt;!-- ... <?php echo $this->Translate('Api_Add_Product_Product_Comment'); ?> ... --&gt;
 &lt;/Products&gt;
 </pre>
 <div style="margin-top:20px;">
-<h4>Input argument detail</h4>
+<h4><?php echo $this->Translate('Api_Add_Product_Input_Detail'); ?></h4>
 </div>
 <table border="1" cellspacing="2" cellpadding="4" width="100%">
 	<tr>
-		<th >Argument</th>
-		<th >Type</th>
- 		<th>Occurrence</th>
-		<th>Meaning</th>
+		<th ><?php echo $this->Translate('Api_Add_Product_Input_Argument'); ?></th>
+		<th ><?php echo $this->Translate('Api_Add_Product_Input_Type'); ?></th>
+ 		<th><?php echo $this->Translate('Api_Add_Product_Input_Occurrence'); ?></th>
+		<th><?php echo $this->Translate('Api_Add_Product_Input_Meaning'); ?></th>
 	</tr>
 	<tr>
 		<td valign="top">Products</td>
 		<td valign="top">XML Node</td>
-		<td valign="top">Always,Single</td>
-		<td valign="top">It is a compulsary node. It will occur only once. It is an xml node that will contain all product nodes to insert.</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Products'); ?></td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_M_Products'); ?></td>
 	</tr>
 	<tr>
 		<td valign="top">Product</td>
 		<td valign="top">XML Node</td>
-		<td valign="top">Always,Repeatable</td>
-		<td valign="top">It is a compulsary node. 
-			It will appear atleast once. 
-			You can repeat this node to enter more products. 
-			you can add maximum 10 products at a time.
-			It will contain all inputs necessary to add single product
-		</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Product'); ?></td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_M_Product'); ?></td>
 	</tr>
 	<tr>
 		<td valign="top">name</td>
 		<td valign="top">TEXT</td>
-		<td valign="top">Always,Single</td>
-		<td valign="top">It will contain product name.</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Name'); ?></td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_M_Name'); ?></td>
 	</tr>
 	<tr>
 		<td valign="top">description</td>
 		<td valign="top">TEXT</td>
-		<td valign="top">Always,Single</td>
-		<td valign="top">It will contain product description.</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Description'); ?></td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_M_Description'); ?></td>
 	</tr>
 	<tr>
 		<td valign="top">product_external_id</td>
 		<td valign="top">TEXT</td>
-		<td valign="top">Optional,Single</td>
-		<td valign="top">It will contain product external id to synchronize it with external db.</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Product_External_Id'); ?></td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_M_Product_External_Id'); ?></td>
 	</tr>
 	<tr>
 		<td valign="top">price</td>
 		<td valign="top">DECIMAL</td>
-		<td valign="top">Always,Single</td>
-		<td valign="top">It will contain product price. Example: 10.50</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Price'); ?></td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_M_Price'); ?></td>
 	</tr>
 	<tr>
 		<td valign="top">code</td>
 		<td valign="top">TEXT</td>
-		<td valign="top">Optional,Single</td>
-		<td valign="top">It is an optional field. It will contain product code. Example: Product1 or Product_1</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Code'); ?></td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_M_Code'); ?></td>
 	</tr>
 	<tr>
 		<td valign="top">weight</td>
 		<td valign="top">DECIMAL</td>
-		<td valign="top">Always,Single</td>
-		<td valign="top">It will contain product code. Example: Product1 or Product_1</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Weight'); ?></td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_M_Weight'); ?></td>
 	</tr>
 	<tr>
 		<td valign="top">length</td>
 		<td valign="top">DECIMAL</td>
-		<td valign="top">Always,Single</td>
-		<td valign="top">It will contain product length. Example: 10.50</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Length'); ?></td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_M_Length'); ?></td>
 	</tr>
 	<tr>
 		<td valign="top">width</td>
 		<td valign="top">DECIMAL</td>
-		<td valign="top">Always,Single</td>
-		<td valign="top">It will contain product width. Example: 10.50</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Width'); ?></td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_M_Width'); ?></td>
 	</tr>
 	<tr>
 		<td valign="top">depth</td>
 		<td valign="top">DECIMAL</td>
-		<td valign="top">Always,Single</td>
-		<td valign="top">It will contain product depth. Example: 10.50</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Depth'); ?></td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_M_Depth'); ?></td>
 	</tr>
 	<tr>
 		<td valign="top" >weight_unit</td>
 		<td valign="top">TEXT</td>
-		<td valign="top">Always,Single</td>
-		<td >It will contain weight unit for given product.<br />
-			It can be any value from following list<br />
-			Kgs,Lbs
-		</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Weight_Unit'); ?></td>
+		<td ><?php echo $this->Translate('Api_Add_Product_Input_M_Weight_Unit'); ?></td>
 	</tr>
 	<tr>
 		<td valign="top">length_unit</td>
 		<td valign="top">TEXT</td>
-		<td valign="top">Always,Single</td>
-		<td >It will contain length unit for given product.<br />
-			It can be any value from following list<br />
-			Mts,Cms
-		</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Length_Unit'); ?></td>
+		<td ><?php echo $this->Translate('Api_Add_Product_Input_M_Length_Unit'); ?>	</td>
 	</tr>
 	<tr>
 		<td valign="top" >start_sales</td>
 		<td valign="top">BOOLEAN</td>
-		<td valign="top">Optional,Single</td>
-		<td >It is an optional input. Its value can be 0 or 1. If value 1 than product is eligible to put for sell otherwise product will not be displayed in list of products to sell.
-		</td>
+		<td valign="top"> <?php echo $this->Translate('Api_Add_Product_Input_O_Start_Sale'); ?></td>
+		<td > <?php echo $this->Translate('Api_Add_Product_Input_M_Start_Sale'); ?></td>
 	</tr>
 	<tr>
 		<td valign="top" >available_qty</td>
 		<td valign="top">INT</td>
-		<td valign="top">Always,Single</td>
-		<td >It will contain product quantity available with product owner.</td>
+		<td valign="top"> <?php echo $this->Translate('Api_Add_Product_Input_O_Available_Qty'); ?></td>
+		<td ><?php echo $this->Translate('Api_Add_Product_Input_M_Available_Qty'); ?></td>
 	</tr>
 	<tr>
 		<td valign="top" >main_image</td>
 		<td valign="top">URL</td>
-		<td valign="top">Always,Single</td>
-		<td >It will contain URL of main image of product.</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Main_Image'); ?></td>
+		<td ><?php echo $this->Translate('Api_Add_Product_Input_M_Main_Image'); ?></td>
 	</tr>
 	<tr>
 		<td valign="top" >discount</td>
 		<td valign="top">INT</td>
-		<td valign="top">Optional,Single</td>
-		<td >The discount percentage offered to loyal customers. For example, to enable a 30% discount, specify "30". Values less than 0 or greater than 100 will be reset to zero.</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Discount'); ?></td>
+		<td ><?php echo $this->Translate('Api_Add_Product_Input_M_Discount'); ?></td>
 	</tr>
 	<tr>
 		<td valign="top" >available_date</td>
 		<td valign="top">DATETIME</td>
-		<td valign="top">Optional,Single</td>
-		<td >If provided, the datetime the product is first available for purchase.<br />Format: YYYY-mm-dd</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Available_Date'); ?></td>
+		<td ><?php echo $this->Translate('Api_Add_Product_Input_M_Available_Date'); ?></td>
 	</tr>
 	<tr>
 		<td valign="top" >expiration_date</td>
 		<td valign="top">DATETIME</td>
-		<td valign="top">Optional,Single</td>
-		<td >If provided, the time the product is no longer available for purchase.<br />Format: YYYY-mm-dd</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Expiration_Date'); ?></td>
+		<td ><?php echo $this->Translate('Api_Add_Product_Input_M_Expiration_Date'); ?></td>
 	</tr>
 	<tr>
 		<td valign="top" >promotion_start_date</td>
 		<td valign="top">DATETIME</td>
-		<td valign="top">Optional,Single</td>
-		<td >If provided, the start datetime for the product promotion.<br />Format: YYYY-mm-dd</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Promo_Start_Date'); ?></td>
+		<td ><?php echo $this->Translate('Api_Add_Product_Input_M_Promo_Start_Date'); ?></td>
 	</tr>
 	<tr>
 		<td valign="top" >promotion_end_date</td>
 		<td valign="top">DATETIME</td>
-		<td valign="top">Optional,Single</td>
-		<td >If provided, the end datetime for the product promotion.<br />Format: YYYY-mm-dd</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Promo_End_Date'); ?></td>
+		<td ><?php echo $this->Translate('Api_Add_Product_Input_M_Promo_End_Date'); ?></td>
 	</tr>
 	<tr>
 		<td valign="top" >categories</td>
 		<td valign="top">XML node</td>
-		<td valign="top">Always,Single</td>
-		<td >It will contain category ids for product.</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Categories'); ?></td>
+		<td ><?php echo $this->Translate('Api_Add_Product_Input_M_Categories'); ?></td>
 	</tr>
 	<tr>
 		<td valign="top" >id</td>
 		<td valign="top">INT</td>
-		<td valign="top">Always,Repeatable</td>
-		<td >It will appear atleast once. It will contain category id available in system. Product will be displayed in associated category.</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Id'); ?></td>
+		<td ><?php echo $this->Translate('Api_Add_Product_Input_M_Id'); ?></td>
 	</tr>
 	<tr>
 		<td valign="top">images</td>
 		<td valign="top">XML Node</td>
-		<td valign="top">Optional,Single</td>
-		<td >It is an optional node. It will contain list of images for product</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Images'); ?></td>
+		<td ><?php echo $this->Translate('Api_Add_Product_Input_M_Images'); ?></td>
 	</tr>
 	<tr>
 		<td valign="top">image</td>
 		<td valign="top">URL</td>
-		<td valign="top">Conditional,Repeatable</td>
-		<td >It will require if images node is there. It will contain URL of image to associate with product.</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Image'); ?></td>
+		<td ><?php echo $this->Translate('Api_Add_Product_Input_M_Image'); ?></td>
 	</tr>
 	<tr>
 		<td valign="top">attributes</td>
 		<td valign="top">XML Node</td>
-		<td valign="top">Optional,Single</td>
-		<td >It is an optional node. It will contain list of product attributes</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Atrbs'); ?></td>
+		<td ><?php echo $this->Translate('Api_Add_Product_Input_M_Atrbs'); ?></td>
 	</tr>
 	<tr>
 		<td valign="top">attribute</td>
 		<td valign="top">XML Node</td>
-		<td valign="top">Conditional,Repeatable</td>
-		<td >It will require if attributes node is there. It will contain attribute values to associate with product.</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Atrbs_Attribute'); ?></td>
+		<td ><?php echo $this->Translate('Api_Add_Product_Input_M_Atrbs_Attribute'); ?></td>
 	</tr>
 	<tr>
 		<td valign="top">name</td>
 		<td valign="top">TEXT</td>
-		<td valign="top">Conditional,Single</td>
-		<td >It will require if attribute node is there. It will contain attribute name.</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Atrbs_Attribute_Name'); ?></td>
+		<td ><?php echo $this->Translate('Api_Add_Product_Input_M_Atrbs_Attribute_Name'); ?></td>
 	</tr>
 	<tr>
 		<td valign="top">options</td>
 		<td valign="top">XML Node</td>
-		<td valign="top">Conditional,Single</td>
-		<td >It will require if attribute node is there. It will contain attribute values.</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Atrbs_Attribute_Opt'); ?></td>
+		<td ><?php echo $this->Translate('Api_Add_Product_Input_M_Atrbs_Attribute_Opt'); ?></td>
 	</tr>
 	<tr>
 		<td valign="top">value</td>
 		<td valign="top">XML Node</td>
-		<td valign="top">Conditional,Repeatable</td>
-		<td >It will require if options node is there. It will appear atleast once. It will contain attribute option values.</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Atrbs_Attribute_Opt_Val'); ?></td>
+		<td ><?php echo $this->Translate('Api_Add_Product_Input_M_Atrbs_Attribute_Opt_Val'); ?></td>
 	</tr>
 	<tr>
 		<td valign="top">name</td>
 		<td valign="top">TEXT</td>
-		<td valign="top">Conditional,Single</td>
-		<td valign="top">The name of the option value. example "tg. M"</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Atrbs_Attribute_Opt_Val_Name'); ?></td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_M_Atrbs_Attribute_Opt_Val_Name'); ?></td>
 	</tr>
 	<tr>
 		<td valign="top">sku</td>
 		<td valign="top">TEXT</td>
-		<td valign="top">Recommended,Single</td>
-		<td valign="top">The product sku based on product attributes. Example: Product1_red</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Atrbs_Attribute_Opt_Val_Sku'); ?></td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_M_Atrbs_Attribute_Opt_Val_Sku'); ?></td>
 	</tr>
 	<tr>
 		<td valign="top">weight</td>
 		<td valign="top">DECIMAL</td>
-		<td valign="top">Optional,Single</td>
-		<td valign="top">Weight of product for this option</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Atrbs_Attribute_Opt_Val_Weight'); ?></td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_M_Atrbs_Attribute_Opt_Val_Weight'); ?></td>
 	</tr>
 	<tr>
 		<td valign="top">weight_unit</td>
 		<td valign="top">TEXT</td>
-		<td valign="top">Optional,Single</td>
-		<td valign="top">Weight unit for product option. If not setted it will take the weight unit of the product</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Atrbs_Attribute_Opt_Val_Weight_Unit'); ?></td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_M_Atrbs_Attribute_Opt_Val_Weight_Unit'); ?></td>
 	</tr>
 	<tr>
 		<td valign="top">price</td>
 		<td valign="top">DECIMAL</td>
-		<td valign="top">Optional,Single</td>
-		<td valign="top">The price of option to add to the product price</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Atrbs_Attribute_Opt_Val_Price'); ?></td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_M_Atrbs_Attribute_Opt_Val_Price'); ?></td>
 	</tr>
 	<tr>
 		<td valign="top">available_qty</td>
 		<td valign="top">INT</td>
-		<td valign="top">Optional,Single</td>
-		<td valign="top">The quantity of option available</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Atrbs_Attribute_Opt_Val_Avalible_Qty'); ?></td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_M_Atrbs_Attribute_Opt_Val_Avalible_Qty'); ?></td>
+	</tr>
+	<tr>
+		<td valign="top">languages</td>
+		<td valign="top">XML Node</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Langs'); ?></td>
+		<td ><?php echo $this->Translate('Api_Add_Product_Input_M_Langs'); ?></td>
+	</tr>
+	<tr>
+		<td valign="top">language</td>
+		<td valign="top">XML Node</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Langs_Language'); ?></td>
+		<td ><?php echo $this->Translate('Api_Add_Product_Input_M_Langs_Language'); ?></td>
+	</tr>
+	<tr>
+		<td valign="top">code</td>
+		<td valign="top">TEXT</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Langs_Language_Code'); ?></td>
+		<td ><?php echo $this->Translate('Api_Add_Product_Input_M_Langs_Language_Code'); ?></td>
+	</tr>
+	<tr>
+		<td valign="top">name</td>
+		<td valign="top">TEXT</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Langs_Language_Name'); ?></td>
+		<td ><?php echo $this->Translate('Api_Add_Product_Input_M_Langs_Language_Name'); ?></td>
+	</tr>
+	<tr>
+		<td valign="top">description</td>
+		<td valign="top">TEXT</td>
+		<td valign="top"><?php echo $this->Translate('Api_Add_Product_Input_O_Langs_Language_Desc'); ?></td>
+		<td ><?php echo $this->Translate('Api_Add_Product_Input_O_Langs_Language_Desc'); ?></td>
 	</tr>
 	
 </table>
 <div style="margin-top:20px;">
-<h4>Add Product Output</h4>
+<h4><?php echo $this->Translate('Api_Add_Product_Output'); ?></h4>
 </div>
 <pre style="background-color:#E0E0E0;  font-size:12px">
 &lt;?xml version="1.0" encoding="utf-8" ?&gt;
@@ -333,66 +360,61 @@
 &lt;/response&gt;
 </pre>
 <div style="margin-top:20px;">
-<h4>Output return values detail</h4>
+<h4><?php echo $this->Translate('Api_Add_Product_Output_Detail'); ?></h4>
 </div>
 <table border="1" cellspacing="2" cellpadding="4" width="100%">
 	<tr>
-		<th >Return Value</th>
-		<th >Type</th>
- 		<th>Occurrence</th>
-		<th>Meaning</th>
+		<th ><?php echo $this->Translate('Api_Add_Product_Output_Return_Value'); ?></th>
+		<th ><?php echo $this->Translate('Api_Add_Product_Output_Type'); ?></th>
+ 		<th><?php echo $this->Translate('Api_Add_Product_Output_Occurrence'); ?></th>
+		<th><?php echo $this->Translate('Api_Add_Product_Output_Meaning'); ?></th>
 	</tr>
 	<tr>
 		<td >response</td>
 		<td >XML Node</td>
-		<td >Always,Single</td>
-		<td>It is a compulsary node. It will occur only once. It is an xml node that will contain result of the call made.</td>
+		<td ><?php echo $this->Translate('Api_Add_Product_Output_O_Response'); ?></td>
+		<td><?php echo $this->Translate('Api_Add_Product_Output_M_Response'); ?></td>
 	</tr>
 	<tr>
 		<td >result</td>
 		<td >TEXT</td>
-		<td >Always,Single</td>
-		<td>It is a compulsary node. 
-			It will occur only once.<br/> 
-			It can have any of the value below<br />
-			<b>Success</b> = Your call executed successfully.<br />
-			<b>Failure</b> = Your call failed due to some error.
-		</td>
+		<td ><?php echo $this->Translate('Api_Add_Product_Output_O_Result'); ?></td>
+		<td><?php echo $this->Translate('Api_Add_Product_Output_M_Result'); ?></td>
 	</tr>
 	<tr>
 		<td >error</td>
 		<td >TEXT</td>
-		<td >Conditional,Repeatable</td>
-		<td>It will occur only if your call is failed due to some error. It will contain error text. It can repeat for more than 1 errors.</td>
+		<td ><?php echo $this->Translate('Api_Add_Product_Output_O_Error'); ?></td>
+		<td><?php echo $this->Translate('Api_Add_Product_Output_M_Error'); ?></td>
 	</tr>
 	<tr>
 		<td >Products</td>
 		<td >XML Node</td>
-		<td >Conditional,Single</td>
-		<td >It will occur only if your call is successfull. It will contain nodes of inserted products.</td>
+		<td ><?php echo $this->Translate('Api_Add_Product_Output_O_Products'); ?></td>
+		<td ><?php echo $this->Translate('Api_Add_Product_Output_M_Products'); ?></td>
 	</tr>
 	<tr>
 		<td >Product</td>
 		<td >XML Node</td>
-		<td >Conditional,Repeatable</td>
-		<td >It will occur atleast once for Products node. It will contain name and id information for single product inserted in system.</td>
+		<td ><?php echo $this->Translate('Api_Add_Product_Output_O_Product'); ?></td>
+		<td ><?php echo $this->Translate('Api_Add_Product_Output_M_Product'); ?></td>
 	</tr>
 	<tr>
 		<td >name</td>
 		<td >TEXT</td>
-		<td >Conditional,Single</td>
-		<td >It will occur for each Product node. It will contain inserted product name.</td>
+		<td ><?php echo $this->Translate('Api_Add_Product_Output_O_Product_Name'); ?></td>
+		<td ><?php echo $this->Translate('Api_Add_Product_Output_M_Product_Name'); ?></td>
 	</tr>
 	<tr>
 		<td >id</td>
 		<td >INT</td>
-		<td >Conditional,Single</td>
-		<td >It will occur for each Product node. It will contain inserted product id.</td>
+		<td ><?php echo $this->Translate('Api_Add_Product_Output_O_Product_Id'); ?></td>
+		<td ><?php echo $this->Translate('Api_Add_Product_Output_M_Product_Id'); ?></td>
 	</tr>
 </table>
 
 <div style="margin-top: 20px;">
-	<h4>PHP Sample Code</h4>
+	<h4><?php echo $this->Translate('Api_Add_Product_Output_M_Product_Id'); ?></h4>
 </div>
 <pre style="background-color:#E0E0E0;  font-size:12px">
 &lt;?php
@@ -443,6 +465,13 @@ $data = "&lt;Products&gt;\r\n"
 	. "&lt;/options&gt;\r\n"
 	. "&lt;/attribute&gt;\r\n"
 	. "&lt;/attributes&gt;\r\n"
+	. "&lt;languages&gt;\r\n"
+	. "&lt;language&gt;\r\n"
+	. "&lt;code>&lt;![CDATA[it_IT]]&gt;&lt;/code&gt;\r\n"
+	. "&lt;name>&lt;![CDATA[product_name in it]]&gt;&lt;/name&gt;\r\n"
+	. "&lt;description&gt;&lt;![CDATA[product description in italian]]&gt;&lt;/description&gt;\r\n"
+	. "&lt;/language&gt;\r\n"
+	. "&lt;/languages&gt;\r\n"
 	. "&lt;/Product&gt;\r\n"
 	. "&lt;/Products&gt;";
 
@@ -469,4 +498,3 @@ echo $result;
 ?&gt;
 </pre>
 </div> 
-

@@ -239,5 +239,22 @@ class Models_ProductImages
 		return $db->update("product_images", $data, $where); 	
 	}
 	
+	public function updateProductPrimaryImg($product_id,$image_id)
+	{
+		$db = $this->db;
+				
+		$where1 ="product_id = ".$product_id;		
+		$where2 ="image_id = ".$image_id;		
+		
+		$data1["is_primary_image"] = 0;
+		$data2["is_primary_image"] = 1;
+		
+		$db->update("product_images", $data1, $where1); 	
+		$db->update("product_images", $data2, $where2); 	
+		
+		return true;
+	
+	}
+	
 }
 ?>

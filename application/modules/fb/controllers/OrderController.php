@@ -90,19 +90,29 @@ class Fb_OrderController extends FbCommonController
     public function confirmorderAction()
 	{
 		global $mysession;
-		
+		include_once(SITE_ROOT_PATH.'/../public/paypalfunctions.php');
 		
 		$filter = new Zend_Filter_StripTags();	
-		$Token = $filter->filter(trim($this->_request->getParam('token'))); 	
-		$PayerID = $filter->filter(trim($this->_request->getParam('PayerID'))); 	
+		$Cart = new Models_Cart();
+		$Order = new Models_Orders();
+		$Product = new Models_Product();
 		
-		if($Token != '' &&  $PayerID != '' ) {
-			$Cart = new Models_Cart();
-			$Order = new Models_Orders();
-			$Product = new Models_Product();
-			
-			$OrderCart = $Order->getOrderDetail(FBUSER_ID);
-			
+		$OrderCart = $Order->getOrderDetail(FBUSER_ID);
+		
+		$Token = $filter->filter(trim($this->_request->getParam('token'))); 	
+		$PayerID = $filter->filter(trim($this->_request->getParam('PayerID'))); 
+		
+		//GetExpressCheckoutDetails
+		$ShippingDetail = GetShippingDetails($Token);
+		
+		
+		//DoExpressCheckoutDetails
+		$ConfirmPayment = ConfirmPayment($OrderCart["total_order_amount"]);
+	
+		$ack = strtoupper($ConfirmPayment["ACK"]);
+		
+		//print $ack;die;
+		if($ack=="SUCCESS" || $ack=="SUCCESSWITHWARNING") {
 			
 			if($OrderCart) {
 				
@@ -211,11 +221,11 @@ class Fb_OrderController extends FbCommonController
 					foreach($CartDetails as $value)
 					{
 						$Price += $value['price']*$value['product_qty'];
-						$cartId = $value['cart_id'];
+						$cartId = $value['order_id'];
 						$CartTotal += $value['product_qty'];
 					}
 					//print $Price;die;
-					$this->view->CartCnt = count($CartDetails);
+					$this->view->CartCnt = 0;
 					$this->view->TotalPrice = $Price;
 					$this->view->cartId = $cartId;
 					$mysession->cartId = $cartId;
@@ -225,7 +235,7 @@ class Fb_OrderController extends FbCommonController
 			
 			
 		} else { 
-			$this->_request("/");
+			$this->_redirect("/fb/");
 		}
 		
 	}

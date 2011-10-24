@@ -68,6 +68,24 @@
 						</tr>
 						
 						<tr><td height="5"></td></tr>
+						
+						
+						<!--       Edit user store description policy language        -->
+						<?php foreach( $this->language as $key => $val ) { ?>
+						<?php 	if($val['language_id'] != DEFAULT_LANGUAGE ) { ?>
+						<tr>
+							<td class="FieldLabel"></td>
+							<td>
+								<?php $lagn_index = 'store_description_'.$val['language_id']; ?>
+								<textarea name="store_description_<?php echo $val['language_id']; ?>" id="store_description_<?php echo $val['language_id']; ?>" cols="32" ><?php if(isset($this->langdata[$val['language_id']]['store_description'])) {  echo $this->langdata[$val['language_id']]['store_description']; } ?></textarea>
+								<span></span>
+								&nbsp;&nbsp;&nbsp;<?php echo $val['name']." ( ".$val['code']." )"; ?>
+							</td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						<?php 	}?>
+						<?php } ?>
+						
 						 <tr>
 							<td class="FieldLabel">
 								<?php echo $this->Translate('Store_Paypal_Email'); ?>:
@@ -300,6 +318,25 @@
 						  </td>
 						</tr>
 						<tr><td height="5"></td></tr>
+						
+						
+						<!--       Edit user store return policy language        -->
+						<?php foreach( $this->language as $key => $val ) { ?>
+						<?php 	if($val['language_id'] != DEFAULT_LANGUAGE ) { ?>
+						<tr>
+							<td class="FieldLabel"></td>
+							<td>
+								<?php $lagn_index = 'return_policy_'.$val['language_id']; ?>
+								<textarea name="return_policy_<?php echo $val['language_id']; ?>"  id="return_policy_<?php echo $val['language_id']; ?>" cols="70" rows="10"><?php if(isset($this->langdata[$val['language_id']]['return_policy'])) {  echo $this->langdata[$val['language_id']]['return_policy']; } ?></textarea>
+								<span></span>
+								&nbsp;&nbsp;&nbsp;<?php echo $val['name']." ( ".$val['code']." )"; ?>
+							</td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						<?php 	}?>
+						<?php } ?>
+						
+						
 						 <tr>
 							<td class="FieldLabel">
 								<?php echo $this->Translate('Store_Terms_Policy'); ?>:
@@ -309,7 +346,25 @@
 							  <span></span>
 						  </td>
 						</tr>
-						<tr><td height="5"></td></tr>						
+						<tr><td height="5"></td></tr>		
+						
+						<!--       Edit user store term policy language        -->
+						<?php foreach( $this->language as $key => $val ) { ?>
+						<?php 	if($val['language_id'] != DEFAULT_LANGUAGE ) { ?>
+						<tr>
+							<td class="FieldLabel"></td>
+							<td>
+								<?php $lagn_index = 'store_terms_policy_'.$val['language_id']; ?>
+								<textarea name="store_terms_policy_<?php echo $val['language_id']; ?>"  id="store_terms_<?php echo $val['language_id']; ?>" cols="70" rows="10"><?php if(isset($this->langdata[$val['language_id']]['store_terms_policy'])) {  echo $this->langdata[$val['language_id']]['store_terms_policy']; } ?></textarea>
+								<span></span>
+								&nbsp;&nbsp;&nbsp;<?php echo $val['name']." ( ".$val['code']." )"; ?>
+							</td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						<?php 	}?>
+						<?php } ?>
+						
+										
 						<tr>
 						   	<td colspan="2">
 								<input type="submit" id="anything"  value="<?php echo $this->Translate('Submit'); ?>" />

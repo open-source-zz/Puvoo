@@ -42,6 +42,25 @@
 							<td></td>
 						</tr>
 						<tr><td height="5"></td></tr>
+						
+						
+						<!--       Add Category Language        -->
+						<?php foreach( $this->language as $key => $val ) { ?>
+						<?php 	if($val['language_id'] != DEFAULT_LANGUAGE ) { ?>
+						<tr>
+							<td class="FieldLabel"></td>
+							<td>
+								<?php $lagn_index = 'product_name_'.$val['language_id']; ?>
+								<input  type="text" value="<?php  echo $this->langdata[$val['language_id']]['product_name'] ?>" name="product_name_<?php echo $val['language_id']; ?>" id="product_name_<?php echo $val['language_id']; ?>" class="Field250" />
+								<span></span>
+								&nbsp;&nbsp;&nbsp;<?php echo $val['name']." ( ".$val['code']." )"; ?>
+							</td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						<?php 	}?>
+						<?php } ?>
+						
+						
 						<tr>
 							<td class="FieldLabel">
 								<?php echo $this->Translate("Product_Desc"); ?>
@@ -51,7 +70,26 @@
 							</td>
 							<td></td>
 						</tr>
-						<tr><td height="5"></td></tr>						
+						<tr><td height="5"></td></tr>		
+						
+						<!--       Add Category Language        -->
+						<?php foreach( $this->language as $key => $val ) { ?>
+						<?php 	if($val['language_id'] != DEFAULT_LANGUAGE ) { ?>
+						<tr>
+							<td class="FieldLabel"></td>
+							<td>
+								<?php $lagn_index = 'product_description_'.$val['language_id']; ?>
+								
+								<textarea name="product_description_<?php echo $val['language_id']; ?>" id="product_description_<?php echo $val['language_id']; ?>" cols="30" ><?php  echo $this->langdata[$val['language_id']]['product_description'] ?></textarea>
+								<span></span>
+								&nbsp;&nbsp;&nbsp;<?php echo $val['name']." ( ".$val['code']." )"; ?>
+							</td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						<?php 	}?>
+						<?php } ?>
+						
+										
 						<tr>
 							<td class="FieldLabel">
 								<?php echo $this->Translate("Product_Price"); ?>
@@ -295,16 +333,11 @@
 <script language="javascript" type="text/javascript">
 
 $(function(){
-   /*$("#product_category").multiselect({
+   $("#product_category").multiselect({
    		header: false,
 		noneSelectedText: "<?php echo $this->Translate('Product_Select_MCategory'); ?>",
-	}); */
-	$("#product_category").multiselect({
-		header: false,
-		selectedText: "<?php echo $this->Translate('Product_Select_MCategory'); ?>"
-	});
+	}); 
 });
-
 
 
 var siteurl = "<?php echo SITE_URL; ?>";

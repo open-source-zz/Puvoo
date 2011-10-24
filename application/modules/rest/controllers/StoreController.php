@@ -236,21 +236,78 @@ class Rest_StoreController extends RestCommonController
 
 			$filterChain2->addFilter(new Zend_Filter_StripTags())
 			            ->addFilter(new Zend_Filter_Alnum());
-
+						
+			$store_name = "";
+			$store_description = "";
+			$store_terms_policy = "";
+			$return_policy = "";
+			$store_address = "";
+			$store_country = "";
+			$store_state = "";
+			$store_city = "";
+			$store_zipcode = "";
+			$paypal_address = "";
+			$currency = "";
+			$languages = array();
 			
 			$objparams = $this->getRequest()->getParams();
 			
 			$myparams = $objparams['store_info'];
 			
-			$store_name = $filter->filter(trim($myparams['store_name']));
-			$store_description = $filter->filter(trim($myparams['store_description']));
-			$store_address = $filter->filter(trim($myparams['store_address']));
-			$store_country = $filterChain1->filter(trim($myparams['store_country']));
-			$store_state = $filter->filter(trim($myparams['store_state']));
-			$store_city = $filterChain1->filter(trim($myparams['store_city']));
-			$store_zipcode = $filterChain2->filter(trim($myparams['store_zipcode']));
-			$paypal_address = $filter->filter(trim($myparams['paypal_address']));
-			$currency = $filterChain1->filter(trim($myparams['currency']));
+			if(isset($myparams['store_name']))
+			{
+				$store_name = $filter->filter(trim($myparams['store_name']));
+			}
+			
+			if(isset($myparams['store_description']))
+			{
+				$store_description = $filter->filter(trim($myparams['store_description']));
+			}
+			
+			if(isset($myparams['store_terms_policy']))
+			{
+				$store_terms_policy = $filter->filter(trim($myparams['store_terms_policy']));
+			}
+			
+			if(isset($myparams['return_policy']))
+			{
+				$return_policy = $filter->filter(trim($myparams['return_policy']));
+			}
+			
+			if(isset($myparams['store_address']))
+			{
+				$store_address = $filter->filter(trim($myparams['store_address']));
+			}
+			
+			if(isset($myparams['store_country']))
+			{
+				$store_country = $filterChain1->filter(trim($myparams['store_country']));
+			}
+			
+			if(isset($myparams['store_state']))
+			{
+				$store_state = $filter->filter(trim($myparams['store_state']));
+			}
+			
+			if(isset($myparams['store_city']))
+			{
+				$store_city = $filterChain1->filter(trim($myparams['store_city']));
+			}
+			
+			if(isset($myparams['store_zipcode']))
+			{
+				$store_zipcode = $filterChain2->filter(trim($myparams['store_zipcode']));
+			}
+			
+			if(isset($myparams['paypal_address']))
+			{
+				$paypal_address = $filter->filter(trim($myparams['paypal_address']));
+			}
+			
+			if(isset($myparams['currency']))
+			{
+				$currency = $filterChain1->filter(trim($myparams['currency']));
+			}
 			
 			$shipping_table = array();
 			
@@ -264,6 +321,7 @@ class Rest_StoreController extends RestCommonController
 			$State = new Models_State();
 			$Currency = new Models_Currency();
 			$ShippingMethod = new Models_UserShippingMethod();
+			$Language = new Models_Language();
 			
 			if($store_name != "")
 			{
@@ -337,6 +395,41 @@ class Rest_StoreController extends RestCommonController
 						$shipping_name = $filter->filter(trim($myparams['shipping_table'][$i]["shipping_name"]));
 						$shipping_zone = $filter->filter(trim($myparams['shipping_table'][$i]["shipping_zone"]));
 						$shipping_cost = $filter->filter(trim($myparams['shipping_table'][$i]["shipping_cost"]));
+						$shipping_lang = array();
+						
+						if(isset($myparams['shipping_table'][$i]['languages']['language']))
+						{
+							if(!isset($myparams['shipping_table'][$i]['languages']['language'][0]))
+							{
+								$shipping_lang = array($myparams['shipping_table'][$i]['languages']['language']);
+							}
+							else
+							{
+								$shipping_lang = $myparams['shipping_table'][$i]['languages']['language'];
+							}
+								
+							if(count($shipping_lang) > 0)
+							{
+								for($l = 0; $l < count($shipping_lang); $l++)
+								{
+									//check if language is present or not
+									if(trim($shipping_lang[$l]["code"]) == "")
+									{
+										$arr_error[] = $this->translate->_('Shipping_Language_Code_Empty');
+									}
+									
+									//check if language is present in system or not
+									if(trim($shipping_lang[$l]["code"]) != "")
+									{
+										if(!$Language->checkLanguageByCode(trim($shipping_lang[$l]["code"])))
+										{
+											$arr_error[] = $this->translate->_('Shipping_Language_Not_Present');
+										}
+									}
+								}
+							}
+							
+						} 
 						
 						if($shipping_name == "")
 						{
@@ -364,10 +457,53 @@ class Rest_StoreController extends RestCommonController
 						{
 							$shipping_table[$i]['shipping_cost'] = $shipping_cost;
 						}
+						
+						if(count($shipping_lang > 0))
+						{
+							$shipping_table[$i]['shipping_lang'] = $shipping_lang;
+						}
+						else
+						{
+							$shipping_table[$i]['shipping_lang'] = array();
+						}
 					}
 				}
 			}
 			
+			//check langauages
+			if(isset($myparams['languages']))
+			{
+				if(isset($myparams['languages']["language"][0]))
+				{
+					$languages = $myparams["languages"]["language"];
+				}
+				else
+				{
+					$languages = array($myparams["languages"]["language"]);
+				}
+			}
+			
+			if(count($languages) > 0)
+			{
+				for($l = 0; $l < count($languages); $l++)
+				{
+					//check if language is present or not
+					if(trim($languages[$l]["code"]) == "")
+					{
+						$arr_error[] = $this->translate->_('Store_Language_Code_Empty');
+					}
+					
+					//check if language is present in system or not
+					if(trim($languages[$l]["code"]) != "")
+					{
+						if(!$Language->checkLanguageByCode(trim($languages[$l]["code"])))
+						{
+							$arr_error[] = $this->translate->_('Store_Language_Not_Present');
+						}
+					}
+				}
+			}
+					
 			
 			if(count($arr_error) == 0)
 			{
@@ -384,6 +520,16 @@ class Rest_StoreController extends RestCommonController
 				if($store_description != "")
 				{
 					$data["store_description"] = $store_description;	
+				}
+				
+				if($store_terms_policy != "")
+				{
+					$data["store_terms_policy"] = $store_terms_policy;	
+				}
+				
+				if($return_policy != "")
+				{
+					$data["return_policy"] = $return_policy;	
 				}
 				
 				if($store_address != "")
@@ -421,10 +567,27 @@ class Rest_StoreController extends RestCommonController
 					$data["currency_id"] = $currency;
 				}
 			
+				$lang_array = array();
+				//update product language for other languages
+				if(count($languages) > 0)
+				{
+					for($l = 0; $l < count($languages); $l++)
+					{
+						$lid = $Language->getLanguageIdByCode($languages[$l]["code"]);
+						
+						$lang_array[$lid]["store_description"] = $languages[$l]["store_description"];
+						$lang_array[$lid]["store_terms_policy"] = $languages[$l]["store_terms_policy"];
+						$lang_array[$lid]["return_policy"] = $languages[$l]["return_policy"];
+						
+					}
+				}
+				
+				
+				
 				if(count($data) > 1)
 				{
 					//Update store
-					$UserMaster->UpdateStore($data);	
+					$UserMaster->UpdateStore($data, $lang_array);	
 				}
 				
 				//Insert or update shipping method
@@ -436,12 +599,25 @@ class Rest_StoreController extends RestCommonController
 						$sdata['user_id'] = $this->user_id;
 						$sdata2['zone'] = $shipping_table[$i]['shipping_zone'];
 						$sdata2['price'] = $shipping_table[$i]['shipping_cost'];
+						$shipping_lang = $shipping_table[$i]['shipping_lang'];
+						
+						$lang_array = array();
+						//update product language for other languages
+						if(count($shipping_lang) > 0)
+						{
+							for($l = 0; $l < count($shipping_lang); $l++)
+							{
+								$lid = $Language->getLanguageIdByCode($shipping_lang[$l]["code"]);
+								
+								$lang_array[$lid]["shipping_method_name"] = $shipping_lang[$l]["shipping_name"];
+							}
+						}
 						
 						//check shipping method if available or not
 						if($ShippingMethod->ValidateTableField("shipping_method_name",$sdata['shipping_method_name'],"user_shipping_method","user_id = " . $this->user_id))
 						{
 							//add new shipping method and zone for user 
-							$shipping_method_id = $ShippingMethod->insertShippingMethod($sdata);
+							$shipping_method_id = $ShippingMethod->insertShippingMethod($sdata,'user_shipping_method',$lang_array);
 							if($shipping_method_id > 0) {
 								$sdata2["shipping_method_id"] = $shipping_method_id;
 								$ShippingMethod->insertShippingMethod($sdata2,"user_shipping_method_detail");
@@ -456,6 +632,8 @@ class Rest_StoreController extends RestCommonController
 							if($shipping_method_id > 0) {
 								if($ShippingMethod->ValidateTableField("zone",$sdata2['zone'],"user_shipping_method_detail","shipping_method_id = " . $shipping_method_id))
 								{	
+									
+									
 									//add new zone
 									$sdata2["shipping_method_id"] = $shipping_method_id;
 									$ShippingMethod->insertShippingMethod($sdata2,"user_shipping_method_detail");
@@ -475,6 +653,10 @@ class Rest_StoreController extends RestCommonController
 					}
 				}
 				
+				
+
+
+				//add language
 				$this->view->result = $this->translate->_('Store_Success');
 				$this->view->message = $this->translate->_('Store_Update_Success');
         		$this->getResponse()->setHttpResponseCode(201);

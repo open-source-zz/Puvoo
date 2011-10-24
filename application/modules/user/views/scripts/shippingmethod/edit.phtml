@@ -53,6 +53,24 @@
 							</td>
 						</tr>
 						<tr><td height="5"></td></tr>
+						
+						<!--       Edit Product Language        -->
+						<?php foreach( $this->language as $key => $val ) { ?>
+						<?php 	if($val['language_id'] != DEFAULT_LANGUAGE ) { ?>
+						<tr>
+							<td class="FieldLabel"></td>
+							<td>
+								<?php $lagn_index = 'shipping_method_name_'.$val['language_id']; ?>
+								<input  type="text" value="<?php if(isset($this->langdata[$val['language_id']]['shipping_method_name'])) {  echo $this->langdata[$val['language_id']]['shipping_method_name']; } ?>" name="shipping_method_name_<?php echo $val['language_id']; ?>" id="shipping_method_name_<?php echo $val['language_id']; ?>" class="Field250" />
+								<span></span>
+								&nbsp;&nbsp;&nbsp;<?php echo $val['name']." ( ".$val['code']." )"; ?>
+							</td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						<?php 	}?>
+						<?php } ?>
+						
+						
 						 <tr>
 							<td class="FieldLabel">
 								<?php echo $this->Translate('ZONE'); ?>:

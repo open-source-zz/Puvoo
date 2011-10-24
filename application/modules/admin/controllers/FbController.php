@@ -191,7 +191,7 @@ class Admin_FbController extends AdminCommonController
 		}
 		$record = array();
 		
-		echo $id; die;
+
 		
 		$res = $Configuration->getKeyValueForGroup($id,array("contact_us_address","contact_us_telephone","contact_us_email"));
 		
@@ -287,10 +287,100 @@ class Admin_FbController extends AdminCommonController
 				}
 			}
 		}
-		
-		//$this->view->record = $record;
+	
 		$this->view->configuration_group_id = $id;
 	}
+	
+	function appsettingsAction()
+	{
+	
+		$Configuration = new Models_Configuration();
+		$home = new Models_AdminMaster();
+		
+		$data = array();
+		
+		$request = $this->getRequest();
+		
+		$translate = Zend_Registry::get('Zend_Translate');
+		
+		if($request->isPost())
+		{
+			$filter = new Zend_Filter_StripTags();	
+			
+			$data['application_hosting_url'] = $filter->filter(trim($request->getPost('host_url')));
+			$data['facebook_application_url'] = $filter->filter(trim($request->getPost('app_url')));
+			$data['application_api_id'] = $filter->filter(trim($request->getPost('app_api_id')));
+			$data['application_secret_key'] = $filter->filter(trim($request->getPost('app_secret_key')));
+			
+			$id = $filter->filter(trim($request->getPost('configuration_group_id')));
+			
+			$updateError = array();
+			
+			if( $data['application_hosting_url'] == '' )
+			{
+				$updateError[] = $translate->_('Err_application_hosting_url');
+			}
+			
+			if( $data['facebook_application_url'] == '' )
+			{
+				$updateError[] = $translate->_('Err_facebook_application_url');
+			}
+			
+			if( $data['application_api_id'] == '' )
+			{
+				$updateError[] = $translate->_('Err_application_api_id');
+			}
+			
+			if( $data['application_secret_key'] == '' )
+			{
+				$updateError[] = $translate->_('Err_application_secret_key');
+			}
+			
+			if(count($updateError) == 0)
+			{
+				//update record
+				$Configuration->updateKeyValueForGroup($id,$data);
+				
+				$this->view->updateSuccess = $translate->_('Succ_App_Settings');
+			}
+			else
+			{
+				$this->view->updateError = $updateError;
+			}
+			
+			foreach( $data as $key => $val )
+			{
+				$this->view->$key = $val;		
+			}
+			
+			
+		} else 	{
+			
+			$record = array();
+			$id = $Configuration->GetConfigurationGroupId("Facebook Store");
+			
+			$key_array = array(
+								"application_hosting_url",
+								"facebook_application_url",
+								"application_api_id",
+								"application_secret_key"
+							  ); 
+			
+			$res = $Configuration->getKeyValueForGroup($id,$key_array);
+			
+			if($res != "" && is_array($res))
+			{
+				foreach( $res as $key => $val )
+				{
+					$this->view->$val["configuration_key"] = $val["configuration_value"];		
+				}
+			}
+		}
+	
+		$this->view->configuration_group_id = $id;
+	
+	}
+	
 	
 }
 ?>

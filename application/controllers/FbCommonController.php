@@ -50,23 +50,103 @@ class FbCommonController extends Zend_Controller_Action
 	 **/
     public function init() 
 	{
-        global $mysession, $user_profile; 
+        global $mysession, $user_profile, $facebook; 
 		
  		$db = Zend_Db_Table::getDefaultAdapter();
 		Zend_Registry::set('Db_Adapter', $db);
- 		// Define Site Url for fb folder
+ 		
+		// Model Objects
+ 		$Category = new Models_Category();
+		$Product = new Models_Product();
+		$Common = new Models_Common();
+		$Configuration = new Models_Configuration();
+
+		$key_array = array(
+							"application_hosting_url",
+							"facebook_application_url",
+							"application_api_id",
+							"application_secret_key"
+						  ); 
+
+		$ConfigValue = $Configuration->getKeyValueForGroup(1,$key_array);
 		
-		if($_SERVER['HTTP_HOST'] == 'rishi')
+		foreach( $ConfigValue as $key => $val )
 		{
-			
-			define('SITE_FB_URL', 'http://'. $_SERVER['HTTP_HOST']. INSTALL_DIR."fb/");
-			define('SITE_AJX_URL', 'http://'. $_SERVER['HTTP_HOST']. INSTALL_DIR."fb/");
-		}else{
- 			define('SITE_FB_URL', 'http://apps.facebook.com/pvalpha/');
-			
+			$$val["configuration_key"] = $val["configuration_value"];		
 		}
-		//define('SITE_FB_URL', 'http://apps.facebook.com/pvalpha/');
+		
+		///////////////////////////   Facebook Login Authentication  //////////////////////////////
+		
+		$user = null; //facebook user uid
+		
+		try{
+				include_once SITE_ROOT_PATH.'/../src/facebook.php';
+		
+			}catch(Exception $o){ }
+		
+			// Create our Application instance.
+		$facebook = new Facebook(array(
+			  'appId'  => $application_api_id,
+			  'secret' => $application_secret_key,
+			  'cookie' => true,
+		));
+		 
+		//Facebook Authentication part
+		$user       = $facebook->getUser();
+		$loginUrl   = $facebook->getLoginUrl(
+				array(
+					'scope'         => 'email,publish_stream,user_birthday,user_location,user_work_history,user_about_me,user_hometown'
+				)
+		);
+		
+		
+		if ($user) {
+		
+			try {
+				// Proceed knowing you have a logged in user who's authenticated.
+				$user_profile = $facebook->api('/me');
 			
+			} catch (FacebookApiException $e) {
+				
+				//you should use error_log($e); instead of printing the info on browser
+				d($e);  // d is a debug function defined at the end of this file
+				$user = null;
+			}
+		}
+		
+		if (isset($_GET['code'])){
+		
+				header("Location: ".$facebook_application_url);
+				exit;
+		}
+		
+		
+		$Facebook_UserId = ''; 
+		
+		if(isset($user_profile)) {
+			
+			//$Facebook_UserId = $user_profile['id']; 
+			
+		} 
+		$Facebook_UserId = '10150349794714140';
+		// Facebook User Id
+		define('FACEBOOK_USERID', $Facebook_UserId);		
+		define('FBUSER_ID', $Facebook_UserId);
+		
+		#-----------------------------------------------------------------------------------
+		
+		// Define facebook application url
+		define('SITE_FB_URL', $facebook_application_url);
+		
+		// Define facebook application hosting url
+  		define('SITE_AJX_URL', $application_hosting_url);
+		
+		// Defien facebook application api id
+		define('FACEBOOK_APP_API_ID', $application_api_id);
+		
+		// Define facebook application secret key
+		define('FACEBOOK_APP_SECRET_KEY', $application_secret_key); 
+		
 		// Define Path for images folder FB
 		define('IMAGES_FB_PATH', INSTALL_DIR."public/images/fb");
 
@@ -76,51 +156,24 @@ class FbCommonController extends Zend_Controller_Action
 		// Define Path for css folder for FB
 		define('JS_FB_PATH', INSTALL_DIR."public/js/fb" );
 		
-		// Facebook User Id
-		define('FACEBOOK_USERID', $mysession->FbuserId);
 		
-		define('FBUSER_ID', $mysession->Facebook_UserId);
+		$tempArray = str_replace(INSTALL_DIR."fb/","",$_SERVER["REQUEST_URI"]);
 		
-		define('DEFAULT_CURRENCY', 2);
-		
-		$tempArray = explode("/",$_SERVER["REQUEST_URI"]);
-		$siteArray = array();
-		foreach( $tempArray as $key => $val )
-		{
-			if( $key != 0 && $key != 1 && $key != 2 ) {
-				$siteArray[] = $val;
-			}
-		}
-		
-		$temp_url = SITE_FB_URL.implode("/",$siteArray);
+		$temp_url = SITE_FB_URL.$tempArray;
 		
 		define('FB_REDIRECT_URL', $temp_url);
-		
-		//Get Language array
+  		
+ 		//Get Language array
 		$lang = array();
 		
 		$lang_def = new Models_LanguageDefinitions();
-		
-		$lang = $lang_def->getGroupLanguage('FB', 1);
-		
-		//Set Default language for site
-		$tr = new Zend_Translate(
-			array(
-			'adapter' => 'array',
-			  'content' => $lang,
-			  'locale'  => $mysession->language 
-			)
-		);
 		   
-		   
-		Zend_Registry::set('Zend_Translate', $tr);
-		define('Facebook_Authentication_URL',"https://www.facebook.com/dialog/oauth?client_id=124974344272864&redirect_uri=https://apps.facebook.com/pvalpha/");
+		define('Facebook_Authentication_URL',"https://www.facebook.com/dialog/oauth?client_id=124974344272864&redirect_uri=".SITE_FB_URL);
+		
+		$this->view->random = rand();
 		
 		
 		$mysession->FbuserId = "";
- 		$Category = new Models_Category();
-		$Product = new Models_Product();
-		$Common = new Models_Common();
 		$admin_master = new Models_AdminMaster();
 		$catid = $this->_request->getParam('id');
 		
@@ -145,6 +198,49 @@ class FbCommonController extends Zend_Controller_Action
 			
 		}
 		
+		if(isset($_GET['country']))
+		{
+			$mysession->CountryID =  $_GET['country'];
+		}
+		
+		if(isset($mysession->CountryID))
+		{
+			$Country_id = $mysession->CountryID;
+			$Site_config_value = $Common->GetConfigValue($Country_id);
+			$mysession->default_Currency = $Site_config_value['currency_id'];
+			$mysession->default_Language = $Site_config_value['language_id'];
+			$mysession->default_Language_locale = $Site_config_value['code'];
+			$this->view->sel_country = $Site_config_value['country_id'];
+			
+		}
+		else
+		{
+ 			$DefaultValues = $Common->GetDefaultConfigValue();
+			$mysession->default_Currency = $DefaultValues['currency_id'];
+			$mysession->default_Language = $DefaultValues['language_id'];
+			$mysession->default_Language_locale = $DefaultValues['code'];
+			$this->view->sel_country = $DefaultValues['country_id'];
+		}
+		
+		$lang = $lang_def->getGroupLanguage('FB',$mysession->default_Language);
+		
+		//Set Default language for site
+		$tr = new Zend_Translate(
+			array(
+			'adapter' => 'array',
+			  'content' => $lang,
+			  'locale'  => $mysession->default_Language_locale 
+			)
+		);
+		
+		Zend_Registry::set('Zend_Translate', $tr);
+		//echo "<pre>";
+		//print_r($_SESSION);die;
+		// Define Currency Id
+		define('DEFAULT_CURRENCY', $mysession->default_Currency);
+		
+		// Define Language Id
+		define('DEFAULT_LANGUAGE', $mysession->default_Language);
 		
 		$currency_value = $Common->GetCurrencyValue(DEFAULT_CURRENCY);
 		
@@ -153,7 +249,6 @@ class FbCommonController extends Zend_Controller_Action
 		
 		define('DEFAULT_CURRENCY_SYMBOL', $currency_value['currency_symbol']);
 		
-		
 		define('DEFAULT_CURRENCY_CODE', $currency_value['currency_code']);
 		
 		//Get Request
@@ -161,21 +256,7 @@ class FbCommonController extends Zend_Controller_Action
 		
 		$cur_controller = $request->getControllerName();
  		
-			if($cur_controller!='category' && $catid != '')
-			{
-				$this->view->SerchCategoryCombo = $Category->GetMainCategory();
-			}
-			else
-			{
-				
-				$CatCombo = $Category->GetSubCategory($catid);
-				if($CatCombo)
-				{
-					$this->view->SerchCategoryCombo = $CatCombo;
-				}else{
-					$this->view->SerchCategoryCombo = $Category->GetMainCategory();
-				}
-			}
+		$this->view->SerchCategoryCombo = $Category->getCateTree();
 		
 		//set default pagesize for admin section
 	
@@ -184,7 +265,8 @@ class FbCommonController extends Zend_Controller_Action
 			$mysession->pagesize1 = 6;
 		}
 		
-		// Left Maenu
+		//////////////////////////////////// Left Maenu //////////////////////////////////////
+		
 		//to get all main category
 		$Allcategory = $Category->GetMainCategory();
 		
@@ -242,57 +324,83 @@ class FbCommonController extends Zend_Controller_Action
 		//to get selected category
 		$selectCat = $Category->GetTopMainCategory();
 		
-		 
 		//for display category list on left menu 
 		foreach($selectCat as $val)
 		{
 		 	$SubCatList = "";
+			if($val['catName'] != '')
+			{
+				$mainCatName = $val['catName'];
+			}else{
+				$mainCatName = $val['category_name'];
+			}
 			
 		  	$SubCat = $Category->GetSubCategory($val['category_id']);
- 			
-			$SubCatList .= "<li class=''>";
-			$SubCatList .= "<a class='sf-with-ul' href='".SITE_FB_URL."category/subcat/id/".$val['category_id']."' target='_top'>".$val['category_name']."				                            <span class='sf-sub-indicator'> »</span></a>";
-			$SubCatList .= "<div><ul class='submenu'>";
-				for($i=0; $i<count($SubCat); $i++)
-				{
-					if($SubCat[$i]['icon_image'] != '')
-					{
-						$Icon = "<img src='".SITE_ICONS_IMAGES_PATH."/".$SubCat[$i]['icon_image']."' alt='' />";
-					}else{
-						$Icon = "<img src='".IMAGES_FB_PATH."cat_default.png' alt='' />";
-					}
-				
-				
-					$SubCatList .= "<li>";
-					$SubCatList .= "<a href='".SITE_FB_URL."category/subcat/id/".$SubCat[$i]['category_id']."' target='_top'>".$Icon.$SubCat[$i]['category_name']."</a>";
+ 				
+			
+					$SubCatList .= "<li class=''>";
+					$SubCatList .= "<a class='sf-with-ul' href='".SITE_FB_URL."category/subcat/id/".$val['category_id']."' target='_top'>".$mainCatName."				                            <span class='sf-sub-indicator'> »</span></a>";
 					$SubCatList .= "<div><ul class='submenu'>";
-					$Sub_Cat = $Category->GetSubCategory($SubCat[$i]['category_id']);
-					
-					for($j=0; $j<count($Sub_Cat); $j++)
-					{
-						if($Sub_Cat[$i]['icon_image'] != '')
+						for($i=0; $i<count($SubCat); $i++)
 						{
-							$Icon1 = "<img src='".SITE_ICONS_IMAGES_PATH."/".$Sub_Cat[$i]['icon_image']."' alt='' />";
-						}else{
-							$Icon1 = "<img src='".IMAGES_FB_PATH."cat_default.png' alt='' />";
+						
+							if($SubCat[$i]['catName'] != '')
+							{
+								$subCatName = $SubCat[$i]['catName'];
+							}else{
+								$subCatName = $SubCat[$i]['category_name'];
+							}
+						
+						
+							if($SubCat[$i]['icon_image'] != '')
+							{
+								$Icon = "<img src='".SITE_ICONS_IMAGES_PATH."/".$SubCat[$i]['icon_image']."' alt='' />";
+							}else{
+								$Icon = "<img src='".IMAGES_FB_PATH."/cat_default.png' alt='' />";
+							}
+						
+						
+							$SubCatList .= "<li>";
+							$SubCatList .= "<a href='".SITE_FB_URL."category/subcat/id/".$SubCat[$i]['category_id']."' target='_top'>".$Icon.$subCatName."</a>";
+							$SubCatList .= "<div><ul class='submenu'>";
+							$Sub_Cat = $Category->GetSubCategory($SubCat[$i]['category_id']);
+							
+							for($j=0; $j<count($Sub_Cat); $j++)
+							{
+								if($Sub_Cat[$i]['catName'] != '')
+								{
+									$sub_CatName = $Sub_Cat[$i]['catName'];
+								}else{
+									$sub_CatName = $Sub_Cat[$i]['category_name'];
+								}
+ 							
+								if($Sub_Cat[$i]['icon_image'] != '')
+								{
+									$Icon1 = "<img src='".SITE_ICONS_IMAGES_PATH."/".$Sub_Cat[$i]['icon_image']."' alt='' />";
+								}else{
+									$Icon1 = "<img src='".IMAGES_FB_PATH."/cat_default.png' alt='' />";
+								}
+							
+								$SubCatList .= "<li>";
+								$SubCatList .= "<a href='".SITE_FB_URL."category/subcat/id/".$Sub_Cat[$i]['category_id']."' target='_top'>".$Icon1.$sub_CatName."</a>";
+								$SubCatList .= "</li>";
+							}
+							$SubCatList .= "</ul></div>";
+							$SubCatList .="</li>";
 						}
-					
-						$SubCatList .= "<li>";
-						$SubCatList .= "<a href='".SITE_FB_URL."category/subcat/id/".$Sub_Cat[$i]['category_id']."' target='_top'>".$Icon1.$Sub_Cat[$i]['category_name']."</a>";
-						$SubCatList .= "</li>";
-					}
-					$SubCatList .= "</ul></div>";
-					$SubCatList .="</li>";
- 				}
-									
-   			$SubCatList .="</ul></div></li>";
- 			$this->view->Category .= $SubCatList;
+											
+					$SubCatList .="</ul></div></li>";
+					$this->view->Category .= $SubCatList;
 			
  		}
 		
  		//To know how many product in Cart
 		$Cart = new Models_Cart();
 		$CartDetails = $Cart->GetProductInCart(FBUSER_ID);
+		
+		// Country combo
+		$this->view->CountryCombo = $Cart->GetCountry();
+		$this->view->ShipCountryCombo = $Cart->GetCountryCombo();
 		
 		if($CartDetails){
 			$this->view->cartItems = $CartDetails;
@@ -373,8 +481,6 @@ class FbCommonController extends Zend_Controller_Action
 				
 			}
 			
-			// Country combo
-			$this->view->CountryCombo = $Cart->GetCountry();
 			// State combo
 			$this->view->StateCombo = $Cart->GetState($this->view->countryId);
 			/// Currency
@@ -382,14 +488,14 @@ class FbCommonController extends Zend_Controller_Action
 			
 			
 			if($this->view->cartuserId != '' ){
-			
-				$paypalUrl = $Common->GetPaypalUrl('paypal_url');
+				
+				$paypalUrl = $Common->GetConfigureValue('paypal_url');
 				$PaypalDetails = $Common->GetPaypalDetails($this->view->cartuserId);
-			
-				$mysession->Paypal_Url = $paypalUrl['configuration_value'];
-				$mysession->Api_Username = $PaypalDetails['paypal_email'];
-				$mysession->Api_Password = $PaypalDetails['paypal_password'];
-				$mysession->Api_Signature = $PaypalDetails['paypal_signature'];
+				
+				$this->view->Paypal_Url = $paypalUrl['configuration_value'];
+				$this->view->Api_Username = $PaypalDetails['paypal_email'];
+				$this->view->Api_Password = $PaypalDetails['paypal_password'];
+				$this->view->Api_Signature = $PaypalDetails['paypal_signature'];
 			}
 			
 		}
@@ -417,10 +523,25 @@ class FbCommonController extends Zend_Controller_Action
 			if ( $userId != '' ) {  
 
 				$sellerInfo = $Product->GetSellerInformation($userId);
-				$this->view->terms = $sellerInfo['store_terms_policy'];
-				$this->view->returnPolicy = $sellerInfo['return_policy'];
-				$this->view->storeDescription = $sellerInfo['store_description'];
-				
+				if($sellerInfo['StoreTermsPolicy'] != '')
+				{
+					$this->view->terms = $sellerInfo['StoreTermsPolicy'];
+				}else{
+					$this->view->terms = $sellerInfo['store_terms_policy'];
+				}
+				if($sellerInfo['Returnpolicy'] != '')
+				{
+					$this->view->returnPolicy = $sellerInfo['Returnpolicy'];
+				}else{
+					$this->view->returnPolicy = $sellerInfo['return_policy'];
+				}
+				if($sellerInfo['StoreDesc'] != '')
+				{
+					$this->view->storeDescription = $sellerInfo['StoreDesc'];
+				}else{
+					$this->view->storeDescription = $sellerInfo['store_description'];
+				}
+ 				
 			}
 			
 		}

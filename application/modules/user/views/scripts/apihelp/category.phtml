@@ -1,0 +1,156 @@
+<!--  Crumb  Start -->
+<div class="Breadcrumb" id="PageBreadcrumb">
+	<ul>
+	   <li class="Home SecondLast"><a href="<?php echo SITE_URL; ?>user/"><?php echo $this->Translate("User_Home"); ?></a></li>
+	   <li class="Last1"><a href="<?php echo SITE_URL; ?>user/apihelp/"><?php echo $this->Translate("Api_Help"); ?></a></li>
+	   <li class="Last"><span><?php echo $this->Translate("Category_Api_Help"); ?></span></li>
+	</ul>
+</div>
+<!--  Crumb  end -->
+
+<div class="BodyContainer DashboardContainer" style="text-align:left;"> 
+	<div class="Heading1">
+		<?php echo $this->Translate('Category_Api_Help'); ?>
+	</div>
+<div style="margin-top:20px;"><h4><?php echo $this->Translate('REST_URL'); ?> : <?php echo SITE_URL."rest/category"; ?></h4> </div>
+<div style="margin-top:20px;"><h4><?php echo $this->Translate('Category_Input'); ?></h4></div>
+<div style="margin-top:20px;"><?php echo $this->Translate('API_Input_Desc'); ?></div>
+<pre style="background-color:#E0E0E0;  font-size:12px">
+
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+
+&lt;Category&gt;
+	&lt;Id&gt; INT &lt;/Id&gt;
+&lt;/Category&gt;
+</pre>
+<div style="margin-top:20px;">
+<h4><?php echo $this->Translate('Input_arg_det'); ?></h4>
+</div>
+<table border="1" cellspacing="2" cellpadding="4" width="100%">
+	<tr>
+		<th ><?php echo $this->Translate('API_Argument'); ?></th>
+		<th ><?php echo $this->Translate('API_Type'); ?></th>
+ 		<th><?php echo $this->Translate('API_Occurrence'); ?></th>
+		<th><?php echo $this->Translate('API_Meaning'); ?></th>
+	</tr>
+	<tr>
+		<td valign="top">Category</td>
+		<td valign="top">XML Node</td>
+		<td valign="top"><?php echo $this->Translate('API_CAT_O_Category'); ?></td>
+		<td valign="top"><?php echo $this->Translate('API_CAT_M_Category'); ?></td>
+	</tr>
+	<tr>
+		<td valign="top">Id</td>
+		<td valign="top">INT</td>
+		<td valign="top"><?php echo $this->Translate('API_CAT_O_Id'); ?></td>
+		<td valign="top"><?php echo $this->Translate('API_CAT_M_Id'); ?></td>
+	</tr>
+</table>
+<div style="margin-top:20px;">
+<h4><?php echo $this->Translate('API_Category_Output'); ?></h4>
+</div>
+<pre style="background-color:#E0E0E0;  font-size:12px">
+&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+
+&lt;response&gt;
+	&lt;result&gt; TEXT &lt;/result&gt;
+	&lt;error&gt; TEXT &lt;/error&gt;
+	
+	&lt;Category&gt; 
+		&lt;Name&gt; TEXT &lt;/Name&gt;
+		&lt;Id&gt; INT &lt;/Id&gt;
+		&lt;Category&gt; 
+			&lt;Name&gt; TEXT &lt;/Name&gt;
+			&lt;Id&gt; INT &lt;/Id&gt;
+			&lt;Category&gt; 
+				&lt;Name&gt; TEXT &lt;/Name&gt;
+				&lt;Id&gt; INT &lt;/Id&gt;
+			&lt;/Category&gt;
+			&lt;!-- ... <?php echo $this->Translate('API_CAT_More_cat_Nodes'); ?> ... --&gt;
+		&lt;/Category&gt;
+		&lt;!-- ... <?php echo $this->Translate('API_CAT_More_cat_Nodes'); ?> ... --&gt;
+	&lt;/Category&gt;
+	&lt;!-- ... <?php echo $this->Translate('API_CAT_More_cat_Nodes'); ?> ... --&gt;
+&lt;/response&gt;
+</pre>
+<div style="margin-top:20px;">
+<h4><?php echo $this->Translate('API_Output_return_values'); ?></h4>
+</div>
+<table border="1" cellspacing="2" cellpadding="4" width="100%">
+	<tr>
+		<th ><?php echo $this->Translate('API_Return_Value'); ?></th>
+		<th ><?php echo $this->Translate('API_Type'); ?></th>
+ 		<th><?php echo $this->Translate('API_Occurrence'); ?></th>
+		<th><?php echo $this->Translate('API_Meaning'); ?></th>
+	</tr>
+	<tr>
+		<td >response</td>
+		<td >XML Node</td>
+		<td ><?php echo $this->Translate('API_CAT_Res_O_response'); ?></td>
+		<td><?php echo $this->Translate('API_CAT_Res_M_response'); ?></td>
+	</tr>
+	<tr>
+		<td >result</td>
+		<td >TEXT</td>
+		<td ><?php echo $this->Translate('API_CAT_Res_O_result'); ?></td>
+		<td><?php echo $this->Translate('API_CAT_Res_M_result'); ?></td>
+	</tr>
+	<tr>
+		<td >error</td>
+		<td >TEXT</td>
+		<td ><?php echo $this->Translate('API_CAT_Res_O_error'); ?></td>
+		<td><?php echo $this->Translate('API_CAT_Res_M_error'); ?></td>
+	</tr>
+	<tr>
+		<td >Category</td>
+		<td >XML Node</td>
+		<td ><?php echo $this->Translate('API_CAT_Res_O_category'); ?></td>
+		<td><?php echo $this->Translate('API_CAT_Res_M_category'); ?></td>
+	</tr>
+	<tr>
+		<td >Name</td>
+		<td >TEXT</td>
+		<td ><?php echo $this->Translate('API_CAT_Res_O_Name'); ?></td>
+		<td><?php echo $this->Translate('API_CAT_Res_M_Name'); ?></td>
+	</tr>
+	<tr>
+		<td >Id</td>
+		<td >INT</td>
+		<td ><?php echo $this->Translate('API_CAT_Res_O_Id'); ?></td>
+		<td ><?php echo $this->Translate('API_CAT_Res_M_Id'); ?></td>
+	</tr>
+	
+</table>
+
+<div style="margin-top: 20px;">
+	<h4><?php echo $this->Translate('API_PHP_Sample_Code'); ?></h4>
+</div>
+<pre style="background-color:#E0E0E0;  font-size:12px">
+&lt;?php
+
+$rest_url = "<?php echo SITE_URL.'rest/category'; ?>";
+$api_key = "<b>your_api_key</b>";
+
+$data = "&lt;Category&gt;\r\n"
+		. "&lt;Id&gt;0&lt;/Id&gt;\r\n"
+		. "&lt;/Category&gt;";
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $rest_url);
+curl_setopt($ch, CURLOPT_POST, 1);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($ch, CURLOPT_POSTFIELDS, urlencode($data));
+curl_setopt($ch, CURLOPT_HTTPHEADER, $arr_header);
+
+$result = curl_exec($ch);
+
+if(curl_errno($ch)){
+   echo 'Curl error: ' . curl_error($ch);
+}
+
+curl_close($ch);
+echo $result;
+?&gt;
+</pre>
+</div> 
+

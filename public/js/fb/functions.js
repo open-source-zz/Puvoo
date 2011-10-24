@@ -12,6 +12,58 @@ function reloadPageWithNewSort(val)
 	$("#frmcatproduct").submit();
 }
 
+function changelang(lang)
+{
+	curr = document.URL;
+	c=curr.toString().split("?");
+	if(c.length == 1)
+	{
+		window.location = curr+"?country="+lang;
+	}
+	else
+	{
+		counter = 0;
+		site = c[0];
+		redirect_url = "";
+		querystring = c[1];
+		params = querystring.split("&");
+		for(i=0; i<params.length; i++)
+		{
+			if(i==0)
+			{
+				redirect_url += "?";
+			}
+			variables = params[i];
+			vbr = variables.split("=");
+			if(vbr.length != 1)
+			{
+				if(vbr[0] == "country")
+				{
+					continue;
+				}
+			}
+			counter = parseInt(counter) + 1;
+			redirect_url += params[i]+"&";
+		}
+		if(counter == 0)
+		{
+			window.location = site+redirect_url+"country="+lang;
+
+		}
+		else
+		{
+			if(redirect_url == "?")
+			{
+				window.location = site+redirect_url+"country="+lang;
+			}
+			else
+			{
+				window.location = site+redirect_url+"country="+lang;
+			}
+		}
+			
+	}
+}
 
 function addTocart(fb_userid,product_id, options_id, product_price)
 {
@@ -26,10 +78,43 @@ function addTocart(fb_userid,product_id, options_id, product_price)
 		var NoOfCombo = $('#Opt_Combo').val();
 		var value = new Array();
 		
+		
+		/*if (window.XMLHttpRequest)
+		  {// code for IE7+, Firefox, Chrome, Opera, Safari
+		  xmlhttp=new XMLHttpRequest();
+		  }
+		else
+		  {// code for IE6, IE5
+		  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+		  }
+		xmlhttp.onreadystatechange=function()
+		  {	
+		  	alert(xmlhttp.readyState);
+		  if (xmlhttp.readyState==4 )
+			{
+				alert("done !!");
+				$('#loader2').hide();
+				$('#loader2').removeClass('ui-widget-loading');
+				$('#breadCrumb_cart').hide();
+				$('#contactArea').hide();
+ 
+				//loadPopup2()
+				$('#popupContact').html(xmlhttp.responseText);
+				var totalProd = $('#cartcount').val();
+				//alert(totalProd);
+				$('#cartCounterNumber').html(totalProd);
+				  centerPopup();
+				  loadPopup2();
+			//document.getElementById("myDiv").innerHTML=xmlhttp.responseText;
+			}
+		  }
+		xmlhttp.open("POST",site_url+"product/addtocart?prodid="+product_id+"&option="+options_id+"&prodPrice="+product_price+"&fbuserid="+fb_userid,true);
+		xmlhttp.send();*/
+		
+		
 		$.ajax({
 			type: "POST",
 			url:site_url+"product/addtocart",
-			async: true,
 			data: {
 				  prodid: function() 
 				  {
@@ -37,7 +122,7 @@ function addTocart(fb_userid,product_id, options_id, product_price)
 				  },
 				  option: function() 
 				  {
-						return options_id; value;
+						return options_id;
 				  },
 				  prodPrice: function() 
 				  {
@@ -45,12 +130,14 @@ function addTocart(fb_userid,product_id, options_id, product_price)
 				  },
 				  fbuserid: function() 
 				  {
+					  	
 						return fb_userid;
 				  }
 			 },
-			dataType:'html',
+			dataType:"html",
 			success:function(data)
 			{ 
+				
 				$('#loader2').hide();
 				$('#loader2').removeClass('ui-widget-loading');
 				$('#breadCrumb_cart').hide();
@@ -63,7 +150,8 @@ function addTocart(fb_userid,product_id, options_id, product_price)
 				$('#cartCounterNumber').html(totalProd);
 				  centerPopup();
 				  loadPopup2();
-			}		
+			},
+
 		});
 	
 	
@@ -87,6 +175,11 @@ function validateAddToCart()
 			}
 			if(prodUserId == cartUserId || cartUserId == '')
 			{
+				alert(fb_useremailid);
+				alert($('#productId').val());
+				alert(value);
+				alert($('#TotalPrice').val());
+				
 			addTocart(fb_useremailid, $('#productId').val(), value, $('#TotalPrice').val());
 				loadPopup2();
 				centerPopup();
@@ -96,6 +189,7 @@ function validateAddToCart()
 			}
 	} else { 
 	
+		
 		FB.ui({
             method: 'permissions.request',
             perms: 'email'
@@ -109,11 +203,9 @@ function validateAddToCart()
 				{
 					value[i] = $('#OptionCombo'+i).val(); 
 				}
-				if(prodUserId == cartUserId)
-				{
-					addTocart(fb_useremailid, $('#productId').val(), value, $('#TotalPrice').val());
-					return false;
-				}
+				
+				addTocart(fb_useremailid, $('#productId').val(), value, $('#TotalPrice').val());
+				return false;
             } 
         });
 		
@@ -158,20 +250,22 @@ function DeleteCartProduct(prodId,cartId)
 		{ 
 
 		
-				$('#cartCounterNumber').html(data);
-				if(data != 0){
+				$('#cartCounterNumber').html(data['Item']);
+				if(data != ''){
 					$('#loader').hide();
 					$('#loader').removeClass('ui-widget-loading');
 					$('#breadCrumb_cart').show();
 					$('#SubtotalDiv').show();
+					$('#cartSubTotal').html(cartCurrSymbol+" "+data['total_price']);
 					$('#order_review').show();
 					$('#merchantProd'+prodId).hide();
  					$('#cartRow_'+prodId).hide();
 					$('#buttonArea').show();
 				}else{
-					
+					$('#order_review').hide();
 					$('#order_review').html('');
 					$('#cartSubTotal').html('');
+					$('#SubtotalDiv').hide();
 					$('#breadCrumb_cart').hide();
 					$('#contactArea').hide();
 					$('#buttonArea').hide();
@@ -189,8 +283,6 @@ function DeleteCartProduct(prodId,cartId)
 function updatecart(prodId,cartId)
 {
 	
-		$.ajaxSetup({
-		   beforeSend : function(){ 
 				$('#loader').show();
 				$('#loader').css('visibility','visible');
 				$('#loader').addClass('ui-widget-loading');
@@ -202,12 +294,6 @@ function updatecart(prodId,cartId)
 					$('#SubtotalDiv').hide();
 					
 				});
-		   },
-		   complete : function(){ 
-				$('#loader').hide();
-				$('#loader').removeClass('ui-widget-loading');
-		   }		   
-		});
 	
 	
   	 	$.ajax({
@@ -241,7 +327,8 @@ function updatecart(prodId,cartId)
  		dataType:'json',
 		success:function(data)
 		{ 
-			//alert(data);return false;
+			$('#loader').hide();
+			$('#loader').removeClass('ui-widget-loading');
 			var totalCost = 0;
 			var ProdQty = 0;
 			
@@ -254,13 +341,12 @@ function updatecart(prodId,cartId)
 				ProdQty = parseInt(ProdQty)+parseInt(data[i]['product_qty']);
 				totalCost = parseFloat(totalCost)+parseFloat(data[i]['product_total_cost']);
 				//$('#cartCounterNumber').html(ProdQty);
-				$('#SubtotalDiv').show();
-				$('#cartSubTotal').html("$"+totalCost);
-				$('#breadCrumb_cart').show();
-				$('#order_review').show();
-				$('#buttonArea').show();
-			}	
-			
+			}
+			$('#SubtotalDiv').show();
+			$('#breadCrumb_cart').show();
+			$('#order_review').show();
+			$('#buttonArea').show();
+			$('#cartSubTotal').html(cartCurrSymbol+" "+totalCost);
 		}		
 	});
 }
@@ -878,8 +964,13 @@ function UpdateShipping(CartId,prodId)
 		success:function(data)
 		{ 
 			//alert(data);
-			$('#FinalAmount').val(data);
-			$('#breadCrumb_cart').show();
+			$('#FinalAmount').val(data['final_amount']);
+			$('#App_username').val(data['Api_Username']);
+			$('#App_password').val(data['Api_Password']);
+			$('#App_signature').val(data['Api_Signature']);
+			$('#paypal_url').val(data['Paypal_Url']);
+			$('#paypal_currency').val(data['paypal_currency']);
+  			$('#breadCrumb_cart').show();
 			ShowTab(4);
 			//$('#buttonArea').show();
 
@@ -894,9 +985,11 @@ function UpdateShipping(CartId,prodId)
 function loadPopup()
 {
 	ShowTab(1);
+	$('#popupContactClose').css('color','#fff');
 	$('#sellerarea').hide();
 	$('#userExist').hide();
 	$('#cartarea').show();
+	
 	$('#order_review').show();
 	$('#shipping_li').show();
 	$('#billing_li').hide();
@@ -911,7 +1004,9 @@ function loadPopup()
 
 function loadPopup1()
 {
+	$('#popupContactClose').css('color','#000');
 	$('#cartarea').hide();
+	$('#EmptyCart').hide();
 	$('#userExist').hide();
 	$('#sellerarea').show();
 	$("#backgroundPopup").css({"opacity": "0.1"});
@@ -922,11 +1017,13 @@ function loadPopup1()
 function loadPopup2()
 {
 	//alert("test");
+	
 	ShowTab(1);
+	$('#popupContactClose').css('color','#fff');
  	$('#userExist').hide();
 	$('#sellerarea').hide();
 	$('#cartarea').show();
-	$('#order_review').show();
+ 	$('#order_review').show();
 	$('#shipping_li').show();
 	$('#billing_li').hide();
 	$('#div8').hide();
@@ -940,10 +1037,11 @@ function loadPopup3()
 {
 	//alert("test");
 	
+	$('#popupContactClose').css('color','#fff');
 	$('#userExist').show();
  	$('#sellerarea').hide();
 	$('#cartarea').hide();
-	$('#order_review').hide();
+ 	$('#order_review').hide();
 	$('#buttonArea').hide();
 	$("#backgroundPopup").css({"opacity": "0.1"});
 	$("#backgroundPopup").fadeIn("fast");
@@ -980,11 +1078,6 @@ $(document).ready(function()
   centerPopup();
   loadPopup1();
  });
-// $("#btn").click(function()
-// {
-//  centerPopup();
-//  loadPopup2();
-// });
 	 $("#popupContactClose").click(function()
 	 {
 		 disablePopup();
@@ -1003,24 +1096,11 @@ $(document).ready(function()
 
 function addUserLike(likeurl,widget)
 {
+	
 	$.ajax({
  	    type: "POST",
 		url:site_url+"index/adduserlike",
- 		data: {
-				likeurl: function() 
-				{
-					return likeurl;
-				},
-				facebook_user_email: function() 
-				{
-					return $("#facebook_userid").val();
-				},
-				facebook_user_id: function() 
-				{
-					return $("#facebook_user_numeric_id").val();
-				}
-		},
-		dataType:'html',
+ 		dataType:'html',
 		success:function(data)
 		{ 
  		}		

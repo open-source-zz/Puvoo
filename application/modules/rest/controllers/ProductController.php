@@ -224,12 +224,6 @@ class Rest_ProductController extends RestCommonController
 			$isProdArray = false;
 //			print (count($myparams["Products"]));die;
 			
-			
-			/*print "<pre>";
-			print_r($myparams);
-			print "</pre>";
-			die;*/
-			
 			$name = "";
 			$description = 	"";
 			$price = 0;
@@ -255,6 +249,7 @@ class Rest_ProductController extends RestCommonController
 			$categories = array();
 			$images = array();
 			$attributes = array();
+			$languages = array();
 					
 			
 			//create objects
@@ -263,6 +258,7 @@ class Rest_ProductController extends RestCommonController
 			$Length = new Models_Length();
 			$Category = new Models_Category();
 			$ProdImg = new Models_ProductImages();
+			$Language = new Models_Language();
 			
 			//variables
 			$img_content = "";
@@ -305,7 +301,7 @@ class Rest_ProductController extends RestCommonController
 					$price = 	(float) $filter->filter(trim($prod['price']));
 					if(isset($prod['code']))
 					{
-						$code =	$filterChain2->filter(trim($prod['code']));
+						$code = 	$filterChain2->filter(trim($prod['code']));
 					}
 					$weight = 	(float) $filter->filter(trim($prod['weight']));
 					$length = 	(float) $filter->filter(trim($prod['length']));
@@ -380,6 +376,18 @@ class Rest_ProductController extends RestCommonController
 						else
 						{
 							$attributes = array($prod["attributes"]["attribute"]);
+						}
+					}
+					
+					if(isset($prod["languages"]))
+					{
+						if(isset($prod["languages"]["language"][0]))
+						{
+							$languages = $prod["languages"]["language"];
+						}
+						else
+						{
+							$languages = array($prod["languages"]["language"]);
 						}
 					}
 					
@@ -640,8 +648,26 @@ class Rest_ProductController extends RestCommonController
 					}
 					
 					
-					
-					
+					if(count($languages) > 0)
+					{
+						for($l = 0; $l < count($languages); $l++)
+						{
+							//check if language is present or not
+							if(trim($languages[$l]["code"]) == "")
+							{
+								$arr_error[] = $this->translate->_('Language_Code_Empty')." " . ($i+1);
+							}
+							
+							//check if language is present in system or not
+							if(trim($languages[$l]["code"]) != "")
+							{
+								if(!$Language->checkLanguageByCode(trim($languages[$l]["code"])))
+								{
+									$arr_error[] = $this->translate->_('Language_Not_Present')." " . ($i+1);
+								}
+							}
+						}
+					}
 					
 					if(count($arr_error) > 0)
 					{
@@ -671,6 +697,7 @@ class Rest_ProductController extends RestCommonController
 						$products[$i]['images'] = $images;
 						$products[$i]['categories'] = $categories;
 						$products[$i]['attributes'] = $attributes;
+						$products[$i]['languages'] = $languages;
  						
 					}
 					
@@ -732,6 +759,23 @@ class Rest_ProductController extends RestCommonController
 					//insert product and get product id
 					$arr_msg[$i]["id"] = $Product->insertProduct($data);
 					$arr_msg[$i]["product_external_id"] = $products[$i]["product_external_id"];
+					
+					//update product for default language
+					$Product->updateProductLang(array("product_name"=>$products[$i]["name"],"product_description"=>$products[$i]["description"]),$arr_msg[$i]["id"],$Language->getDefaultLanguageId());
+					
+					//update product language for other languages
+					if(count($products[$i]['languages']) > 0)
+					{
+						for($l = 0; $l < count($products[$i]['languages']); $l++)
+						{
+							$ldata = array();
+							$ldata["product_name"] = $products[$i]['languages'][$l]["name"];
+							$ldata["product_description"] = $products[$i]['languages'][$l]["description"];
+							
+							$Product->updateProductLang($ldata,$arr_msg[$i]["id"],$Language->getLanguageIdByCode($products[$i]['languages'][$l]["code"]));
+							
+						}
+					}
 					
 					//insert categories for given product
 					if(count($products[$i]["categories"]) > 0)
@@ -1049,6 +1093,7 @@ class Rest_ProductController extends RestCommonController
 			$categories = array();
 			$images = array();
 			$attributes = array();
+			$languages = array();
 					
 			
 			//create objects
@@ -1057,6 +1102,7 @@ class Rest_ProductController extends RestCommonController
 			$Length = new Models_Length();
 			$Category = new Models_Category();
 			$ProdImg = new Models_ProductImages();
+			$Language = new Models_Language();
 			
 			//variables
 			$img_content = "";
@@ -1252,6 +1298,18 @@ class Rest_ProductController extends RestCommonController
 						}
 					}
 					
+					if(isset($prod["languages"]))
+					{
+						if(isset($prod["languages"]["language"][0]))
+						{
+							$languages = $prod["languages"]["language"];
+						}
+						else
+						{
+							$languages = array($prod["languages"]["language"]);
+						}
+					}
+					
 					//check values
 					if($pid <= 0){
 						$arr_error[] = $this->translate->_('Product_Invalid_Product_Id');
@@ -1333,12 +1391,12 @@ class Rest_ProductController extends RestCommonController
 						//$img_content = file_get_contents($main_image);
 						list($img_width, $img_height, $img_type) = getimagesize($main_image);
 						
-						if($img_width < 300)
+						if($img_width < 350)
 						{
 							$arr_error[] = $this->translate->_('Product_Invalid_Product_Image_Width');
 						}
 						
-						if($img_height < 300)
+						if($img_height < 350)
 						{
 							$arr_error[] = $this->translate->_('Product_Invalid_Product_Image_Height');
 						}
@@ -1370,12 +1428,12 @@ class Rest_ProductController extends RestCommonController
 								//$img_content = file_get_contents($main_image);
 								list($img_width, $img_height, $img_type) = getimagesize($images[$j]);
 									 
-								if($img_width < 300)
+								if($img_width < 350)
 								{
 									$arr_error[] = $this->translate->_('Product_Invalid_Image_Width')." " . ($j+1) . " ".$this->translate->_('Product_For_Product')."";	
 								}
 								
-								if($img_height < 300)
+								if($img_height < 350)
 								{
 									$arr_error[] = $this->translate->_('Product_Invalid_Image_Height')." " . ($j+1) . " ".$this->translate->_('Product_For_Product')."";	
 								}
@@ -1509,7 +1567,26 @@ class Rest_ProductController extends RestCommonController
 						}
 					}
 					
-					
+					if(count($languages) > 0)
+					{
+						for($l = 0; $l < count($languages); $l++)
+						{
+							//check if language is present or not
+							if(trim($languages[$l]["code"]) == "")
+							{
+								$arr_error[] = $this->translate->_('Language_Code_Empty')." " . ($i+1);
+							}
+							
+							//check if language is present in system or not
+							if(trim($languages[$l]["code"]) != "")
+							{
+								if(!$Language->checkLanguageByCode(trim($languages[$l]["code"])))
+								{
+									$arr_error[] = $this->translate->_('Language_Not_Present')." " . ($i+1);
+								}
+							}
+						}
+					}
 					
 					
 					
@@ -1541,6 +1618,7 @@ class Rest_ProductController extends RestCommonController
 						$products[$i]['images'] = $images;
 						$products[$i]['categories'] = $categories;
 						$products[$i]['attributes'] = $attributes;
+						$products[$i]['languages'] = $languages;
  						
 					}
 					
@@ -1659,8 +1737,26 @@ class Rest_ProductController extends RestCommonController
 						$data["promotion_end_date"] = $products[$i]["promotion_end_date"];
 					}
 					
+					
+					$lang_array = array();
+					//update product language for other languages
+					if(count($products[$i]['languages']) > 0)
+					{
+						for($l = 0; $l < count($products[$i]['languages']); $l++)
+						{
+							$lid = $Language->getLanguageIdByCode($products[$i]['languages'][$l]["code"]);
+							
+							$lang_array[$lid]["product_name"] = $products[$i]['languages'][$l]["name"];
+							$lang_array[$lid]["product_description"] = $products[$i]['languages'][$l]["description"];
+							
+						}
+					}
+					
 					//update product 
-					$Product->updateProduct($data);
+					$Product->updateProduct($data,$lang_array);
+					
+					
+					
 					
 					//insert categories for given product
 					if(count($products[$i]["categories"]) > 0)

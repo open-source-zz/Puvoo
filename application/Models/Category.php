@@ -76,7 +76,11 @@ class Models_Category
 	{
 		$db = $this->db;
 		
-		$sql = "select * from category_master where parent_id = '0' and is_active='1' order By category_name asc";
+		$sql = "select cm.*,cml.category_name as catName from category_master as cm
+				LEFT JOIN category_master_lang as cml ON(cm.category_id = cml.category_id and cml.language_id= ".DEFAULT_LANGUAGE.")
+		 		where cm.parent_id = '0' and cm.is_active='1' order By cm.category_name asc";
+		
+		//echo $sql;die;
  		$result = $db->fetchAll($sql);
 		return $result;
  	} 
@@ -97,7 +101,10 @@ class Models_Category
 	{
 		$db = $this->db;
 		
-		$sql = "select * from category_master where parent_id = '0' and is_active='1' order By category_name asc limit 0,10";
+		$sql = "select cm.*,cml.category_name as catName from category_master as cm
+				LEFT JOIN category_master_lang as cml ON(cm.category_id = cml.category_id and cml.language_id= ".DEFAULT_LANGUAGE.")
+		 		where cm.parent_id = '0' and cm.is_active='1' order By cm.category_name asc limit 0,10";
+				//echo $sql;die;
  		$result = $db->fetchAll($sql);
 		return $result;
  	} 
@@ -119,7 +126,9 @@ class Models_Category
 	{
 		$db = $this->db;
 		
-		$sql = "select * from category_master where parent_id = '0' and is_active='1' order By category_name asc";
+		$sql = "select cm.*,cml.category_name as catName from category_master as cm
+				LEFT JOIN category_master_lang as cml ON(cm.category_id = cml.category_id and cml.language_id= ".DEFAULT_LANGUAGE.")
+		 		where cm.parent_id = '0' and cm.is_active='1' order By cm.category_name asc";
  		$result = $db->fetchAll($sql);
 		return $result;
 	
@@ -145,8 +154,9 @@ class Models_Category
 	{
 		$db = $this->db;
 		
-		$sql = "SELECT cm.* from product_to_categories as ptc 
-				LEFT JOIN category_master as cm ON (cm.category_id = ptc.category_id)
+		$sql = "SELECT cm.*,cml.category_name as CatName from product_to_categories as ptc 
+				LEFT JOIN category_master as cm ON(cm.category_id = ptc.category_id)
+				LEFT JOIN category_master_lang as cml ON(cm.category_id = cml.category_id and cml.language_id= ".DEFAULT_LANGUAGE.")
 				WHERE ptc.product_id='".$Poductid."' and cm.parent_id !='0'";
 				
  		$result = $db->fetchRow($sql);
@@ -175,8 +185,17 @@ class Models_Category
 	{
 		$db = $this->db;
 		
-		$sql = "select * from category_master where category_id = ".$id." order By category_name asc";
- 		$result = $db->fetchRow($sql);
+		$sql1 = "SELECT * 
+				 FROM category_master 
+				 WHERE category_id = ".$id;
+		
+		$sql2 = "SELECT *
+				 FROM  category_master_lang 
+				 WHERE category_id = ".$id." ORDER BY language_id ASC";
+		
+ 		$result["category"] = $db->fetchRow($sql1);
+		$result["category_lang"] = $db->fetchAll($sql2);
+		
 		return $result;
 	
 	}
@@ -202,8 +221,11 @@ class Models_Category
 	{
 		$db = $this->db;
 		
-		$sql = "select * from category_master where parent_id = '".$parentid."' order By category_name asc";
-		//print $sql;die;
+		$sql = "select distinct ptc.category_id as CatId,cm.*,cml.category_name as catName from category_master as cm
+				LEFT JOIN product_to_categories as ptc ON (ptc.category_id = cm.category_id)
+				LEFT JOIN category_master_lang as cml ON(cm.category_id = cml.category_id  AND cml.language_id= ".DEFAULT_LANGUAGE." )
+				where  cm.parent_id = ".$parentid." order By cm.category_name asc ";
+				
  		$result = $db->fetchAll($sql);
 		return $result;
 	
@@ -252,7 +274,9 @@ class Models_Category
 	{
 		$db = $this->db;
 		
-		$sql = "select * from category_master where category_id = ".$catid."";
+		$sql = "select cm.*,cml.category_name as CatName from category_master as cm
+				LEFT JOIN category_master_lang as cml ON(cm.category_id = cml.category_id and cml.language_id= ".DEFAULT_LANGUAGE.")
+				where cm.category_id = ".$catid."";
 		
 		$result =  $db->fetchRow($sql);
 		
@@ -329,12 +353,25 @@ class Models_Category
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
-	public function insertCategory($data)
+	public function insertCategory($data,$langArray)
 	{
 		$db = $this->db;
 		
-		$db->insert("category_master", $data); 	 
-		//return $db->lastInsertId(); 
+		$db->insert("category_master", $data);
+		 	 
+		$category_id = $db->lastInsertId(); 
+		
+		$sql = "INSERT into category_master_lang (category_id, language_id, category_name) values ";
+		
+		foreach( $langArray as $key => $val )
+		{
+			$sql .= "(" . $category_id . ",". $key. ", '".$val["category_name"]."' ),";
+		}
+		
+		$sql = rtrim($sql,",");
+		
+		$db->query($sql);
+		
 		return true; 
 	}
 	
@@ -354,10 +391,42 @@ class Models_Category
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
-	public function updateCategory($data,$where)
+	public function updateCategory($data,$where,$lang_array)
 	{
 		$db = $this->db;		
 		$db->update("category_master", $data, $where); 	
+		
+		$validator = new Zend_Validate_Db_NoRecordExists(
+				array(
+						'table' => "category_master_lang",
+						'field' => "language_id",
+						'exclude' => $where
+				)
+		);
+		
+		foreach( $lang_array as $key => $val )
+		{
+			if ($validator->isValid($key)) {
+				
+				$data1["category_id"] = $data["category_id"];
+				$data1["language_id"] = $key;
+				$data1["category_name"] = $val["category_name"];
+				
+				$db->insert("category_master_lang", $data1);	
+				
+			} else {
+				
+				$data2["category_id"] = $data["category_id"];
+				$data2["language_id"] = $key;
+				$data2["category_name"] = $val["category_name"];
+				
+				$where2 = "category_id = ".$data["category_id"]." and language_id = ".$key;
+				
+				$db->update("category_master_lang", $data2, $where2); 	
+				
+			}	
+		}
+		
 		return true;
 	}
 	
@@ -381,6 +450,7 @@ class Models_Category
 	{
 		$db = $this->db;	
 		$db->delete("category_master", 'category_id = ' .$id);		
+		$db->delete("category_master_lang", 'category_id = ' .$id);		
 		return true;		
 	}
 	
@@ -402,8 +472,10 @@ class Models_Category
 	public function deletemultipleCategories($ids)
 	{
 		$db = $this->db;	
+		
 		$where = 'category_id in ('.$ids.')'; 			
 		$db->delete("category_master",$where);	 
+		$db->delete("category_master_lang",$where);	
 		
 		return true;	
 	}
@@ -473,7 +545,10 @@ class Models_Category
 		array_push($exclude, 0);     // Put a starting value in it
 		
 		
-		$sql = "SELECT * FROM category_master WHERE is_active = 1";
+		$sql = "SELECT cm.*,cml.category_name as CatName FROM category_master as cm
+				LEFT JOIN category_master_lang as cml ON(cm.category_id = cml.category_id and cml.language_id=".DEFAULT_LANGUAGE.")
+				WHERE cm.is_active = 1";
+		
 		$data = $db->fetchAll($sql);
  	
 		foreach ( $data as $key => $nav_row  )
@@ -494,7 +569,15 @@ class Models_Category
 				  } else {
 					$tree .= "<option value='".$nav_row['category_id']."' >";				
 				  }
-				  $tree .= $nav_row['category_name'];                    // Process the main tree node
+				  
+				  if($nav_row['CatName'] != '')
+				  {
+				  	$tree .= $nav_row['CatName'];
+				  }else{
+				  
+				  	$tree .= $nav_row['category_name'];
+				  }
+				                      // Process the main tree node
 				  $tree .= "</option>";
 				  array_push($exclude, $nav_row['category_id']);          // Add to the exclusion list
 				  if ( $nav_row['category_id'] < 6 )
@@ -512,7 +595,9 @@ class Models_Category
 		 global $exclude, $depth;               // Refer to the global array defined at the top of this script
 		 $db = $this->db;	
 		 $tempTree = "";
-		 $child_query = "SELECT * FROM category_master WHERE is_active = 1 AND parent_id=" . $oldID;
+		 $child_query = "SELECT cm.*,cml.category_name as CatName FROM category_master as cm
+						 LEFT JOIN category_master_lang as cml ON(cm.category_id = cml.category_id and cml.language_id=".DEFAULT_LANGUAGE.")
+						 WHERE is_active = 1 AND parent_id=" . $oldID;
 		 
 		 $row = $db->fetchAll($child_query);
 		 
@@ -530,8 +615,15 @@ class Models_Category
 				{ 
 					$tempTree .= "&nbsp;&nbsp;-"; 
 				}
-			   
-				$tempTree .=  "&nbsp;&nbsp;-&nbsp;&nbsp;".$child['category_name'] . "<br>";
+				
+				  if($child['CatName'] != '')
+				  {
+					$tempTree .=  "&nbsp;&nbsp;-&nbsp;&nbsp;".$child['CatName'] . "<br>";
+				  }else{
+				  
+					$tempTree .=  "&nbsp;&nbsp;-&nbsp;&nbsp;".$child['category_name'] . "<br>";
+				  }
+				
 				$tempTree .= "</option>";
 				$depth++;          // Incriment depth b/c we're building this child's child tree  (complicated yet???)
 				$tempTree .= $this->build_child($child['category_id'],$cid);          // Add to the temporary local tree
@@ -683,6 +775,228 @@ class Models_Category
 			
 		}
 		return $tree;
+	}
+	
+	/**
+	 * Function getCategoryTreeString
+	 *
+	 * This function is used to get category tree for API call
+     *
+	 * Date created: 2011-10-17
+	 *
+	 * @access public
+	 * @param (int)  - $cid : category id 
+	 * @param (int)  - $lvl: current level of category.
+	 * @return (array) - Return array of category ids
+	 * @author Amar
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	
+	//recursive function that prints categories as a nested html unorderd list
+
+	function getCategoryTreeString($parent = 0, $lvl=0)
+	{
+		$db= $this->db;
+		
+		
+	
+		$sql = "SELECT * FROM category_master WHERE is_active = 1 and parent_id = ". $parent;
+		//print $sql . "<br>";die;
+		$data = $db->fetchAll($sql);
+		
+		$tree = "";
+		
+		foreach($data as $key => $value)
+		{
+	
+			$sql_child = "select count(*) as cnt from category_master where is_active = 1 and parent_id = " . $value["category_id"];
+			$cnt = $db->fetchOne($sql_child);
+			
+			if($cnt > 0)
+			{
+					
+					$tree .= $value['category_id'] . ",";
+					
+					//array_push($tree, $this->getCategoryTreeForAPI($value['category_id'],$lvl,$tree)	); 
+					$tree .= $this->getCategoryTreeString($value['category_id'],$lvl+1);
+			}
+			else
+			{
+				$tree .= $value['category_id'] . ",";
+			}
+			
+		}
+		return $tree;
+	}
+	
+	
+	/**
+	 * Function getCategoryTreeProductCount
+	 *
+	 * This function is used to get product count for given category 
+     *
+	 * Date created: 2011-10-18
+	 *
+	 * @access public
+	 * @param (int)  - $cid : category id 
+	 * @param (int)  - $lvl: current level of category.
+	 * @return (array) - Return array of category ids
+	 * @author Amar
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	
+	//recursive function that prints categories as a nested html unorderd list
+
+	function getCategoryTreeProductCount($parent = 0, $lvl=0)
+	{
+		$db= $this->db;
+		
+		
+	
+		$sql = "SELECT * FROM category_master WHERE is_active = 1 and parent_id = ". $parent;
+		//print $sql . "<br>";die;
+		$data = $db->fetchAll($sql);
+		
+		$tree = 0;
+		
+		$sql = "SELECT count(*) as cnt FROM product_to_categories WHERE category_id = ". $parent;
+		
+		$tree = (int)$db->fetchOne($sql);
+		
+		if($tree > 0)
+		{
+			return $tree;
+		}
+		
+		foreach($data as $key => $value)
+		{
+	
+			$sql_child = "select count(*) as cnt from category_master where is_active = 1 and parent_id = " . $value["category_id"];
+			$cnt = $db->fetchOne($sql_child);
+			
+ 			
+			if($cnt > 0)
+			{
+					
+					
+					//array_push($tree, $this->getCategoryTreeForAPI($value['category_id'],$lvl,$tree)	); 
+					$tree += (int)$this->getCategoryTreeProductCount($value['category_id'],$lvl+1);
+			}
+		}
+		return $tree;
+	}
+	
+	
+	/**
+	 * Function getCateTree2
+	 *
+	 * This function is used to get category tree 
+     *
+	 * Date created: 2011-09-30
+	 *
+	 * @access public
+	 * @param () (int)  - $cid : category id 
+	 * @param () (array)  - $carray : array to put results in.
+	 * @return (array) - Return array of category ids
+	 * @author Yogesh
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	
+	
+	function getCateTree2( $cid = 0 )
+	{	
+		global $exclude;
+		$db = $this->db;	
+		$tree = "";                         // Clear the directory tree
+		$depth = 1;                         // Child level depth.
+		$top_level_on = 1;               // What top-level category are we on?
+		$exclude = array();               // Define the exclusion array
+		array_push($exclude, 0);     // Put a starting value in it
+		
+		
+		$sql = "SELECT * FROM category_master WHERE is_active = 1";
+		$data = $db->fetchAll($sql);
+ 	
+		foreach ( $data as $key => $nav_row  )
+		{
+     		$goOn = 1;               // Resets variable to allow us to continue building out the tree.
+			for($x = 0; $x < count($exclude); $x++ )          // Check to see if the new item has been used
+			{
+				  if ( $exclude[$x] == $nav_row['category_id'] )
+				  {
+					   $goOn = 0;
+					   break;         // Stop looking b/c we already found that it's in the exclusion list and we can't continue to process this node
+				  }
+			 }
+			 if ( $goOn == 1 )
+			 {
+			 
+			 	 $prodCount = 0;
+				 $prodCount = $this->getCategoryTreeProductCount($nav_row['category_id']);
+			 	if($prodCount > 0) {
+					  if($cid == $nav_row['category_id'] ) {
+						
+							$tree .= "<option selected='selected' value='".$nav_row['category_id']."' >";
+						
+					  } else {
+						
+						$tree .= "<option value='".$nav_row['category_id']."' >";				
+					  }
+				 }
+				  $tree .= $nav_row['category_name'];                    // Process the main tree node
+				  $tree .= "</option>";
+				  array_push($exclude, $nav_row['category_id']);          // Add to the exclusion list
+				  if ( $nav_row['category_id'] < 6 )
+				  { $top_level_on = $nav_row['category_id']; }
+		 
+				  $tree .= $this->build_child2($nav_row['category_id'],$cid);          // Start the recursive function of building the child tree
+			 }
+		}
+		
+		return $tree; 
+ 	}
+	
+	function build_child2($oldID,$cid)               // Recursive function to get all of the children...unlimited depth
+	{	
+		 global $exclude, $depth;               // Refer to the global array defined at the top of this script
+		 $db = $this->db;	
+		 $tempTree = "";
+		 $child_query = "SELECT * FROM category_master WHERE is_active = 1 AND parent_id=" . $oldID;
+		 
+		 $row = $db->fetchAll($child_query);
+		 
+		foreach ( $row as $key => $child )
+		{
+			if ( $child['category_id'] != $child['parent_id'] )
+			{		
+			
+				 $prodCount = 0;
+				 $prodCount = $this->getCategoryTreeProductCount($child['category_id']);
+				if($prodCount > 0) {
+					if($cid == $child['category_id'] ) {
+						$tempTree .= "<option selected='selected' value='".$child['category_id']."' >";
+					} else {
+						$tempTree .= "<option value='".$child['category_id']."' >";				
+					}
+				}
+				for ( $c=0; $c < $depth; $c++ )               // Indent over so that there is distinction between levels
+				{ 
+					$tempTree .= "&nbsp;&nbsp;-"; 
+				}
+			   
+				$tempTree .=  "&nbsp;&nbsp;-&nbsp;&nbsp;".$child['category_name'] . "<br>";
+				$tempTree .= "</option>";
+				$depth++;          // Incriment depth b/c we're building this child's child tree  (complicated yet???)
+				$tempTree .= $this->build_child2($child['category_id'],$cid);          // Add to the temporary local tree
+				$depth--;          // Decrement depth b/c we're done building the child's child tree.
+				array_push($exclude, $child['category_id']);               // Add the item to the exclusion list
+			}
+		}
+	 
+		 return $tempTree;          // Return the entire child tree
 	}
 	
 	

@@ -249,11 +249,18 @@ class Models_UserMaster
 	{
 		$db = $this->db;
 		
-		$select = $db->select()
-					 ->from("user_master")
-					 ->where("user_id = ".$id);
+		$select1 = $db->select()
+					  ->from("user_master")
+					  ->where("user_id = ".$id);
+					 
+		$select2 = $db->select()
+					  ->from("user_master_lang")
+					  ->where("user_id = ".$id);
 		
-		$data = $db->fetchRow($select);
+		
+		$data["store"] 		= $db->fetchRow($select1);
+		$data["language"] 	= $db->fetchAll($select2);
+		
 		return $data;
 	}
 	
@@ -274,7 +281,7 @@ class Models_UserMaster
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
-	public function UpdateStore($data)
+	public function UpdateStore($data, $lang_array)
 	{
 		$db = $this->db;
 		
@@ -284,16 +291,56 @@ class Models_UserMaster
 		
 		$result = $db->fetchAll($select);
 		if($result != NULL && $result != '') {
+			
 			$where =" user_id = ".$data["user_id"];			
-			if($db->update("user_master", $data, $where)) {
-				return true;
-			}	else {				
-				return false;
-			}
-		
+			$db->update("user_master", $data, $where);
+			
 		} else {
+		
 			$db->insert($data);					
 		}
+		
+		if( $lang_array != NULL ) {
+		
+			$where1 = "user_id = ".$data["user_id"];			
+		
+			$validator = new Zend_Validate_Db_NoRecordExists(
+					array(
+							'table' => "user_master_lang",
+							'field' => "language_id",
+							'exclude' => $where1
+					)
+			);
+			
+			foreach( $lang_array as $key => $val )
+			{
+				if ($validator->isValid($key)) {
+					
+					$data1["user_id"] = $data["user_id"];
+					$data1["language_id"] = $key;
+					$data1["store_description"] = $val["store_description"];
+					$data1["return_policy"] = $val["return_policy"];
+					$data1["store_terms_policy"] = $val["store_terms_policy"];
+					
+					$db->insert("user_master_lang", $data1);	
+					
+				} else {
+					
+					$data2["user_id"] = $data["user_id"];
+					$data2["language_id"] = $key;
+					$data2["store_description"] = $val["store_description"];
+					$data2["return_policy"] = $val["return_policy"];
+					$data2["store_terms_policy"] = $val["store_terms_policy"];
+					
+					$where2 = "user_id = ".$data["user_id"]." and language_id = ".$key;
+					
+					$db->update("user_master_lang", $data2, $where2); 	
+					
+				}	
+			}
+		}
+		
+		return true;
 	}
 	
 	/**

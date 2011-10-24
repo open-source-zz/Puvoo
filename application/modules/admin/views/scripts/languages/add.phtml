@@ -133,6 +133,68 @@
 								<span></span>
 							</td>
 						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Country'); ?>:
+							</td>
+							<td>
+								<select name="country_id" id="country_id" class="Field250">
+									<option selected="selected" value=""><?php echo $this->Translate("Select_Country"); ?></option>
+		<?php 						foreach( $this->country as $key => $val ) 
+									{ 
+										if( $val["country_id"] ==  $this->data['country_id'] )	{
+		?>
+											<option selected="selected" value="<?php echo $val['country_id']; ?>"><?php echo $val["country_name"]; ?></option>
+		<?php							} else {
+		?>
+											<option value="<?php echo $val['country_id']; ?>"><?php echo $val["country_name"]; ?></option>								
+		<?php 							}		
+									} 								
+		?>
+								</select>
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Currency'); ?>:
+							</td>
+							<td>
+								<select name="currency_id" id="currency_id" class="Field250">
+									<option selected="selected" value=""><?php echo $this->Translate("Select_Currency"); ?></option>
+		<?php 						foreach( $this->currency as $key => $val ) 
+									{ 
+										if( $val["currency_id"] ==  $this->data['currency_id'] )	{
+		?>
+											<option selected="selected" value="<?php echo $val['currency_id']; ?>"><?php echo $val["currency_name"]." (".$val["currency_code"].")"; ?></option>
+		<?php							} else {
+		?>
+											<option value="<?php echo $val['currency_id']; ?>"><?php echo $val["currency_name"]." (".$val["currency_code"].")"; ?></option>								
+		<?php 							}		
+									} 								
+		?>
+								</select>
+								
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Is_Default'); ?>:
+							</td>
+							<td>
+								<span>
+									<input type="radio" name="is_default" id="is_default" class="" value="1" <?php echo (($this->data['is_default'] == '1' || $this->data['is_default'] == '') ? 'checked' : '' ); ?> />
+									<?php echo $this->Translate('L_Yes'); ?>&nbsp;
+									<input type="radio" name="is_default"  value="0" <?php echo ($this->data['is_default'] == '0' ? 'checked' : '' ); ?> />
+									<?php echo $this->Translate('L_No'); ?>
+								</span>
+								<span></span>
+							</td>
+						</tr>
 						<tr><td height="15"></td></tr>
 						<tr>
 							<td class="FieldLabel">
@@ -171,6 +233,8 @@ var ERR_LANGUAGE_NAME = "<?php echo $this->Translate('Err_Language_Name'); ?>";
 var ERR_LANGUAGE_CODE = "<?php echo $this->Translate('Err_Language_Code'); ?>";  
 var ERR_LANGUAGE_CHARSET = "<?php echo $this->Translate('Err_Language_Charset'); ?>";  
 var ERR_LANGUAGE_DECIMAL = "<?php echo $this->Translate('Err_Language_Decimal'); ?>";  
-var ERR_LANGUAGE_THOUSANDS = "<?php echo $this->Translate('Err_Language_Thousands'); ?>";  
+var ERR_LANGUAGE_THOUSANDS = "<?php echo $this->Translate('Err_Language_Thousands'); ?>";
+var ERR_LANGUAGE_COUNTRY = "<?php echo $this->Translate('Err_Language_Country'); ?>";
+var ERR_LANGUAGE_CURRENCY = "<?php echo $this->Translate('Err_Language_Currency'); ?>";  
 
 </script>

@@ -62,6 +62,25 @@ class Models_UserOrders
 		$this->db = Zend_Registry::get('Db_Adapter');
 		$this->user_id = $mysession->User_Id;
 	}
+	
+	/**
+	 * Function setUserId
+	 *
+	 * This function is used to set user id
+	 *
+	 * Date created: 2011-10-19
+	 *
+	 * @access public
+	 * @param (Int)  - $uid: User Id
+	 * @return () - Return void
+	 * @author Amar
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	function setUserId($uid)
+	{
+		$this->user_id = $uid;
+	}
  	
 	
    /**
@@ -84,7 +103,7 @@ class Models_UserOrders
 	 {
 	 	$db = $this->db;
 	 	
-		$select = "	SELECT om.*, 
+		$select = "	SELECT om.*, scm.country_name as shipping_country, bcm.country_name as billing_country, ssm.state_name as shipping_state_name, bsm.state_name as billing_state_name,
 					SUM(od.product_price * product_qty ) as product_cost, 
 					SUM(od.shipping_cost) as shipping_cost,
 					SUM(od.tax_rate) as tax_rate,
@@ -92,6 +111,10 @@ class Models_UserOrders
 					cm.currency_symbol,cm.currency_code
 					FROM order_master as om
 					JOIN order_detail as od ON (om.order_id = od.order_id)
+					LEFT JOIN country_master as scm ON ( scm.country_id = om.shipping_user_country_id)
+				    LEFT JOIN country_master as bcm ON ( bcm.country_id = om.billing_user_country_id )
+				    LEFT JOIN state_master as ssm ON ( ssm.state_id = om.shipping_user_state_id )
+				    LEFT JOIN state_master as bsm ON ( bsm.state_id = om.billing_user_state_id )
 					JOIN currency_master as cm ON (cm.currency_id = om.currency_id)
 					WHERE od.product_id 
 					IN( SELECT pm.product_id 
@@ -181,7 +204,7 @@ class Models_UserOrders
 						WHERE pm.user_id = '".$this->user_id."' )
 					AND om.order_id = '".$id."'
 					GROUP BY om.order_id";
-		
+
 		return $db->fetchRow($select);
 	 
 	 }
@@ -418,6 +441,53 @@ class Models_UserOrders
 	
 		return $db->fetchAll($select);
 	 
+	 }
+	 
+	 
+	 /**
+	 * Function orderExistForUser
+	 *
+	 * This function is used to check if order id exist for given user
+	 *
+	 * Date created: 2011-10-19
+	 *
+	 * @access public
+	 * @param (Int)	- $order_id: Order Id
+	 * @param (Int)	- $user_id: User Id
+	 * @return (Boolean) - True or False
+	 *
+	 * @author Amar
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	 function orderExistForUser($order_id, $user_id)
+	 {
+	 	$db = $this->db;
+		
+	 	$sql = "Select distinct(product_master.user_id) as user_id from order_master,order_detail,product_master 
+				where order_master.order_id = order_detail.order_id and order_detail.product_id = product_master.product_id 
+				";
+		$data = array();
+			
+		$data = $db->fetchAll($sql);
+		
+		if(count($data) > 0)
+		{
+			for($i=0; $i<count($data); $i++)
+			{
+				if($user_id == $data[$i]["user_id"])
+				{
+					return true;
+				}	
+			}
+			
+			return false;
+		}
+		else
+		{
+			return false;
+		}	
+		
 	 }
 }
 ?>

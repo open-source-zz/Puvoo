@@ -58,10 +58,9 @@
     function init()
     {
         parent::init();
-        $this->view->JS_Files = array('admin/category.js','admin/AdminCommon.js');			
+        $this->view->JS_Files = array('admin/category.js','admin/AdminCommon.js');					
 		Zend_Loader::loadClass('Models_Category');
-		Zend_Loader::loadClass('Models_AdminMaster');
-        
+		Zend_Loader::loadClass('Models_AdminMaster');       
     }
 	
     /**
@@ -87,7 +86,6 @@
 		$this->view->edit_action = SITE_URL."admin/category/edit";
 		$this->view->delete_action = SITE_URL."admin/category/delete";
 		$this->view->delete_all_action = SITE_URL."admin/category/deleteall";
-		
 		
 		//Create Object of Category model
 		$category = new Models_Category();
@@ -194,9 +192,10 @@
 		
 		$category = new Models_Category();
 		$home = new Models_AdminMaster();
+		$lang = new Models_Language(); 
    		
 		$this->view->categories = $category->GetMainCategory();
-		
+		$this->view->language = $lang->getAllLanguages();
 		
 		$request = $this->getRequest();
 		$parent_id = 0;
@@ -222,7 +221,20 @@
 			$data['category_name']=$filter->filter(trim($this->_request->getPost('category_name'))); 	
 			$data['parent_id']=$filter->filter(trim($this->_request->getPost('parent_category'))); 	
 			$data['is_active']=$filter->filter(trim($this->_request->getPost('is_active')));
+			
+			$langArray[DEFAULT_LANGUAGE]["category_name"] = $data['category_name'];
+			
+			foreach( $this->view->language as $key => $val ) 
+			{ 
+				if($val['language_id'] != DEFAULT_LANGUAGE ) { 
+					
+					$lagn_index = 'category_name_'.$val['language_id'];
+					$langArray[$val['language_id']]["category_name"]=$filter->filter(trim($this->_request->getPost($lagn_index)));
+				}		
+			}
+			
 			$data['icon_image'] =  "";
+			
 			$addErrorMessage = array();
 			if($data['category_name'] == "") {
 				$addErrorMessage[] = $translate->_('Err_Category_Name');			
@@ -242,10 +254,13 @@
 				}
 			}
 			
+			$this->view->data = $data;
+			$this->view->langdata = $langArray;
+			
 			$where = "1 = 1";
 			if( count($addErrorMessage) == 0 || $addErrorMessage == ""){
 				if($home->ValidateTableField("category_name",$data['category_name'],"category_master",$where)) {
-					if($category->insertCategory($data)) {
+					if($category->insertCategory($data, $langArray)) {
 						$mysession->Admin_SMessage = $translate->_('Success_Add_Category');
 						$this->_redirect('/admin/category/index/parent_id/'.$parent_id); 	
 					} else {
@@ -286,8 +301,10 @@
 		
 		$category = new Models_Category();
    		$home = new Models_AdminMaster();
-		
+		$lang = new Models_Language(); 
+   		
 		$this->view->categories = $category->GetMainCategory();
+		$this->view->language = $lang->getAllLanguages();
 		
 		$request = $this->getRequest();
 		
@@ -299,9 +316,19 @@
 		$this->view->cateTree = $category->getCateTree($parent_id);
 		
 		if($category_id > 0 && $category_id != "") {
+			
 			$this->view->records = $category->GetCategoryById($category_id);	
+			
+			$langArray = array();
+			foreach($this->view->records["category_lang"] as $key => $val )
+			{
+				$langArray[$val["language_id"]]["category_name"] = $val["category_name"];
+			}
+			
+			$this->view->langdata = $langArray;
 			$this->view->category_id =  $category_id;	
 			$this->view->parent_id = (int)$request->getPost('parent_id');
+			
 		} else {
 			
 			if($request->isPost()){
@@ -332,12 +359,26 @@
 					}
 				}
 				
+				$langArray = array();
+				
+				$langArray[DEFAULT_LANGUAGE]["category_name"] = $data['category_name'];
+			
+				foreach( $this->view->language as $key => $val ) 
+				{ 
+					if($val['language_id'] != DEFAULT_LANGUAGE ) { 
+						
+						$lagn_index = 'category_name_'.$val['language_id'];
+						$langArray[$val['language_id']]["category_name"]=$filter->filter(trim($this->_request->getPost($lagn_index)));
+					}		
+				}
+				
+				
 				$where = "category_id != ".$data["category_id"];
 				if( count($editErrorMessage) == 0 || $editErrorMessage == ""){
 					if($home->ValidateTableField("category_name",$data['category_name'],"category_master",$where)) {
 					
 						$where = "category_id = ".$data["category_id"];
-						if($category->updateCategory($data,$where)) {
+						if($category->updateCategory($data,$where,$langArray)) {
 							$mysession->Admin_SMessage = $translate->_('Success_Edit_Category');
 							$this->_redirect('/admin/category/index/parent_id/' . $parent_id); 	
 						} else {
@@ -353,7 +394,9 @@
 				
 				$data["icon_image"] = $category_image;
 				$this->view->parent_id = $parent_id;
-				$this->view->records = $data;	
+				$records["category"] = $data;
+				$this->view->records = $records;
+				$this->view->langdata = $langArray;	
 				$this->view->category_id =  $data["category_id"];	
 				$this->view->editErrorMessage = $editErrorMessage;
 				

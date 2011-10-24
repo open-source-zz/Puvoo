@@ -112,27 +112,42 @@ class Fb_ProductController extends FbCommonController
 					
 				$result = $Category->GetcategoryID($Poductid);
 				$this->view->cat_id = $result['category_id'];
-				$this->view->catname = $result['category_name'];
+				if($result['CatName'] != ''){
+					$this->view->catname = $result['CatName'];
+				}else{
+					$this->view->catname = $result['category_name'];
+				}
 		
 				//to get parentcategory details
 				$parentcat_details = $Category->GetCategoryDetail($result['parent_id']);
 				$this->view->parentcat_id = $result['parent_id'];
-				$this->view->parentcat_name = $parentcat_details['category_name'];
-				 
-				//to get subcategory
-				$subcat =$Category->GetSubCategory($result['category_id']); 
-				$this->view->subcatlist = $subcat;
 				
+				if($parentcat_details['CatName'] != ''){
+					$this->view->parentcat_name = $parentcat_details['CatName'];
+				}else{
+					$this->view->parentcat_name = $parentcat_details['category_name'];
+				}
+ 				
 				//to get Product Details
 				$productDetail = $Product->GetProductDetails($Poductid);
-				//print "<pre>";
-				//print_r($productDetail);die;
+ 				
+				if($productDetail['ProdName'] != ''){
+					$product_name = $productDetail['ProdName'];
+				}else{
+					$product_name = $productDetail['product_name'];
+				}
 				
+				if($productDetail['ProdDesc'] != ''){
+					$product_desc = $productDetail['ProdDesc'];
+				}else{
+					$product_desc = $productDetail['product_description'];
+				}
 				$this->view->ProdUserId = $productDetail['user_id'];
-				$this->view->ProdName = ucfirst($productDetail['product_name']);
+				$this->view->ProdName = ucfirst($product_name);
 				$ProdPrice = $productDetail['prod_convert_price'];
+				//print $ProdPrice;die;
 				$this->view->ProdPrice = $ProdPrice;
-				$this->view->ProdDesc = $productDetail['product_description'];
+				$this->view->ProdDesc = $product_desc;
 				$this->view->ProdWeight = $productDetail['product_weight']."&nbsp;".$productDetail['weight_unit_key'];
 				$this->view->ProdLength = $productDetail['length']."&nbsp;".$productDetail['length_unit_key'];
 				$this->view->ProdSeller = $productDetail['store_name'];
@@ -161,7 +176,7 @@ class Fb_ProductController extends FbCommonController
 						}else{
 							$tinyImageList .= "<div id='Tiny".$key."' class='otherimg'>";
 						}
-						$tinyImageList .= "<img id='TinyImage_".$key."' src='".$tinyImage."' style='border:none; padding:0px;' alt='' />";
+						$tinyImageList .= "<img id='TinyImage_".$key."' src='".$tinyImage."' style='border:none; padding:0px;' alt='".$product_name."' title='".$product_name."' />";
 						$tinyImageList .= "</div></a></li>";
 						
 						$this->view->imageList = $tinyImageList;
@@ -234,20 +249,8 @@ class Fb_ProductController extends FbCommonController
 		$Category = new Models_Category();
 		$Product = new Models_Product();
 		
+		$this->view->temp_url = FB_REDIRECT_URL;
 		
-		$tempArray = explode("/",$_SERVER["REQUEST_URI"]);
-		$siteArray = array();
-		foreach( $tempArray as $key => $val )
-		{
-			if( $key != 0 && $key != 1) {
-				$siteArray[] = $val;
-			}
-		}
-		
-		$this->view->temp_url = SITE_FB_URL.implode("/",$siteArray);
-		
-		
-  		//print_r($_POST);die;
 		if(!$_GET)
 		{
 			$QueryString = $this->_request->getParam('q');
@@ -292,17 +295,16 @@ class Fb_ProductController extends FbCommonController
  			// to get category details
 			$catdetails = $Category->GetCategoryDetail($CatId);
 			$parentid = $catdetails['parent_id'];
-			//to get subcategory
-			$subcat =$Category->GetSubCategory($CatId); 
-			$this->view->subcatlist = $subcat;
-			$this->view->catname = $catdetails['category_name'];
+			
+			if($catdetails['CatName'] != ''){
+				$this->view->catname = $catdetails['CatName'];
+			}else{
+				$this->view->catname = $catdetails['category_name'];
+			}
+ 			
  			//to get category product
  			$catProd = $Product->GetProductByCategoryId($CatId,$sort);
 			//$this->view->ProductList = $catProd;
-		}
-		else
-		{
-			$this->view->allcategories = $Category->GetMainCategory();
 		}
 		
 		$QueryString = $_GET['q'];
@@ -354,37 +356,38 @@ class Fb_ProductController extends FbCommonController
  	 	$Common = new Models_Common();
 		//if(Facebook_Authentication_URL)
 		//{
-			if($this->_request->getParam('prodid'))
+			
+			if($this->_request->getPost('prodid'))
 			{
-				$prodId = $this->_request->getParam('prodid');
+				$prodId = $this->_request->getPost('prodid');
 			}else{
 				$prodId = 0;
 			}
 			
+			
 			if($prodId > 0)
 			{
-				//print $prodId;die;
-				$ProductInfo = $Product->GetProductDetails($prodId);
-				$ProductInfo['price'] = $this->_request->getParam('prodPrice');
-				$ProductInfo['fbid'] = $this->_request->getParam('fbuserid');
-				//print_r($ProductInfo);die;
-				$exist = $Cart->ProductExist($ProductInfo['product_id']);
 				
-				//print $exist;die;
-				if($exist < 1)
+				$ProductInfo = $Product->GetProductDetails($prodId);
+				$ProductInfo['price'] = $this->_request->getPost('prodPrice');
+				$ProductInfo['fbid'] = $this->_request->getPost('fbuserid');
+				
+				$exist = $Cart->ProductExist($ProductInfo['product_id'],$ProductInfo['fbid']);
+ 				
+ 				if($exist < 1)
 				{	
 					// Insert Record in cart
 					$ins_crt = $Cart->InsertRecord($ProductInfo);
-					//print $ins_crt;die;
+					
 					if ($ins_crt = true)
 					{
 						$CartDetails = $Cart->GetCartDetailId($prodId,$ProductInfo['fbid']);
  						$cartDetailId = $CartDetails['cart_detail_id'];
 						// Insert Record in cart option
 						//print_r($this->_request->getParam('option'));die;
-						if($this->_request->getParam('option') != '')
+						if($this->_request->getPost('option') != '')
 						{
-							$optionInfo = explode(',',$this->_request->getParam('option'));
+							$optionInfo = explode(',',$this->_request->getPost('option'));
 							
 							foreach($optionInfo as $opt)
 							{
@@ -407,7 +410,7 @@ class Fb_ProductController extends FbCommonController
 	
 			}
 			
-		$CartDetails = $Cart->GetProductInCart($this->_request->getParam('fbuserid'));
+		$CartDetails = $Cart->GetProductInCart($this->_request->getPost('fbuserid'));
 		
 		if(count($CartDetails) > 0){
 			$this->view->cartItems = $CartDetails;
@@ -493,10 +496,12 @@ class Fb_ProductController extends FbCommonController
 			// State combo
 			$this->view->StateCombo = $Cart->GetState($this->view->countryId);
 			
+			$this->view->ShipCountryCombo = $Cart->GetCountryCombo();
+			
 			$this->view->CurrencyCombo = $Common->GetCurrency();
 			
 			//to get paypal details
-			$paypalUrl = $Common->GetPaypalUrl('paypal_url');
+			$paypalUrl = $Common->GetConfigureValue('paypal_url');
 			
 			$PaypalDetails = $Common->GetPaypalDetails($this->view->cartuserId);
 	

@@ -247,10 +247,15 @@ class Models_UserProduct
 				 LEFT JOIN product_options_detail as pod ON(po.product_options_id = pod.product_options_id)
 				 WHERE po.product_id = ".$id;
 		
+		$sql5 =" SELECT *
+				 FROM product_master_lang
+				 WHERE product_id = ".$id;
+		
 		$product["detail"] = $db->fetchRow($sql);
 		$product["images"] = $db->fetchAll($sql2);
 		$product["category"] = $db->fetchAll($sql3);
 		$product["options"] = $db->fetchAll($sql4);
+		$product["language"] = $db->fetchAll($sql5);
 		
 		return $product;
 	}
@@ -271,13 +276,50 @@ class Models_UserProduct
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
-	public function updateProduct($data)
+	public function updateProduct($data, $lang_array)
 	{
+		global $mysession;
 		$db = $this->db;
 				
-		$where ="user_id = '".$this->user_id."' AND product_id = ".$data["product_id"];		
+		$where ="user_id = '".$this->user_id."' AND product_id = ".$data["product_id"];	
+		$where1 ="product_id = ".$data["product_id"];	
 		
-		return $db->update("product_master", $data, $where); 	 
+		$db->update("product_master", $data, $where); 	 
+		
+		$validator = new Zend_Validate_Db_NoRecordExists(
+				array(
+						'table' => "product_master_lang",
+						'field' => "language_id",
+						'exclude' => $where1
+				)
+		);
+		
+		foreach( $lang_array as $key => $val )
+		{
+			if ($validator->isValid($key)) {
+				
+				$data1["product_id"] = $data["product_id"];
+				$data1["language_id"] = $key;
+				$data1["product_name"] = $val["product_name"];
+				$data1["product_description"] = $val["product_description"];
+				
+				$db->insert("product_master_lang", $data1);	
+				
+			} else {
+				
+				$data2["product_id"] = $data["product_id"];
+				$data2["language_id"] = $key;
+				$data2["product_name"] = $val["product_name"];
+				$data2["product_description"] = $val["product_description"];
+				
+				$where2 = "product_id = ".$data["product_id"]." and language_id = ".$key;
+				
+				$db->update("product_master_lang", $data2, $where2); 	
+				
+			}	
+		}
+		
+		return true;
 	}
 	
 	/**
@@ -335,13 +377,26 @@ class Models_UserProduct
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
-	public function insertProduct($data)
+	public function insertProduct($data, $langArray)
 	{
 		$db = $this->db;
 		
 		$db->insert("product_master", $data); 	 
+		
+		$product_id = $db->lastInsertId();
+		
+		$sql = "INSERT into product_master_lang (product_id, language_id, product_name, product_description) values ";
+		
+		foreach( $langArray as $key => $val )
+		{
+			$sql .= "(" . $product_id . ",". $key. ", '".$val["product_name"]."', '".$val["product_description"]."' ),";
+		}
+		
+		$sql = rtrim($sql,",");
+		
+		$db->query($sql);
 				
-		return $db->lastInsertId();
+		return $product_id;
 	}
 	
 	/*

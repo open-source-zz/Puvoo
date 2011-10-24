@@ -233,6 +233,7 @@ class Rest_CategoryController extends RestCommonController
 			
 			if(count($arr_error) == 0)
 			{
+				$this->view->result = 'Success';
 				$this->view->Categories = $categories;
         		$this->getResponse()->setHttpResponseCode(201);
 				

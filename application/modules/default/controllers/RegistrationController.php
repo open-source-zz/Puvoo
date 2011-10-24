@@ -103,6 +103,7 @@ class RegistrationController extends DefaultCommonController
 			$verfication_code = RandomPassword(6); 	
 			$data['user_verification_code']= md5($verfication_code); 	
 			$data['user_api_token']=md5($data['user_email'].date("Y-m-d H:i:s"));
+			$data['user_api_token_expiry'] = new Zend_Db_Expr('DATE_ADD( NOW( ) , INTERVAL 18 MONTH )');
 			
 			$registrationError = "";
 			if($data['user_fname'] == "" ) {
@@ -266,7 +267,117 @@ class RegistrationController extends DefaultCommonController
 		 $this->view->flag = $flag;		 
 	}
 	
-
+	 /**
+     * Function registrationAction
+	 *
+	 * This function is used for registration process 
+	 *
+     * Date Created: 2011-10-18
+     *
+     * @access public
+	 * @param ()  - No parameter
+	 * @return (void) - Return void
+	 *
+     * @author Yogesh
+     * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+     **/
+	
+    public function registerAction()
+    {
+		
+        // action body
+		 global $mysession;
+		 $translate = Zend_Registry::get('Zend_Translate');
+		 
+		 $home = new Models_UserMaster();
+		
+		 if($this->_request->isPost())
+		 {
+		 	
+			$filter = new Zend_Filter_StripTags();	
+			$data['user_fname']=$filter->filter(trim($this->_request->getPost('user_fname'))); 	
+			$data['user_lname']=$filter->filter(trim($this->_request->getPost('user_lname'))); 	
+			$data['user_email']=$filter->filter(trim($this->_request->getPost('user_email'))); 	
+			$data['user_password']=$filter->filter(trim($this->_request->getPost('user_password'))); 	
+			$user_conf_password = $filter->filter(trim($this->_request->getPost('user_conf_password'))); 	
+			$data['user_facebook_id']=$filter->filter(trim($this->_request->getPost('user_facebook_id'))); 	
+			$data['registration_date']=date("Y-m-d H:i:s"); 			
+			$verfication_code = RandomPassword(6); 	
+			$data['user_verification_code']= md5($verfication_code); 	
+			$data['user_api_token']=md5($data['user_email'].date("Y-m-d H:i:s"));
+			$data['user_api_token_expiry'] = new Zend_Db_Expr('DATE_ADD( NOW( ) , INTERVAL 18 MONTH )');
+			
+			
+			$where = "1=1";
+			if($home->ValidateTableField("user_email",$data['user_email'],"user_master",$where)) {
+		
+					$data['user_password'] = md5($data['user_password']);
+					
+					
+					if($home->registerUser($data)) {
+					
+						$to 		= $data['user_email'];
+						$to_name 	= $data['user_fname']."  ".$data['user_lname'];
+						$from		= "noreply@puvoo.com";
+						$from_name	= "Puvoo";
+						$subject	= "Confirm registration process";					
+						$body 		= SITE_URL.'registration/confirm?varification_code='.$data['user_verification_code'].'&email='.$data["user_email"];
+						
+						$imgpath = "/".$_SERVER['HTTP_HOST'].IMAGES_PATH."/fb/";
+						
+		
+			$Body = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+			<html xmlns="http://www.w3.org/1999/xhtml">
+			<head>
+			<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+			<title>Enquiry</title>
+			</head>
+			
+			<body style="font-size:12px; font-family:Arial, Helvetica, sans-serif; color:#000000; margin:0px; padding:0px;">
+				<div id="top" style="background:#ffffff; height:100px; width:680px; margin:auto;">
+					<div id="header" style="padding-top:10px;">
+						<div style="color:#6d6e72; font-weight:bold; font-size:14px; font-family: Verdana, Geneva, sans-serif; line-height:60px; float:left;">
+							<a href="#" style=" margin-right:11px; padding-left:20px;">
+							<img src="'.$imgpath.'logo.png" width="239" height="79" />
+						</div>
+					</div>
+				</div>
+				<div style="height:6px; width:680px; margin:auto;padding-left:40px;">
+					<img src="'.$imgpath.'sep.jpg" alt="" style="min-height:6px;width:680px;margin:auto;" />
+				</div>
+				<div id="middle" style=" background:#ffffff; height:auto; width:680px; margin:auto;">
+					<div style=" padding:15px; padding-left:20px; padding-top:10px;">
+						<br />Thank You For Regisration with Puvoo.<br />Please click on link to complete the registration process.<br /><br />Link: <a href="'.$body .'">'.$body.'</a>
+					</div>
+				</div>
+				
+				</div>
+			</body>
+			</html>
+			';
+						
+						if(sendMail($to,$to_name,$from,$from_name,$subject,$Body)) {
+							$this->_redirect("http://www.puvoo.com/thankyouregistration.php?m=1");
+							
+							
+						} else {
+							$this->_redirect("http://www.puvoo.com/thankyouregistration.php?m=2");
+							
+						}
+						 
+						 
+					} else {
+						$this->_redirect("http://www.puvoo.com/thankyouregistration.php?m=3");
+					}				
+				
+			
+			} else {
+				$this->_redirect("http://www.puvoo.com/thankyouregistration.php?m=4");					
+			}
+			
+		 }
+		$this->_redirect("http://www.puvoo.com/marketplace.php");	
+    }
 }
 
 ?>

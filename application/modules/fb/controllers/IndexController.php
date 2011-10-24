@@ -71,52 +71,25 @@ class Fb_IndexController extends FbCommonController
 		 $Category = new Models_Category();
 		 $Product = new Models_Product();
 		 $Common = new Models_Common();
-		 //to get all main category
-		 $this->view->Allcategory = $Category->GetMainCategory();
-		 //to get selected category
-		 $selectCat = $Category->GetCategory();
-		 
-		//for display category list on left menu 
-		 foreach($selectCat as $val)
-		 {
-		 	$SubCatList = "";
-			
-		  	$SubCat = $Category->GetSubCategory($val['category_id']);
- 			
-			$SubCatList .= "<li class=''>";
-			$SubCatList .= "<a class='sf-with-ul' href='".SITE_FB_URL."category/subcat/id/".$val['category_id']."' target='_top'>".$val['category_name']."				                            <span class='sf-sub-indicator'> »</span></a>";
-			$SubCatList .= "<div><ul class='submenu'>";
-				for($i=0; $i<count($SubCat); $i++)
-				{
-					$SubCatList .= "<li>";
-					$SubCatList .= "<a href='".SITE_FB_URL."category/subcat/id/".$SubCat[$i]['category_id']."' target='_top'><img src='".IMAGES_FB_PATH."/2d30f5a834021d7887e1712062d0ed055283edc5_th.jpg' alt='' />".$SubCat[$i]['category_name']."</a>";
-					$SubCatList .="</li>";
- 				}
-									
-   			$SubCatList .="</ul></div></li>";
- 			//$this->view->Category .= $SubCatList;
-			
- 		 }
-		 
-		 //$this->view->FeaturedProduct = $Product->GetFeaturedSeller();
+ 
+ 		 //$this->view->FeaturedProduct = $Product->GetFeaturedSeller();
 		 $this->view->FeaturedProduct = array();
 		 
 		 /// Best Seller Products
 		 
 		 $bestSellerProd = $Product->GetBestSelllerProduct();
-		 //echo "<pre>";
-		 //print_r($bestSellerProd);die;
-		 $this->view->bestSeller = $bestSellerProd;
+ 
+ 		 $this->view->bestSeller = $bestSellerProd;
 		 
 		 // Friens Like
 		 $FrdsLikeProd = $Product->GetFrndsLikeProduct();
 		 $this->view->frndslike = $FrdsLikeProd;
 		
-		/// Facebook banner
-		$banners = $Common->GetfacebookBanner();
+		 /// Facebook banner
+		 $banners = $Common->GetfacebookBanner();
 		
-		$this->view->bannerCnt = count($banners);
-		$this->view->banner = $banners;
+		 $this->view->bannerCnt = count($banners);
+		 $this->view->banner = $banners;
      }
 	  
 	  
@@ -128,24 +101,63 @@ class Fb_IndexController extends FbCommonController
 		$this->_helper->layout()->disableLayout();
 		
 		$master = new Models_AdminMaster();
+		$Definitions = new Models_LanguageDefinitions();
 		$filter = new Zend_Filter_StripTags();	
 		
-		$data["product_url"] = $filter->filter(trim($this->_request->getPost('likeurl'))); 	
-		$data["facebook_user_email"] = $filter->filter(trim($this->_request->getPost('facebook_user_email'))); 	
-		$data["facebook_user_id"] = $filter->filter(trim($this->_request->getPost('facebook_user_id'))); 	
+		if(FACEBOOK_USERID != '' ) {
 		
-		$urlArray = explode("/",$data["product_url"]);
-		$data["product_id"] = $urlArray[count($urlArray)-1];
+			$facebook = new Facebook(array(
+				  'appId'  => FACEBOOK_APP_API_ID,
+				  'secret' => FACEBOOK_APP_SECRET_KEY,
+				  'cookie' => true,
+			));
+			 
+			
+			$data = $facebook->api( 
+						array( 
+								'method' => 'fql.query', 
+								'query' => 'SELECT url FROM url_like WHERE user_id = '.FACEBOOK_USERID 
+							) 
+						);
+			
+			if( count($data) > 0 ) {
+			
+				$sql = "INSERT IGNORE into user_product_likes (facebook_user_id, facebook_user_email, product_id, product_url) values ";
+				$counter = 0;
+				foreach($data as $key => $val )
+				{
+					$pos = strpos($val["url"], SITE_FB_URL);
+					
+					
+					if($pos !== false) {
+					
+						$urlArray = explode("/",$val["url"]);
+						$product_id = $urlArray[count($urlArray)-1];
+						
+						if( $product_id != '' && $product_id > 0 ) {
+						
+							$sql .= "(" . FACEBOOK_USERID . ", '".FACEBOOK_USERID."', ".$product_id.", '".$val["url"]."'),";	
+							$counter++;
+						}
+					}
+					
+				}
+				
+				$sql = rtrim($sql,",");
+				
+				if($counter > 0) {
+					
+					$Definitions->executeQuery($sql);
+				}
+				
+			}
+			
+			echo "Done !!"; die;
+				
+		} else { 
 		
-		if($master->updateProductCounter($data)) { 
-		
-			print "Done !!";
-		} else {
-		
-			print "Error !!";
+			echo "Done !!"; die;
 		}
-		die;
-		
 	}
 	
 	function removeuserlikeAction()
@@ -158,9 +170,9 @@ class Fb_IndexController extends FbCommonController
 		$master = new Models_AdminMaster();
 		$filter = new Zend_Filter_StripTags();	
 		
-		$data["product_url"] = $filter->filter(trim($this->_request->getPost('likeurl'))); 	
-		$data["facebook_user_email"] = $filter->filter(trim($this->_request->getPost('facebook_user_email'))); 	
-		$data["facebook_user_id"] = $filter->filter(trim($this->_request->getPost('facebook_user_id'))); 	
+		$data["product_url"] = $filter->filter(trim($this->_request->getParam('likeurl'))); 	
+		$data["facebook_user_email"] = $filter->filter(trim($this->_request->getParam('facebook_user_email'))); 	
+		$data["facebook_user_id"] = $filter->filter(trim($this->_request->getParam('facebook_user_id'))); 	
 		
 		$urlArray = explode("/",$data["product_url"]);
 		$data["product_id"] = $urlArray[count($urlArray)-1];

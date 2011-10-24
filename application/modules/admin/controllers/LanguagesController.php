@@ -86,9 +86,9 @@
 		$this->view->delete_action = SITE_URL."admin/languages/delete";
 		$this->view->delete_all_action = SITE_URL."admin/languages/deleteall";
 		
-		
 		//Create Object of Langage model
 		$language = new Models_Language();
+		$Country = new Models_Country();
 		
 		//set current page number
 		$page_no = 1;
@@ -98,6 +98,8 @@
 		
 		//set search param
 		$is_search = "";
+		
+		$this->view->country = $Country->GetAllCountries();
 		
 		//Get Request
 		$request = $this->getRequest();
@@ -174,8 +176,11 @@
 		
 		$Language = new Models_Language();
 		$home = new Models_AdminMaster();
-   		
-		//$this->view->languages = $language->GetMainCategory();
+   		$Country = new Models_Country();
+		$Courrency = new Models_Currency();
+		
+		$this->view->country = $Country->GetAllCountries();
+		$this->view->currency = $Courrency->GetAllCurrency();
 		
 		$request = $this->getRequest();
 		
@@ -194,8 +199,10 @@
 			$data['text_direction']=$filter->filter(trim($this->_request->getPost('text_direction')));
 			$data['numeric_separator_decimal']=$filter->filter(trim($this->_request->getPost('numeric_separator_decimal')));
 			$data['numeric_separator_thousands']=$filter->filter(trim($this->_request->getPost('numeric_separator_thousands')));
+			$data['country_id']=$filter->filter(trim($this->_request->getPost('country_id')));
+			$data['currency_id']=$filter->filter(trim($this->_request->getPost('currency_id')));
+			$data['is_default']=$filter->filter(trim($this->_request->getPost('is_default')));
 			$data['status']=$filter->filter(trim($this->_request->getPost('status')));
-			
 			
 			
 			$addErrorMessage = array();
@@ -218,6 +225,14 @@
 			
 			if($data['numeric_separator_thousands'] == "") {
 				$addErrorMessage[] = $translate->_('Err_Language_Thousands');			
+			}
+			
+			if($data['country_id'] == "") {
+				$addErrorMessage[] = $translate->_('Err_Language_Country');			
+			}
+			
+			if($data['currency_id'] == "") {
+				$addErrorMessage[] = $translate->_('Err_Language_Currency');			
 			}
 			
 			$this->view->data = $data;
@@ -271,6 +286,11 @@
 		
 		$Language = new Models_Language();
    		$home = new Models_AdminMaster();
+		$Country = new Models_Country();
+		$Courrency = new Models_Currency();
+		
+		$this->view->country = $Country->GetAllCountries();
+		$this->view->currency = $Courrency->GetAllCurrency();
 		
 		$request = $this->getRequest();
 		
@@ -294,6 +314,9 @@
 				$data['text_direction']=$filter->filter(trim($this->_request->getPost('text_direction')));
 				$data['numeric_separator_decimal']=$filter->filter(trim($this->_request->getPost('numeric_separator_decimal')));
 				$data['numeric_separator_thousands']=$filter->filter(trim($this->_request->getPost('numeric_separator_thousands')));
+				$data['country_id']=$filter->filter(trim($this->_request->getPost('country_id')));
+				$data['currency_id']=$filter->filter(trim($this->_request->getPost('currency_id')));
+				$data['is_default']=$filter->filter(trim($this->_request->getPost('is_default')));
 				$data['status']=$filter->filter(trim($this->_request->getPost('status')));
 				$language_id = $filter->filter(trim($this->_request->getPost('language_id'))); 	
 				
@@ -319,7 +342,15 @@
 				if($data['numeric_separator_thousands'] == "") {
 					$editErrorMessage[] = $translate->_('Err_Language_Thousands');			
 				}
-			
+				
+				if($data['country_id'] == "") {
+					$editErrorMessage[] = $translate->_('Err_Language_Country');			
+				}
+				
+				if($data['currency_id'] == "") {
+					$editErrorMessage[] = $translate->_('Err_Language_Currency');			
+				}
+				
 				if(count($editErrorMessage) === 0)
 				{
 					$where = "language_id != ".$language_id;

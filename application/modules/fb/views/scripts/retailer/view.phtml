@@ -2,7 +2,7 @@
 <div id="rightColumn">
 	<div class="mainColumnWidget">
 		<div style="float:left">
-			<img src="<?php echo IMAGES_FB_PATH ?>/Default.gif" alt="" height="50" width="50" style="margin:5px;" />
+			<img src="<?php echo IMAGES_FB_PATH ?>/Default.gif" alt="Default" height="50" width="50" style="margin:5px;" />
 		</div>
 		<div class="categoryHeader" style="float:left; width:85%;">
 		  <?php echo $this->StoreName;?> 
@@ -12,7 +12,7 @@
 		  <div style="border-top:1px solid #E2E2E2; margin-top:5px;"></div>
 		  <div>
 			<img alt="" src="/Puvoo/images/fb/card_graphic.png" class="sellerInfo">
-			<a style="color: #000;" href="#" id="btn1"><?php echo $this->Translate('SellerInfo')?></a>
+			<a style="color: #000;" href="javascript:void(0)" id="btn1"><?php echo $this->Translate('SellerInfo')?></a>
           </div>
 		</div>
 		<div style="clear:both"></div>
@@ -40,19 +40,27 @@
 			</div>
 		<div id="productGridView" class="portlet">
 		<?php foreach($this->records as $prodval){?>
+			<?php 
+				if($prodval['ProdName'] != '')
+				{
+					$prodName = $prodval['ProdName'];
+				}else{
+					$prodName = $prodval['product_name'];
+				}
+			?>
 			<div class="productGridItem productGridItemTopRow firstborder">
 				<div class="thumbnailImage" style="margin-top:14px;">
 					<a target="_top" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $prodval['product_id'];?>">
 					
 					<?php if(!$prodval['image_name']){?>
-						<img class="img" src="<?php echo IMAGES_FB_PATH ?>/Default.gif"/>
+						<img class="img" src="<?php echo IMAGES_FB_PATH ?>/Default.gif" alt="Default" title="Default"/>
 					<?}else{?>
- 						<img class="img" src="<?php echo SITE_PRODUCT_IMAGES_PATH.$prodval['image_path'] ?>/<?php echo $prodval['image_name'] ?>" width="128"/>
+ 						<img class="img" src="<?php echo SITE_PRODUCT_IMAGES_PATH.$prodval['image_path'] ?>/<?php echo $prodval['image_name'] ?>" width="128" alt="<?php echo $prodName; ?>" title="<?php echo $prodName; ?>"/>
 					<?}?>
 					</a>
 				</div>
 				<div class="productTitle">
-					<a target="_top" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $prodval['product_id'];?>"><?php echo $prodval['product_name'];?></a> 
+					<a target="_top" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $prodval['product_id'];?>"><?php echo $prodName; ?></a> 
 				</div>
 				<div class="productPrice">
 				  <?php echo DEFAULT_CURRENCY_SYMBOL.$prodval['prod_convert_price']."&nbsp;".DEFAULT_CURRENCY_CODE;?>

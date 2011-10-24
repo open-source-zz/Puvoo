@@ -204,7 +204,7 @@
 				<div>
 					<?php $order_id = 0; ?>
 					<?php foreach( $order_product_detail as $key => $val )  {  ?>
-					<?php 	if( $val["order_detail_id"] != $order_id )  {  ?>
+					<?php 	if( $val["order_id"] != $order_id )  {  ?>
 					<h3><a href="#"><?php echo $val["product_name"]; ?></a></h3>
 					<div> 
 						<table width="100%">

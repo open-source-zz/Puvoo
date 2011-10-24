@@ -79,18 +79,17 @@ class Models_Product
 	 * 
 	 */
  	 
-	public function GetProductByCategoryId($catid,$sort)
+	public function GetProductByCategoryId($catids,$sort)
 	{
 		global $mysession;
 		$db = $this->db;
 		
 		$where = '';
-		$where .= "WHERE ptc.category_id='".$catid."'";
+		$where .= "WHERE ptc.category_id IN (".$catids.")";
 		//print $sort;die;
 		if($sort == 'price_asc')
 		{
-			 
-			$where .= " order By product_price asc";
+ 			$where .= " order By product_price asc";
 			
 		}elseif($sort == 'price_desc'){
 			 
@@ -108,8 +107,9 @@ class Models_Product
 			$where .= " order By sold_count desc";
 		}
  		
-		$sql = "SELECT DISTINCT pm.product_id,pm.product_name,pm.product_price,pi.*,um.*,cm.*,ROUND( (pm.product_price * ".$mysession->currency_value.") / cm.currency_value, 2 ) as prod_convert_price FROM product_to_categories as ptc 
+		$sql = "SELECT DISTINCT pm.product_id,pm.product_name,pm.product_price,pi.*,um.*,cm.*,ROUND( (pm.product_price * ".$mysession->currency_value.") / cm.currency_value, 2 ) as prod_convert_price,pml.product_name as ProdName FROM product_to_categories as ptc 
 				LEFT JOIN product_master as pm ON (pm.product_id = ptc.product_id)
+				LEFT JOIN product_master_lang as pml ON (pm.product_id = pml.product_id and pml.language_id= ".DEFAULT_LANGUAGE.")
 				LEFT JOIN product_images as pi ON (pm.product_id = pi.product_id and is_primary_image = 1)
 				LEFT JOIN user_master as um ON (um.user_id = pm.user_id)
 				LEFT JOIN currency_master as cm ON (cm.currency_id = um.currency_id)
@@ -136,9 +136,10 @@ class Models_Product
 	{
 		global $mysession;
 		$db = $this->db;
-		$sql = "SELECT pm.*,um.*,wm.*,lm.*,cm.*,ROUND( (pm.product_price * ".$mysession->currency_value.")/  cm.currency_value , 2 ) as prod_convert_price FROM product_master as pm
+		$sql = "SELECT pm.*,um.*,wm.*,lm.*,cm.*,ROUND( (pm.product_price * ".$mysession->currency_value.")/  cm.currency_value , 2 ) as prod_convert_price,pml.product_name as ProdName,pml.product_description as ProdDesc FROM product_master as pm
+				LEFT JOIN product_master_lang as pml ON (pm.product_id = pml.product_id and pml.language_id= ".DEFAULT_LANGUAGE.")
 				LEFT JOIN user_master as um ON (pm.user_id = um.user_id)
- 				LEFT JOIN weight_master as wm ON (pm.weight_unit_id = wm.weight_unit_id)
+  				LEFT JOIN weight_master as wm ON (pm.weight_unit_id = wm.weight_unit_id)
 				LEFT JOIN length_master as lm ON (pm.length_unit_id = lm.length_unit_id)
 				LEFT JOIN currency_master as cm ON (cm.currency_id = um.currency_id)
 				WHERE pm.product_id='".$prodId."'";
@@ -189,7 +190,8 @@ class Models_Product
 			$where .= " order By sold_count desc";
 		}
  		
-		$sql = "SELECT DISTINCT pm.*,pi.*,um.store_name,cm.*,ROUND( (pm.product_price * ".$mysession->currency_value.")/  cm.currency_value , 2 ) as prod_convert_price FROM product_master as pm 
+		$sql = "SELECT DISTINCT pm.*,pi.*,um.store_name,cm.*,ROUND( (pm.product_price * ".$mysession->currency_value.")/  cm.currency_value , 2 ) as prod_convert_price,pml.product_name as ProdName FROM product_master as pm 
+				LEFT JOIN product_master_lang as pml ON (pm.product_id = pml.product_id and pml.language_id= ".DEFAULT_LANGUAGE.")
 				LEFT JOIN product_images as pi ON (pm.product_id = pi.product_id and is_primary_image = 1)
 				LEFT JOIN user_master as um ON (um.user_id = pm.user_id)
 				LEFT JOIN currency_master as cm ON (cm.currency_id = um.currency_id)
@@ -348,7 +350,8 @@ class Models_Product
 		$db = $this->db;
 	 	 
  		$sql  = "";
-		$sql .= "SELECT DISTINCT pm.product_id, pm.*, pi.*,um.*,cm.*,ROUND( (pm.product_price * ".$mysession->currency_value.") / cm.currency_value, 2 ) as Prod_convert_price FROM product_master as pm 
+		$sql .= "SELECT DISTINCT pm.product_id, pm.*, pi.*,um.*,cm.*,ROUND( (pm.product_price * ".$mysession->currency_value.") / cm.currency_value, 2 ) as Prod_convert_price,pml.product_name as ProdName FROM product_master as pm 
+				 LEFT JOIN product_master_lang as pml ON (pm.product_id = pml.product_id and pml.language_id= ".DEFAULT_LANGUAGE.")	
 				 LEFT JOIN product_to_categories as ptc ON(pm.product_id = ptc.product_id)
 				 LEFT JOIN product_images as pi ON (pi.product_id = pm.product_id and is_primary_image = 1)
 				 LEFT JOIN user_master as um ON (um.user_id = pm.user_id)
@@ -358,7 +361,7 @@ class Models_Product
 		if($search = 1) {
 			
 			if($querystring != '') {
-				$sql.=" WHERE pm.product_name like '%".$querystring."%'";
+				$sql.=" WHERE pml.product_name like '%".$querystring."%'";
 			} 
 			if($catid != 0 && $catid != ''){
 				$sql.=" AND ptc.category_id = ".$catid."";
@@ -378,9 +381,16 @@ class Models_Product
 			 
 			$sql .= " order By product_price desc";
 			
-		}else{
+		}elseif($sort == 'bestseller'){
 			
-			$sql .= " order By product_price asc";
+			$sql .= " order By sold_count desc";
+			
+		}elseif($sort == 'most_liked'){
+			
+			$sql .= " order By like_count desc";
+		}else{
+		
+			$sql .= " order By sold_count desc";
 		}
 		//print $sql;die;
 		$result =  $db->fetchAll($sql);		
@@ -433,12 +443,27 @@ class Models_Product
 	
 	public function insertProduct($data)
 	{
-		global $mysession;
 		$db = $this->db;
+		$id = 0;
 		
 		$db->insert("product_master", $data); 	 
-				
-		return $db->lastInsertId();
+		
+		$id = 	$db->lastInsertId();	
+		
+		//insert values for language table
+		$Language = new Models_Language();
+		
+		$languages = $Language->getAllLanguages();
+		
+		for($i = 0; $i < count($languages); $i++)
+		{
+			$ldata = array();
+			$ldata["product_id"] = $id;
+			$ldata["language_id"] = $languages[$i]["language_id"];	
+			$db->insert("product_master_lang", $ldata); 	 
+		}
+		
+		return $id;
 	}
 	
 	/**
@@ -457,14 +482,77 @@ class Models_Product
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
-	public function updateProduct($data)
+	public function updateProduct($data, $lang_array)
 	{
 		global $mysession;
 		$db = $this->db;
 				
 		$where ="product_id = ".$data["product_id"];		
 		
-		return $db->update("product_master", $data, $where); 	 
+		$db->update("product_master", $data, $where); 	 
+		
+		$validator = new Zend_Validate_Db_NoRecordExists(
+				array(
+						'table' => "product_master_lang",
+						'field' => "language_id",
+						'exclude' => $where
+				)
+		);
+		
+		foreach( $lang_array as $key => $val )
+		{
+			if ($validator->isValid($key)) {
+				
+				$data1["product_id"] = $data["product_id"];
+				$data1["language_id"] = $key;
+				$data1["product_name"] = $val["product_name"];
+				$data1["product_description"] = $val["product_description"];
+				
+				$db->insert("product_master_lang", $data1);	
+				
+			} else {
+				
+				$data2["product_id"] = $data["product_id"];
+				$data2["language_id"] = $key;
+				$data2["product_name"] = $val["product_name"];
+				$data2["product_description"] = $val["product_description"];
+				
+				$where2 = "product_id = ".$data["product_id"]." and language_id = ".$key;
+				
+				$db->update("product_master_lang", $data2, $where2); 	
+				
+			}	
+		}
+		
+		return true;
+	}
+	
+	
+	/**
+	 * Function updateProductLang
+	 *
+	 * This function is used to update product language
+     *
+	 * Date created: 2011-10-20
+	 *  
+	 * @access public
+	 * @param (Array) - $data : Array of record to update
+	 * @param (Int) - $product_id : product id
+	 * @param (Int) - $language_id : language id
+	 *
+	 * @return (int) - Return number of rows updated
+	 * @author Amar
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	public function updateProductLang($data,$product_id,$language_id)
+	{
+		global $mysession;
+		$db = $this->db;
+				
+		$where ="product_id = ". $product_id . " and language_id = " . $language_id;		
+		
+		return $db->update("product_master_lang", $data, $where); 	 
 	}
 	
 	/**
@@ -802,11 +890,16 @@ class Models_Product
 				 FROM product_options as po
 				 LEFT JOIN product_options_detail as pod ON(po.product_options_id = pod.product_options_id)
 				 WHERE po.product_id = ".$id;
+				 
+		$sql5 =" SELECT *
+				 FROM product_master_lang
+				 WHERE product_id = ".$id;
 		
 		$product["detail"] = $db->fetchRow($sql);
 		$product["images"] = $db->fetchAll($sql2);
 		$product["category"] = $db->fetchAll($sql3);
 		$product["options"] = $db->fetchAll($sql4);
+		$product["language"] = $db->fetchAll($sql5);
 		
 		return $product;
 		
@@ -976,7 +1069,9 @@ class Models_Product
 	public function GetSellerInformation($Id)
 	{
 		$db = $this->db;
-		$sql = "SELECT * FROM user_master WHERE user_id=".$Id."";
+		$sql = "SELECT um.*,uml.store_description as StoreDesc,uml.store_terms_policy as StoreTermsPolicy,uml.return_policy as Returnpolicy,uml.item_returned_for as ReturnFor FROM user_master as um
+				LEFT JOIN user_master_lang as uml ON(um.user_id = uml.user_id and uml.language_id = ".DEFAULT_LANGUAGE.")
+				WHERE um.user_id=".$Id."";
 		
 		//print $sql;die;
  		$result = $db->fetchRow($sql);
@@ -1226,7 +1321,8 @@ class Models_Product
 		global $mysession;
 		$db = $this->db;
 		
-		$sql = "SELECT pm.*,pi.*,um.*,cm.*,ROUND( (pm.product_price * ".$mysession->currency_value.") / cm.currency_value, 2 ) as converted_price FROM product_master as pm
+		$sql = "SELECT pm.*,pi.*,um.*,cm.*,ROUND( (pm.product_price * ".$mysession->currency_value.") / cm.currency_value, 2 ) as converted_price,pml.product_name as ProdName,pml.product_description FROM product_master as pm
+				LEFT JOIN product_master_lang as pml ON (pm.product_id = pml.product_id and pml.language_id= ".DEFAULT_LANGUAGE.")
 				LEFT JOIN product_images as pi ON (pm.product_id = pi.product_id and is_primary_image = 1)
 				LEFT JOIN user_master as um ON (um.user_id = pm.user_id)
 				LEFT JOIN currency_master as cm ON (cm.currency_id = um.currency_id)
@@ -1257,7 +1353,8 @@ class Models_Product
 		global $mysession;
 		$db = $this->db;
 		
-		$sql = "SELECT pm.*,pi.*,um.*,cm.*,ROUND( (pm.product_price * ".$mysession->currency_value.")/ cm.currency_value, 2 ) as converted_price FROM product_master as pm 
+		$sql = "SELECT pm.*,pi.*,um.*,cm.*,ROUND( (pm.product_price * ".$mysession->currency_value.")/ cm.currency_value, 2 ) as converted_price,pml.product_name as ProdName,pml.product_description FROM product_master as pm 
+				LEFT JOIN product_master_lang as pml ON (pm.product_id = pml.product_id and pml.language_id= ".DEFAULT_LANGUAGE.")
 				LEFT JOIN product_images as pi ON (pm.product_id = pi.product_id and is_primary_image = 1)
 				LEFT JOIN user_master as um ON (um.user_id = pm.user_id)
 				LEFT JOIN currency_master as cm ON (cm.currency_id = um.currency_id)
@@ -1288,7 +1385,8 @@ class Models_Product
 		global $mysession;
 		$db = $this->db;
 		
-		$sql = "SELECT pm.*,pi.*,cm.* FROM product_master as pm 
+		$sql = "SELECT pm.*,pi.*,cm.*,pml.product_name as ProdName,pml.product_description as ProdDesc FROM product_master as pm 
+				LEFT JOIN product_master_lang as pml ON(pm.product_id = pml.product_id and pml.language_id= ".DEFAULT_LANGUAGE.")
 				LEFT JOIN product_images as pi ON (pm.product_id = pi.product_id and is_primary_image = 1)
 				LEFT JOIN user_master as um ON (um.user_id = pm.user_id)
 				LEFT JOIN currency_master as cm ON (cm.currency_id = um.currency_id)

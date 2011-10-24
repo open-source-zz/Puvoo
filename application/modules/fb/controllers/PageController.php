@@ -175,81 +175,42 @@ class Fb_PageController extends FbCommonController
 	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/  
+	 
 	 public function invitefriendAction()
 	 {
 	 	global $user,$facebook;
 		
 		//Disable layout
 		$this->_helper->layout()->disableLayout();
-		/*
-		$flag = 0;
-		if ($user) {
-		  $flag = 1;
-		  try {
-			// Proceed knowing you have a logged in user who's authenticated.
-			$uprofile = $facebook->api('/me/likes');
-			
-		  } catch (FacebookApiException $e) {
-			error_log($e);
-			$user = null;
-		  }
-		} else {
-			$flag = 0;
+		
+		$facebook = new Facebook(array(
+			  'appId'  => FACEBOOK_APP_API_ID,
+			  'secret' => FACEBOOK_APP_SECRET_KEY,
+			  'cookie' => true,
+		));
+		
+		// Retrieve array of friends who've already authorized the app.
+		$fql = 'SELECT uid FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1='.FACEBOOK_USERID.') AND is_app_user = 1';
+		
+		$_friends = $facebook->api( 
+						array( 
+								'method' => 'fql.query', 
+								'query' => $fql
+							) 
+						);
+	
+		// Extract the user ID's returned in the FQL request into a new array.
+		$friends = array();
+		if (is_array($_friends) && count($_friends)) {
+			foreach ($_friends as $friend) {
+				$friends[] = $friend['uid'];
+			}
 		}
+	
+		// Convert the array of friends into a comma-delimeted string.
+		$friends = implode(',', $friends);
 		
-		$this->view->userlogin = $flag;
-		
-		$request = $this->getRequest();
-		
-		if($request->isPost() && $request->isPost("friends_email") != '' ){
-			
-			$filter = new Zend_Filter_StripTags();	
-			
-			$data['friends_email']=$filter->filter(trim($this->_request->getPost('friends_email'))); 	
-			$data['friends_mailtext']=$filter->filter(trim($this->_request->getPost('friends_mailtext'))); 	
-			
-			$addError = array();
-			if( $data['friends_email'] == '' || $data['friends_email'] == "Start typing a friend's email id" ) {
-				$addError[] = "Please enter friend's email id with comma seprated";
-			}
-			if( $data['friends_mailtext'] == '' ) {
-				$addError[] = "Please enter mail text";
-			}
-			$validator = new Zend_Validate_EmailAddress();
-			$success = '';
-			$this->view->userlogin = 1;
-			if( count($addError) == 0 || $addError == '' ) {
-			
-				$emailArray = explode(",",$data['friends_email']);
-				
-				if( count($emailArray) > 0 ) {
-					
-					foreach($emailArray as $key => $val )
-					{
-						if ($validator->isValid($val)) {  
-						
-							$to 		= $val;
-							$to_name 	= '';
-							$from		= "noreply@puvoo.com";
-							$from_name	= "Puvoo";
-							$subject	= "Invite friend";					
-							$body 		= 'Prefer this link:<br />';
-							$body 		.= "<a href ='http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']."' >http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']."</a><br />";
-							$body 		.= $data['friends_mailtext'];
-							
-							sendMail($to,$to_name,$from,$from_name,$subject,$body);
-						} 
-					} 
-					$success = "Invitation successfully send to your friends";
-					
-				}
-			} else {
-			
-				$this->view->addError = $addError;
-			}
-			
-			$this->view->success = $success;
-		}*/
+		echo $friends; die;
 		
 	 }
 }

@@ -80,6 +80,7 @@ class User_StoreController extends UserCommonController
 		
 		$store = new Models_UserMaster();
 		$home = new Models_UserMaster();
+		$lang = new Models_Language(); 
 		$User_id = $mysession->User_Id;		
 		
 		// Some Array variables
@@ -87,6 +88,7 @@ class User_StoreController extends UserCommonController
 		$this->view->currency = $store->getAllRecords("currency_master");
 		$this->view->country  = $store->getAllRecords("country_master","country_name");		
 		$this->view->country_states   = $store->getAllRecords("state_master");		
+		$this->view->language = $lang->getAllLanguages();
 		
 		if($this->_request->isPost()) {
 		
@@ -151,12 +153,33 @@ class User_StoreController extends UserCommonController
 				$addErrorMessage[] = $translate->_('Err_Store_zipcode');			
 			}
 			
+			
+			$langArray = array();
+					
+			$langArray[DEFAULT_LANGUAGE]["store_description"] = $data['store_description'];
+			$langArray[DEFAULT_LANGUAGE]["return_policy"] = $data['return_policy'];
+			$langArray[DEFAULT_LANGUAGE]["store_terms_policy"] = $data['store_terms_policy'];
+		
+			foreach( $this->view->language as $key => $val ) 
+			{ 
+				if($val['language_id'] != DEFAULT_LANGUAGE ) { 
+					
+					$desc_lang_index = 'store_description_'.$val['language_id'];
+					$rtrn_lang_index = 'return_policy_'.$val['language_id'];
+					$term_lang_index = 'store_terms_policy_'.$val['language_id'];
+					
+					$langArray[$val['language_id']]["store_description"]=$filter->filter(trim($this->_request->getPost($desc_lang_index)));
+					$langArray[$val['language_id']]["return_policy"]=$filter->filter(trim($this->_request->getPost($rtrn_lang_index)));
+					$langArray[$val['language_id']]["store_terms_policy"]=$filter->filter(trim($this->_request->getPost($term_lang_index)));
+				}		
+			}
+			
 			$where = "user_id != ".$User_id;
 			if(count($addErrorMessage) == 0 || $addErrorMessage == "") {
 			
 				if($home->ValidateTableField("store_name",$data['store_name'],"user_master",$where)) {
 			
-					if($store->UpdateStore($data)) {
+					if($store->UpdateStore($data, $langArray)) {
 						
 						$addSuccessMessage = $translate->_('Success_Store_Update');
 					} else { 
@@ -172,6 +195,8 @@ class User_StoreController extends UserCommonController
 			}
 			
 			$this->view->records = $data;
+			$this->view->langdata = $langArray;
+			
 			$this->view->User_EMessage = $addErrorMessage;
 			$this->view->User_SMessage = $addSuccessMessage;
 			
@@ -180,7 +205,20 @@ class User_StoreController extends UserCommonController
 			$addErrorMessage = array();
 			if($store->Check_UserStore($User_id)) {
 		
-				$this->view->records = $store->getUserStore($User_id);
+				$records = $store->getUserStore($User_id);
+				
+				$langArray = array();
+				if( $records["language"] != NULL ) {
+					foreach($records["language"] as $key => $val )
+					{
+						$langArray[$val["language_id"]]["store_description"] = $val["store_description"];
+						$langArray[$val["language_id"]]["store_terms_policy"] = $val["store_terms_policy"];
+						$langArray[$val["language_id"]]["return_policy"] = $val["return_policy"];
+					}
+				}
+				
+				$this->view->records = $records["store"];
+				$this->view->langdata = $langArray;	
 				
 			} else {
 		

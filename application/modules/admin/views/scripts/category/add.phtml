@@ -57,6 +57,25 @@
 							</td>
 						</tr>
 						<tr><td height="5"></td></tr>
+						
+						
+						<!--       Add Category Language        -->
+						<?php foreach( $this->language as $key => $val ) { ?>
+						<?php 	if($val['language_id'] != DEFAULT_LANGUAGE ) { ?>
+						<tr>
+							<td class="FieldLabel"></td>
+							<td>
+								<?php $lagn_index = 'category_name_'.$val['language_id']; ?>
+								<input  type="text" value="<?php  echo $this->langdata[$val['language_id']]['category_name'] ?>" name="category_name_<?php echo $val['language_id']; ?>" id="category_name_<?php echo $val['language_id']; ?>" class="Field250" />
+								<span></span>
+								&nbsp;&nbsp;&nbsp;<?php echo $val['name']." ( ".$val['code']." )"; ?>
+							</td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						<?php 	}?>
+						<?php } ?>
+						
+						
 						 <tr>
 							<td class="FieldLabel">
 								<?php echo $this->Translate('Category_Parent'); ?>:

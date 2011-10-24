@@ -219,10 +219,12 @@ class User_ProductsController extends UserCommonController
 		$product = new Models_UserProduct();
 		$product_master = new Models_Product();
 		$product_image = new Models_ProductImages();
+		$lang = new Models_Language(); 
 		
 		// Initial values
 		$this->view->weight = $product->fetchAllRecords("weight_master");
 		$this->view->length = $product->fetchAllRecords("length_master");
+		$this->view->language = $lang->getAllLanguages();
 		$category = $product->fetchAllRecords("category_master");
 		
 		$category = array();
@@ -388,20 +390,38 @@ class User_ProductsController extends UserCommonController
 					
 			$this->view->data = $data;		
 			
+			$langArray = array();
+					
+			$langArray[DEFAULT_LANGUAGE]["product_name"] = $data['product_name'];
+			$langArray[DEFAULT_LANGUAGE]["product_description"] = $data['product_description'];
+		
+			foreach( $this->view->language as $key => $val ) 
+			{ 
+				if($val['language_id'] != DEFAULT_LANGUAGE ) { 
+					
+					$name_lagn_index = 'product_name_'.$val['language_id'];
+					$desc_lagn_index = 'product_description_'.$val['language_id'];
+					$langArray[$val['language_id']]["product_name"]=$filter->filter(trim($this->_request->getPost($name_lagn_index)));
+					$langArray[$val['language_id']]["product_description"]=$filter->filter(trim($this->_request->getPost($desc_lagn_index)));
+				}		
+			}
+			
+			
 			if( count($addErrorMessage) == 0 || $addErrorMessage == '') {					
 				
-				$product_id = $product->insertProduct($data);
-				if($product_id > 0 && $product_id != '' ) {
+				$product_id = $product->insertProduct($data,$langArray);
 				
-						$product->updateProductCategory($product_id, $product_category);
-						$mysession->Product_Id = $product_id;
-						$mysession->User_SMessage = $translate->_('Product_Add_Success');
-						$this->_redirect('user/products/addimage'); 	
+				if($product_id > 0 && $product_id != '' ) {
+				 
+					$product->updateProductCategory($product_id, $product_category);
+					$mysession->Product_Id = $product_id;
+					$mysession->User_SMessage = $translate->_('Product_Add_Success');
+					$this->_redirect('user/products/addimage'); 	
 						
-					} else {
-						$addErrorMessage[] = $translate->_('Err_Add_Product');							
-						
-					}
+				} else {
+					$addErrorMessage[] = $translate->_('Err_Add_Product');							
+					
+				}
 			} 
 			$this->view->addErrorMessage = $addErrorMessage;		
 		}	
@@ -449,10 +469,8 @@ class User_ProductsController extends UserCommonController
 				
 			} 
 			if($addErrorMessage == '' && $prod_id > 0) {
-				$data["image_id"] = $product_primary_image;
-				$data["is_primary_image"] = 1;
 				
-				$product_image->updateProductImage($data);
+				$product_image->updateProductPrimaryImg($prod_id, $product_primary_image);
 				
 				$mysession->User_Message = '';
 				$mysession->Product_Id = '';
@@ -497,6 +515,7 @@ class User_ProductsController extends UserCommonController
 		$product = new Models_UserProduct();
 		$product_master = new Models_Product();
 		$product_image = new Models_ProductImages();
+		$lang = new Models_Language(); 
 		$request = $this->getRequest();
 		
 		$product_id = $filter->filter(trim($this->_request->getPost('hidden_primary_id'))); 
@@ -505,6 +524,7 @@ class User_ProductsController extends UserCommonController
 		$this->view->weight = $product->fetchAllRecords("weight_master");
 		$this->view->length = $product->fetchAllRecords("length_master");
 		$this->view->category = $product->fetchAllRecords("category_master");
+		$this->view->language = $lang->getAllLanguages();
 		
 		// Fetch records 
 		if($product_id > 0 && $product_id != "") {
@@ -520,6 +540,16 @@ class User_ProductsController extends UserCommonController
 			
 			$this->view->cateTree = $product_master->getCateTree($category);
 			
+			$langArray = array();
+			if( $records["language"] != NULL ) {
+				foreach($records["language"] as $key => $val )
+				{
+					$langArray[$val["language_id"]]["product_name"] = $val["product_name"];
+					$langArray[$val["language_id"]]["product_description"] = $val["product_description"];
+				}
+			}
+			
+			$this->view->langdata = $langArray;	
 			$this->view->detail = $records["detail"];
 			$this->view->images = $records["images"];
 			$this->view->sub_category = $records["category"];
@@ -564,6 +594,19 @@ class User_ProductsController extends UserCommonController
 					$data['promotion_end_date']=$filter->filter(trim($this->_request->getPost('promotion_end_date')));
 					
 					$product_category = $filter->filter(trim($this->_request->getPost('multiselect_product_category_value')));
+					
+					$category = array();
+					
+					$records_category = explode(",",$product_category);
+					
+					if( $records_category != NULL ) {
+						foreach( $records_category as $key => $val )
+						{
+							$category[] = $val;
+						}
+					}
+					
+					$this->view->cateTree = $product_master->getCateTree($category);
 					
 					$editErrorMessage = array(); 
 					$product_primary_image = $filter->filter(trim($this->_request->getPost('product_primary_image')));
@@ -685,19 +728,33 @@ class User_ProductsController extends UserCommonController
 						$editErrorMessage[] = $translate->_('Err_Product_Primary_Image');
 					} 
 					
+					
+					$langArray = array();
+					
+					$langArray[DEFAULT_LANGUAGE]["product_name"] = $data['product_name'];
+					$langArray[DEFAULT_LANGUAGE]["product_description"] = $data['product_description'];
+				
+					foreach( $this->view->language as $key => $val ) 
+					{ 
+						if($val['language_id'] != DEFAULT_LANGUAGE ) { 
+							
+							$name_lagn_index = 'product_name_'.$val['language_id'];
+							$desc_lagn_index = 'product_description_'.$val['language_id'];
+							$langArray[$val['language_id']]["product_name"]=$filter->filter(trim($this->_request->getPost($name_lagn_index)));
+							$langArray[$val['language_id']]["product_description"]=$filter->filter(trim($this->_request->getPost($desc_lagn_index)));
+						}		
+					}
+					
 					if(count($editErrorMessage) == 0 || $editErrorMessage == '') {
 					
-						if($product->updateProduct($data)) {
+						if($product->updateProduct($data,$langArray)) {
 						
 							$mysession->User_SMessage = $translate->_('Product_Update_Success');
 						} 
 						
 						$product->updateProductCategory($product_id, $product_category);
 						
-						$data2["image_id"] = $product_primary_image;
-						$data2["is_primary_image"] = 1;
-						
-						$product_image->updateProductImage($data2);
+						$product_image->updateProductPrimaryImg($product_id, $product_primary_image);
 						
 						$mysession->User_SMessage  = $translate->_('Product_Update_Success');
 						$this->_redirect('/user/products');
@@ -708,6 +765,7 @@ class User_ProductsController extends UserCommonController
 					$this->view->product_id = $product_id;
 					$records = $product->getAllProductDetail($product_id);			
 					$this->view->detail = $data;
+					$this->view->langdata = $langArray;	
 					$this->view->images = $records["images"];
 					$this->view->sub_category = $records["category"];
 					$this->view->options = $records["options"];	

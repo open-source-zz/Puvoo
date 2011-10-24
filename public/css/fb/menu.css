@@ -10,7 +10,7 @@
 .sf-menu ul {
     position: absolute;
     top: -999em;
-    width: 168px;
+    width: 200px;
 	
 }
 .sf-menu ul li {
@@ -172,7 +172,7 @@ a:focus > .sf-sub-indicator, a:hover > .sf-sub-indicator, a:active > .sf-sub-ind
 	
 }
 .sf-vertical, .sf-vertical li {
-    width: 168px;
+    width: 170px;
 	
 }
 .sf-vertical li:last-child {

@@ -10,15 +10,7 @@
 
 <?php  $detail = $this->detail;  ?>
 <?php  $images = $this->images;  ?>
-<?php  $category = $this->sub_category; 
-	
-	foreach($category as $key => $val)
-	{
-		$category_id[] = $val["category_id"];	
-		
-	}
-	
-?>
+<?php  $category = $this->sub_category; ?>
 <?php  $options = $this->options;  ?>
 
 <div class="BodyContainer DashboardContainer" style="text-align:left;"> 
@@ -56,6 +48,25 @@
 							<td></td>
 						</tr>
 						<tr><td height="5"></td></tr>
+						
+						
+						<!--       Edit Product Language        -->
+						<?php foreach( $this->language as $key => $val ) { ?>
+						<?php 	if($val['language_id'] != DEFAULT_LANGUAGE ) { ?>
+						<tr>
+							<td class="FieldLabel"></td>
+							<td>
+								<?php $lagn_index = 'product_name_'.$val['language_id']; ?>
+								<input  type="text" value="<?php if(isset($this->langdata[$val['language_id']]['product_name'])) {  echo $this->langdata[$val['language_id']]['product_name']; } ?>" name="product_name_<?php echo $val['language_id']; ?>" id="product_name_<?php echo $val['language_id']; ?>" class="Field250" />
+								<span></span>
+								&nbsp;&nbsp;&nbsp;<?php echo $val['name']." ( ".$val['code']." )"; ?>
+							</td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						<?php 	}?>
+						<?php } ?>
+						
+						
 						<tr>
 							<td class="FieldLabel">
 								<?php echo $this->Translate("Product_Desc"); ?>
@@ -65,7 +76,26 @@
 							</td>
 							<td></td>
 						</tr>
-						<tr><td height="5"></td></tr>						
+						<tr><td height="5"></td></tr>			
+						
+						
+						<!--       Edit Category Language        -->
+						<?php foreach( $this->language as $key => $val ) { ?>
+						<?php 	if($val['language_id'] != DEFAULT_LANGUAGE ) { ?>
+						<tr>
+							<td class="FieldLabel"></td>
+							<td>
+								<?php $lagn_index = 'product_description_'.$val['language_id']; ?>
+								<textarea name="product_description_<?php echo $val['language_id']; ?>" cols="30" id="product_description_<?php echo $val['language_id']; ?>"><?php if(isset($this->langdata[$val['language_id']]['product_description'])) {  echo $this->langdata[$val['language_id']]['product_description']; } ?></textarea>
+								
+								&nbsp;&nbsp;&nbsp;<?php echo $val['name']." ( ".$val['code']." )"; ?>
+							</td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						<?php 	}?>
+						<?php } ?>
+						
+									
 						<tr>
 							<td class="FieldLabel">
 								<?php echo $this->Translate("Product_Price"); ?>
