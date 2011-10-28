@@ -468,7 +468,7 @@ class Rest_ProductController extends RestCommonController
 					}
 					else{
 						//$img_content = file_get_contents($main_image);
-						list($img_width, $img_height, $img_type) = getimagesize($main_image);
+						list($img_width, $img_height, $img_type) = @getimagesize($main_image);
 						
 						if($img_width < 300)
 						{
