@@ -6,15 +6,14 @@ function ValidateAddForm()
 	$("#add_form").validate({
 							
 		rules: {
-					configuration_group_key: { required: true },
+					configuration_group_key: { required: true }
 					
 			   },
 			   
 		messages:{
-					configuration_group_key: { required: ERR_CONFIGURATION_GROUP_KEY },
+					configuration_group_key: { required: ERR_CONFIGURATION_GROUP_KEY }
 					
 				 },
-				 
 		errorPlacement: function(error, element) 
 		{ 
 			if ( element.is(":radio") ) { 
@@ -28,7 +27,6 @@ function ValidateAddForm()
 			}
 		}
 	});
-	
 }
 
 
@@ -39,12 +37,12 @@ function ValidateEditForm()
 	$("#edit_form").validate({
 							
 		rules: {
-					configuration_group_key: { required: true },
+					configuration_group_key: { required: true }
 					
 			   },
 			   
 		messages:{
-					configuration_group_key: { required: ERR_CONFIGURATION_GROUP_KEY },
+					configuration_group_key: { required: ERR_CONFIGURATION_GROUP_KEY }
 					
 				 },
 				 
@@ -61,8 +59,6 @@ function ValidateEditForm()
 			}
 		}
 	});
-	
-	
 }
 
 
@@ -72,12 +68,12 @@ function ValidateDefAddForm()
 							
 		rules: {
 					configuration_key: { required: true },
-					configuration_value: { required: true },
+					configuration_value: { required: true }
 			   },
 			   
 		messages:{
 					configuration_key: { required: ERR_CONFIGURATION_KEY },
-					configuration_value: { required: ERR_CONFIGURATION_VALUE },
+					configuration_value: { required: ERR_CONFIGURATION_VALUE }
 				 },
 				 
 		errorPlacement: function(error, element) 
@@ -93,7 +89,6 @@ function ValidateDefAddForm()
 			}
 		}
 	});
-	
 }
 
 
@@ -105,12 +100,12 @@ function ValidateDefEditForm()
 							
 		rules: {
 					configuration_key: { required: true },
-					configuration_value: { required: true },
+					configuration_value: { required: true }
 			   },
 			   
 		messages:{
 					configuration_key: { required: ERR_CONFIGURATION_KEY },
-					configuration_value: { required: ERR_CONFIGURATION_VALUE },
+					configuration_value: { required: ERR_CONFIGURATION_VALUE }
 				 },
 				 
 		errorPlacement: function(error, element) 
@@ -126,6 +121,4 @@ function ValidateDefEditForm()
 			}
 		}
 	});
-	
-	
 }

@@ -201,7 +201,7 @@ class Fb_ProductController extends FbCommonController
 							$Opt .= "<tr>";
 							$Opt .= "<td><b>".ucfirst($option['option_title'])." ".$translate->_('Choice').":</b><br />";
 							$Opt .= "<select class='optionText inputtext' name='OptionCombo".$key."' id='OptionCombo".$key."' onchange='javascript:changePrice(this.value,".$Poductid.",".$option['product_options_id'].")' >";
-							$Opt .= "<option value='0' >".$translate->_('Choose')." ".$option['option_title']."</option>";
+							$Opt .= "<option value='0' >".$translate->_('Choose')."&nbsp;".$option['option_title']."</option>";
 							
 							foreach($OptionsValue as $val){
 								//print_r($val);die;
@@ -302,7 +302,17 @@ class Fb_ProductController extends FbCommonController
 			}else{
 				$this->view->catname = $catdetails['category_name'];
 			}
- 			
+			
+			if($parentid == 0)
+			{
+				$catIdString = $Category->getCategoryTreeString($CatId);
+				
+				$catid_String = $catIdString.$CatId;
+			}
+			else
+			{
+				$catid_String = $CatId;
+			}
  			//to get category product
  			$catProd = $Product->GetProductByCategoryId($CatId,$sort);
 			//$this->view->ProductList = $catProd;
@@ -312,7 +322,7 @@ class Fb_ProductController extends FbCommonController
 		$Search = $this->_request->getParam('search');
 		$CatId = $this->_request->getParam('cid');
 		
-		$SearchDetails = $Product->GetProductSearch($QueryString,$Search,$CatId,$sort);
+		$SearchDetails = $Product->GetProductSearch($QueryString,$Search,$catid_String,$sort);
 //		print "<pre>";
 //		print_r($SearchDetails);die;
 		//Set Pagination

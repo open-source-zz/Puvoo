@@ -8,12 +8,12 @@ function ValidateAddFrom()
 							
 		rules: {
 					length_unit_name: {  required: true  },
-					length_unit_key: {  required: true  },
+					length_unit_key: {  required: true  }
 			   },
 			   
 		messages:{
 					length_unit_name: { required: ERR_LENGTH_UNIT_NAME  },							  
-					length_unit_key: { required: ERR_LENGTH_UNIT_KEY  },
+					length_unit_key: { required: ERR_LENGTH_UNIT_KEY  }
 				 },
 				 
 		errorPlacement: function(error, element) 
@@ -40,12 +40,12 @@ function ValidateEditFrom()
 							
 		rules: {
 					length_unit_name: {  required: true  },
-					length_unit_key: {  required: true  },
+					length_unit_key: {  required: true  }
 			   },
 			   
 		messages:{
 					length_unit_name: { required: ERR_LENGTH_UNIT_NAME  },							  
-					length_unit_key: { required: ERR_LENGTH_UNIT_KEY  },
+					length_unit_key: { required: ERR_LENGTH_UNIT_KEY  }
 				 },
 				 
 		errorPlacement: function(error, element) 

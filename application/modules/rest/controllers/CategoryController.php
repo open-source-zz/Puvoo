@@ -201,7 +201,7 @@ class Rest_CategoryController extends RestCommonController
 			$arr_error = array();
 			
 			$cid = 0;
-			
+			$langCode = '';
 			//create objects
 			$Category = new Models_Category();
 			
@@ -217,19 +217,31 @@ class Rest_CategoryController extends RestCommonController
 					}
 				}
 				
+				$common = new Models_Common();
+				$home = new Models_AdminMaster();
+				
+				$langData = $common->GetDefaultConfigValue(); 				
+				$langCode = $langData["code"];
+				
+				if(isset($myparams["Category"]["Language"])) {
+					
+					$where = '1=1';
+					if(!$home->ValidateTableField("code",$myparams["Category"]["Language"],"language_master",$where)){
+						$langCode = trim($myparams["Category"]["Language"]);
+					}
+				} 
+				
 				if(count($arr_error) == 0)
 				{
-					$categories["Category"] = $Category->getCategoryTreeForAPI($cid);
 					
-					/*print "<pre>";
-					print_r($categories);
-					print "</pre>";die;*/
+					$categories["Category"] = $Category->getCategoryTreeForAPI($langCode,$cid);
 				} 
 			}
 			else
 			{
 				$arr_error[] = $this->translate->_('Invalid_Category_Request');
 			}
+			
 			
 			if(count($arr_error) == 0)
 			{

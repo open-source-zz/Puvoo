@@ -8,13 +8,13 @@ function ValidateAddFrom()
 		rules: {
 					from_id: {  required: true  },
 					to_id: {  required: true  },
-					value: {  required: true  },
+					value: {  required: true  }
 			   },
 			   
 		messages:{
 					from_id: { required: ERR_WEIGHT_FROM_ID  },							  
 					to_id: { required: ERR_WEIGHT_TO_ID  },
-					value: { required: ERR_WEIGHT_VALUE  },
+					value: { required: ERR_WEIGHT_VALUE  }
 				 },
 				 
 		errorPlacement: function(error, element) 
@@ -42,13 +42,13 @@ function ValidateEditFrom()
 		rules: {
 					from_id: {  required: true  },
 					to_id: {  required: true  },
-					value: {  required: true  },
+					value: {  required: true  }
 			   },
 			   
 		messages:{
 					from_id: { required: ERR_WEIGHT_FROM_ID  },							  
 					to_id: { required: ERR_WEIGHT_TO_ID  },
-					value: { required: ERR_WEIGHT_VALUE  },
+					value: { required: ERR_WEIGHT_VALUE  }
 				 },
 				 
 		errorPlacement: function(error, element) 

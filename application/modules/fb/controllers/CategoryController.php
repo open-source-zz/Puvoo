@@ -1,4 +1,4 @@
-	<?php
+<?php
 /**
  * Puvoo
  * http://www.puvoo.com

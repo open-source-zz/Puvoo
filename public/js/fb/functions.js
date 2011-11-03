@@ -150,7 +150,7 @@ function addTocart(fb_userid,product_id, options_id, product_price)
 				$('#cartCounterNumber').html(totalProd);
 				  centerPopup();
 				  loadPopup2();
-			},
+			}
 
 		});
 	
@@ -850,7 +850,7 @@ function GetShippingCost(ShippMethodId,prodId)
 			  current_currencyId: function() 
 			  {
 					return $('#CurrentCurrencyId').val();
-			  },
+			  }
          },
  		dataType:'json',
 		success:function(data)
@@ -954,7 +954,7 @@ function UpdateShipping(CartId,prodId)
 			  current_currencyId: function() 
 			  {
 					return $('#CurrentCurrencyId').val();
-			  },
+			  }
          },
  		dataType:'json',
 		success:function(data)

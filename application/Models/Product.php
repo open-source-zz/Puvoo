@@ -364,7 +364,7 @@ class Models_Product
 				$sql.=" WHERE pml.product_name like '%".$querystring."%'";
 			} 
 			if($catid != 0 && $catid != ''){
-				$sql.=" AND ptc.category_id = ".$catid."";
+				$sql.=" AND ptc.category_id IN (".$catid.")";
 			}
 			
 		} else {
@@ -1108,9 +1108,13 @@ class Models_Product
 		array_push($exclude, 0);     // Put a starting value in it
 		
 		
-		$sql = "SELECT * FROM category_master WHERE is_active = 1";
+		$sql = "SELECT cm.* , cml.category_name as lang_cate_name
+				FROM category_master as cm
+				LEFT JOIN category_master_lang as cml ON ( cm.category_id  = cml.category_id AND cml.language_id = ".DEFAULT_LANGUAGE." ) 
+				WHERE is_active = 1";
+				
 		$data = $db->fetchAll($sql);
- 	
+ 		
 		foreach ( $data as $key => $nav_row  )
 		{
      		$goOn = 1;               // Resets variable to allow us to continue building out the tree.
@@ -1129,7 +1133,12 @@ class Models_Product
 				  } else {
 					$tree .= "<option value='".$nav_row['category_id']."' >";				
 				  }
-				  $tree .= $nav_row['category_name'];                    // Process the main tree node
+				  
+				/*  if( $nav_row['lang_cate_name'] != '' ) {*/
+				  	$tree .= $nav_row['lang_cate_name'];                    // Process the main tree node
+				  /*} else {
+				  	$tree .= $nav_row['category_name'];                     // Process the main tree node
+				  }*/
 				  $tree .= "</option>";
 				  array_push($exclude, $nav_row['category_id']);          // Add to the exclusion list
 				  if ( $nav_row['category_id'] < 6 )
@@ -1147,7 +1156,10 @@ class Models_Product
 		 global $exclude, $depth;               // Refer to the global array defined at the top of this script
 		 $db = $this->db;	
 		 $tempTree = "";
-		 $child_query = "SELECT * FROM category_master WHERE is_active = 1 AND parent_id=" . $oldID;
+		 $child_query = "SELECT cm.* , cml.category_name as lang_cate_name
+						 FROM category_master as cm
+						 LEFT JOIN category_master_lang as cml ON ( cm.category_id  = cml.category_id AND cml.language_id = ".DEFAULT_LANGUAGE." ) 
+						 WHERE cm.is_active = 1 AND cm.parent_id=" . $oldID;
 		 
 		 $row = $db->fetchAll($child_query);
 		 
@@ -1166,7 +1178,7 @@ class Models_Product
 					$tempTree .= "&nbsp;&nbsp;-"; 
 				}
 			   
-				$tempTree .=  "&nbsp;&nbsp;-&nbsp;&nbsp;".$child['category_name'] . "<br>";
+				$tempTree .=  "&nbsp;&nbsp;-&nbsp;&nbsp;".$child['lang_cate_name'] . "<br>";
 				$tempTree .= "</option>";
 				$depth++;          // Incriment depth b/c we're building this child's child tree  (complicated yet???)
 				$tempTree .= $this->build_child($child['category_id'],$cid);          // Add to the temporary local tree

@@ -36,12 +36,12 @@
 					<label for="lastName"><?php echo $this->Translate('ShippingMethod')?>:</label>
 				</td>
 				<td>
-					<select name="Shipping_Method_<?php echo $Item['product_id'];?>" id="Shipping_Method_<?php echo $Item['product_id'];?>" style="width:130px;">
-						<option value="0" selected="selected" onclick="GetShippingCost('0',<?php echo $Item['product_id'];?>)"><?php echo $this->Translate('ChooseShipping')?></option>
-						<?php 
-							echo $flag;
-						?>
-					</select>
+					<select name="Shipping_Method_<?php echo $Item['product_id'];?>" id="Shipping_Method_<?php echo $Item['product_id'];?>" style="width:130px;" onchange="GetShippingCost(this.value,<?php echo $Item['product_id']; ?>)" >
+                  <option value="0" selected="selected"><?php echo $this->Translate('ChooseShipping')?></option>
+                  <?php 
+											echo $flag;
+										?>
+                </select>
 				</td>
 			</tr>
 			<tr id="ShippingSpace<?php echo $Item['product_id'];?>" style="display:none;"><td height="4"></td></tr>

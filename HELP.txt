@@ -1,0 +1,76 @@
+Following are steps that you need to follow in order to setup Puvoo on your machine.
+
+1. Download latest code from Puvoo
+2. Create database in mysql
+3. run table_definition.sql. 
+4. run table_data.sql
+5. open .htaccess file in root of puvoo code folder
+6. set 'RewriteBase /' if your host points direct to puvoo code folder. 
+Set 'RewriteBase /dirname/' if your puvoo code directory is under directory of your site host directory.
+
+7. Open /public/index.php
+8. Go to line 'define('INSTALL_DIR', '/');'. Keep it as it is if your host points direct to puvoo code folder.
+Change it to 'define('INSTALL_DIR', '/dirname/');', if your puvoo code directory is under directory of your site host directory.
+
+9. Open /application/configs/application.ini
+
+Set following values as per your database settings for puvoo
+
+resources.db.params.host = "localhost"
+resources.db.params.username = ""
+resources.db.params.password = ""
+resources.db.params.dbname = ""
+
+10. Now you should be able to run puvoo from your browser.
+
+11. Following are urls to get started
+
+site default section 
+---------------------
+http://site_root/
+
+
+site admin section
+-------------------
+http://site_root/admin/
+
+user: admin
+password: admin
+
+
+site merchant section
+----------------------
+http://site_root/user/
+
+for merchant section, you will need to create user from admin section or site default section.
+
+
+site facebook store section
+----------------------------
+http://site_root/fb/
+
+
+12. Facebook store related settings
+In Admin section, you need to open menu Facebook Store Settings -> Facebook Application settings.
+There are 4 settings given in that
+
+Hosting URL -> http://site_host_root/fb/ 
+Application URL -> http://apps.facebook.com/application_name_on_facebook
+API Id -> Set application Id of your facebook store in that
+Secrec Key -> Set secret key of you facebook store in that
+
+13. Paypal Url Setting
+
+In admin section, you need to open menu Facebook Store Settings -> Paypal.
+In that you can set paypal url to sandbox or paypal live
+By default, it will be paypal sandbox as given below
+
+https://www.sandbox.paypal.com/webscr?cmd=_express-checkout&token=
+
+14. User store paypal settings
+In user section, you need to open menu, Settings -> Store Settings.
+From there you can set user's paypal related settings.
+
+Hope this will help you to get started with Puvoo
+
+Thank You.

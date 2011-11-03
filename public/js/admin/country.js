@@ -8,13 +8,13 @@ function ValidateAddForm()
 		rules: {
 					country_name: {  required: true  },
 					country_iso2: {  required: true  },
-					country_iso3: {  required: true  },
+					country_iso3: {  required: true  }
 			   },
 			   
 		messages:{
 					country_name: { required: ERR_COUNTRY_NAME  },							  
 					country_iso2: { required: ERR_ISO2_CODE  },							  
-					country_iso3: { required: ERR_ISO3_CODE  },							  
+					country_iso3: { required: ERR_ISO3_CODE  }					  
 					
 				 },
 				 
@@ -43,13 +43,13 @@ function ValidateEditForm()
 		rules: {
 					country_name: {  required: true  },
 					country_iso2: {  required: true  },
-					country_iso3: {  required: true  },
+					country_iso3: {  required: true  }
 			   },
 			   
 		messages:{
 					country_name: { required: ERR_COUNTRY_NAME  },							  
 					country_iso2: { required: ERR_ISO2_CODE  },							  
-					country_iso3: { required: ERR_ISO3_CODE  },							  
+					country_iso3: { required: ERR_ISO3_CODE  }					  
 					
 				 },
 				 

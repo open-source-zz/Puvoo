@@ -4,6 +4,7 @@
 		height: 370px;
 		overflow: auto;
 		float:left;
+		width:380px;
 		padding-bottom:50px;
 	}
 </style>
@@ -181,22 +182,20 @@
 					<?php $images = $product_detail["images"]; ?>
 					<div >
 						<div >
-							<div class="scroll-pane" style="width:395px;">
-								<div class="excersice-list">
-									<ul>
-										<?php 
-											if($images != NULL ) { 
-												foreach($images as $key => $val)
-												{
-													$img_string = str_replace("_img","_th1",$val['image_name']);													
-													echo "<li><img src='".SITE_PRODUCT_IMAGES_PATH."/p".$this->product_id."/".$img_string."' width='128' height='128'></li>";
-												}
-											} else {											
-												echo "<li>".$this->Translate('Product_No_Images_Found')."<li>"; 
+							<div class="scroll-pane" >
+								<ul class="imagegallery" id="imagegallery">
+									<?php 
+										if($images != NULL ) { 
+											foreach($images as $key => $val)
+											{
+												$img_string = str_replace("_img","_th1",$val['image_name']);													
+												echo "<li><img src='".SITE_PRODUCT_IMAGES_PATH."/p".$this->product_id."/".$img_string."' width='128' height='128'></li>";
 											}
-										?>
-									</ul>
-								</div>
+										} else {											
+											echo "<li>".$this->Translate('Product_No_Images_Found')."<li>"; 
+										}
+									?>
+								</ul>
 							</div>
 						</div>
 					</div>
@@ -206,7 +205,7 @@
 					<div >
 						<?php $category = $product_detail["category"]; ?>
 						<?php $options = $product_detail["options"]; ?>
-						<div class="box-content scroll-pane" style="width:395px;" >
+						<div class="box-content scroll-pane"  >
 							<?php 
 								if($options != NULL) {
 									$option_value = '';
@@ -275,7 +274,7 @@
 		
 		$("#product_category").multiselect({
 		   header: false,
-		   noneSelectedText: "<?php echo $this->Translate('Product_Select_MCategory'); ?>",
+		   noneSelectedText: "<?php echo $this->Translate('Product_Select_MCategory'); ?>"
 		});	
 	});
 	

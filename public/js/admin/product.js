@@ -37,7 +37,7 @@ function ValidateProductDetailForm()
 						available_date: { required: true, date: true },
 						expiration_date: { required: true, date: true },
 						promotion_start_date: { required: true, date: true },
-						promotion_end_date: { required: true, date: true },
+						promotion_end_date: { required: true, date: true }
 				   },
 		   
 			messages:{
@@ -57,7 +57,7 @@ function ValidateProductDetailForm()
 						available_date: { required: ERR_PRODUCT_PRIMARY_AVAILABLE_DATE, date: ERR_PRODUCT_PRIMARY_INVALID_DATE },
 						expiration_date: { required: ERR_PRODUCT_PRIMARY_EXPIRATION_DATE, date: ERR_PRODUCT_PRIMARY_INVALID_DATE },
 						promotion_start_date: { required: ERR_PRODUCT_PRIMARY_PROMOTION_START_DATE, date: ERR_PRODUCT_PRIMARY_INVALID_DATE },
-						promotion_end_date: { required: ERR_PRODUCT_PRIMARY_PROMOTION_END_DATE, date: ERR_PRODUCT_PRIMARY_INVALID_DATE },
+						promotion_end_date: { required: ERR_PRODUCT_PRIMARY_PROMOTION_END_DATE, date: ERR_PRODUCT_PRIMARY_INVALID_DATE }
 					 },
 					 
 			errorPlacement: function(error, element) 

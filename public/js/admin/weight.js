@@ -7,12 +7,12 @@ function ValidateAddFrom()
 							
 		rules: {
 					weight_unit_name: {  required: true  },
-					weight_unit_key: {  required: true  },
+					weight_unit_key: {  required: true  }
 			   },
 			   
 		messages:{
 					weight_unit_name: { required: ERR_WEIGHT_UNIT_NAME  },							  
-					weight_unit_key: { required: ERR_WEIGHT_UNIT_KEY  },
+					weight_unit_key: { required: ERR_WEIGHT_UNIT_KEY  }
 				 },
 				 
 		errorPlacement: function(error, element) 
@@ -39,12 +39,12 @@ function ValidateEditFrom()
 							
 		rules: {
 					weight_unit_name: {  required: true  },
-					weight_unit_key: {  required: true  },
+					weight_unit_key: {  required: true  }
 			   },
 			   
 		messages:{
 					weight_unit_name: { required: ERR_WEIGHT_UNIT_NAME  },							  
-					weight_unit_key: { required: ERR_WEIGHT_UNIT_KEY  },
+					weight_unit_key: { required: ERR_WEIGHT_UNIT_KEY  }
 				 },
 				 
 		errorPlacement: function(error, element) 

@@ -680,12 +680,12 @@ class Fb_CartController extends FbCommonController
 		$shippingPriceArray = explode(',',$ShippingCostDetails['price']);
 		
 		$start = 0;
-		
+		$ship_Price = 0;
 		foreach($shippingPriceArray as $val)
 		{
 			$shippingRangeArray = explode(':',$val);
 			
-			if($prodData['product_weight'] > $start && $prodData['product_weight'] <= $shippingRangeArray[0])
+			if($prodData['product_weight'] > $start && $prodData['product_weight'] <= $shippingRangeArray[0] || $prodData['product_weight'] >= $shippingRangeArray[0])
 			{
 				
 				$ship_Price = $shippingRangeArray[1];

@@ -33,10 +33,10 @@ function ValidateProductAddForm()
 						available_qty: { required: true, number: true },
 						discount: { required: true, number: true, range: [0, 100]  },
 						start_sales: { required: true },
-						available_date: { required: true, date: true },
-						expiration_date: { required: true, date: true },
-						promotion_start_date: { required: true, date: true },
-						promotion_end_date: { required: true, date: true },
+						available_date: { required: true },
+						expiration_date: { required: true },
+						promotion_start_date: { required: true },
+						promotion_end_date: { required: true }
 				   },
 		   
 			messages:{
@@ -54,10 +54,10 @@ function ValidateProductAddForm()
 						discount: { required: ERR_PRODUCT_DISCOUNT, number: ERR_PRODUCT_INVALID_DISCOUNT, range: ERR_PRODUCT_RANGE_DISCOUNT  },
 						start_sales: { required: ERR_PRODUCT_START_SALE },
 						start_sales: { required: ERR_PRODUCT_START_SALE },
-						available_date: { required: ERR_PRODUCT_PRIMARY_AVAILABLE_DATE, date: ERR_PRODUCT_PRIMARY_INVALID_DATE },
-						expiration_date: { required: ERR_PRODUCT_PRIMARY_EXPIRATION_DATE, date: ERR_PRODUCT_PRIMARY_INVALID_DATE },
-						promotion_start_date: { required: ERR_PRODUCT_PRIMARY_PROMOTION_START_DATE, date: ERR_PRODUCT_PRIMARY_INVALID_DATE },
-						promotion_end_date: { required: ERR_PRODUCT_PRIMARY_PROMOTION_END_DATE, date: ERR_PRODUCT_PRIMARY_INVALID_DATE },
+						available_date: { required: ERR_PRODUCT_PRIMARY_AVAILABLE_DATE },
+						expiration_date: { required: ERR_PRODUCT_PRIMARY_EXPIRATION_DATE },
+						promotion_start_date: { required: ERR_PRODUCT_PRIMARY_PROMOTION_START_DATE },
+						promotion_end_date: { required: ERR_PRODUCT_PRIMARY_PROMOTION_END_DATE }
 					 },
 					 
 			errorPlacement: function(error, element) 
@@ -110,10 +110,10 @@ function ValidateProductDetailForm()
 						available_qty: { required: true, number: true },
 						discount: { required: true, number: true, range: [0, 100]  },
 						start_sales: { required: true },
-						available_date: { required: true, date: true },
-						expiration_date: { required: true, date: true },
-						promotion_start_date: { required: true, date: true },
-						promotion_end_date: { required: true, date: true },
+						available_date: { required: true  },
+						expiration_date: { required: true },
+						promotion_start_date: { required: true },
+						promotion_end_date: { required: true }
 				   },
 		   
 			messages:{
@@ -130,10 +130,10 @@ function ValidateProductDetailForm()
 						available_qty: { required: ERR_PRODUCT_QUANTITY, number: ERR_PRODUCT_INVALID_QUANTITY },
 						discount: { required: ERR_PRODUCT_DISCOUNT, number: ERR_PRODUCT_INVALID_DISCOUNT, range: ERR_PRODUCT_RANGE_DISCOUNT  },
 						start_sales: { required: ERR_PRODUCT_START_SALE },
-						available_date: { required: ERR_PRODUCT_PRIMARY_AVAILABLE_DATE, date: ERR_PRODUCT_PRIMARY_INVALID_DATE },
-						expiration_date: { required: ERR_PRODUCT_PRIMARY_EXPIRATION_DATE, date: ERR_PRODUCT_PRIMARY_INVALID_DATE },
-						promotion_start_date: { required: ERR_PRODUCT_PRIMARY_PROMOTION_START_DATE, date: ERR_PRODUCT_PRIMARY_INVALID_DATE },
-						promotion_end_date: { required: ERR_PRODUCT_PRIMARY_PROMOTION_END_DATE, date: ERR_PRODUCT_PRIMARY_INVALID_DATE },
+						available_date: { required: ERR_PRODUCT_PRIMARY_AVAILABLE_DATE },
+						expiration_date: { required: ERR_PRODUCT_PRIMARY_EXPIRATION_DATE },
+						promotion_start_date: { required: ERR_PRODUCT_PRIMARY_PROMOTION_START_DATE },
+						promotion_end_date: { required: ERR_PRODUCT_PRIMARY_PROMOTION_END_DATE }
 					 },
 					 
 			errorPlacement: function(error, element) 

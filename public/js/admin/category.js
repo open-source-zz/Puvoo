@@ -7,12 +7,12 @@ function ValidateAddFrom()
 							
 		rules: {
 					category_name: {  required: true  },							  
-					is_active: { required: true },
+					is_active: { required: true }
 			   },
 			   
 		messages:{
 					category_name: { required: ERR_CATEGORY_NAME  },							  
-					is_active: { required: ERR_IS_ACTIVE  },
+					is_active: { required: ERR_IS_ACTIVE  }
 				 },
 				 
 		errorPlacement: function(error, element) 
@@ -39,22 +39,22 @@ function ValidateEditFrom()
 							
 		rules: {
 					category_name: {  
-								required: true,  
+								required: true
 							  },
 							  
 					is_active: {
-								required: true,
-							  },
+								required: true
+							  }
 			   },
 			   
 		messages:{
 					category_name: {
-								required: ERR_IS_ACTIVE,								
+								required: ERR_IS_ACTIVE								
 							  },
 							  
 					is_active: {	
-								required: ERR_IS_ACTIVE,
-							  },
+								required: ERR_IS_ACTIVE
+							  }
 							  
 				 },
 				 

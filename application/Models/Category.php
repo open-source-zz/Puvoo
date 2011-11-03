@@ -365,7 +365,7 @@ class Models_Category
 		
 		foreach( $langArray as $key => $val )
 		{
-			$sql .= "(" . $category_id . ",". $key. ", '".$val["category_name"]."' ),";
+			$sql .= '(' . $category_id . ','. $key. ', "'.$val["category_name"].'" ),';
 		}
 		
 		$sql = rtrim($sql,",");
@@ -741,17 +741,20 @@ class Models_Category
 	
 	//recursive function that prints categories as a nested html unorderd list
 
-	function getCategoryTreeForAPI($parent = 0, $lvl=0)
+	function getCategoryTreeForAPI($langCode, $parent = 0, $lvl=0)
 	{
 		$db= $this->db;
 		
 		
 	
-		$sql = "SELECT * FROM category_master WHERE is_active = 1 and parent_id = ". $parent;
-		//print $sql . "<br>";
+		$sql = "SELECT cm.category_id,cml.category_name FROM category_master as cm
+				LEFT JOIN category_master_lang as cml ON(cm.category_id = cml.category_id and cml.language_id = 
+				(
+					SELECT language_id FROM language_master WHERE code = '".$langCode."'
+				))
+				WHERE is_active = 1 and parent_id = ". $parent;
+		
 		$data = $db->fetchAll($sql);
-		
-		
 		
 		foreach($data as $key => $value)
 		{
@@ -765,7 +768,7 @@ class Models_Category
 					$tree[$value['category_id']]["Id"] = $value['category_id'];
 					
 					//array_push($tree, $this->getCategoryTreeForAPI($value['category_id'],$lvl,$tree)	); 
-					$tree[$value['category_id']]["Category"] = $this->getCategoryTreeForAPI($value['category_id'],$lvl+1);
+					$tree[$value['category_id']]["Category"] = $this->getCategoryTreeForAPI($langCode, $value['category_id'],$lvl+1);
 			}
 			else
 			{

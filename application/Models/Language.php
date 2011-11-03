@@ -216,15 +216,29 @@ class Models_Language
 	{
 		$db = $this->db;
 		
-		if( $data["is_default"] == 1 ) {
+		$sql = "select is_default from language_master where ".$where;
+		$result = $db->fetchOne($sql);
+		
+		if($result == 1 ) {		
+			if( $data["is_default"] == 1 ) {
+				$db->update("language_master", $data, $where); 	
+				return true;
+			} else {			
+				return false;
+			}
 			
-			$data1["is_default"] = 0;
-			$where1 = "1=1";
-			$db->update("language_master", $data1, $where1); 	
+		} else {
+		
+			if( $data["is_default"] == 1 ) {
+					
+				$data1["is_default"] = 0;
+				$where1 = "1=1";
+				$db->update("language_master", $data1, $where1); 	
+			} 
+			$db->update("language_master", $data, $where); 	
+			return true;
 		}
 		
-		$db->update("language_master", $data, $where); 	
-		return true;
 	}
 	
 	/**

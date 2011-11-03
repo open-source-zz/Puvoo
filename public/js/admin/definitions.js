@@ -6,13 +6,13 @@ function ValidateAddForm()
 							
 		rules: {
 					definition_key: { required: true },
-					definition_value: { required: true },
+					definition_value: { required: true }
 					
 			   },
 			   
 		messages:{
 					definition_key: { required: ERR_DEFINITION_KEY },
-					definition_value: { required: ERR_DEFINITION_VALUE },
+					definition_value: { required: ERR_DEFINITION_VALUE }
 				 },
 				 
 		errorPlacement: function(error, element) 
@@ -40,12 +40,12 @@ function ValidateEditForm()
 							
 		rules: {
 					definition_key: { required: true },
-					definition_value: { required: true },
+					definition_value: { required: true }
 			   },
 			   
 		messages:{
 					definition_key: { required: ERR_DEFINITION_KEY },
-					definition_value: { required: ERR_DEFINITION_VALUE },
+					definition_value: { required: ERR_DEFINITION_VALUE }
 				 },
 				 
 		errorPlacement: function(error, element) 
@@ -73,11 +73,11 @@ function ValidateImportForm()
 	$("#import_form").validate({
 							
 		rules: {
-					definition_file: { required: true },
+					definition_file: { required: true }
 			   },
 			   
 		messages:{
-					definition_file: { required: ERR_DEFINITION_FILE },
+					definition_file: { required: ERR_DEFINITION_FILE }
 				 },
 				 
 		errorPlacement: function(error, element) 

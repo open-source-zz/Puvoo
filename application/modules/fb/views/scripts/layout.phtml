@@ -53,9 +53,9 @@
 				<?php echo $this->layout()->content;?>
 				<div class="clear"></div>
 			</div>
-			<?php echo $this->render('footer.phtml')?>
+			
          </div>
-		
+		<?php echo $this->render('footer.phtml')?>
     </div>
 	<div id="fb-root"></div>
 
@@ -104,7 +104,7 @@ status : true, // check login status
 
 cookie : true, // enable cookies to allow the server to access the session
 
-xfbml : true, // parse XFBML
+xfbml : true // parse XFBML
 
 
 });
@@ -170,7 +170,7 @@ function sendRequestToManyRecipients()
 			FB.ui({
 				method: 'apprequests',
 				message: '<?php echo $this->Translate("Invite_Friend_Send_Request_Msg"); ?>',
-				exclude_ids: [data],
+				exclude_ids: [data]
 			}, requestCallback);
 		}
 	});	

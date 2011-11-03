@@ -468,7 +468,7 @@ class Rest_ProductController extends RestCommonController
 					}
 					else{
 						//$img_content = file_get_contents($main_image);
-						list($img_width, $img_height, $img_type) = @getimagesize($main_image);
+						list($img_width, $img_height, $img_type) = getimagesize($main_image);
 						
 						if($img_width < 300)
 						{
@@ -647,6 +647,7 @@ class Rest_ProductController extends RestCommonController
 						}
 					}
 					
+					$warning_error = array();
 					
 					if(count($languages) > 0)
 					{
@@ -663,11 +664,12 @@ class Rest_ProductController extends RestCommonController
 							{
 								if(!$Language->checkLanguageByCode(trim($languages[$l]["code"])))
 								{
-									$arr_error[] = $this->translate->_('Language_Not_Present')." " . ($i+1);
+									$warning_error["warning"][] = $languages[$l]["code"] .": ".$this->translate->_('Language_Not_Present')." " . ($i+1);
 								}
 							}
 						}
 					}
+					
 					
 					if(count($arr_error) > 0)
 					{
@@ -698,6 +700,7 @@ class Rest_ProductController extends RestCommonController
 						$products[$i]['categories'] = $categories;
 						$products[$i]['attributes'] = $attributes;
 						$products[$i]['languages'] = $languages;
+						$products[$i]['warning'] = $warning_error;
  						
 					}
 					
@@ -715,7 +718,7 @@ class Rest_ProductController extends RestCommonController
 					$arr_error[] = $this->translate->_('Product_Add_Limit');
 				}
 			}
-			
+		
 			if(count($arr_error) == 0)
 			{
 				$arr_msg = array();
@@ -755,24 +758,29 @@ class Rest_ProductController extends RestCommonController
 					$data['expiration_date'] = $products[$i]['expiration_date'];
 					$data['promotion_start_date'] = $products[$i]['promotion_start_date'];
 					$data['promotion_end_date'] = $products[$i]['promotion_end_date'];
-						
+					
 					//insert product and get product id
 					$arr_msg[$i]["id"] = $Product->insertProduct($data);
 					$arr_msg[$i]["product_external_id"] = $products[$i]["product_external_id"];
-					
+					$arr_msg[$i]["warning"] = $products[$i]['warning'];
 					//update product for default language
 					$Product->updateProductLang(array("product_name"=>$products[$i]["name"],"product_description"=>$products[$i]["description"]),$arr_msg[$i]["id"],$Language->getDefaultLanguageId());
+					
 					
 					//update product language for other languages
 					if(count($products[$i]['languages']) > 0)
 					{
+						
 						for($l = 0; $l < count($products[$i]['languages']); $l++)
 						{
-							$ldata = array();
-							$ldata["product_name"] = $products[$i]['languages'][$l]["name"];
-							$ldata["product_description"] = $products[$i]['languages'][$l]["description"];
-							
-							$Product->updateProductLang($ldata,$arr_msg[$i]["id"],$Language->getLanguageIdByCode($products[$i]['languages'][$l]["code"]));
+							if($Language->checkLanguageByCode(trim($products[$i]['languages'][$l]["code"])))
+							{
+								$ldata = array();
+								$ldata["product_name"] = $products[$i]['languages'][$l]["name"];
+								$ldata["product_description"] = $products[$i]['languages'][$l]["description"];
+								
+								$Product->updateProductLang($ldata,$arr_msg[$i]["id"],$Language->getLanguageIdByCode($products[$i]['languages'][$l]["code"]));
+							}
 							
 						}
 					}
@@ -790,7 +798,6 @@ class Rest_ProductController extends RestCommonController
 											
 							$ProdToCat->insertProductToCategories($ptoc_data);
 						}
-						
 						
 					}
 					
@@ -1016,18 +1023,25 @@ class Rest_ProductController extends RestCommonController
 					}
 				}
 				
-				$this->view->result = $this->translate->_('Product_Success');
+				if( count($warning_error) > 0 ) {
+					$this->view->result = 'Warning';		
+				
+				} else {
+					$this->view->result = $this->translate->_('Product_Success');					
+				}
 				$arr_products = array();
+				
 				if(count($arr_msg > 0))
 				{
 					for($i = 0; $i < count($arr_msg); $i++)
 					{
-					
 						$arr_products["Product"][$i]["name"] = $arr_msg[$i]["name"];
 						$arr_products["Product"][$i]["id"] = $arr_msg[$i]["id"];
 						$arr_products["Product"][$i]["product_external_id"] = $arr_msg[$i]["product_external_id"];
+						$arr_products["Product"][$i]["languages"] = $arr_msg[$i]["warning"];
 					}
 				}
+				
 				$this->view->Products = array($arr_products);
         		$this->getResponse()->setHttpResponseCode(201);
 				
