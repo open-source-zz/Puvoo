@@ -131,7 +131,7 @@ class Models_Cart
 		$productUserDetail = $this->GetProductUser($ProductInfo['product_id']);
 		
 		$prod_curr_value = $Common->GetCurrencyValue(DEFAULT_CURRENCY);
-		
+ 		
 		if($UserDetail['user_id'] == $productUserDetail['user_id'] || $UserDetail == '' )
 		{
 			$productQty = '1';
@@ -142,7 +142,11 @@ class Models_Cart
 			}else{
 				$prodName = $ProductInfo['product_name'];
 			}	
+				
+			
 			$prodPrice = round( ($ProductInfo['price'] * $cart_curr_value['currency_value']) / $prod_curr_value['currency_value'], 2 );
+				
+			//print $test;die;
 			//echo $prodPrice;die;
 			$ProductDetails = array(
 					'cart_id' => $id,
@@ -204,13 +208,13 @@ class Models_Cart
 	 * @author  Jayesh 
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
-	public function GetProductInCart($facebook_id,$curr_value = 1,$current_curr_data = 1)
+	public function GetProductInCart($facebook_id,$curr_value = 1,$current_curr_data = 1,$Cart_Country_Vat = DEFAULT_VAT_RATE)
 	{
 	
 		global $mysession;
 		$db= $this->db;
 		
-		$sql = "SELECT cd.*,cd.product_price as price,cm.currency_id as currId,cm.*,cm.currency_id as CurrId,pi.image_path,pi.image_name,pm.*,um.*,ROUND( (cd.product_price * ".$curr_value.") / ".$current_curr_data.", 2 ) as Prod_convert_price,pml.product_name as ProdName FROM cart_detail as cd
+		$sql = "SELECT cd.*,cd.product_price as price,cm.currency_id as currId,cm.*,cm.currency_id as CurrId,pi.image_path,pi.image_name,pm.*,um.*,ROUND((cd.product_price  * ".$curr_value.") / ".$current_curr_data.", 2 ) as Prod_convert_price,pml.product_name as ProdName FROM cart_detail as cd
 				LEFT JOIN cart_master as cm ON (cd.cart_id = cm.cart_id)
 				LEFT JOIN product_images as pi ON (cd.product_id = pi.product_id and pi.is_primary_image = 1)
 				LEFT JOIN product_master as pm ON (pi.product_id = pm.product_id)

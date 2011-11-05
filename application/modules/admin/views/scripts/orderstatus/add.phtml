@@ -1,0 +1,85 @@
+<div class="Breadcrumb" id="PageBreadcrumb">
+	<ul>
+	   <li class="Home SecondLast"><a href="<?php echo SITE_URL; ?>admin/"><?php echo $this->Translate("Administration"); ?></a></li>
+	   <li class="Last1"><a href="<?php echo SITE_URL; ?>admin/orderstatus"><?php echo $this->Translate('Order_Status'); ?></a></li>
+	   <li class="Last"><span><?php echo $this->Translate('Add_Banner'); ?></span></li>
+	</ul>
+</div>
+
+
+<div class="BodyContainer DashboardContainer" style="text-align:left;"> 
+	<div class="Heading1">
+		<?php echo $this->Translate('Manage_Facebook_Banner'); ?>
+	</div>
+	
+	<?php if(count($this->addErrorMessage) > 0 ) { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
+				<?php foreach($this->addErrorMessage as $key => $val ) { ?>
+					<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+					<strong><?php echo $val; ?></strong></p>
+				<?php } ?>
+			</div>
+		</div>
+	<?php } ?>	
+	
+	<form method="post" name="add_form" id="add_form" enctype="multipart/form-data" >
+		<table class="Panel" style="margin-top:10px;">
+			<tr>
+				<td class="Heading2" colspan="2"><?php echo $this->Translate('Add_Status'); ?></td>
+			</tr>
+			<tr>
+				<td colspan="2">
+				<div id="div0" style="padding-bottom:5px">
+					<table class="Panel" width="100%" cellspacing="0" cellpadding="0">
+						<tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Status_Value'); ?>
+							</td>
+							<td>
+								<input type="text" name="status_value" id="status_value" class="Field250" value="<?php echo $this->data['status_value']; ?>" />
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="15"></td></tr>
+						<tr>
+						   	<td colspan="2">
+								<input type="submit" id="anything" onclick="Javascript: return ValidateAddFrom()"  value="<?php echo $this->Translate('Submit'); ?>" />
+								<input type="button" id="anything"  value="<?php echo $this->Translate('Cancle'); ?>" onclick="window.location='<?php echo $this->site_url; ?>'"/>
+						   </td>
+						</tr>
+					</table>
+				</div>
+				</td>
+			</tr>
+		</table>   
+	</form>            
+</div> 
+
+<!--     JS Global Variable for the language    -->
+
+<script language="javascript" type="text/javascript">
+var siteurl = "<?php echo SITE_URL; ?>";
+var ERR_STATUS_VALUE = "<?php echo $this->Translate('Err_Status_Value'); ?>";  
+
+function ValidateAddFrom()
+{
+	
+	$("#add_form").validate({
+							
+		rules: {
+					status_value: { required: true },					
+			   },
+			   
+		messages:{
+					status_value: { required: ERR_STATUS_VALUE },					
+				 },
+				 
+		errorPlacement: function(error, element) 
+		{ 
+			error.appendTo( element.next() ); 
+		}
+	});
+}
+
+</script>

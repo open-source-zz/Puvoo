@@ -186,7 +186,7 @@
 								<?php echo $this->Translate("Product_Width"); ?>
 							</td>
 							<td>
-								<input type="text" name="width" id="width" value="<?php echo $detail["width"];  ?>" class="Field250" />
+								<input type="text" name="width" id="width" value="<?php echo $detail['width'];  ?>" class="Field250" />
 							</td>
 							<td></td>
 						</tr>
@@ -196,7 +196,7 @@
 								<?php echo $this->Translate("Product_Depth"); ?>
 							</td>
 							<td>
-								<input type="text" name="depth" id="depth" value="<?php echo $detail["depth"];  ?>" class="Field250" />
+								<input type="text" name="depth" id="depth" value="<?php echo $detail['depth'];  ?>" class="Field250" />
 							</td>
 							<td></td>
 						</tr>
@@ -206,7 +206,7 @@
 								<?php echo $this->Translate("Product_Quantity"); ?>
 							</td>
 						  <td>
-							  <input type="text" name="available_qty" id="available_qty" value="<?php echo $detail["available_qty"];  ?>" class="Field250" />
+							  <input type="text" name="available_qty" id="available_qty" value="<?php echo $detail['available_qty'];  ?>" class="Field250" />
 						  </td>
 						  <td></td>
 						</tr>
@@ -226,7 +226,7 @@
 								<?php echo $this->Translate('Product_Available_Date'); ?>
 							</td>
 							<td>
-								<input type="text" name="available_date" id="available_date" value="<?php echo date('Y-m-d', strtotime($detail['available_date']));  ?>" class="Field250 datepicker" />		
+								<input type="text" name="available_date" id="available_date" value="<?php if(strtotime($detail['available_date']) > 0 ) { echo date('Y-m-d', strtotime($detail['available_date'])); }  ?>" class="Field250 datepicker" />		
 							</td>
 							<td></td>
 						</tr>	
@@ -236,7 +236,7 @@
 								<?php echo $this->Translate('Product_Expiration_Date'); ?>
 							</td>
 							<td>
-								<input type="text" name="expiration_date" id="expiration_date" value="<?php echo date('Y-m-d', strtotime($detail['expiration_date']));  ?>" class="Field250 datepicker" />		
+								<input type="text" name="expiration_date" id="expiration_date" value="<?php if(strtotime($detail['expiration_date']) > 0 ) { echo date('Y-m-d', strtotime($detail['expiration_date'])); } ?>" class="Field250 datepicker" />		
 							</td>
 							<td></td>
 						</tr>	
@@ -246,7 +246,7 @@
 								<?php echo $this->Translate('Product_Promotion_Start_Date'); ?>
 							</td>
 							<td>
-								<input type="text" name="promotion_start_date" id="promotion_start_date" value="<?php echo date('Y-m-d', strtotime($detail['promotion_start_date']));  ?>" class="Field250 datepicker" />		
+								<input type="text" name="promotion_start_date" id="promotion_start_date" value="<?php if(strtotime($detail['promotion_start_date']) > 0 ) { echo date('Y-m-d', strtotime($detail['promotion_start_date'])); } ?>" class="Field250 datepicker" />		
 							</td>
 							<td></td>
 						</tr>	
@@ -256,7 +256,7 @@
 								<?php echo $this->Translate('Product_Promotion_End_Date'); ?>
 							</td>
 							<td>
-								<input type="text" name="promotion_end_date" id="promotion_end_date" value="<?php echo date('Y-m-d', strtotime($detail['promotion_end_date']));  ?>" class="Field250 datepicker" />		
+								<input type="text" name="promotion_end_date" id="promotion_end_date" value="<?php if(strtotime($detail['promotion_end_date']) > 0 ) { echo date('Y-m-d', strtotime($detail['promotion_end_date'])); } ?>" class="Field250 datepicker" />		
 							</td>
 							<td></td>
 						</tr>		

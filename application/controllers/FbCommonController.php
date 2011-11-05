@@ -54,7 +54,7 @@ class FbCommonController extends Zend_Controller_Action
 		
  		$db = Zend_Db_Table::getDefaultAdapter();
 		Zend_Registry::set('Db_Adapter', $db);
- 		
+ 		error_reporting(0);
 		// Model Objects
  		$Category = new Models_Category();
 		$Product = new Models_Product();
@@ -187,10 +187,15 @@ class FbCommonController extends Zend_Controller_Action
 			if($admin_master->ValidateTableField("facebook_id",$user_profile['id'],"facebook_user_master",$where)) {
 			
 				if($user_profile['email'] != '' ) {
+					$name = '';
+					if( isset($user_profile['name']) ){
+						$name = $user_profile['name'];
+					} 
+				
 					$fbArray = array( 
 									'facebook_id'	 => $user_profile['id'],
 									'facebook_email' =>	$user_profile['email'],
-									'facebook_name'  =>	$user_profile['name']
+									'facebook_name'  =>	$name
 								 );
 					$admin_master->insertFacebookUser($fbArray);
 				}
@@ -209,6 +214,7 @@ class FbCommonController extends Zend_Controller_Action
 			$Site_config_value = $Common->GetConfigValue($Country_id);
 			$mysession->default_Currency = $Site_config_value['currency_id'];
 			$mysession->default_Language = $Site_config_value['language_id'];
+			$mysession->default_vatrate = $Site_config_value['vat'];
 			$mysession->default_Language_locale = $Site_config_value['code'];
 			$this->view->sel_country = $Site_config_value['country_id'];
 			
@@ -218,6 +224,7 @@ class FbCommonController extends Zend_Controller_Action
  			$DefaultValues = $Common->GetDefaultConfigValue();
 			$mysession->default_Currency = $DefaultValues['currency_id'];
 			$mysession->default_Language = $DefaultValues['language_id'];
+			$mysession->default_vatrate = $DefaultValues['vat'];
 			$mysession->default_Language_locale = $DefaultValues['code'];
 			$this->view->sel_country = $DefaultValues['country_id'];
 		}
@@ -241,15 +248,25 @@ class FbCommonController extends Zend_Controller_Action
 		
 		// Define Language Id
 		define('DEFAULT_LANGUAGE', $mysession->default_Language);
+
+		// Define vat price for current country
+		define('DEFAULT_VAT_RATE', $mysession->default_vatrate);
 		
 		$currency_value = $Common->GetCurrencyValue(DEFAULT_CURRENCY);
 		
 		$mysession->currency_value = $currency_value['currency_value'];
+		
 		$mysession->currency_id = $currency_value['currency_id'];
 		
 		define('DEFAULT_CURRENCY_SYMBOL', $currency_value['currency_symbol']);
 		
 		define('DEFAULT_CURRENCY_CODE', $currency_value['currency_code']);
+		
+		$Default_Weight_Unit = $Common->GetWeigthUnit();
+		
+		define('DEFAULT_WEIGHT_UNIT', $Default_Weight_Unit);
+		
+		
 		
 		//Get Request
 		$request = $this->getRequest();
@@ -367,16 +384,16 @@ class FbCommonController extends Zend_Controller_Action
 							
 							for($j=0; $j<count($Sub_Cat); $j++)
 							{
-								if($Sub_Cat[$i]['catName'] != '')
+								if($Sub_Cat[$j]['catName'] != '')
 								{
-									$sub_CatName = $Sub_Cat[$i]['catName'];
+									$sub_CatName = $Sub_Cat[$j]['catName'];
 								}else{
-									$sub_CatName = $Sub_Cat[$i]['category_name'];
+									$sub_CatName = $Sub_Cat[$j]['category_name'];
 								}
  							
-								if($Sub_Cat[$i]['icon_image'] != '')
+								if($Sub_Cat[$j]['icon_image'] != '')
 								{
-									$Icon1 = "<img src='".SITE_ICONS_IMAGES_PATH."/".$Sub_Cat[$i]['icon_image']."' alt='' />";
+									$Icon1 = "<img src='".SITE_ICONS_IMAGES_PATH."/".$Sub_Cat[$j]['icon_image']."' alt='' />";
 								}else{
 									$Icon1 = "<img src='".IMAGES_FB_PATH."/cat_default.png' alt='' />";
 								}
@@ -406,9 +423,9 @@ class FbCommonController extends Zend_Controller_Action
 			$this->view->cartItems = $CartDetails;
 			
 			
-			$cartId = '';
-			$Price = 0;
-			$CartTotal = '';
+			//$cartId = '';
+			//$Price = 0;
+			//$CartTotal = '';
 			foreach($CartDetails as $value)
 			{
 				//echo "<pre>";

@@ -108,10 +108,10 @@ class User_StoreController extends UserCommonController
 			$data["store_zipcode"] = $filter->filter(trim($this->_request->getPost('store_zipcode'))); 	
 			$data["allow_free_shipping"] = $filter->filter(trim($this->_request->getPost('free_shipping'))); 	
 			$data["allow_no_shipping"] = $filter->filter(trim($this->_request->getPost('no_shipping'))); 	
-			$data["return_policy"] = $filter->filter(trim($this->_request->getPost('ship_return_policy'))); 	
+			$data["return_policy"] = $this->_request->getPost('ship_return_policy'); 	
 			$data["item_returned_for"] = $filter->filter(trim($this->_request->getPost('ship__item_return_for'))); 	
 			$data["shipping_handling_time"] = $filter->filter(trim($this->_request->getPost('ship_handling_time'))); 	
-			$data["store_terms_policy"] = $filter->filter(trim($this->_request->getPost('store_terms'))); 	
+			$data["store_terms_policy"] = $this->_request->getPost('store_terms'); 	
 			
 			$addErrorMessage = array();	
 			$addSuccessMessage = "";
@@ -169,8 +169,8 @@ class User_StoreController extends UserCommonController
 					$term_lang_index = 'store_terms_policy_'.$val['language_id'];
 					
 					$langArray[$val['language_id']]["store_description"]=$filter->filter(trim($this->_request->getPost($desc_lang_index)));
-					$langArray[$val['language_id']]["return_policy"]=$filter->filter(trim($this->_request->getPost($rtrn_lang_index)));
-					$langArray[$val['language_id']]["store_terms_policy"]=$filter->filter(trim($this->_request->getPost($term_lang_index)));
+					$langArray[$val['language_id']]["return_policy"]=$this->_request->getPost($rtrn_lang_index);
+					$langArray[$val['language_id']]["store_terms_policy"]=$this->_request->getPost($term_lang_index);
 				}		
 			}
 			

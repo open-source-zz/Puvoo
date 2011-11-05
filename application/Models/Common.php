@@ -290,6 +290,84 @@ class Models_Common
 		 
  		return $result;
 	}
+
+ 	/**
+	 * function GetVatForCountry 
+	 *
+	 * It is used to get default vat rate from language_master table.
+	 *
+	 * Date created: 2011-11-04
+	 *
+	 * @param (int) $CurrencyId- Currency Id.
+	 *
+  	 * @return (Array) - Return number of records
+	 *
+	 * @author Jayesh 
+	 *
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	public function GetVatForCountry($CurrencyId)
+	{
+		$db= $this->db;
+		
+ 		$sql = "SELECT vat FROM language_master WHERE currency_id = ".$CurrencyId."";
+		//print $sql;die;		
+ 		$result = $db->fetchOne($sql);
+		 
+ 		return $result;
+	}
+	
+ 	/**
+	 * function GetWeigthUnit 
+	 *
+	 * It is used to get default weight unit for store.
+	 *
+	 * Date created: 2011-11-05
+	 *
+   	 * @return (int) - Return weight unit id
+	 *
+	 * @author Jayesh 
+	 *
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	public function GetWeigthUnit()
+	{
+		$db= $this->db;
+		
+ 		$sql = "SELECT weight_unit_id FROM weight_master WHERE is_default = 1";
+		//print $sql;die;		
+ 		$result = $db->fetchOne($sql);
+		 
+ 		return $result;
+	}
+	
+ 	/**
+	 * function GetWeigthUnitPrice 
+	 *
+	 * It is used to get convert weight price.
+	 *
+	 * Date created: 2011-11-05
+	 *
+	 * @param (int) $from_weightunitid- From Weigth Unit Id.
+	 *
+	 * @param (int) $to_weightunitid- From Weigth Unit Id.
+	 *
+   	 * @return (int) - Return weight unit id
+	 *
+	 * @author Jayesh 
+	 *
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	public function GetWeigthUnitPrice($from_weightunitid,$to_weightunitid)
+	{
+		$db= $this->db;
+		
+ 		$sql = "SELECT value FROM weight_unit_conversion WHERE from_id = ".$from_weightunitid." and to_id=".$to_weightunitid."";
+		//print $sql;die;		
+ 		$result = $db->fetchOne($sql);
+		 
+ 		return $result;
+	}
 	
 }
 ?>

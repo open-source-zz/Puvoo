@@ -86,6 +86,7 @@ class User_OrdersController extends UserCommonController
 		//Create Object of Product model
 		$orders = new Models_UserOrders();
 		$master = new Models_UserMaster();
+		$status = new Models_Status();
 		$translate = Zend_Registry::get('Zend_Translate');
 		
 		//set current page number
@@ -98,7 +99,7 @@ class User_OrdersController extends UserCommonController
 		$is_search = "";
 		
 		//Initial records
-		$this->view->order_status = $master->getConstantArray();
+		$this->view->order_status = $status->GetAllStatus();
 		
 		//Get Request
 		$request = $this->getRequest();
@@ -213,12 +214,14 @@ class User_OrdersController extends UserCommonController
 		
 		$orders = new Models_UserOrders();
 		$master = new Models_UserMaster();
+		$status = new Models_Status();
+		
 		$request = $this->getRequest();
 		
 		$order_id = $filter->filter(trim($this->_request->getPost('hidden_primary_id'))); 
 		
 		// Initial values
-		$this->view->order_status = $master->getConstantArray();
+		$this->view->order_status = $status->GetAllStatus();
 		
 		// Fetch records 
 		if($order_id > 0 && $order_id != "") {
@@ -275,9 +278,11 @@ class User_OrdersController extends UserCommonController
 		
 		$orders = new Models_UserOrders();
 		$master = new Models_UserMaster();
+		$status = new Models_Status();
+		
 		$request = $this->getRequest();
 		
-		$this->view->order_status = $master->getConstantArray();
+		$this->view->order_status = $status->GetAllStatus();
 		
 		$filter = new Zend_Filter_StripTags();	
 		$order_id = $filter->filter(trim($this->_request->getPost('hidden_primary_id'))); 

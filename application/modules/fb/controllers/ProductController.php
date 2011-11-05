@@ -152,6 +152,17 @@ class Fb_ProductController extends FbCommonController
 				$this->view->ProdWeight = $productDetail['product_weight']."&nbsp;".$productDetail['weight_unit_key'];
 				$this->view->ProdLength = $productDetail['length']."&nbsp;".$productDetail['length_unit_key'];
 				$this->view->ProdSeller = $productDetail['store_name'];
+				
+				$registration_date = date('Y-m-d',strtotime($productDetail['registration_date']));
+				
+				$ExpiteDate = date("Y-m-d",strtotime(date("Y-m-d", strtotime($registration_date)) . " +1 month"));
+				$todaydate = date("Y-m-d");
+				
+				$this->view->todaydate = $todaydate;
+				
+				$this->view->Expiredate = $ExpiteDate;
+				
+				
 				$this->view->ProdSellerId = $productDetail['user_id'];
 		
 				//to get Product images
@@ -291,8 +302,9 @@ class Fb_ProductController extends FbCommonController
  			$mysession->pagesize = $pagesize;
  		}
 		$parentid = '';
-		if($CatId)
+		if($CatId != '')
 		{
+			
  			// to get category details
 			$catdetails = $Category->GetCategoryDetail($CatId);
 			$parentid = $catdetails['parent_id'];

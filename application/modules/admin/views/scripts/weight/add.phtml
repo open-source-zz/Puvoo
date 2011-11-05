@@ -51,6 +51,21 @@
 								<span></span>
 							</td>
 						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Is_Default'); ?>:
+							</td>
+							<td>
+								<span>
+									<input type="radio" name="is_default" id="is_default" class="" value="1" <?php echo (($this->data['is_default'] == '1' || $this->data['is_default'] == '') ? 'checked' : '' ); ?> />
+									<?php echo $this->Translate('L_Yes'); ?>&nbsp;
+									<input type="radio" name="is_default"  value="0" <?php echo ($this->data['is_default'] == '0' ? 'checked' : '' ); ?> />
+									<?php echo $this->Translate('L_No'); ?>
+								</span>
+								<span></span>
+							</td>
+						</tr>
 						<tr><td height="15"></td></tr>
 						<tr>
 						   	<td colspan="2">

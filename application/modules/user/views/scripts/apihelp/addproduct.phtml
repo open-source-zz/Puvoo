@@ -355,7 +355,14 @@
 		&lt;Product&gt;
 			&lt;name&gt; TEXT &lt;/name&gt;
 			&lt;id&gt; INT &lt;/id&gt;
+			&lt;warning&gt; TEXT &lt;/warning&gt;
+			
+			&lt;!--  more warning node here  --&gt;
+		
 		&lt;/Product&gt;
+		
+		&lt;!--  more Product node here  --&gt;
+		
 	&lt;/Products&gt;
 &lt;/response&gt;
 </pre>
@@ -410,6 +417,12 @@
 		<td >INT</td>
 		<td ><?php echo $this->Translate('Api_Add_Product_Output_O_Product_Id'); ?></td>
 		<td ><?php echo $this->Translate('Api_Add_Product_Output_M_Product_Id'); ?></td>
+	</tr>
+	<tr>
+		<td >warning</td>
+		<td >TEXT</td>
+		<td ><?php echo $this->Translate('Api_Add_Product_Output_O_Product_Warning'); ?></td>
+		<td ><?php echo $this->Translate('Api_Add_Product_Output_M_Product_Warning'); ?></td>
 	</tr>
 </table>
 

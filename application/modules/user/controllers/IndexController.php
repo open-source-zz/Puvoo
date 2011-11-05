@@ -79,9 +79,11 @@ class User_IndexController extends UserCommonController
 		
 		$orders = new Models_UserOrders();
 		$master = new Models_UserMaster();
+		$status = new Models_Status();
 		
 		$this->view->records = $orders->getDashboardOrders();
-		$this->view->order_status = $master->getConstantArray();
+		$this->view->order_status = $status->GetAllStatus();
+		
 		$this->view->active_class = 'All';
 		if($this->_request->isPost()) {
 			

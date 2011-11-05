@@ -149,9 +149,14 @@
 						<a id="btn1" href="javascript:void(0)" style="color: #3B5998;"><?php echo $this->Translate('SellerInfo')?></a>
 					</div>
 					<div style="clear: both; padding-bottom: 5px;"></div>
+					<?php if($this->todaydate > $this->Expiredate){?>
+					
+					<?php }else{?>   
 					<div class="retailerPositiveReviewWidget">
-						<a href="#" class="sellerRatingThumbs "><?php echo $this->Translate('NewSeller')?></a>
-					</div>    
+					
+						<span class="sellerRatingThumbs "><?php echo $this->Translate('NewSeller')?></span>
+					</div> 
+					<?php }?>
 				</div>
 			 </div>
 			<div class="clear"></div>

@@ -279,17 +279,22 @@ function DeleteCartProduct(prodId,cartId)
 function updatecart(prodId,cartId)
 {
 	
-				$('#loader').show();
-				$('#loader').css('visibility','visible');
-				$('#loader').addClass('ui-widget-loading');
-				
-				$(this).fadeIn(3000, function() {
-					$('#breadCrumb_cart').hide();
-					$('#order_review').hide();
-					$('#buttonArea').hide();
-					$('#SubtotalDiv').hide();
-					
-				});
+		if($('#ProductQty'+prodId).val() == 0)
+		{
+			DeleteCartProduct(prodId,cartId);
+		}
+
+		$('#loader').show();
+		$('#loader').css('visibility','visible');
+		$('#loader').addClass('ui-widget-loading');
+		
+		$(this).fadeIn(3000, function() {
+			$('#breadCrumb_cart').hide();
+			$('#order_review').hide();
+			$('#buttonArea').hide();
+			$('#SubtotalDiv').hide();
+			
+		});
 	
 	
   	 	$.ajax({
@@ -850,7 +855,12 @@ function GetShippingCost(ShippMethodId,prodId)
 			  current_currencyId: function() 
 			  {
 					return $('#CurrentCurrencyId').val();
+			  },
+			  Qty: function() 
+			  {
+					return $('#ProdQTy').val();
 			  }
+ 			  
          },
  		dataType:'json',
 		success:function(data)

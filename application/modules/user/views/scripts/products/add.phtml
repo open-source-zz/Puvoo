@@ -246,7 +246,7 @@
 								<?php echo $this->Translate('Product_Available_Date'); ?>
 							</td>
 							<td>
-								<input type="text" value="<?php echo $this->data['available_date'];  ?>" name="available_date" id="available_date" class="Field250 datepicker" />		
+								<input type="text" value="<?php if(strtotime($this->data['available_date']) > 0 ) { echo $this->data['available_date']; } ?>" name="available_date" id="available_date" class="Field250 datepicker" />		
 							</td>
 							 <td></td>
 						</tr>	
@@ -256,7 +256,7 @@
 								<?php echo $this->Translate('Product_Expiration_Date'); ?>
 							</td>
 							<td>
-								<input type="text" value="<?php echo $this->data['expiration_date'];  ?>" name="expiration_date" id="expiration_date" class="Field250 datepicker" />		
+								<input type="text" value="<?php if(strtotime($this->data['expiration_date']) > 0 ) { echo $this->data['expiration_date']; } ?>" name="expiration_date" id="expiration_date" class="Field250 datepicker" />		
 							</td>
 							 <td></td>
 						</tr>	
@@ -266,7 +266,7 @@
 								<?php echo $this->Translate('Product_Promotion_Start_Date'); ?>
 							</td>
 							<td>
-								<input type="text" value="<?php echo $this->data['promotion_start_date'];  ?>" name="promotion_start_date" id="promotion_start_date" class="Field250 datepicker" />		
+								<input type="text" value="<?php if(strtotime($this->data['promotion_start_date']) > 0 ) { echo $this->data['promotion_start_date']; } ?>" name="promotion_start_date" id="promotion_start_date" class="Field250 datepicker" />		
 							</td>
 							 <td></td>
 						</tr>	
@@ -276,7 +276,7 @@
 								<?php echo $this->Translate('Product_Promotion_End_Date'); ?>
 							</td>
 							<td>
-								<input type="text" value="<?php echo $this->data['promotion_end_date'];  ?>" name="promotion_end_date" id="promotion_end_date"  class="Field250 datepicker" />		
+								<input type="text" value="<?php if(strtotime($this->data['promotion_end_date']) > 0 ) { echo $this->data['promotion_end_date']; }  ?>" name="promotion_end_date" id="promotion_end_date"  class="Field250 datepicker" />		
 							</td>
 							 <td></td>
 						</tr>		

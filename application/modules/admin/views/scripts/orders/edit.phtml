@@ -49,13 +49,13 @@
 						</td>
 						<td width="50%"> :&nbsp;
 							<select name="order_status" id="order_status" class="Field250">
-								<?php  		foreach( $this->order_status["order_status"] as $key => $val ) { ?>	
-								<?php  		   	if ( $key == $order_detail["order_status"] ) { ?>	
-								<option value="<?php echo $key; ?>" selected="selected">
+								<?php  		foreach( $this->order_status as $key => $val ) { ?>	
+								<?php  		   	if ( $val["order_status_id"] == $order_detail["order_status"] ) { ?>	
+								<option value="<?php echo $val['order_status_id']; ?>" selected="selected">
 								<?php 			} else {  ?>
-								<option value="<?php echo $key; ?>">
+								<option value="<?php echo $val['order_status_id']; ?>">
 								<?php 			}  ?>		
-								<?php 			echo $val;  ?>	
+								<?php 			echo $val['status_value'];  ?>	
 								</option>
 								<?php 		}  ?>
 							</select>

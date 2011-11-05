@@ -1581,6 +1581,8 @@ class Rest_ProductController extends RestCommonController
 						}
 					}
 					
+					$warning_error = array();
+					
 					if(count($languages) > 0)
 					{
 						for($l = 0; $l < count($languages); $l++)
@@ -1597,6 +1599,7 @@ class Rest_ProductController extends RestCommonController
 								if(!$Language->checkLanguageByCode(trim($languages[$l]["code"])))
 								{
 									$arr_error[] = $this->translate->_('Language_Not_Present')." " . ($i+1);
+									$warning_error["warning"][] = $languages[$l]["code"] .": ".$this->translate->_('Language_Not_Present')." " . ($i+1);
 								}
 							}
 						}
@@ -2026,17 +2029,26 @@ class Rest_ProductController extends RestCommonController
 					}
 				}
 				
-				$this->view->result = $this->translate->_('Product_Success');
-				$this->view->message = $this->translate->_('Product_Update_Success');
 				
-        		$this->getResponse()->setHttpResponseCode(201);
+				$this->view->result = $this->translate->_('Product_Success');	
+				$this->view->message = $this->translate->_('Product_Update_Success');	
+				$this->getResponse()->setHttpResponseCode(201);
 				
 			}
 			else
 			{
+				
 				//send error message
 				$this->view->result = $this->translate->_('Product_Failure');
-				$this->view->errormessage = array('error' => $arr_error);
+				if( count($warning_error) > 0 ) {
+				
+					$this->view->errormessage = array('error' => $warning_error);
+				
+				} else {
+				
+					$this->view->errormessage = array('error' => $arr_error);
+				}
+				
 	        	$this->getResponse()->setHttpResponseCode(500);
 			}
 		}
@@ -2074,14 +2086,8 @@ class Rest_ProductController extends RestCommonController
 
  			$myparams = $this->getRequest()->getParams();
 			
-			/*print "<pre>";
-			print_r($myparams);
-			print "</pre>";
-			die;*/
 			$products = array();
 			$arr_error = array();
-			
-					
 			
 			//create objects
 			$Product = new Models_Product();
@@ -2095,14 +2101,13 @@ class Rest_ProductController extends RestCommonController
 			$reason = "";
 			
 					
-			
 			$cntProduct = 0;
 			$isProdArray = false;
 			
-			if(isset($myparams["Products"]["Product"][0]))
+			if(isset($myparams["Products"]["Product"]))
 			{
 				
-				$cntProduct = count($myparams["Products"]["Product"][0]);
+				$cntProduct = count($myparams["Products"]["Product"]);
 				$isProdArray = true;	
 			}
 			else
@@ -2111,9 +2116,18 @@ class Rest_ProductController extends RestCommonController
 				$isProdArray = false;
 			}
 			
+			
+			if( $cntProduct == 1 ) {
+				
+				$myparams["Products"]["Product"][0]["pid"] = $myparams["Products"]["Product"]["pid"];
+				unset($myparams["Products"]["Product"]["pid"]); 
+			}
+			
+			
 			if(isset($myparams["Products"]) && $cntProduct <= 50)
 			{
 				$x = 0;
+				
 				for($i = 0; $i < $cntProduct; $i++)
 				{
 					if($isProdArray)
@@ -2140,17 +2154,17 @@ class Rest_ProductController extends RestCommonController
 					
 					//check values
 					if($pid <= 0){
-						$arr_error[] = $this->translate->_('Product_Invalid_Product_Id')." " . ($i + 1);
+						$arr_error[] = sprintf($this->translate->_('Product_Invalid_Product_Id'), $pid);
 					}
 					
 					if($pid > 0 && !$Product->checkProductForUser($pid, $this->user_id))
 					{
-						$arr_error[] = $this->translate->_('Product_Invalid_Product_Id')." " . ($i + 1);
+						$arr_error[] = sprintf($this->translate->_('Product_Invalid_Product_Id'), $pid);
 					}
 					
 					if(count($arr_error) > 0)
 					{
-						break;
+						continue;
 					}
 					else
 					{
@@ -2166,6 +2180,7 @@ class Rest_ProductController extends RestCommonController
 				$arr_error[] = $this->translate->_('Product_Delete_Limit');
 			}
 			
+			
 			if(count($arr_error) == 0)
 			{
 				$arr_msg = array();
@@ -2174,20 +2189,8 @@ class Rest_ProductController extends RestCommonController
 				{
 					$data = array();
 					
-					
-					/*$data["product_id"] = $products[$i]["pid"];
-					$data["user_id"] = $this->user_id;
-					
-					if($products[$i]["ending_reason"] != "")
-					{
-						$data["ending_reason"] = $products[$i]["ending_reason"];
-					}*/
-					
-					
-					
 					//delete product 
 					$Product->DeleteProductDetail($products[$i]["pid"]);
-					
 					
 				}
 				
@@ -2199,6 +2202,7 @@ class Rest_ProductController extends RestCommonController
 			}
 			else
 			{
+				
 				//send error message
 				$this->view->result = $this->translate->_('Product_Failure');
 				$this->view->errormessage = array('error' => $arr_error);

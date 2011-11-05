@@ -161,19 +161,15 @@
 					</td>
 				   	<td class="FieldLabel2"><?php echo $val["currency_symbol"]." ".$val["total_order_amount"]; ?></td>
 				   	<td align="center" class="FieldLabel2">
-						<?php if($val["order_status"] == 0 ) { ?>
-							<span class="OrderStatus OrderStatus4 OrderDetails">
-								<?php echo $this->Translate('Order_Status_Pending'); ?>
-							</span>
-						<?php } else if($val["order_status"] == 1) { ?>
-							<span class="OrderStatus OrderStatus2 OrderDetails">
-								<?php echo $this->Translate('Order_Status_Complete'); ?>
-							</span>
-						<?php } else { ?>
-							<span class="OrderStatus OrderStatus3 OrderDetails">
-								<?php echo $this->Translate('Order_Status_Cancle'); ?>
-							</span>
-						<?php } ?>
+						<?php	foreach( $this->order_status as $key1 => $val1 ) { ?>	
+						
+							<?php 		if($val["order_status"] == $val1["order_status_id"] ) { ?>
+											<span class="OrderStatus OrderStatus<?php echo $val1["order_status_id"]; ?> OrderDetails">
+												<?php echo $val1["status_value"]; ?>
+											</span>								
+							<?php   	} 	?>
+							
+						<?php 	}  ?>		
 					</td>
 				   	<td class="FieldLabel2">
 				   		<ul id="icons" class="ui-widget ui-helper-clearfix" >

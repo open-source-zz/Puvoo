@@ -101,8 +101,9 @@
 				<tr class="trclass1">
 					<td width="5%" class="tdclasshome" style="text-align:left; padding-left:15px;" ><?php echo $this->Translate('All'); ?></td>
 					<td width="30%" align="center" class="tdclasshome"><?php echo $this->Translate('Weight_Unit_Name'); ?></td>
-					<td width="10%" align="center" class="tdclasshome"><?php echo $this->Translate('Weight_Unit_Key'); ?></td>
-					<td width="10%" align="center" class="tdclasshome bordernone"><?php echo $this->Translate('Actions'); ?></td>
+					<td width="30%" align="center" class="tdclasshome"><?php echo $this->Translate('Weight_Unit_Key'); ?></td>
+					<td width="20%" align="center" class="tdclasshome"><?php echo $this->Translate('Default'); ?></td>
+					<td width="15%" align="center" class="tdclasshome bordernone"><?php echo $this->Translate('Actions'); ?></td>
 				</tr>	
 	<?php 
 				if(count($this->records) > 0) 	{ 
@@ -116,6 +117,19 @@
 					<td class="FieldLabel2" align="center"><?php echo $this->records[$i]['weight_unit_name']; ?></td>
 					
 					<td class="FieldLabel2" align="center"><?php echo $this->records[$i]['weight_unit_key']; ?></td>
+					
+					<td class="FieldLabel2" align="center">
+					
+	<?php 				if($this->records[$i]['is_default'])
+						{
+							echo  $this->Translate('L_Yes');
+						}
+						else
+						{
+							echo $this->Translate('L_No');
+						} 
+	?>					
+					</td>
 					
 					<td class="FieldLabel2" align="center">
 						<ul id="icons" class="ui-widget ui-helper-clearfix" >

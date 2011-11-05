@@ -82,9 +82,11 @@ class Admin_IndexController extends AdminCommonController
 		
 		$orders = new Models_Orders();
 		$master = new Models_AdminMaster();
+		$status = new Models_Status();
 		
 		$this->view->records = $orders->getDashboardOrders();
-		$this->view->order_status = $master->getConstantArray();
+		$this->view->order_status = $status->GetAllStatus();
+		
 		$this->view->active_class = 'All';
 		if($this->_request->isPost()) {
 			

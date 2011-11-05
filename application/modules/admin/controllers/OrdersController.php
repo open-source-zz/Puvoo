@@ -86,6 +86,8 @@ class Admin_OrdersController extends AdminCommonController
 		//Create Object of Product model
 		$orders = new Models_Orders();
 		$master = new Models_AdminMaster();
+		$status = new Models_Status();
+		
 		$translate = Zend_Registry::get('Zend_Translate');
 		
 		//set current page number
@@ -98,7 +100,7 @@ class Admin_OrdersController extends AdminCommonController
 		$is_search = "";
 		
 		//Initial records
-		$this->view->order_status = $master->getConstantArray();
+		$this->view->order_status = $status->GetAllStatus();
 		
 		//Get Request
 		$request = $this->getRequest();
@@ -213,12 +215,14 @@ class Admin_OrdersController extends AdminCommonController
 		
 		$orders = new Models_Orders();
 		$master = new Models_AdminMaster();
+		$status = new Models_Status();
+		
 		$request = $this->getRequest();
 		
 		$order_id = $filter->filter(trim($this->_request->getPost('hidden_primary_id'))); 
 		
 		// Initial values
-		$this->view->order_status = $master->getConstantArray();
+		$this->view->order_status = $status->GetAllStatus();
 		
 		// Fetch records 
 		if($order_id > 0 && $order_id != "") {
@@ -275,9 +279,11 @@ class Admin_OrdersController extends AdminCommonController
 		
 		$orders = new Models_Orders();
 		$master = new Models_AdminMaster();
+		$status = new Models_Status();
+		
 		$request = $this->getRequest();
 		
-		$this->view->order_status = $master->getConstantArray();
+		$this->view->order_status = $status->GetAllStatus();
 		
 		$filter = new Zend_Filter_StripTags();	
 		$order_id = $filter->filter(trim($this->_request->getPost('hidden_primary_id'))); 

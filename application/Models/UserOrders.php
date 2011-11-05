@@ -387,12 +387,16 @@ class Models_UserOrders
 	{
 	 	$db = $this->db;
 		
-		foreach( $data["order_status"] as $key => $val )
+		/*foreach( $data["order_status"] as $key => $val )
 		{
 			$where = "order_detail_id = ".$key;
 			$row["delivery_status"] = $val;
 			$db->update("order_detail", $row, $where);
-		}
+		}*/
+		
+		$where = "order_id = ".$data["order_id"];
+		
+		$db->update("order_master", $data, $where);
 		
 		return true;
 	 }

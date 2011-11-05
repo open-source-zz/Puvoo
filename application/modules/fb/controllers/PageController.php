@@ -182,7 +182,7 @@ class Fb_PageController extends FbCommonController
 		
 		//Disable layout
 		$this->_helper->layout()->disableLayout();
-		
+				
 		$facebook = new Facebook(array(
 			  'appId'  => FACEBOOK_APP_API_ID,
 			  'secret' => FACEBOOK_APP_SECRET_KEY,

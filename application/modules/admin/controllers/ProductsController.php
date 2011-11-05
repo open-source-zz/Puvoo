@@ -236,6 +236,7 @@ class Admin_ProductsController extends AdminCommonController
 			$this->view->product_id = $product_id;
 			$records = $product->getAllProductDetail($product_id);			
 			
+			
 			$category = array();
 			foreach( $records["category"] as $key => $val )
 			{
@@ -310,7 +311,7 @@ class Admin_ProductsController extends AdminCommonController
 						}
 					}
 					
-					$this->view->cateTree = $product_master->getCateTree($category);
+					$this->view->cateTree = $product->getCateTree($category);
 					
 					
 					$editErrorMessage = array(); 
@@ -333,8 +334,7 @@ class Admin_ProductsController extends AdminCommonController
 					}
 					if($data['product_weight'] == '') {
 						$editErrorMessage[] = $translate->_('Err_Product_Weight');		
-					}
-					if(!$float_validator->isValid($data['product_weight'])) {
+					} else if(!$float_validator->isValid($data['product_weight'])) {
 						$editErrorMessage[] = $translate->_('Err_Product_Invalid_Weight');		
 					}
 					if($data['weight_unit_id'] == '') {
@@ -342,8 +342,7 @@ class Admin_ProductsController extends AdminCommonController
 					}
 					if($data['length'] == '') {
 						$editErrorMessage[] = $translate->_('Err_Product_Length');		
-					}
-					if(!$float_validator->isValid($data['length'])) {
+					} else if(!$float_validator->isValid($data['length'])) {
 						$editErrorMessage[] = $translate->_('Err_Product_Invalid_Length');		
 					}
 					if($data['length_unit_id'] == '') {
@@ -351,14 +350,12 @@ class Admin_ProductsController extends AdminCommonController
 					}
 					if($data['width'] == '') {
 						$editErrorMessage[] = $translate->_('Err_Product_Width');		
-					}
-					if(!$float_validator->isValid($data['width'])) {
+					} else if(!$float_validator->isValid($data['width'])) {
 						$editErrorMessage[] = $translate->_('Err_Product_Invalid_Width');		
 					}
 					if($data['depth'] == '') {
 						$editErrorMessage[] = $translate->_('Err_Product_Depth');		
-					}
-					if(!$float_validator->isValid($data['depth'])) {
+					} else if(!$float_validator->isValid($data['depth'])) {
 						$editErrorMessage[] = $translate->_('Err_Product_Invalid_Depth');		
 					}
 					if($data['available_qty'] == '') {

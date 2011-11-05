@@ -267,12 +267,12 @@ class Rest_StoreController extends RestCommonController
 			
 			if(isset($myparams['store_terms_policy']))
 			{
-				$store_terms_policy = $filter->filter(trim($myparams['store_terms_policy']));
+				$store_terms_policy = $myparams['store_terms_policy'];
 			}
 			
 			if(isset($myparams['return_policy']))
 			{
-				$return_policy = $filter->filter(trim($myparams['return_policy']));
+				$return_policy = $myparams['return_policy'];
 			}
 			
 			if(isset($myparams['store_address']))
@@ -484,6 +484,8 @@ class Rest_StoreController extends RestCommonController
 				}
 			}
 			
+			$warning_error = array();
+			
 			if(count($languages) > 0)
 			{
 				for($l = 0; $l < count($languages); $l++)
@@ -499,7 +501,8 @@ class Rest_StoreController extends RestCommonController
 					{
 						if(!$Language->checkLanguageByCode(trim($languages[$l]["code"])))
 						{
-							$arr_error[] = $this->translate->_('Store_Language_Not_Present');
+							//$arr_error[] = $this->translate->_('Store_Language_Not_Present');
+							$warning_error["warning"][] = $languages[$l]["code"] .": ".$this->translate->_('Store_Language_Not_Present');
 						}
 					}
 				}
@@ -574,12 +577,14 @@ class Rest_StoreController extends RestCommonController
 				{
 					for($l = 0; $l < count($languages); $l++)
 					{
-						$lid = $Language->getLanguageIdByCode($languages[$l]["code"]);
-						
-						$lang_array[$lid]["store_description"] = $languages[$l]["store_description"];
-						$lang_array[$lid]["store_terms_policy"] = $languages[$l]["store_terms_policy"];
-						$lang_array[$lid]["return_policy"] = $languages[$l]["return_policy"];
-						
+						if($Language->checkLanguageByCode(trim($languages[$l]["code"])))
+						{
+							$lid = $Language->getLanguageIdByCode($languages[$l]["code"]);
+							
+							$lang_array[$lid]["store_description"] = $languages[$l]["store_description"];
+							$lang_array[$lid]["store_terms_policy"] = $languages[$l]["store_terms_policy"];
+							$lang_array[$lid]["return_policy"] = $languages[$l]["return_policy"];
+						}
 					}
 				}
 				
@@ -653,10 +658,23 @@ class Rest_StoreController extends RestCommonController
 						}
 					}
 				}
-				
+ 				
 				//add language
-				$this->view->result = $this->translate->_('Store_Success');
-				$this->view->message = $this->translate->_('Store_Update_Success');
+				if( count($warning_error) > 0 ) {
+					$this->view->result = 'Warning';		
+				
+				} else {
+					$this->view->result = $this->translate->_('Store_Success');					
+				}
+				
+				$arr_language = array();
+				for($i=0; $i < count($warning_error['warning']); $i++)
+				{
+					
+					$arr_language['languages'][$i]['warning'] = $warning_error['warning'][$i];
+				}
+				
+ 				$this->view->message = array($arr_language);;
         		$this->getResponse()->setHttpResponseCode(201);
 					
 			}else{

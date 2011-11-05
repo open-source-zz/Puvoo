@@ -47,14 +47,18 @@
 						<td width="50%">
 							&nbsp;&nbsp;<strong><?php echo $this->Translate('Order_Status'); ?></strong>
 						</td>
-						<td width="50%"> :&nbsp;<strong>
-							
-								<?php  foreach( $this->order_status["order_status"] as $key => $val ) { ?>	
-								<?php  	  if ( $key == $order_detail["order_status"] ) { ?>	
-								<?php 		 echo $val;  ?>	
-								<?php 	  }  ?>
-								<?php  }  ?>
-							</strong>			
+						<td width="50%"> :&nbsp;
+							<select name="order_status" id="order_status" class="Field250">
+								<?php  		foreach( $this->order_status as $key => $val ) { ?>	
+								<?php  		   	if ( $val["order_status_id"] == $order_detail["order_status"] ) { ?>	
+								<option value="<?php echo $val['order_status_id']; ?>" selected="selected">
+								<?php 			} else {  ?>
+								<option value="<?php echo $val['order_status_id']; ?>">
+								<?php 			}  ?>		
+								<?php 			echo $val['status_value'];  ?>	
+								</option>
+								<?php 		}  ?>
+							</select>
 						</td>
 					</tr>
 					<tr>
@@ -239,22 +243,6 @@
 											<tr>
 												<td><strong><?php echo $this->Translate('Order_Product_Total_Cost'); ?></strong></td>
 												<td>:&nbsp;<?php echo $val["product_total_cost"]; ?></td>
-											</tr>
-											<tr>
-												<td><strong><?php echo $this->Translate('Order_Product_Status'); ?></strong></td>
-												<td>:&nbsp;
-													<select name="order_status[<?php echo $val['primary_id']; ?>]" id="order_status" class="Field175">
-														<?php  		foreach( $this->order_status["order_status"] as $key2 => $val2 ) { ?>	
-														<?php  		   	if ( $key2 == $val["delivery_status"] ) { ?>	
-														<option value="<?php echo $key2; ?>" selected="selected">
-														<?php 			} else {  ?>
-														<option value="<?php echo $key2; ?>">
-														<?php 			}  ?>		
-														<?php 			echo $val2;  ?>	
-														</option>
-														<?php 		}  ?>
-													</select>
-												</td>
 											</tr>
 										</table>
 										</div>

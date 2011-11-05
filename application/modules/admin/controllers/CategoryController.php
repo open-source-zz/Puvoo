@@ -257,7 +257,7 @@
 			$this->view->data = $data;
 			$this->view->langdata = $langArray;
 			
-			$where = "1 = 1";
+			$where = "parent_id = ".$parent_id;
 			if( count($addErrorMessage) == 0 || $addErrorMessage == ""){
 				if($home->ValidateTableField("category_name",$data['category_name'],"category_master",$where)) {
 					if($category->insertCategory($data, $langArray)) {
@@ -373,7 +373,7 @@
 				}
 				
 				
-				$where = "category_id != ".$data["category_id"];
+				$where = "parent_id = '".$parent_id."' and category_id != ".$data["category_id"];
 				if( count($editErrorMessage) == 0 || $editErrorMessage == ""){
 					if($home->ValidateTableField("category_name",$data['category_name'],"category_master",$where)) {
 					

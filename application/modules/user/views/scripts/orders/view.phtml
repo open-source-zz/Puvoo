@@ -46,11 +46,13 @@
 						&nbsp;&nbsp;<strong><?php echo $this->Translate('Order_Status'); ?></strong>
 					</td>
 					<td width="50%"> :&nbsp;
-						<?php  		foreach( $this->order_status["order_status"] as $key => $val ) { ?>	
-						<?php  		   	if ( $key == $order_detail["order_status"] ) { ?>	
-						<?php				echo $val; ?>
-						<?php 			}   ?>
-						<?php 		}  ?>
+						<?php	foreach( $this->order_status as $key1 => $val1 ) { ?>	
+						
+							<?php 		if($order_detail["order_status"] == $val1["order_status_id"] ) { ?>
+												<?php echo $val1["status_value"]; ?>																		
+							<?php   	} 	?>
+							
+						<?php 	}  ?>
 					</td>
 				</tr>
 				<tr>
@@ -235,16 +237,6 @@
 										<tr>
 											<td><strong><?php echo $this->Translate('Order_Product_Total_Cost'); ?></strong></td>
 											<td>:&nbsp;<?php echo $val["product_total_cost"]; ?></td>
-										</tr>
-										<tr>
-											<td><strong><?php echo $this->Translate('Order_Product_Status'); ?></strong></td>
-											<td>:&nbsp;
-												<?php  		foreach( $this->order_status["order_status"] as $key2 => $val2 ) { ?>	
-												<?php  		   	if ( $key2 == $val["delivery_status"] ) { ?>	
-												<?php				echo $val2; ?>
-												<?php 			}   ?>
-												<?php 		}  ?>
-											</td>
 										</tr>
 									</table>
 									</div>

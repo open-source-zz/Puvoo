@@ -23,19 +23,19 @@
  
  
 /**
- * Admin Weight Controller.
+ * Admin Order Status Controller.
  *
- * Admin_WeightController  extends AdminCommonController. 
- * It controls weight on admin section
+ * Admin_OrderstatusController  extends AdminCommonController. 
+ * It controls System's status for the order on admin section
  *
- * Date Created: 2011-08-20
+ * Date Created: 2011-11-04
  *
- * @weight	Puvoo
+ * @banner	Puvoo
  * @package 	Admin_Controllers
- * @author      Vaibhavi
+ * @author      Yogesh
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  **/  
- class Admin_WeightController extends AdminCommonController
+ class Admin_OrderstatusController extends AdminCommonController
 {
 
 	/**
@@ -44,13 +44,13 @@
 	 * This function is used for initialization. 
 	 * You can also include necessary javascript files from here.
 	 *
-     * Date Created: 2011-08-20
+     * Date Created: 2011-11-04
      *
      * @access public
 	 * @param ()  - No parameter
 	 * @return (void) - Return void
 	 *
-     * @author Vaibhavi
+     * @author Yogesh
      *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
@@ -58,10 +58,8 @@
     function init()
     {
         parent::init();
-        $this->view->JS_Files = array('admin/weight.js','admin/AdminCommon.js');	
-		Zend_Loader::loadClass('Models_Weight');
-		Zend_Loader::loadClass('Models_AdminMaster');
-        
+        $this->view->JS_Files = array('admin/AdminCommon.js');	
+		
     }
 	
     /**
@@ -69,28 +67,28 @@
 	 *
 	 * This function is used for initialization. Also include necessary javascript files.
 	 *
-     * Date Created: 2011-08-20
+     * Date Created: 2011-11-04
      *
      * @access public
 	 * @param ()  - No parameter
 	 * @return (void) - Return void
 	 *
-     * @author Vaibhavi
+     * @author Yogesh
      *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
    function indexAction() 
    {
         global $mysession,$arr_pagesize;
-		$this->view->site_url = SITE_URL."admin/weight";
-		$this->view->add_action = SITE_URL."admin/weight/add";
-		$this->view->edit_action = SITE_URL."admin/weight/edit";
-		$this->view->delete_action = SITE_URL."admin/weight/delete";
-		$this->view->delete_all_action = SITE_URL."admin/weight/deleteall";
+		$this->view->site_url = SITE_URL."admin/orderstatus";
+		$this->view->add_action = SITE_URL."admin/orderstatus/add";
+		$this->view->edit_action = SITE_URL."admin/orderstatus/edit";
+		$this->view->delete_action = SITE_URL."admin/orderstatus/delete";
+		$this->view->delete_all_action = SITE_URL."admin/orderstatus/deleteall";
 		
 		
-		//Create Object of Weight model
-		$weight = new Models_Weight();
+		//Create Object of banner model
+		$banner = new Models_Status();
 		
 		//set current page number
 		$page_no = 1;
@@ -112,25 +110,17 @@
 			$is_search = $request->getPost('is_search');
 		}
 		
-		if($is_search == "1") {
-		
-			$filter = new Zend_Filter_StripTags();	
-			$data['weight_unit_name']=$filter->filter(trim($this->_request->getPost('weight_unit_name'))); 
-			$data['weight_unit_key']=$filter->filter(trim($this->_request->getPost('weight_unit_key'))); 
-			//Get search Weight
-			$result = $weight->SearchWeight($data);
-			
-		} elseif($is_search == "0") {
+		if($is_search == "0") {
 			// Clear serch option
 			$page_no = 1;
-			$result = $weight->GetAllWeight();
+			$result = $banner->GetAllStatus();
 						
 		} else 	{
-			//Get all Weight
-			$result = $weight->GetAllWeight();
+			//Get all banner
+			$result = $banner->GetAllStatus();
 			
-		}		
-		
+		}	
+			
 		// Success Message
 		$this->view->Admin_SMessage = $mysession->Admin_SMessage;
 		$this->view->Admin_EMessage = $mysession->Admin_EMessage;
@@ -155,15 +145,15 @@
    /**
      * Function addAction
 	 *
-	 * This function is used to add weight
+	 * This function is used to add banner
 	 *
-     * Date Created: 2011-08-26
+     * Date Created: 2011-10-07
      *
      * @access public
 	 * @param ()  - No parameter
 	 * @return (void) - Return void
 	 *
-     * @author vaibhavi
+     * @author Yogesh
      *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
@@ -171,10 +161,10 @@
    public function addAction()
    {
    		global $mysession;
-		$this->view->site_url = SITE_URL."admin/weight";
-		$this->view->add_action = SITE_URL."admin/weight/add";		
+		$this->view->site_url = SITE_URL."admin/orderstatus";
+		$this->view->add_action = SITE_URL."admin/orderstatus/add";		
 		
-		$weight = new Models_Weight();
+		$banner = new Models_Status();
 		$home = new Models_AdminMaster();
 		
 		$request = $this->getRequest();
@@ -184,34 +174,39 @@
 			$translate = Zend_Registry::get('Zend_Translate');
 			
 			$filter = new Zend_Filter_StripTags();	
-			$data['weight_unit_name']=$filter->filter(trim($this->_request->getPost('weight_unit_name'))); 	
-			$data['weight_unit_key']=$filter->filter(trim($this->_request->getPost('weight_unit_key'))); 
-			$data['is_default']=$filter->filter(trim($this->_request->getPost('is_default')));	
-			 	
+			$url_validator = new UrlValidator();
+			
+			
+			$data['status_value'] = $filter->filter(trim($this->_request->getPost('status_value'))); 	
+			$data['status'] = 1;
+			
 			$addErrorMessage = array();
-			if($data['weight_unit_name'] == "") {
-				$addErrorMessage[] = $translate->_('Err_Weight_Unit_Name');			
-			}
-			if($data['weight_unit_key'] == "") {
-				$addErrorMessage[] = $translate->_('Err_Weight_Unit_Key');			
-			}
+				
+			if($data['status_value'] == "") {
+				
+				$addErrorMessage[] = $translate->_('Err_Status_Value');
+							
+			} 
 			
 			$this->view->data = $data;
-			
-			$where = "1 = 1";
+			$where = '1=1';
 			if( count($addErrorMessage) == 0 || $addErrorMessage == '' ){
-				if($home->ValidateTableField("weight_unit_name",$data['weight_unit_name'],"weight_master",$where)) {
+			
+				if($home->ValidateTableField("status_value",$data['status_value'],"order_status",$where)) {
 				
-					if($weight->insertWeight($data)) {
-						$mysession->Admin_SMessage = $translate->_('Success_Add_Weight');
-						$this->_redirect('/admin/weight'); 	
+					if($banner->insertStatus($data)) {
+					
+						$mysession->Admin_SMessage = $translate->_('Success_Add_Status');
+						$this->_redirect('/admin/orderstatus'); 	
+						
 					} else {
-						$addErrorMessage[] = $translate->_('Err_Add_Weight');	
+					
+						$addErrorMessage[] = $translate->_('Err_Add_Status');	
 					}
-				} else { 
-					$addErrorMessage[] = $translate->_('Err_Weight_Unit_Name_Exists');	
-				} 
+					
+				}
 			} 
+			
 			$this->view->addErrorMessage = $addErrorMessage;
 		}
    }
@@ -220,15 +215,15 @@
    /**
      * Function editAction
 	 *
-	 * This function is used to update weight data.
+	 * This function is used to update banner data.
 	 *
-     * Date Created: 2011-08-26
+     * Date Created: 2011-10-07
      *
      * @access public
 	 * @param ()  - No parameter
 	 * @return (void) - Return void
 	 *
-     * @author vaibhavi
+     * @author Yogesh
      *  
      * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
      **/
@@ -239,59 +234,66 @@
 		
 		$translate = Zend_Registry::get('Zend_Translate');
 		
-		$weight = new Models_Weight();
+		$status = new Models_Status();
    		$home = new Models_AdminMaster();
 		
 		$request = $this->getRequest();
 		
 		$filter = new Zend_Filter_StripTags();	
-		$weight_unit_id = $filter->filter(trim($this->_request->getPost('hidden_primary_id'))); 	
+		$order_status_id = $filter->filter(trim($this->_request->getPost('hidden_primary_id'))); 	
 		
-		if($weight_unit_id > 0 && $weight_unit_id != "") {
-			$this->view->records = $weight->GetWeightById($weight_unit_id);	
-			$this->view->weight_unit_id =  $weight_unit_id;	
+		if($order_status_id > 0 && $order_status_id != "") {
+		
+			$this->view->records = $status->GetStatusById($order_status_id);	
+			$this->view->order_status_id =  $order_status_id;	
 			
 		} else {
 			
 			if($request->isPost()){
 				
-				$data["weight_unit_id"] = $filter->filter(trim($this->_request->getPost('weight_unit_id'))); 	
-				$data['weight_unit_name']=$filter->filter(trim($this->_request->getPost('weight_unit_name'))); 	
-				$data['weight_unit_key']=$filter->filter(trim($this->_request->getPost('weight_unit_key'))); 	
-				$data['is_default']=$filter->filter(trim($this->_request->getPost('is_default')));
+				$data["order_status_id"] = $filter->filter(trim($this->_request->getPost('order_status_id'))); 	
+				$data['status_value'] = $filter->filter(trim($this->_request->getPost('status_value'))); 	
 				
 				$editErrorMessage = array();
-				if($data['weight_unit_name'] == "") {
-					$editErrorMessage[] = $translate->_('Err_Weight_Unit_Name');			
-				}
-				if($data['weight_unit_key'] == "") {
-					$editErrorMessage[] = $translate->_('Err_Weight_Unit_Key');			
-				}
-				
-				$where = "weight_unit_id != ".$data["weight_unit_id"];
-				if( count($editErrorMessage) == 0 || $editErrorMessage == ''){	
-					if($home->ValidateTableField("weight_unit_name",$data['weight_unit_name'],"weight_master",$where)) {					
-						$where = "weight_unit_id = ".$data["weight_unit_id"];
-						if($weight->updateWeight($data,$where)) {
-							$mysession->Admin_SMessage = $translate->_('Success_Edit_Weight');
-							$this->_redirect('/admin/weight'); 	
-						} else {
-							$editErrorMessage[] = $translate->_('Err_Edit_Weight');
-						}
-						
-					} else {			
 					
-						$editErrorMessage[] = $translate->_('Err_Weight_Name_Exists');
+				if($data['status_value'] == "") {
+					
+					$editErrorMessage[] = $translate->_('Err_Status_Value');
+								
+				} 
+				
+				if( count($editErrorMessage) == 0 || $editErrorMessage == ''){	
+									
+					$where1 = "order_status_id != ".$data["order_status_id"];
+					
+					if($home->ValidateTableField("status_value",$data['status_value'],"order_status",$where1)) {
+					
+						$where2 = "order_status_id = ".$data["order_status_id"];
+						if($status->updateStatus($data,$where2)) {
+						
+							$mysession->Admin_SMessage = $translate->_('Success_Edit_Status');
+							$this->_redirect('/admin/orderstatus'); 	
+							
+						} else {
+						
+							$editErrorMessage[] = $translate->_('Err_Edit_Status');
+						}
+					
+					}  else {			
+						
+						$editErrorMessage[] = $translate->_('Err_Status_Value_Exists');	
 					}
+					
+					
 				} 
 				
 				$this->view->records = $data;	
-				$this->view->weight_unit_id =  $data["weight_unit_id"];	
+				$this->view->order_status_id =  $data["order_status_id"];	
 				$this->view->editErrorMessage = $editErrorMessage;
 				
 			} else {
 			
-				$this->_redirect("/admin/weight");
+				$this->_redirect("/admin/orderstatus");
 			}
 		
 		}
@@ -301,9 +303,9 @@
    /**
      * Function deleteAction
 	 *
-	 * This function is used to delete the weight
+	 * This function is used to delete the banner
 	 *
-     * Date Created: 2011-08-26
+     * Date Created: 2011-10-07
      *
      * @access public
 	 * @param ()  - No parameter
@@ -320,30 +322,35 @@
 		
 		$translate = Zend_Registry::get('Zend_Translate');
 		
-		$weight = new Models_Weight();
+		$status = new Models_Status();
 		
 		$request = $this->getRequest();
 		
 		$filter = new Zend_Filter_StripTags();	
-		$weight_unit_id = $filter->filter(trim($this->_request->getPost('hidden_primary_id'))); 	
+		$order_status_id = $filter->filter(trim($this->_request->getPost('hidden_primary_id'))); 	
 		
-		if($weight_unit_id > 0 && $weight_unit_id != "") {
-			if($weight->deleteWeight($weight_unit_id)) {
-				$mysession->Admin_SMessage = $translate->_('Success_Delete_Weight');
+		if($order_status_id > 0 && $order_status_id != "") {
+		
+			if($status->deleteStatus($order_status_id)) {
+			
+				$mysession->Admin_SMessage = $translate->_('Success_Delete_Status');
+			
 			} else {
-				$mysession->Admin_EMessage = $translate->_('Err_Delete_Weight'); 
-			}		
+			
+				$mysession->Admin_EMessage = $translate->_('Err_Delete_Status'); 
+			}	
+				
 		} 
-		$this->_redirect("/admin/weight");		
+		$this->_redirect("/admin/orderstatus");		
    }  
    
    
    /**
      * Function deleteallAction
 	 *
-	 * This function is used to delete all selected weight.
+	 * This function is used to delete all selected banner.
 	 *
-     * Date Created: 2011-08-26
+     * Date Created: 2011-10-07
      *
      * @access public
 	 * @param ()  - No parameter
@@ -356,31 +363,33 @@
    
    public function deleteallAction()
    {
-   		//"deletemultipleWeight"
-		
 		global $mysession;
-		
 		$translate = Zend_Registry::get('Zend_Translate');
-		$weight = new Models_Weight();
+		
+		$status = new Models_Status();
 		$request = $this->getRequest();
 		$filter = new Zend_Filter_StripTags();	
 		
    		if(isset($_POST["id"])) {
 		
-			$weight_unit_ids = $this->_request->getPost('id'); 
-			$ids = implode($weight_unit_ids,",");
+			$order_status_ids = $this->_request->getPost('id'); 
+			$ids = implode($order_status_ids,",");
 			
-			if($weight->deletemultipleWeight($ids)) {
-				$mysession->Admin_SMessage = $translate->_('Success_M_Delete_Weight');	
+			if($status->deletemultipleStatus($ids)) {
+			
+				$mysession->Admin_SMessage = $translate->_('Success_M_Delete_Status');	
+				
 			} else {
-				$mysession->Admin_EMessage = $translate->_('Err_Delete_Weight');
+			
+				$mysession->Admin_EMessage = $translate->_('Err_Delete_Status');
 			}	
 			
 		}	else {
 		
-			$mysession->Admin_EMessage = $translate->_('Err_M_Delete_Weight');				
+			$mysession->Admin_EMessage = $translate->_('Err_M_Delete_Status');				
 		}
-		$this->_redirect("/admin/weight");	
+		
+		$this->_redirect("/admin/orderstatus");	
    }
    
 }
