@@ -202,6 +202,8 @@ class Fb_IndexController extends FbCommonController
 		
 
 		$master = new Models_AdminMaster();
+		
+		$Commin = new Models_Common();
 
 		$Definitions = new Models_LanguageDefinitions();
 
@@ -247,16 +249,14 @@ class Fb_IndexController extends FbCommonController
 				$sql = "INSERT IGNORE into user_product_likes (facebook_user_id, facebook_user_email, product_id, product_url) values ";
 
 				$counter = 0;
-
+				$prod_ids = array();
 				foreach($data as $key => $val )
 
 				{
 
 					$pos = strpos($val["url"], SITE_FB_URL);
 
-					
-
-					
+										
 
 					if($pos !== false) {
 
@@ -270,7 +270,7 @@ class Fb_IndexController extends FbCommonController
 
 						if( $product_id != '' && $product_id > 0 ) {
 
-						
+							$prod_ids[] = $product_id;
 
 							$sql .= "(" . FACEBOOK_USERID . ", '".FACEBOOK_USERID."', ".$product_id.", '".$val["url"]."'),";	
 
@@ -292,9 +292,11 @@ class Fb_IndexController extends FbCommonController
 
 				if($counter > 0) {
 
-					
+					print_r($prod_ids);die;
 
 					$Definitions->executeQuery($sql);
+ 					
+					$Common->UpdateProductLikeCount($prod_ids);
 
 				}
 
@@ -355,7 +357,8 @@ class Fb_IndexController extends FbCommonController
 		
 
 		$master->deleteProductLike($data);
-
+		
+		$Common->UpdateProductLikeCount($data["product_id"]);
 		
 
 		print "Done !!";

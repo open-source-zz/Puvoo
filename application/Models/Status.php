@@ -63,7 +63,7 @@ class Models_Status
 	
 	
 	/**
-	* Function GetAllBanner
+	* Function GetAllStatus
 	*
 	* This function is used to get all available order status.
     *
@@ -87,9 +87,9 @@ class Models_Status
 	}
 	
 	/*
-	 * GetBannerById(): To get data of banner by selected facebook banner id.
+	 * GetStatusById(): To get data of order status by selected status id.
 	 *
-	 * It is used to get the all records of particular Banner by facebook banner id.
+	 * It is used to get the all records of particular  order status  by status id.
 	 *
 	 * Date created: 2011-10-07
 	 *
@@ -111,16 +111,16 @@ class Models_Status
 	}
 	
 	/**
-	 * Function deleteBanner
+	 * Function deleteStatus
 	 *
-	 * This function is used to delete facebook banner on specified condition.
+	 * This function is used to delete status on specified condition.
      *
 	 * Date created: 2011-10-07
 	 *
 	 * @access public
-	 * @param () (String)  - $id : facebook banner Id
+	 * @param () (String)  - $id : order status id
 	 * @return (Boolean) - Return true on success
-	 * @author Vaibhavi
+	 * @author Yogesh
 	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
@@ -134,16 +134,16 @@ class Models_Status
 	}
 	
 	/**
-	 * Function deletemultipleBanner
+	 * Function deletemultipleStatus
 	 *
-	 * This function is used to delete multiple facebook banner on specified condition.
+	 * This function is used to delete multiple order status on specified condition.
      *
 	 * Date created: 2011-10-07
 	 *
 	 * @access public
-	 * @param () (String)  - $ids : Sting of all Facebook banner id with comma seprated.
+	 * @param () (String)  - $ids : Sting of all order status id with comma seprated.
 	 * @return (Boolean) - Return true on success
-	 * @author Vaibhavi
+	 * @author Yogesh
 	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
@@ -160,9 +160,9 @@ class Models_Status
 	
 	
 	/**
-	 * Function insertBanner
+	 * Function insertStatus
 	 *
-	 * This function is used to insert facebook banner.
+	 * This function is used to insert status.
      *
 	 * Date created: 2011-10-07
 	 *
@@ -187,7 +187,7 @@ class Models_Status
 	/**
 	 * Function updateStatus
 	 *
-	 * This function is used to Update facebook banner records on specified condition.
+	 * This function is used to Update order status records on specified condition.
      *
 	 * Date created: 2011-10-07
 	 *

@@ -1,0 +1,50 @@
+/* ######### Marker List Vertical Menu ######### */
+
+.markermenu{
+width: 170px; /*width of side bar menu*/
+clear: left;
+position: relative; /*Preserve this for "right" arrow images (added by script) to be positioned correctly*/
+
+}
+.markermenu img{ border:none; }
+.markermenu ul{
+list-style-type: none;
+margin: 5px 0;
+padding: 0;
+
+}
+
+.markermenu ul li a{
+background: #ffffff  url(../../images/fb/brands_marker.gif) no-repeat 3px center; /*light gray background*/
+font: 11px arial;
+color: #575757;
+display: block;
+width: auto;
+padding: 0.43em 1.25em;
+text-decoration: none;
+
+}
+
+* html .markermenu ul li a{ /*IE6 hack*/
+width: 155px;
+}
+
+.markermenu ul li a:visited, .markermenu ul li a:active{
+color: #000000;
+}
+
+.markermenu ul li a:hover, .markermenu ul li a.selected{
+color: #000000;
+background-color: #f2f2f2;
+}
+
+/* ######### Customized Drop Down ULs CSS (inherits from ddlevelsmenu-base.css) ######### */
+
+.blackwhite li a{
+background: white;
+}
+
+.blackwhite li a:hover{
+background: #f2f2f2;
+color: #000000;
+}

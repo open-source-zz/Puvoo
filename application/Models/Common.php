@@ -368,6 +368,42 @@ class Models_Common
 		 
  		return $result;
 	}
+
+	/**
+	 * function UpdateProductLikeCount
+	 *
+	 * It is used to updates product like count.
+	 *
+	 * Date created: 2011-11-07
+	 *
+	 * @param (Array) $prodIds - Array of product id
+	 * @return (Array) - Return true on success
+	 * @author  Jayesh 
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 */
+	public function UpdateProductLikeCount($prodIds)
+	{
+		$db= $this->db;
+		
+		if(count($prodIds) > 0 ){ 
+		
+			foreach($prodIds as $key =>$val)
+			{
+				$sql = "SELECT count(*) as cnt FROM user_product_likes WHERE product_id= ".$val."";
+				
+				//print $sql;die;
+				$result = $db->fetchAll($sql);
+			
+				$sql1 = "UPDATE product_master set like_count = ".$result." WHERE product_id = ".$val."";
+				
+				$db->query($sql1);
+			}
+			
+		}
+		return true;
+	
+	}
+
 	
 }
 ?>

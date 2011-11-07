@@ -241,8 +241,7 @@ class FbCommonController extends Zend_Controller_Action
 		);
 		
 		Zend_Registry::set('Zend_Translate', $tr);
-		//echo "<pre>";
-		//print_r($_SESSION);die;
+
 		// Define Currency Id
 		define('DEFAULT_CURRENCY', $mysession->default_Currency);
 		
@@ -342,74 +341,31 @@ class FbCommonController extends Zend_Controller_Action
 		$selectCat = $Category->GetTopMainCategory();
 		
 		//for display category list on left menu 
-		foreach($selectCat as $val)
+		
+		$catMenuHtml = '';
+		$catMenuHtml .= '<div id="ddsidemenubar" class="markermenu">';
+		$catMenuHtml .= '<ul>';
+		
+		foreach($selectCat as $key => $val )
 		{
-		 	$SubCatList = "";
-			if($val['catName'] != '')
-			{
-				$mainCatName = $val['catName'];
-			}else{
-				$mainCatName = $val['category_name'];
+			$Sub_Cat = $Category->GetSubCategory($val['category_id']);
+			if( count($Sub_Cat) > 0 ) {
+				$catMenuHtml .=  "<li><a class='sf-with-ul' href='".SITE_FB_URL."category/subcat/id/".$val['category_id']."' target='_top' rel='Category_".$val['category_id']."'>".$val["category_name"]."</a></li>";
+				
+			} else {
+				
+				$catMenuHtml .=  "<li><a class='sf-with-ul' href='".SITE_FB_URL."category/subcat/id/".$val['category_id']."' target='_top' >".$val["category_name"]."</a></li>";
 			}
-			
-		  	$SubCat = $Category->GetSubCategory($val['category_id']);
- 				
-			
-					$SubCatList .= "<li class=''>";
-					$SubCatList .= "<a class='sf-with-ul' href='".SITE_FB_URL."category/subcat/id/".$val['category_id']."' target='_top'>".$mainCatName."				                            <span class='sf-sub-indicator'> »</span></a>";
-					$SubCatList .= "<div><ul class='submenu'>";
-						for($i=0; $i<count($SubCat); $i++)
-						{
-						
-							if($SubCat[$i]['catName'] != '')
-							{
-								$subCatName = $SubCat[$i]['catName'];
-							}else{
-								$subCatName = $SubCat[$i]['category_name'];
-							}
-						
-						
-							if($SubCat[$i]['icon_image'] != '')
-							{
-								$Icon = "<img src='".SITE_ICONS_IMAGES_PATH."/".$SubCat[$i]['icon_image']."' alt='' />";
-							}else{
-								$Icon = "<img src='".IMAGES_FB_PATH."/cat_default.png' alt='' />";
-							}
-						
-						
-							$SubCatList .= "<li>";
-							$SubCatList .= "<a href='".SITE_FB_URL."category/subcat/id/".$SubCat[$i]['category_id']."' target='_top'>".$Icon.$subCatName."</a>";
-							$SubCatList .= "<div><ul class='submenu'>";
-							$Sub_Cat = $Category->GetSubCategory($SubCat[$i]['category_id']);
-							
-							for($j=0; $j<count($Sub_Cat); $j++)
-							{
-								if($Sub_Cat[$j]['catName'] != '')
-								{
-									$sub_CatName = $Sub_Cat[$j]['catName'];
-								}else{
-									$sub_CatName = $Sub_Cat[$j]['category_name'];
-								}
- 							
-								if($Sub_Cat[$j]['icon_image'] != '')
-								{
-									$Icon1 = "<img src='".SITE_ICONS_IMAGES_PATH."/".$Sub_Cat[$j]['icon_image']."' alt='' />";
-								}else{
-									$Icon1 = "<img src='".IMAGES_FB_PATH."/cat_default.png' alt='' />";
-								}
-							
-								$SubCatList .= "<li>";
-								$SubCatList .= "<a href='".SITE_FB_URL."category/subcat/id/".$Sub_Cat[$i]['category_id']."' target='_top'>".$Icon1.$sub_CatName."</a>";
-								$SubCatList .= "</li>";
-							}
-							$SubCatList .= "</ul></div>";
-							$SubCatList .="</li>";
-						}
-											
-					$SubCatList .="</ul></div></li>";
-					$this->view->Category .= $SubCatList;
-			
- 		}
+		}
+		
+		$catMenuHtml .= '</ul>';
+		$catMenuHtml .= '</div>';
+		
+		// LEFT MENU
+		$this->view->MainCategoryMenu = $catMenuHtml;
+		
+		$this->view->test = $Category->getCategoryTreeForMenu($mysession->default_Language_locale);
+		
 		
  		//To know how many product in Cart
 		$Cart = new Models_Cart();
@@ -423,14 +379,13 @@ class FbCommonController extends Zend_Controller_Action
 			$this->view->cartItems = $CartDetails;
 			
 			
-			//$cartId = '';
-			//$Price = 0;
-			//$CartTotal = '';
+			$cartId = '';
+			$Price = 0;
+			$CartTotal = '';
 			foreach($CartDetails as $value)
 			{
-				//echo "<pre>";
-				//print_r($value);die;
- 				$Price += $value['price']*$value['product_qty'];
+ 
+  				$Price += $value['price']*$value['product_qty'];
 				$cartId = $value['cart_id'];
 				$CartTotal += $value['product_qty'];
 				

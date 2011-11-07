@@ -68,7 +68,42 @@ class Fb_CategoryController extends FbCommonController
      {
 		global $mysession;
 		 
+		$Category = new Models_Category();
 		 
+		//to get all main category
+		$Allcategory = $Category->GetMainCategory();
+		$this->view->Allcategory = $Category->GetMainCategory();
+		
+		foreach($Allcategory as $val)
+		{
+ 			$pagecatlist = "";
+ 		 	
+ 			$catIdString = $Category->getCategoryTreeString($val['category_id']);
+					
+			$catid_String = $catIdString.$val['category_id'];
+			
+			$SubCat = $Category->GetSubCategory($catid_String);
+			
+			$pagecatlist .= "<div class='categoryItem'>";
+			$pagecatlist .=	"<div class='bluewidgetHeader'>".$val['category_name']."</div>";
+			$pagecatlist .=	"<ul class='categorySubItem'>";
+				for($i=0; $i < count($SubCat); $i++)
+					{
+						if($SubCat[$i]['catName'] != '')
+						{
+							$subCatName = $SubCat[$i]['catName'];
+						}else{
+							$subCatName = $SubCat[$i]['category_name'];
+						}
+						
+						$pagecatlist .= "<li>&raquo;&nbsp;&nbsp;<a href='".SITE_FB_URL."category/subcat/id/".$SubCat[$i]['category_id']."' target='_top'>".$subCatName."</a></li>";
+						
+					}
+			$pagecatlist .= "</ul></div>";
+			//print_r($pagecatlist);
+			$this->view->PageCatlist .= $pagecatlist;
+		}// die;
+		
       }
 
   	/**

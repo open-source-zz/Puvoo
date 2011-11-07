@@ -217,14 +217,14 @@ class Models_Category
 	 */
 
 
-	public function GetSubCategory($parentid=0)
+	public function GetSubCategory($ids=0)
 	{
 		$db = $this->db;
 		
 		$sql = "select distinct ptc.category_id as CatId,cm.*,cml.category_name as catName from category_master as cm
 				LEFT JOIN product_to_categories as ptc ON (ptc.category_id = cm.category_id)
 				LEFT JOIN category_master_lang as cml ON(cm.category_id = cml.category_id  AND cml.language_id= ".DEFAULT_LANGUAGE." )
-				where  cm.parent_id = ".$parentid." order By cm.category_name asc ";
+				where  cm.parent_id IN(".$ids.") order By cm.category_name asc ";
 				
  		$result = $db->fetchAll($sql);
 		return $result;
@@ -1002,6 +1002,76 @@ class Models_Category
 		 return $tempTree;          // Return the entire child tree
 	}
 	
+	
+	
+	function getCategoryTreeForMenu($langCode, $parent = 0)
+	{
+		$db= $this->db;
+		
+		$sql = "SELECT cm.category_id,cm.category_name,cml.category_name as catName,cm.icon_image FROM category_master as cm
+				LEFT JOIN category_master_lang as cml ON(cm.category_id = cml.category_id and cml.language_id = 
+				(
+					SELECT language_id FROM language_master WHERE code = '".$langCode."'
+				))
+				WHERE is_active = 1 and parent_id = ". $parent;
+		
+		$data = $db->fetchAll($sql);
+		
+		$tree = '';
+		foreach($data as $key => $value)
+		{
+			
+			if($value['catName'] != '')
+			{
+				$subCatName = $value['catName'];
+			}else{
+				$subCatName = $value['category_name'];
+			}
+			
+			if($parent == 0) {
+				$tree .= '<ul id="Category_'.$value['category_id'].'" class="ddsubmenustyle blackwhite">';
+			} 
+			
+			if($parent != 0) {
+				
+				if($value['icon_image'] != '')
+				{
+					$Icon = "<img src='".SITE_ICONS_IMAGES_PATH."/".$value['icon_image']."' style='vertical-align:middle;' alt='' />&nbsp;&nbsp;";
+				}else{
+					$Icon = "<img src='".IMAGES_FB_PATH."/cat_default.png' style='vertical-align:middle;' alt='' />&nbsp;&nbsp;";
+				}
+			
+				$tree .= '<li><a href="'.SITE_FB_URL.'category/subcat/id/'.$value['category_id'].'" target="_top">'.$Icon.$subCatName.'</a>';
+			}
+			
+			$sql_child = "select count(*) as cnt from category_master where is_active = 1 and parent_id = " . $value["category_id"];
+			$cnt = $db->fetchOne($sql_child);
+			
+			if( $cnt > 0 ) {
+				
+				if($parent != 0) {
+					
+					$tree .= '<ul>';
+				} 
+				
+				$tree .= $this->getCategoryTreeForMenu($langCode,$value["category_id"]);
+				
+				if($parent != 0) {
+					$tree .= '</ul>';					
+				} 
+			}
+			
+			if($parent != 0) {
+				$tree .= '</li>';
+			} 
+			
+			if($parent == 0) {
+				$tree .= '</ul>';
+			}
+		}
+		
+		return $tree;
+	}
 	
 }
 ?>
