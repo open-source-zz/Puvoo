@@ -81,6 +81,7 @@ function createUploader(){
 			element: document.getElementById('file-uploader-demo1'),
 			action: siteurl+'admin/image/index/?id='+product_id,
 			debug: true,
+			allowedExtensions:['jpg','png','gif','jpeg'],
 			multiple: true
 		});  
 	

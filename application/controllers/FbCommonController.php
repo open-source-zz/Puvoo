@@ -52,20 +52,23 @@ class FbCommonController extends Zend_Controller_Action
 	{
         global $mysession, $user_profile, $facebook; 
 		
+		
  		$db = Zend_Db_Table::getDefaultAdapter();
 		Zend_Registry::set('Db_Adapter', $db);
- 		error_reporting(0);
+ 		//error_reporting(0);
 		// Model Objects
  		$Category = new Models_Category();
 		$Product = new Models_Product();
 		$Common = new Models_Common();
+		$Country = new Models_Country();
 		$Configuration = new Models_Configuration();
 
 		$key_array = array(
 							"application_hosting_url",
 							"facebook_application_url",
 							"application_api_id",
-							"application_secret_key"
+							"application_secret_key",
+							"google_analytical_code"
 						  ); 
 
 		$ConfigValue = $Configuration->getKeyValueForGroup(1,$key_array);
@@ -122,16 +125,21 @@ class FbCommonController extends Zend_Controller_Action
 		
 		
 		$Facebook_UserId = ''; 
+		$Facebook_UserName = '';
 		
 		if(isset($user_profile)) {
 			
 			$Facebook_UserId = $user_profile['id']; 
+			$Facebook_UserName = $user_profile['name'];
 			
 		} 
 		
 		// Facebook User Id
-		define('FACEBOOK_USERID', $Facebook_UserId);		
+		define('FACEBOOK_USERID', $Facebook_UserId);
+				
 		define('FBUSER_ID', $Facebook_UserId);
+		
+		define('FBUSER_NAME', $Facebook_UserName);
 		
 		#-----------------------------------------------------------------------------------
 		
@@ -146,6 +154,9 @@ class FbCommonController extends Zend_Controller_Action
 		
 		// Define facebook application secret key
 		define('FACEBOOK_APP_SECRET_KEY', $application_secret_key); 
+		
+		// Define Google Analytical Code
+		define('GOOGLE_ANALYTICAL_CODE', $google_analytical_code); 
 		
 		// Define Path for images folder FB
 		define('IMAGES_FB_PATH', INSTALL_DIR."public/images/fb");
@@ -210,25 +221,40 @@ class FbCommonController extends Zend_Controller_Action
 		
 		if(isset($mysession->CountryID))
 		{
+			 
 			$Country_id = $mysession->CountryID;
 			$Site_config_value = $Common->GetConfigValue($Country_id);
 			$mysession->default_Currency = $Site_config_value['currency_id'];
 			$mysession->default_Language = $Site_config_value['language_id'];
-			$mysession->default_vatrate = $Site_config_value['vat'];
-			$mysession->default_Language_locale = $Site_config_value['code'];
+ 			$mysession->default_Language_locale = $Site_config_value['code'];
 			$this->view->sel_country = $Site_config_value['country_id'];
+			
+ 			$countryData = $Country->getCountryById($Country_id);
+			
+			$country_code = $countryData['country_iso2'];
+			//$mysession->default_vatrate = $Site_config_value['vat'];
+			
+			$mysession->Default_Countrycode = $country_code;
 			
 		}
 		else
 		{
+			 
  			$DefaultValues = $Common->GetDefaultConfigValue();
 			$mysession->default_Currency = $DefaultValues['currency_id'];
 			$mysession->default_Language = $DefaultValues['language_id'];
-			$mysession->default_vatrate = $DefaultValues['vat'];
+			//$mysession->default_vatrate = $DefaultValues['vat'];
 			$mysession->default_Language_locale = $DefaultValues['code'];
 			$this->view->sel_country = $DefaultValues['country_id'];
+			
+ 			$countryData = $Country->getCountryById($DefaultValues['country_id']);
+			
+			$country_code = $countryData['country_iso2'];
+			
+			$mysession->Default_Countrycode = $country_code;
 		}
 		
+  		
 		$lang = $lang_def->getGroupLanguage('FB',$mysession->default_Language);
 		
 		//Set Default language for site
@@ -278,7 +304,7 @@ class FbCommonController extends Zend_Controller_Action
 	
 		if(!isset($mysession->pagesize1)){
 			
-			$mysession->pagesize1 = 6;
+			$mysession->pagesize1 = 12;
 		}
 		
 		//////////////////////////////////// Left Maenu //////////////////////////////////////
@@ -348,13 +374,22 @@ class FbCommonController extends Zend_Controller_Action
 		
 		foreach($selectCat as $key => $val )
 		{
+			if($val['catName'] != '')
+			{
+				$CatName = $val['catName'];
+			}else{
+				$CatName = $val['category_name'];
+			}
+		
+			//print $CatName;die;
+			
 			$Sub_Cat = $Category->GetSubCategory($val['category_id']);
 			if( count($Sub_Cat) > 0 ) {
-				$catMenuHtml .=  "<li><a class='sf-with-ul' href='".SITE_FB_URL."category/subcat/id/".$val['category_id']."' target='_top' rel='Category_".$val['category_id']."'>".$val["category_name"]."</a></li>";
+				$catMenuHtml .=  "<li><a class='sf-with-ul' href='".SITE_FB_URL."category/subcat/id/".$val['category_id']."' target='_top' rel='Category_".$val['category_id']."'>".$CatName."</a></li>";
 				
 			} else {
 				
-				$catMenuHtml .=  "<li><a class='sf-with-ul' href='".SITE_FB_URL."category/subcat/id/".$val['category_id']."' target='_top' >".$val["category_name"]."</a></li>";
+				$catMenuHtml .=  "<li><a class='sf-with-ul' href='".SITE_FB_URL."category/subcat/id/".$val['category_id']."' target='_top' >".$CatName."</a></li>";
 			}
 		}
 		
@@ -369,6 +404,7 @@ class FbCommonController extends Zend_Controller_Action
 		
  		//To know how many product in Cart
 		$Cart = new Models_Cart();
+		$state = new Models_State();
 		$CartDetails = $Cart->GetProductInCart(FBUSER_ID);
 		
 		// Country combo
@@ -376,25 +412,96 @@ class FbCommonController extends Zend_Controller_Action
 		$this->view->ShipCountryCombo = $Cart->GetCountryCombo();
 		
 		if($CartDetails){
-			$this->view->cartItems = $CartDetails;
+			
 			
 			
 			$cartId = '';
 			$Price = 0;
 			$CartTotal = '';
-			foreach($CartDetails as $value)
+			$opt_price = 0;
+			foreach($CartDetails as $prokey => $value)
 			{
  
-  				$Price += $value['price']*$value['product_qty'];
+  				
 				$cartId = $value['cart_id'];
 				$CartTotal += $value['product_qty'];
+				$ShippingInfo = $Cart->GetShippingInfo($cartId);
 				
 				$this->view->cartuserId = $value['user_id'];
+				//print_r($ShippingInfo);die;
+				if($ShippingInfo['shipping_user_state_id'])
+				{
+					$state_name = $state->GetStateById($ShippingInfo['shipping_user_state_id']);
+					
+					$CountryCode = $Cart->GetCountryCode($ShippingInfo['shipping_user_country_id']);
+	 
+					$Country_Code = $CountryCode['country_iso2'];
+				}else{
+				
+					$state_name = '';
+					$Country_Code = $mysession->Default_Countrycode;
+				}
+				
+				if($value['user_id'] != '')
+				{
+					$defaultZone = $Common->GetDefaultTaxRate($value['user_id']);
+					$mysession->default_taxrate = $defaultZone['tax_rate'];
+					$mysession->default_taxZone = $defaultZone['tax_zone'];
+					
+					
+					 if($value['tax_zone'] != '')
+					 {		 
+						$taxzone = explode(',',$value['tax_zone']);
+					 }else{
+						$taxzone = explode(',',$mysession->default_taxZone);
+					 }
+					
+						$defaultZone = $Common->GetDefaultTaxRate($value['user_id']);
+						
+					 $tax_rate = $Common->TaxCalculation($taxzone,$value['tax_rate'], $mysession->Default_Countrycode, $state_name, $defaultZone['tax_rate'] );
+					 
+					//print $tax_rate;
+					 $optionDetail = $Cart->GetOptionDetail($value['cart_detail_id']);
+					
+					 $opt_price = 0;
+					
+					if(count($optionDetail)> 0)
+					{
+						foreach($optionDetail as $optprice)
+						{
+							$opt_price += $optprice['option_price'];
+						
+						}
+					}
+					
+					 
+					$prodPrice =  (($value['product_price']+$opt_price)*$mysession->currency_value)/$value['currency_value']; 
+					
+					
+					
+					//print "((".$value['product_price']."+".$opt_price.")*".$mysession->currency_value.")/".$value['currency_value']."";die;
+										 
+					$CartDetails[$prokey]['product_total_cost'] = round(((($prodPrice) +((($prodPrice) * $tax_rate)/100))* $mysession->currency_value)/$value['currency_value'],2);
+						
+					//$CartDetails[$prokey]['product_total_cost'] = ($value['product_price']+(($value['product_price']*$tax_rate)/100));
+					//print $CartDetails[$prokey]['product_total_cost'];die;
+										
+				}
+				
+				$Price += $CartDetails[$prokey]['product_total_cost']*$value['product_qty'];
 				
 				$currency_symbol = $Common->GetCurrencyValue($value['currId']);
 				
 			}
+			
+			//echo "<pre>";
+			//print_r($CartDetails);die;
+			
+			$this->view->cartItems = $CartDetails;
+			
 			$this->view->currency_symbol = $currency_symbol['currency_symbol'];
+			
+			define('CURRENCY_SYMBOL',$currency_symbol['currency_symbol']);
 			
  			$this->view->CartCnt = count($CartDetails);
  			$this->view->TotalPrice = $Price;
@@ -404,7 +511,7 @@ class FbCommonController extends Zend_Controller_Action
 			// Get Shipping Information
 			if($cartId) {
 				
-				$ShippingInfo = $Cart->GetShippingInfo($cartId);
+					$ShippingInfo = $Cart->GetShippingInfo($cartId);
 
 				$this->view->firstName = $ShippingInfo['shipping_user_fname'];
 				$this->view->lastName = $ShippingInfo['shipping_user_lname'];
@@ -471,6 +578,8 @@ class FbCommonController extends Zend_Controller_Action
 			}
 			
 		}
+		
+		
 		$Id = $this->_request->getParam('id');
 		
 		if($cur_controller == 'product' || $cur_controller == 'retailer')

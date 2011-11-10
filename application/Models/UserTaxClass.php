@@ -27,15 +27,15 @@
  *
  * Class Models_UserTaxes contains methods for Taxe management
  *
- * Date created: 2011-09-01
+ * Date created: 2011-11-09
  *
  * @category	Puvoo
  * @package 	Models
- * @author	    Yogesh 
+ * @author	    Hiren 
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */  
  
-class Models_UserTaxes
+class Models_UserTaxClass
 {
 	 
 	private $db;
@@ -47,12 +47,12 @@ class Models_UserTaxes
 	 * This is a constructor functions.
      * It will set db adapter for the model 
 	 *
-	 * Date created: 2011-09-01
+	 * Date created: 2011-11-09
 	 *
 	 * @access public
 	 * @param ()  - No parameter
 	 * @return () - Return void
-	 * @author Yogesh
+	 * @author Hiren
 	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
@@ -69,14 +69,14 @@ class Models_UserTaxes
 	 *
 	 * This function is used to fetch a row of table by primary key
 	 *
-	 * Date created: 2011-09-01
+	 * Date created: 2011-11-09
 	 *
 	 * @access public
 	 * @param (Int)  	- $id : Value of primary key
 	 * @param (string)  - $primary_key :	Name of primary key
 	 * @param (string)  - $table : Table name
 	 * @return (Array) 	- $data : One selected row by primary key of table
-	 * @author Yogesh
+	 * @author Hiren
 	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
@@ -84,10 +84,9 @@ class Models_UserTaxes
 	public function getRecordsById($id,$primary_key = USER_PRIMARY_KEY ,$table=USER_TABLE)
 	{
 		$db = $this->db;
-		$sql = "SELECT TR.*,TRD.zone, TRD.rate 
-				FROM tax_rate as TR, tax_rate_detail as TRD 
-				WHERE TR.tax_rate_id = TRD.tax_rate_id";
-		$sql .= " AND TR.user_id = ".$this->user_id." AND TR.".$primary_key."=".$id;		
+		$sql = "SELECT * FROM tax_rate_class TRC
+				WHERE TRC.user_id = ".$this->user_id." AND TRC.".$primary_key."=".$id;	
+				
 		$data = $db->fetchRow($sql);
 		return $data;
 	}
@@ -98,12 +97,12 @@ class Models_UserTaxes
 	 *
 	 * This function is used to fetch all recors of table 
 	 *
-	 * Date created: 2011-09-01
+	 * Date created: 2011-11-09
 	 *
 	 * @access public
 	 * @param (string)  - $table : Table name
 	 * @return (Array) 	- All records of the table
-	 * @author Yogesh
+	 * @author Hiren
 	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
@@ -121,13 +120,13 @@ class Models_UserTaxes
 	 *
 	 * This function is used to search tax rates on condition
 	 *
-	 * Date created: 2011-09-01
+	 * Date created: 2011-11-09
 	 *
 	 * @access public
 	 * @param (Array)   - $data : Condition array
 	 * @param (string)  - $table : Table name
 	 * @return (Array) 	- All matched records of the table
-	 * @author Yogesh
+	 * @author Hiren
 	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
@@ -135,12 +134,9 @@ class Models_UserTaxes
 	
 	public function SearchTaxes($data,$table = USER_TABLE)
 	{
+				
 		$db = $this->db;
-		
-		$sql  = "";
-		$sql .= "SELECT TR.*,TRD.zone, TRD.rate 
-				FROM tax_rate as TR, tax_rate_detail as TRD 
-				WHERE TR.tax_rate_id = TRD.tax_rate_id";
+		$sql = "Select TRC.* from tax_rate_class TRC WHERE TRC.user_id = ".$this->user_id;
 		
 		// Check search array is null or not
 		if(count($data) > 0 && $data != "") {
@@ -152,8 +148,22 @@ class Models_UserTaxes
 		}
 		
 		$sql .= " AND user_id = ".$this->user_id;
-		$result =  $db->fetchAll($sql);		
-		return $result;		
+		$data = $db->fetchAll($sql);
+		
+		foreach($data as $key=>$val)
+		{
+			$zone = $val['tax_zone'];
+			if(substr($val['tax_zone'], -1) == ",")
+			{
+				$zone = substr($val['tax_zone'], 0, -1);
+			}
+			
+			$sq = "select group_concat(tax_name separator ',') as zone from tax_rate where tax_rate_id in(".$zone.") group by 'all';";
+			$d = $db->fetchOne($sq);
+			$data[$key]['zone'] = $d;
+			
+		}
+		return $data;
 	}
 	
 	/**
@@ -161,12 +171,11 @@ class Models_UserTaxes
 	 *
 	 * This function is used to get all records of the table
 	 *
-	 * Date created: 2011-09-01
+	 * Date created: 2011-11-09
 	 *
 	 * @access public
 	 * @param (string)  - $table : Table name
-	 * @return (Array) 	- All records of the table
-	 * @author Yogesh
+	 * @author Hiren
 	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
@@ -179,18 +188,76 @@ class Models_UserTaxes
 		return $result;	
 	}
 	
+	
+	/**
+	 * Function selectAllZone
+	 *
+	 * This function is used to get all records of the table
+	 *
+	 * Date created: 2011-11-09
+	 *
+	 * @access public
+	 * @author Hiren
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	
+	public function selectAllZone()
+	{
+		$db = $this->db;
+		$select = "SELECT tax_rate_id as tr, tax_name as tn FROM tax_rate where user_id = ".$this->user_id;
+		$result =  $db->fetchAll($select);		
+		return $result;	
+	}
+	
+	
+	/**
+	 * Function selectAllZone
+	 *
+	 * This function is used to get all records of the table
+	 *
+	 * Date created: 2011-11-09
+	 *
+	 * @access public
+	 * @param (string)  - $rec : comma saprated zone id
+	 * @author Hiren
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	
+	public function selectAllZoneEdit($rec)
+	{
+		$db = $this->db;
+		$select = "SELECT tax_rate_id as tr, tax_name as tn FROM tax_rate where user_id = ".$this->user_id;
+		$result =  $db->fetchAll($select);	
+		
+		$all_zone = explode(',',$rec['tax_zone']);
+		foreach($result as $key=>$value)
+		{
+			$result[$key]['selected'] = "";
+			foreach($all_zone as $zone)
+			{
+				if($zone == $value['tr'])
+				{
+					$result[$key]['selected'] = 'selected="selected"';
+				}
+			}
+		}
+		return $result;	
+	}
+
 	/**
 	 * Function insertRecord
 	 *
 	 * This function is used to insert record
      *
-	 * Date created: 2011-09-01
+	 * Date created: 2011-11-09
 	 *
 	 * @access public
 	 * @param () (Array)  	- $data : Array of record to insert
 	 * @param () (String)  	- $table : Name of table
 	 * @return (Boolean) - Return true on success
-	 * @author Yogesh
+	 * @author Hiren
 	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
@@ -198,7 +265,12 @@ class Models_UserTaxes
 	public function insertRecord($data,$table = USER_TABLE)
 	{
 		$db = $this->db;
-		
+		if($data['is_default'] == "1")
+		{
+			$data2['is_default'] = "0";
+			$where2 = " user_id = ".$this->user_id;
+			$db->update($table, $data2, $where2);	
+		}
 		$db->insert($table, $data); 	 
 		
 		return $db->lastInsertId();
@@ -209,39 +281,46 @@ class Models_UserTaxes
 	 *
 	 * This function is used to Update Record on specified condition.
      *
-	 * Date created: 2011-09-01
+	 * Date created: 2011-11-09
 	 *
 	 * @access public
 	 * @param () (Array)  - $data : Array of record to update
 	 * @param () (String)  - $where : Condition on which update record
 	 * @param () (String)  - $table : Table name
 	 * @return (Boolean) - Return true on success
-	 * @author Yogesh
+	 * @author Hiren
 	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	
-	
 	public function updateRecord($data,$where,$table = USER_TABLE)
 	{
-		$db = $this->db;		
-		$db->update($table, $data, $where);
-		return true;			
+		$db = $this->db;
+		if($data['is_default'] == "1")
+		{
+			$data2['is_default'] = "0";
+			$where2 = " user_id = ".$this->user_id;
+			$db->update($table, $data2, $where2);	
+		}
+		$db->update($table, $data, $where);				
+		return true;		
 	}
+	
+	
 	
 	/**
 	 * Function deleteRecord
 	 *
 	 * This function is used to delete record on specified condition.
      *
-	 * Date created: 2011-09-01
+	 * Date created: 2011-11-09
 	 *  
 	 * @access public
 	 * @param () (Ini)  	- $id : value of primary key
 	 * @param () (String)  	- $primary_key : name of primary key
 	 * @param () (String)  	- $table : Table name
 	 * @return (Boolean) - Return true on success
-	 * @author Yogesh
+	 * @author Hiren
 	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
@@ -263,14 +342,14 @@ class Models_UserTaxes
 	 *
 	 * This function is used to delete multiple records on specified condition.
      *
-	 * Date created: 2011-09-01
+	 * Date created: 2011-11-09
 	 *
 	 * @access public
 	 * @param () (String)  	- $ids : Sting of all primary keys with comma seprated.
 	 * @param () (String)  	- $primary_key : name of primary key
 	 * @param () (String)  	- $table : Table name
 	 * @return (Boolean) - Return true on success
-	 * @author Yogesh
+	 * @author Hiren
 	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
@@ -286,14 +365,13 @@ class Models_UserTaxes
 	/**
 	 * Function getAllRateRecors
 	 *
-	 * This function is used to fetch all record of the tax rates.
+	 * This function is used to fetch all record of the tax rate class.
      *
-	 * Date created: 2011-09-02
+	 * Date created: 2011-11-09
 	 *
 	 * @access public
 	 * @param ()  -	 No Parameters
-	 * @return (Array) - $data : Array of all records
-	 * @author Yogesh
+	 * @author Hiren
 	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
@@ -301,116 +379,24 @@ class Models_UserTaxes
 	public function getAllRateRecors()
 	{
 		$db = $this->db;
-		$sql = "SELECT TR.*,TRD.zone, TRD.rate 
-				FROM tax_rate as TR, tax_rate_detail as TRD 
-				WHERE TR.tax_rate_id = TRD.tax_rate_id AND TR.user_id = ".$this->user_id;	
-		$data = $db->fetchAll($sql);
-		return $data;	
-	}
-	
-	/**
-	 * Function getAllZoneCountryRecors
-	 *
-	 * This function is used to search records of tax rates on specified condition.
-     *
-	 * Date created: 2011-09-02
-	 *
-	 * @access public
-	 * @param (Array)  -	$data: Array of condition
-	 * @return (Array) - 	$data : Array of all records
-	 * @author Yogesh
-	 *  
-	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
-	 **/
-	
-	public function SearchRate($data)
-	{
-		$db = $this->db;
+		$sql = "Select TRC.* from tax_rate_class TRC WHERE TRC.user_id = ".$this->user_id;
 		
-		$condition = "";
+		$data = $db->fetchAll($sql);
+		
+		foreach($data as $key=>$val)
+		{
+			$zone = $val['tax_zone'];
+			if(substr($val['tax_zone'], -1) == ",")
+			{
+				$zone = substr($val['tax_zone'], 0, -1);
+			}
 			
-		if(count($data) > 0 && $data != "") {
-			foreach($data as $key => $val) {
-				if($val != "") {
-					$condition.=" AND tr.".$key." = '".$val."'";
-				}
-			}			
+			$sq = "select group_concat(tax_name separator ',') as zone from tax_rate where tax_rate_id in(".$zone.") group by 'all';";
+			$d = $db->fetchOne($sq);
+			$data[$key]['zone'] = $d;
+			
 		}
-		
-		$sql = "SELECT 	tr.tax_rates_id,tr.tax_rate,tr.tax_description,
-				( 	SELECT  tc.tax_class_title 
-					FROM tax_class as tc  
-					WHERE tr.tax_class_id = tc.tax_class_id ) as tax_class_title ,
-				(	SELECT tz.tax_zone_title
-					FROM tax_zone as tz
-					WHERE tr.tax_zone_id = tz.tax_zone_id ) as tax_zone_title
-				FROM tax_rates as tr
-				WHERE tr.user_id = ".$this->user_id.$condition;		
-		
-		$data = $db->fetchAll($sql);
 		return $data;
-	
-	}
-	
-	/**
-	 * Function checkZoneRecord
-	 *
-	 * This function is used to check zone is allocated to any tax rate record.
-     *
-	 * Date created: 2011-11-09
-	 *
-	 * @access public
-	 * @param () (string)  - $id : comma saprated string of record id to check record is used or not
-	 * @param () (String)  - $type : For single record or multiple record
-	 * @return (Boolean) - Return true on success
-	 * @author Hiren
-	 *  
-	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
-	 **/
-	
-	
-	public function checkZoneRecord($id,$type)
-	{
-		$db = $this->db;		
-		$sql = "SELECT tax_zone FROM tax_rate_class where user_id = ".$this->user_id;
-		$data = $db->fetchAll($sql);
-		
-		if($type == "Single")
-		{
-			foreach($data as $val)
-			{
-				$tz = $val['tax_zone'];
-				$t_arr = explode(',',$tz);
-				foreach($t_arr as $record)
-				{
-					if($record == $id)
-					{
-						return false;
-					}
-				}
-			}
-		}
-		else if($type == "Multiple")
-		{
-			foreach($data as $val)
-			{
-				$id_arr = explode(',',$id);
-				$tz = $val['tax_zone'];
-				$t_arr = explode(',',$tz);
-				foreach($id_arr as $ids)
-				{
-					foreach($t_arr as $record)
-					{
-						if($record == $ids)
-						{
-							return false;
-						}
-						
-					}
-				}
-			}
-		}
-		return true;			
 	}
 }
 ?>

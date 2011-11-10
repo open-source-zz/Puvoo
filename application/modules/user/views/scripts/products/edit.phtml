@@ -183,6 +183,30 @@
 						<tr><td height="5"></td></tr>
 						<tr>
 							<td class="FieldLabel">
+								<?php echo $this->Translate("Product_Tax_Class"); ?>
+							</td>
+							<td>
+								<select name="tax_rate_class_id" id="tax_rate_class_id" class="Field250" >
+									<option value="" ><?php echo $this->Translate("Product_Select_Tax_Class"); ?></option>
+									<?php if(count($this->taxrate_class) > 0) {  ?>
+									<?php  		foreach($this->taxrate_class as $key => $val) { ?>	
+									<?php  			if($detail['tax_rate_class_id'] == $val["tax_rate_class_id"] ) { ?>
+									<option value="<?php echo $val["tax_rate_class_id"]; ?>" selected="selected">
+									<?php 			} else { ?>
+									<option value="<?php echo $val['tax_rate_class_id']; ?>">
+									<?php 			}?>
+									<?php 			echo $val["tax_rate_name"];  ?>	
+									</option>
+									<?php 		}  ?>
+									<?php } else {  ?>
+									<?php }  ?>
+								</select>
+							</td>
+							<td></td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						<tr>
+							<td class="FieldLabel">
 								<?php echo $this->Translate("Product_Width"); ?>
 							</td>
 							<td>

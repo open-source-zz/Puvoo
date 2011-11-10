@@ -139,7 +139,7 @@ function AddCountry()
 			var country_result = $("#Zone_Result").html();
 			if(country_result != "") {
 				
-				$("#Zone_Result").html(country_result+","+array[1]);
+				$("#Zone_Result").html(country_result+";"+array[1]);
 				
 			} else {
 				
@@ -199,7 +199,7 @@ function AddCountryState()
 			if (flag != 1 ) {
 				country_array[current_country] = string+','+state;	
 				var country_result = $("#Zone_Result").html();
-				$("#Zone_Result").html(country_result+":"+state);	
+				$("#Zone_Result").html(country_result+","+state);	
 				
 			} else {
 				alert(ERR_STATE_EXIST);

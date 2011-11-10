@@ -104,6 +104,8 @@
 		//Get Request
 		$request = $this->getRequest();
 		
+		$translate = Zend_Registry::get('Zend_Translate');
+		
 		if($request->isPost()){
 		
 			$page_no = $request->getPost('page_no');
@@ -117,8 +119,31 @@
 			$filter = new Zend_Filter_StripTags();	
 			$data['name']=$filter->filter(trim($this->_request->getPost('name'))); 	
 			$data['status']=$filter->filter(trim($this->_request->getPost('status'))); 			
+			
 			//Get searched Languages
-			$result = $language->SearchLanguages($data);
+			$counter = 0;
+			
+			foreach( $data as  $key => $val ) 
+			{
+			
+				if( $val != '' ) {
+					
+					$counter++;
+					
+				}
+			}
+			
+			if( $counter > 0 ) {
+			
+				$result = $language->SearchLanguages($data);
+				
+			} else  {
+			
+				$mysession->Admin_EMessage = $translate->_('No_Search_Criteria');
+			
+				$result = $language->GetAllLanguages();
+			
+			} 
 			
 			$this->view->data = $data;
 			
@@ -201,7 +226,7 @@
 			$data['numeric_separator_thousands']=$filter->filter(trim($this->_request->getPost('numeric_separator_thousands')));
 			$data['country_id']=$filter->filter(trim($this->_request->getPost('country_id')));
 			$data['currency_id']=$filter->filter(trim($this->_request->getPost('currency_id')));
-			$data['vat']=$filter->filter(trim($this->_request->getPost('vat')));
+			//$data['vat']=$filter->filter(trim($this->_request->getPost('vat')));
 			$data['is_default']=$filter->filter(trim($this->_request->getPost('is_default')));
 			$data['status']=$filter->filter(trim($this->_request->getPost('status')));
 			
@@ -235,10 +260,10 @@
 			if($data['currency_id'] == "") {
 				$addErrorMessage[] = $translate->_('Err_Language_Currency');			
 			}
-			if($data['vat'] == "") {
+			/*if($data['vat'] == "") {
 				$addErrorMessage[] = $translate->_('Err_Language_Vat');			
 			}
-			
+			*/
 			$this->view->data = $data;
 			
 			if(count($addErrorMessage) === 0)
@@ -320,7 +345,7 @@
 				$data['numeric_separator_thousands']=$filter->filter(trim($this->_request->getPost('numeric_separator_thousands')));
 				$data['country_id']=$filter->filter(trim($this->_request->getPost('country_id')));
 				$data['currency_id']=$filter->filter(trim($this->_request->getPost('currency_id')));
-				$data['vat']=$filter->filter(trim($this->_request->getPost('vat')));
+				//$data['vat']=$filter->filter(trim($this->_request->getPost('vat')));
 				$data['is_default']=$filter->filter(trim($this->_request->getPost('is_default')));
 				$data['status']=$filter->filter(trim($this->_request->getPost('status')));
 				$language_id = $filter->filter(trim($this->_request->getPost('language_id'))); 	
@@ -355,9 +380,10 @@
 				if($data['currency_id'] == "") {
 					$editErrorMessage[] = $translate->_('Err_Language_Currency');			
 				}
-				if($data['vat'] == "") {
+				
+				/*if($data['vat'] == "") {
 					$editErrorMessage[] = $translate->_('Err_Language_Vat');			
-				}
+				}*/
 				
 				if(count($editErrorMessage) === 0)
 				{

@@ -35,7 +35,8 @@
  * @author      Vaibhavi
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  **/  
- class Admin_WeightController extends AdminCommonController
+ 
+class Admin_WeightController extends AdminCommonController
 {
 
 	/**
@@ -104,6 +105,8 @@
 		//Get Request
 		$request = $this->getRequest();
 		
+		$translate = Zend_Registry::get('Zend_Translate');
+		
 		if($request->isPost()){
 		
 			$page_no = $request->getPost('page_no');
@@ -117,8 +120,31 @@
 			$filter = new Zend_Filter_StripTags();	
 			$data['weight_unit_name']=$filter->filter(trim($this->_request->getPost('weight_unit_name'))); 
 			$data['weight_unit_key']=$filter->filter(trim($this->_request->getPost('weight_unit_key'))); 
+			
 			//Get search Weight
-			$result = $weight->SearchWeight($data);
+			$counter = 0;
+			
+			foreach( $data as  $key => $val ) 
+			{
+			
+				if( $val != '' ) {
+					
+					$counter++;
+					
+				}
+			}
+			
+			if( $counter > 0 ) {
+			
+				$result = $weight->SearchWeight($data);
+			
+			} else  {
+			
+				$mysession->Admin_EMessage = $translate->_('No_Search_Criteria');
+			
+				$result = $weight->GetAllWeight();
+			
+			} 
 			
 		} elseif($is_search == "0") {
 			// Clear serch option

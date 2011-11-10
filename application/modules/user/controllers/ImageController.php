@@ -124,6 +124,7 @@ class User_ImageController extends UserCommonController
 					$ext = "png";
 				}
 				
+				
 				$filename = $encname . "_img." . $ext;
 				
 				//Image of size 350x350

@@ -105,6 +105,8 @@
 		//Get Request
 		$request = $this->getRequest();
 		
+		$translate = Zend_Registry::get('Zend_Translate');
+		
 		if($request->isPost()){
 		
 			$page_no = $request->getPost('page_no');
@@ -122,7 +124,30 @@
 			
 			$this->view->data = $data;
 			//Get search Country
-			$result = $Country->SearchCountry($data);
+			
+			$counter = 0;
+			
+			foreach( $data as  $key => $val ) 
+			{
+			
+				if( $val != '' ) {
+					
+					$counter++;
+					
+				}
+			}
+			
+			if( $counter > 0 ) {
+			
+				$result = $Country->SearchCountry($data);
+				
+			} else  {
+			
+				$mysession->Admin_EMessage = $translate->_('No_Search_Criteria');
+			
+				$result = $Country->GetAllCountries();
+			
+			} 
 			
 		} elseif($is_search == "0") {
 			// Clear serch option
@@ -462,7 +487,17 @@
 						
 						$data["state_name"] = $filter->filter(trim($this->_request->getPost('state_name'))); 
 						
-						$result = $Country->searchState($data, $country_id);
+						if( $data["state_name"] != '' ) {
+						
+							$result = $Country->searchState($data, $country_id);
+						
+						} else  {
+			
+							$mysession->Admin_EMessage = $translate->_('No_Search_Criteria');
+						
+							$result = $Country->searchState($data, $country_id);
+						
+						} 
 						
 					} elseif($is_search == "0") {
 					

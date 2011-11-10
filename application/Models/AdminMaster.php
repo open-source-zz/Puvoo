@@ -288,4 +288,11 @@ class Models_AdminMaster
 		return $db->fetchOne($Sql); 	 	
 	}
 	
+	public function TaxCalculation()
+	{
+		
+	
+	
+	}
+	
 }

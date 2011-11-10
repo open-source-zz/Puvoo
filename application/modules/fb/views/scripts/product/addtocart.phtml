@@ -39,7 +39,7 @@
             <a href="javascript:void(0)" onclick="updatecart(<?php echo $Item['product_id'];?>,<?php echo $Item['cart_id'];?>);"><img src="<?php echo IMAGES_FB_PATH ?>/refresh_icon.png" alt="" style="vertical-align:middle; padding-bottom:4px; margin-left:5px;" /></a> </div>
           <div class="cartItemDivider cartItemDeleteButton"> <a href="javascript:void(0)" onclick="DeleteCartProduct(<?php echo $Item['product_id'];?>,<?php echo $Item['cart_id'];?>);"><img src="<?php echo IMAGES_FB_PATH ?>/close_icon.png" alt="" /></a> </div>
           <div id="itemQtyPrice_1" class="cartItemDivider cartItemPriceDisplay">
-            <div id="itemPrice<?php echo $Item['product_id'];?>" align="right"><?php echo $this->currency_symbol."&nbsp;".$Item['price']*$Item['product_qty'];?></div>
+            <div id="itemPrice<?php echo $Item['product_id'];?>" align="right"><?php echo $this->currency_symbol."&nbsp;".$Item['product_total_cost']*$Item['product_qty'];?></div>
             <input type="hidden" value="<?php echo $Item['price'] ?>" name="IndivisualPrice<?php echo $Item['product_id'];?>" id="IndivisualPrice<?php echo $Item['product_id'];?>" />
             <input type="hidden" value="<?php echo $Item['price'] ?>" name="ProductTotalPrice<?php echo $Item['product_id'];?>" id="ProductTotalPrice<?php echo $Item['product_id'];?>" />
           </div>
@@ -592,8 +592,8 @@
       <div style="width:570px;margin:auto; margin-top:15px;" >
         <table cellspacing="0" cellpadding="10" border="0">
           <tr>
-            <td><a href="javascript:void(0)" style="margin-right:25px;"><img src="<?php echo IMAGES_FB_PATH ?>/picture.gif" alt="" /></a> </td>
-            <td><?php echo $this->Translate('TempDetail1')?> </td>
+            <td><a href="javascript:void(0)" style="margin-right:25px;"> <fb:profile-pic uid="<?php echo FACEBOOK_USERID;?>" linked="true" /></a> </td>
+            <td><?php echo sprintf($this->Translate('TempDetail1'),FBUSER_NAME);?> </td>
           </tr>
         </table>
         <div id="fb_tabs" class="usual">
@@ -631,7 +631,7 @@
     <div id="buttonArea">
       <div class="SharingOptions_Text"> </div>
       <div id="Sharer_btns">
-        <input type="submit" value="" class="save" onclick="ChangeCartCurrency()"  />
+        <input type="submit" value="" class="save" onclick="ChangeCartCurrency('<?php echo $this->cartId;?>')"  />
         <input type="button" value="" class="cancel" onclick="showcart(); return false;" />
       </div>
     </div>

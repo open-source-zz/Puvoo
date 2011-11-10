@@ -78,13 +78,13 @@
 							<td>
 								<select name="category_id" id="category_id" class="Field250">
 									<option value=""><?php echo $this->Translate('Product_Select_Category'); ?></option>
-								<?php  
-									if(count($this->category) > 0) {
+								<?php  echo $this->category;
+									/*if(count($this->category) > 0) {
 										foreach($this->category as $key => $val)
 										{
 											echo "<option value='".$val["category_id"]."'>".$val["category_name"]."</option>";
 										}
-									}
+									}*/
 								?>
 								</select>
 							</td>

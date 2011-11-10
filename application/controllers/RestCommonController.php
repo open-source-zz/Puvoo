@@ -51,7 +51,9 @@ abstract class RestCommonController extends REST_Controller
 	 **/
     public function init() 
 	{
-		 global $mysession; 
+		global $mysession; 
+		 
+		error_reporting(0); 
 		 
         $this->_helper->viewRenderer->setNoRender(true);
 		$this->_helper->layout()->disableLayout();

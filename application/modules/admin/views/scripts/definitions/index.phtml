@@ -70,7 +70,7 @@
 								<?php echo $this->Translate('Language'); ?>:
 							</td>
 							<td>
-								<select name="language_id" id="language_id">
+								<select name="language_id" id="language_id" class="Field250">
 									<option value="0"><?php echo $this->Translate('Select_Language'); ?></option>
 									<?php for($i = 0; $i < count($this->languages); $i++){ ?>
 										<option value="<?php echo $this->languages[$i]['language_id'] ?>" <?php echo ( $this->languages[$i]['language_id'] == $this->data['language_id'] ? "selected" : "" ); ?> ><?php echo $this->languages[$i]['name'] . " - " .  $this->languages[$i]['code']?></option>
@@ -85,12 +85,13 @@
 								<?php echo $this->Translate('Group'); ?>:
 							</td>
 							<td>
-								<select name="content_group" id="content_group">
+								<select name="content_group" id="content_group" class="Field250">
 									<option value=""><?php echo $this->Translate('Select_Group'); ?></option>
 									<option value="ADMIN" <?php echo ( $this->data['content_group'] == 'ADMIN' ? "selected" : "" ); ?>>ADMIN</option>
 									<option value="DEFAULT" <?php echo ( $this->data['content_group'] == 'DEFAULT' ? "selected" : "" ); ?> >DEFAULT</option>
 									<option value="USER" <?php echo ( $this->data['content_group'] == 'USER' ? "selected" : "" ); ?> >USER</option>
 									<option value="FB" <?php echo ( $this->data['content_group'] == 'FB' ? "selected" : "" ); ?> >FB STORE</option>
+									<option value="REST" <?php echo ( $this->data['content_group'] == 'REST' ? "selected" : "" ); ?> >REST API</option>
 								</select>
 							</td>
 						</tr>
@@ -100,7 +101,7 @@
 								<?php echo $this->Translate('Key'); ?>:
 							</td>
 							<td>
-								<input type="text" name="definition_key" id="definition_key" value="<?php echo $this->data['definition_key'] ?>" />
+								<input type="text" name="definition_key" class="Field250" id="definition_key" value="<?php echo $this->data['definition_key'] ?>" />
 							</td>
 						</tr>
 						<tr><td height="5"></td></tr>
@@ -109,7 +110,7 @@
 								<?php echo $this->Translate('Value'); ?>:
 							</td>
 							<td>
-								<input type="text" name="definition_value" id="definition_value" value="<?php echo $this->data['definition_value'] ?>" />
+								<input type="text" name="definition_value" class="Field250" id="definition_value" value="<?php echo $this->data['definition_value'] ?>" />
 							</td>
 						</tr>
 						<tr><td height="5"></td></tr>

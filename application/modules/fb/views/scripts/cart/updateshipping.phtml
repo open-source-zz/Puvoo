@@ -2,10 +2,121 @@
 	<?php $total_price = 0;
 		$totalAmout = array();
 		$prodIdArray = array();
-		 ?>
-	<?php foreach($this->cartItems as $keycart=>$Item){?>
-		<table class="merchantTable" style="border: medium none; border-bottom:1px solid #E2E2E2;" id="merchantProd<?php echo $Item['product_id'];?>">
-			<tr>
+	?>
+	
+	<?php $user_id = 0;
+		$useridArray = array();	
+	 ?>
+	
+	<?php $userdetailcart = array(); ?>
+	
+	<?php foreach($this->cartItems as $key=> $val) { ?>
+	
+		<?php $useridArray[$val["product_id"]] = $val["uid"]; ?>
+	
+		<?php if($val["uid"] != $user_id ) { ?>
+			
+			<?php $subtotal = 0; ?>
+			<?php $TotalTaxRate = 0; ?>
+			
+			<?php $product_tax_rate = array(); ?>
+			<?php foreach( $this->cartItems as $keycart => $Item ) { ?>
+		
+			<?php 	if( $Item["uid"] == $Item["uid"] ) { ?>
+			<?php $storename =  $val['store_name'];?>
+				<?php 	
+				if($Item['prod_convert_price']){ ?>
+					<?php $subtotal += floatval($Item['prod_convert_price']*$Item['product_qty']);?>
+				<?php }else{?>
+					<?php $subtotal += $Item['prodprice'];?>
+				<?php } ?>
+				
+				<?php 
+						if($this->taxRate)	{
+							
+							$Taxrate = 0;
+							$tax_rate = 0;
+							foreach($this->taxRate as $ratekey => $rateval ){
+								
+								if($ratekey == $Item['product_id'] ){
+								
+									if($rateval){
+										
+ 										foreach($rateval as $rate){
+										
+											$oprionTotal_tax = ($oprionTotal*$rate)/100;
+ 											$Taxrate += (($Item['product_price']*$Item['product_qty'])*$rate)/100;
+											
+											$tax_rate = round((($Item['product_price']*$Item['product_qty'])*$rate)/100, 2);
+											
+ 										
+										}
+ 									
+									}
+									
+								}
+							}
+							
+						}
+						
+						$product_tax_rate[$Item["uid"]][$Item["product_id"]]["taxrate"] = $tax_rate;
+						
+					?>
+					
+				<?php $TotalTaxRate += $Taxrate; ?>
+			
+			<?php  	}?>
+		
+			<?php } ?>	 
+			
+			<?php
+			
+				$ship_handle_time = 0;
+				
+				if($this->ship_handel_day) 	{
+				
+					foreach($this->ship_handel_day as $sdkey => $sdval ){
+						
+						if($sdkey == $val["uid"] ){
+								
+							$ship_handle_time = $sdval;
+							
+						}
+						
+					}
+					
+				} 
+			?>
+			
+		<?php 
+				
+				$userdetailcart[$val["uid"]]["store_name"] = $val["store_name"];
+				$userdetailcart[$val["uid"]]["subtotal"] = $subtotal;
+				$userdetailcart[$val["uid"]]["taxrate"] = $TotalTaxRate;
+				$userdetailcart[$val["uid"]]["handletime"] = $ship_handle_time;
+				//$userdetailcart[$val["uid"]]["store_name"] = $storename;
+				
+		?>
+		
+		<?php } ?>
+		
+		<?php $userdetailcart[$val["uid"]]["product"][$val["product_id"]]["image_path"] = $val["image_path"]; ?>
+		<?php $userdetailcart[$val["uid"]]["product"][$val["product_id"]]["image_name"] = $val["image_name"]; ?>
+		<?php $userdetailcart[$val["uid"]]["product"][$val["product_id"]]["product_name"] = $val["product_name"]; ?>
+		<?php $userdetailcart[$val["uid"]]["product"][$val["product_id"]]["product_qty"] = $val["product_qty"]; ?>
+		
+		<?php $user_id = $val["uid"]; ?>
+	
+	<?php } ?>	 
+	
+	<?php $prodIdArray = array();
+	
+	 ?>
+	
+	<?php foreach($userdetailcart as $keycart => $Item){?>
+	
+		<!--<table class="merchantTable" style="border: medium none; border-bottom:1px solid #E2E2E2;" id="merchantProd<?php echo $Item['product_id'];?>">-->
+<table class="merchantTable" style="border: medium none; border-bottom:1px solid #E2E2E2;" id="merchantProd<?php echo $keycart;?>">			<tr>
 				<td class="storeNameHeader" colspan="2"><a class="" href="javascript:void(0)"><?php echo $Item['store_name'] ?></a></td>
 			</tr>
 			<tr><td height="4"> </td></tr>
@@ -14,7 +125,7 @@
 					<label for="lastName"><?php echo $this->Translate('SubTotal')?></label>
 				</td>
 				<td>
-					<?php echo $this->currency_symbol."&nbsp;".floatval($Item['price']*$Item['product_qty']);?>
+					<?php echo $this->currency_symbol."&nbsp;".$Item["subtotal"] ;?>
 				</td>
 			</tr>
 			<tr><td height="4"></td></tr>	
@@ -24,66 +135,56 @@
 			 	if($this->Ship_Method_Combo)
 				{
 					foreach($this->Ship_Method_Combo as $key => $val ){
-						if($key == $Item['product_id'] ){
+						if($key == $keycart ){
 							$flag = $val;
 						}
 					}
 				}
 			?>
  			<?php if($flag != "" ) {  ?>	
+			
+			<?php $product_ids = '';  ?>
+			<?php foreach( $Item["product"] as $key => $val ) { ?>
+			
+			<?php 	$prodIdArray[] =  $key;  ?>
+				
+			<?php		$product_ids .= $key . "~" . $val["product_qty"] . "#"; ?>
+				
+			<?php } ?>
+			
 			<tr>
 				<td width="200"> 
 					<label for="lastName"><?php echo $this->Translate('ShippingMethod')?>:</label>
 				</td>
 				<td>
-					<select name="Shipping_Method_<?php echo $Item['product_id'];?>" id="Shipping_Method_<?php echo $Item['product_id'];?>" style="width:130px;" onchange="GetShippingCost(this.value,<?php echo $Item['product_id']; ?>)" >
+					<select name="Shipping_Method_<?php echo $keycart;?>" id="Shipping_Method_<?php echo $keycart;?>" style="width:130px;" onchange="GetShippingCost(this.value,'<?php echo $product_ids; ?>',<?php echo $keycart; ?>)" >
                   <option value="0" selected="selected"><?php echo $this->Translate('ChooseShipping')?></option>
                   <?php 
-											echo $flag;
-										?>
+						echo $flag;
+					?>
                 </select>
 				</td>
 			</tr>
-			<tr id="ShippingSpace<?php echo $Item['product_id'];?>" style="display:none;"><td height="4"></td></tr>
-			<tr id="ShippingRow<?php echo $Item['product_id'];?>">
+			<tr id="ShippingSpace<?php echo $keycart;?>" style="display:none;"><td height="4"></td></tr>
+			<tr id="ShippingRow<?php echo $keycart;?>">
 				<td width="200"> 
 					<label for="lastName"><?php echo $this->Translate('ShippingCost')?>:</label>
 				</td>
-				<td id="ShippingCost<?php echo $Item['product_id'];?>">
+				<td id="ShippingCost<?php echo $keycart; ?>">
 					<?php echo $this->currency_symbol."&nbsp;"."0";?>
 				</td>
 			</tr>
 			<tr><td height="4"></td></tr>
 		
 			<?php }  ?>	
-			<tr>
+			<!--<tr>
 				<td width="200">
 					<label for="lastName"><?php echo $this->Translate('Tax')?></label>
 				</td>
-				<td id="taxRate<?php echo $Item['product_id'];?>">
-					<?php 
-						if($this->taxRate)
-						{
- 							foreach($this->taxRate as $key => $val){
-								if($key == $Item['product_id'] ){
-									if($val){
- 										foreach($val as $val2){
- 											$taxrate = (($Item['price']*$Item['product_qty'])*$val2)/100;
-											$totalAmout[$Item['product_id']] =  floatval(($Item['price']*$Item['product_qty']))+floatval($taxrate); 
- 											echo $this->currency_symbol."&nbsp;".round($taxrate,2);
- 										}
- 									}else{
- 										$totalAmout[$Item['product_id']] =  $Item['product_total_cost']; 
- 										echo $this->currency_symbol."&nbsp;"."0";
- 									}
-								}
-							}
-						}else{
-							echo $this->currency_symbol."&nbsp;"."0";
-						}
-					?>
+				<td id="taxRate<?php echo $keycart;?>">
+					<?php echo $this->currency_symbol."&nbsp;".round($Item["taxrate"],2);	?>
 				</td>
-			</tr>
+			</tr>-->
 			
 			<tr><td height="4"></td></tr>
 			<tr>
@@ -92,18 +193,15 @@
 				</td>
 				<td>
 					<?php
-						if($this->ship_handel_day)
-						{
-							foreach($this->ship_handel_day as $key => $val ){
-								if($key == $Item['product_id'] ){
-								
-									echo $val."&nbsp;Days";
-								}
+							if($Item["handletime"])
+							{
+								echo $Item["handletime"]."&nbsp;Days";
+									
+							}else{
+							
+								echo $this->Translate('Nodays');
 							}
-						}else{
-							echo $this->Translate('Nodays');
-						}
-						?>
+					?>
 				</td>
 			</tr>
 			<tr><td height="4"></td></tr>
@@ -114,21 +212,9 @@
 				</td>
 			</tr>
 			<?php } ?>
-<!--							<tr>
-				<td width="200">
-					<label for="lastName"><?php echo $this->Translate('ItemTotal')?></label>
-				</td>
-				<td>
-					<?php
-						 $total = $taxrate+$Item['product_total_cost']+0;
-						 echo "$".$total;
-						?>
-				</td>
-			</tr>
-			<tr><td height="4"></td></tr>
--->					<tr>
+			<tr>
 				<td colspan="2" style="line-height:20px;">
-					<label for="lastName" ><a href="javascript:void(0)" id="ShippingItem<?php echo $Item['product_id'] ?>" style="font-size:12px; font-weight:normal; text-decoration:underline;" onclick="ShowImage(<?php echo $Item['product_id'] ?>)"><?php echo $this->Translate('Item')?></a></label>
+					<label for="lastName" ><a href="javascript:void(0)" id="ShippingItem<?php echo $keycart ?>" style="font-size:12px; font-weight:normal; text-decoration:underline;" onclick="ShowImage(<?php echo $keycart ?>)"><?php echo $this->Translate('Item')?></a></label>
 				</td>
 			</tr>
 			
@@ -147,46 +233,46 @@
 				}
 			</script>
 
-			<tr id="ItemList<?php echo $Item['product_id'] ?>" style="display:none;">
+			<tr id="ItemList<?php echo $keycart ?>" style="display:none;">
 				<td colspan="2">
 					<table cellpadding="0" cellspacing="0">
+						<?php foreach( $Item["product"] as $key => $val ) { ?>
 						<tr>
 							<td>
 								<div class="cartItemProductImageCell">
-									<img class="cartItemProductImage" src="<?php echo SITE_PRODUCT_IMAGES_PATH.$Item['image_path'] ?>/<?php echo $Item['image_name'] ?>" alt="" />
+									<img class="cartItemProductImage" src="<?php echo SITE_PRODUCT_IMAGES_PATH.$val['image_path'] ?>/<?php echo $val['image_name'] ?>" alt="" />
 								</div>
 								<div class="cartItemDivider cartItemMainContent">
 									<span class="cartItemProductTitle">
-										<a title="Mini TailSuga " href="javascript:void(0)" target="_top"><?php echo $Item['product_name'] ?></a>
+										<a title="Mini TailSuga " href="javascript:void(0)" target="_top"><?php echo $val['product_name'] ?></a>
 									</span>
 									<div id="cartItemDetail_1" class="cartItemDetail" style="display: block">
 										<span class="cartRetailerLabel">
 											<?php echo $this->Translate('Quantity')?>:
-											<a href="javascript:void(0)" target="_top"><?php echo $Item['product_qty'] ?></a>
-											<input type="hidden" name="ProdQTy" id="ProdQTy" value="<?php echo $Item['product_qty'] ?>" />
+											<a href="javascript:void(0)" target="_top"><?php echo $val['product_qty'] ?></a>
+											<input type="hidden" name="ProdQTy" id="ProdQTy" value="<?php echo $val['product_qty'] ?>" />
 												
 										</span>
 									</div>
 								</div>
 							</td>
 						</tr>
+						<?php } ?>
 					</table>
 				</td>
 			</tr>
 		</table>
-		<?php 
+		<?php foreach($product_tax_rate[$keycart] as $key1 => $val )  { ?>
 		
-				$prodIdArray[$keycart] = $Item['product_id'];
+				<input type="hidden"  name="taxRate<?php echo $key1; ?>" id="taxRate<?php echo $key1; ?>" value="<?php echo $val['taxrate'];?>" />
 				
-		?>
+		<?php } ?>
+		
 	<?php }
+		
+		$json1 = Zend_Json::encode($useridArray);
 		$json = Zend_Json::encode($prodIdArray);
- 		$total_price = 0;
-		//print_r($totalAmout);
-		foreach($totalAmout as $key => $val)
-		{
-			$total_price += round((float)$val,2); 	
-		}
+ 		$total_price = round($Item["subtotal"] + $Item["taxrate"], 2);
 		
 	?>
 </div>
@@ -200,7 +286,7 @@
 	   <input type="hidden" name="ShippingtotalAmount" id="ShippingtotalAmount" value="0" />
 		<input type="button" value="" class="your_setting" onclick="showsetting(); return false;" />
 		<?php if($flag != "" ) { ?>
-		<input type="button" value="" class="continuecheckout" onclick='UpdateShipping("<?php echo $this->cartId; ?>",<?php echo $json; ?>)' />
+		<input type="button" value="" class="continuecheckout" onclick='UpdateShipping("<?php echo $this->cartId; ?>",<?php echo $json; ?>,<?php echo $json1;?>)' />
 		<?php }?>
 		
 	   </div>

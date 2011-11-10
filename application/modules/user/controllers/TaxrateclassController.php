@@ -23,16 +23,16 @@
 
 
 /**
- * User_TaxratesController
+ * User_TaxrateclassController
  *
- * User_TaxratesController extends UserCommonController. It is used to manage the tax rates.
+ * User_TaxrateclassController extends UserCommonController. It is used to manage the tax rates.
  *
  * @category	Puvoo
  * @package 	User_Controllers
- * @author	    Yogesh 
+ * @author	    Hiren 
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */  
-class User_TaxratesController extends UserCommonController
+class User_TaxrateclassController extends UserCommonController
 {
  
  	/**
@@ -46,16 +46,16 @@ class User_TaxratesController extends UserCommonController
 	 * @param ()  - No parameter
 	 * @return (void) - Return void
 	 *
-	 * @author Yogesh
+	 * @author Hiren
 	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	public function init()
 	{
 		parent::init();		
-		$this->view->JS_Files = array('user/taxes.js','user/usercommon.js');
-		define("USER_TABLE","tax_rate");
-		define("USER_PRIMARY_KEY","tax_rate_id");
+		$this->view->JS_Files = array('user/taxes.js','user/usercommon.js','user/jquery.multiselect.js');
+		define("USER_TABLE","tax_rate_class");
+		define("USER_PRIMARY_KEY","tax_rate_class_id");
 	}
 	
 	
@@ -70,7 +70,7 @@ class User_TaxratesController extends UserCommonController
 	 * @param ()  - No parameter
 	 * @return (void) - Return void
 	 *
-	 * @author Yogesh
+	 * @author Hiren
 	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
@@ -78,13 +78,13 @@ class User_TaxratesController extends UserCommonController
     {
 		global $mysession,$arr_pagesize;
 		$translate = Zend_Registry::get('Zend_Translate');
-		$this->view->site_url = SITE_URL."user/taxrates";
-		$this->view->add_action = SITE_URL."user/taxrates/add";
-		$this->view->edit_action = SITE_URL."user/taxrates/edit";
-		$this->view->delete_action = SITE_URL."user/taxrates/delete";
-		$this->view->delete_all_action = SITE_URL."user/taxrates/deleteall";
+		$this->view->site_url = SITE_URL."user/taxrateclass";
+		$this->view->add_action = SITE_URL."user/taxrateclass/add";
+		$this->view->edit_action = SITE_URL."user/taxrateclass/edit";
+		$this->view->delete_action = SITE_URL."user/taxrateclass/delete";
+		$this->view->delete_all_action = SITE_URL."user/taxrateclass/deleteall";
 		
-		$taxes = new Models_UserTaxes();
+		$taxes = new Models_UserTaxClass();
 		
 		//set current page number
 		$page_no = 1;
@@ -109,18 +109,17 @@ class User_TaxratesController extends UserCommonController
 		if($is_search == "1") {
 		
 			$filter = new Zend_Filter_StripTags();	
-			$data["tax_name"]=$filter->filter(trim($this->_request->getPost('tax_name'))); 			
+			$data["tax_rate_name"]=$filter->filter(trim($this->_request->getPost('tax_name'))); 			
 			$result = $taxes->SearchTaxes($data);
 			
 		} elseif($is_search == "0") {
 			// Clear serch option
 			$page_no = 1;
 			$result = $taxes->getAllRateRecors();
-						
+				
 		} else 	{
 			//Get all Categories
 			$result = $taxes->getAllRateRecors();
-			
 		}	
 		
 		// Success Message
@@ -164,69 +163,61 @@ class User_TaxratesController extends UserCommonController
 	{
 		global $mysession;
 		
-		$this->view->site_url = SITE_URL."user/taxrates";
-		$this->view->add_action = SITE_URL."user/taxrates/add";		
+		$this->view->site_url = SITE_URL."user/taxrateclass";
+		$this->view->add_action = SITE_URL."user/taxrateclass/add";		
 		
 		$translate = Zend_Registry::get('Zend_Translate');
 		$filter = new Zend_Filter_StripTags();	
 		$request = $this->getRequest();
-		$taxes = new Models_UserTaxes();
+		$taxes = new Models_UserTaxClass();
 		$home = new Models_UserMaster();
 		
 		// Initial values
 		$this->view->country = $taxes->selectAllRecord("country_master");
-		
+		$this->view->zone = $taxes->selectAllZone();
 		// On Form Submit
 		if($request->isPost())	{
-		
+			/*echo "<pre>";
+			print_r($_POST);die;*/
 			$float_validator = new Zend_Validate_Float();
 			
 			// Fetch all record here
 			$data['user_id']=$mysession->User_Id;
-			$data['tax_name']=$filter->filter(trim($this->_request->getPost('tax_name')));
-			$data2['zone']=$filter->filter(trim($this->_request->getPost('tax_zone'))); 
-			//$data2['rate']=$filter->filter(trim($this->_request->getPost('tax_price'))); 
+			$data['tax_rate_name']=$filter->filter(trim($this->_request->getPost('tax_rate_name')));
+			$data['tax_zone']=$filter->filter(trim($this->_request->getPost('multiselect_tax_zone_value'))); 	
+			$data['tax_rate']=$filter->filter(trim($this->_request->getPost('tax_rate'))); 
+			$data['is_default']=$filter->filter(trim($this->_request->getPost('is_default')));
 			
-			$row = array_merge($data, $data2);
-			$this->view->data = $row;
+			
+			$this->view->data = $data;
 		
 			$addErrorMessage = array();
 			// Validate records and insert
-			if($data['tax_name'] == "" ) {
-				$addErrorMessage[] = $translate->_('Err_Zone_Name');
+			if($data['tax_rate_name'] == "" ) {
+				$addErrorMessage[] = $translate->_('Err_Tax_Name');
 			}
-			if($data2['zone'] == "" ) {
-				$addErrorMessage[] = $translate->_('Err_Tax_Zone');
+			if($data['tax_zone'] == "" ) {
+				$addErrorMessage[] = $translate->_('Err_Tax_class_Zone');
 			}
-			/*if($data2['rate'] == "" ) {
+			if($data['tax_rate'] == "" ) {
 				$addErrorMessage[] = $translate->_('Err_Tax_Price');
-			} else if(!$float_validator->isValid($data2['rate'])) {
+			} else if(!$float_validator->isValid($data['tax_rate'])) {
 				$addErrorMessage[] = $translate->_('Err_Taxrate_Invalid_Value');		
-			}*/
+			}
 			
 			
 			if( count($addErrorMessage) == 0 || $addErrorMessage == "" ) {
 				
 				$where = "user_id = ".$mysession->User_Id;
-				if($home->ValidateTableField("tax_name",$data['tax_name'],"tax_rate",$where)) {
-									
-					// Insert Records
+				if($home->ValidateTableField("tax_rate",$data['tax_rate'],"tax_rate_class",$where)) {
+						
 					$tax_id = $taxes->insertRecord($data);
+					$this->_redirect('/user/taxrateclass'); 
 					
-					if($tax_id > 0) {
 					
-						$data2["tax_rate_id"] = $tax_id;
-						$taxes->insertRecord($data2,"tax_rate_detail");
-						$mysession->User_SMessage = $translate->_('Success_Add_Taxes_Zone');
-						$this->_redirect('/user/taxrates'); 	
-					
-					} else {
-						$addErrorMessage[] = $translate->_('Err_Add_Taxes_Zone');	
-					
-					}
 				} else {
 					
-					$addErrorMessage[] = $translate->_('Err_Zone_Exist');
+					$addErrorMessage[] = $translate->_('Err_Tax_Rate_Exist');
 				}
 			}
 			
@@ -256,12 +247,12 @@ class User_TaxratesController extends UserCommonController
 	{
 		
 		global $mysession;
-		$this->view->site_url = SITE_URL."user/taxrates";
-		$this->view->edit_action = SITE_URL."user/taxrates/edit";
+		$this->view->site_url = SITE_URL."user/taxrateclass";
+		$this->view->edit_action = SITE_URL."user/taxrateclass/edit";
 		$translate = Zend_Registry::get('Zend_Translate');
 		$filter = new Zend_Filter_StripTags();
 		
-		$taxes = new Models_UserTaxes();
+		$taxes = new Models_UserTaxClass();
 		$home = new Models_UserMaster();
 		$request = $this->getRequest();
 		
@@ -274,8 +265,19 @@ class User_TaxratesController extends UserCommonController
 		if($tax_rate_id > 0 && $tax_rate_id != "") {
 			
 			$this->view->records = $taxes->getRecordsById($tax_rate_id);
-			$this->view->tax_rate_id =  $tax_rate_id;	
+			$this->view->zone = $taxes->selectAllZoneEdit($this->view->records);
+			$this->view->tax_rate_id =  $tax_rate_id;
+			$zone = "";	
+			//echo "<pre>";
+			//print_r($this->view->zone);die;
 			
+			foreach($this->view->zone as $z){ 
+			
+				$zone .= "<option value='".$z["tr"]."' ".$z['selected'].">".$z['tn']."</option>";
+				
+				//$zone .= '<option value="'.$zone["tr"].'"  '.$zone['selected'].'>'.$zone['tn'].'</option>';	
+			}
+			$this->view->zone = $zone;
 		} else {
 			
 			// On Form Submit
@@ -287,49 +289,60 @@ class User_TaxratesController extends UserCommonController
 				
 				// Fetch all record here				
 				$data['user_id']=$mysession->User_Id;
-				$data['tax_name']=$filter->filter(trim($this->_request->getPost('tax_name')));
-				$data2['zone']=$filter->filter(trim($this->_request->getPost('tax_zone'))); 	
-				//$data2['rate']=$filter->filter(trim($this->_request->getPost('tax_price'))); 
+				$data['tax_rate_name']=$filter->filter(trim($this->_request->getPost('tax_rate_name')));
+				$data['tax_zone']=$filter->filter(trim($this->_request->getPost('multiselect_tax_zone_value'))); 	
+				$data['tax_rate']=$filter->filter(trim($this->_request->getPost('tax_rate'))); 
+				$data['is_default']=$filter->filter(trim($this->_request->getPost('is_default'))); 
 			
 				$editErrorMessage = array();
 				// Validate records 
-				if($data['tax_name'] == "" ) {
-					$editErrorMessage[] = $translate->_('Err_Zone_Name');
+				if($data['tax_rate_name'] == "" ) {
+					$editErrorMessage[] = $translate->_('Err_Tax_Name');
 				} 
-				if($data2['zone'] == "" ) {
+				if($data['tax_zone'] == "" ) {
 					$editErrorMessage[] = $translate->_('Err_Tax_Zone');
 				}
-				/*if($data2['rate'] == "" ) {
+				if($data['tax_rate'] == "" ) {
 					$editErrorMessage[] = $translate->_('Err_Tax_Price');
-				} else if(!$float_validator->isValid($data2['rate'])) {
+				} else if(!$float_validator->isValid($data['tax_rate'])) {
 					$editErrorMessage[] = $translate->_('Err_Taxrate_Invalid_Value');		
-				}*/
+				}
 				
-				$row = array_merge($data, $data2);
+				$this->view->zone = $taxes->selectAllZoneEdit($this->view->records);
+				$zone = "";	
+				foreach($this->view->zone as $z){ 
+				
+					$zone .= "<option value='".$z["tr"]."' ".$z['selected'].">".$z['tn']."</option>";
+					
+					//$zone .= '<option value="'.$zone["tr"].'"  '.$zone['selected'].'>'.$zone['tn'].'</option>';	
+				}
+				$this->view->zone = $zone;
+				$row = $data;
 				
 				 if( count($editErrorMessage) == 0 || $editErrorMessage == "" ) {		
 				
 					// Update Records
-					$cond = "tax_rate_id != '".$primary_id."' AND user_id = ".$mysession->User_Id;
-					if($home->ValidateTableField("tax_name",$data['tax_name'],"tax_rate",$cond)) {
+					$cond = "tax_rate_class_id != '".$primary_id."' AND user_id = ".$mysession->User_Id;
+					if($home->ValidateTableField("tax_rate",$data['tax_rate'],"tax_rate_class",$cond)) {
 					
-						$where = "tax_rate_id = ".$primary_id;
+						$where = "tax_rate_class_id = ".$primary_id;
 						$update1 = $taxes->updateRecord($data,$where);
-						$update2 = $taxes->updateRecord($data2,$where,"tax_rate_detail");
 						
-						if($update1 == TRUE || $update2 == TRUE) {
+						
 							
-							$mysession->User_SMessage = $translate->_('Success_Edit_Taxes_Zone');
-							$this->_redirect('/user/taxrates'); 	
+						if($update1 == TRUE) {
+							
+							$mysession->User_SMessage = $translate->_('Success_Edit_Taxes_Rates');
+							$this->_redirect('/user/taxrateclass'); 	
 							
 						} else {
 						
-							$editErrorMessage[] = $translate->_('Err_Zone_Update');	
+							$editErrorMessage[] = $translate->_('Err_Tax_Rate_Update');	
 						}	
 						
 						
 					} else {
-						$editErrorMessage[] = $translate->_('Err_Zone_Exist');
+						$editErrorMessage[] = $translate->_('Err_Taxe_Exist');
 					}
 				}
 				
@@ -369,21 +382,14 @@ class User_TaxratesController extends UserCommonController
 		$filter = new Zend_Filter_StripTags();	
 		$tax_rates_id = $filter->filter(trim($this->_request->getPost('hidden_primary_id'))); 	
 		
-		if(!$taxes->checkZoneRecord($tax_rates_id,"Single"))
-		{
-			$mysession->User_EMessage = $translate->_('Err_Delete_Zone_Exists'); 
-			$this->_redirect('/user/taxrates');
-		}
-		
 		if($tax_rates_id > 0 && $tax_rates_id != "") {
 			if($taxes->deleteRecord($tax_rates_id)) {
-				$taxes->deleteRecord($tax_rates_id,"tax_rate_id","tax_rate_detail");
-				$mysession->User_SMessage = $translate->_('Taxes_Zone_Delete');
+				$mysession->User_SMessage = $translate->_('Taxes_Rates_Success_Delete');
 			} else {
-				$mysession->User_EMessage = $translate->_('Err_Delete_Zone'); 
+				$mysession->User_EMessage = $translate->_('Err_Delete_Taxrate'); 
 			}		
 		} 
-		$this->_redirect('/user/taxrates'); 	
+		$this->_redirect('/user/taxrateclass'); 	
 	}
 	
 	/**
@@ -418,24 +424,19 @@ class User_TaxratesController extends UserCommonController
 		
 			$tax_rates_id = $this->_request->getPost('id'); 
 			$ids = implode($tax_rates_id,",");
-			if(!$taxes->checkZoneRecord($ids,"Multiple"))
-			{
-				$mysession->User_EMessage = $translate->_('Err_Delete_Zone_Exists'); 
-				$this->_redirect('/user/taxrates');
-			}
 			
 			if($taxes->deleteAllRecords($ids)) {
 				$taxes->deleteAllRecords($ids,"tax_rate_id","tax_rate_detail");
-				$mysession->User_Message = $translate->_('Zones_Success_M_Delete');	
+				$mysession->User_Message = $translate->_('Taxes_Rates_Success_M_Delete');	
 			} else {
-				$mysession->User_EMessage = $translate->_('Err_Delete_Zone'); 	
+				$mysession->User_EMessage = $translate->_('Err_Delete_Taxrate'); 	
 			}	
 			
 		}	else {
 		
-			$mysession->User_EMessage = $translate->_('Zone_Err_M_Delete');				
+			$mysession->User_EMessage = $translate->_('Taxes_Rates_Err_M_Delete');				
 		}
-		$this->_redirect('/user/taxrates'); 	
+		$this->_redirect('/user/taxrateclass'); 	
 	
 	}
 	

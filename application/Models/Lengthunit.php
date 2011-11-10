@@ -111,7 +111,7 @@ class Models_Lengthunit
 	}
 
 
-		/**
+	/**
 	 * Function SearchLengthunit
 	 *
 	 * This function is used to search the currency from length_unit_conversion on search array.
@@ -127,14 +127,18 @@ class Models_Lengthunit
 	 **/
 	
 	
-	public function SearchLengthunit($data)
+	public function SearchLengthunit($value)
 	{
 		$db = $this->db;
 		
 		$sql  = "";
+		
 		$sql .= "SELECT * FROM length_unit_conversion";
+		
+		$sql.=" WHERE value = '".$value."'"; 
+		
 		// Check search array is null or not
-		if(count($data) > 0 && $data != "") {
+		/*if(count($data) > 0 && $data != "") {
 			$count = 0;		
 			foreach($data as $key => $val) {
 				if( $count == 0 ) {
@@ -158,7 +162,7 @@ class Models_Lengthunit
 		} else {
 		
 			$sql .= " WHERE 1=1";
-		}
+		}*/
 		
 		$result =  $db->fetchAll($sql);		
 		return $result;		

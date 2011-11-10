@@ -107,12 +107,15 @@ class Models_Product
 			$where .= " order By sold_count desc";
 		}
  		
-		$sql = "SELECT DISTINCT pm.product_id,pm.product_name,pm.product_price,pi.*,um.*,cm.*,ROUND(((pm.product_price +((pm.product_price * ".$mysession->default_vatrate.")/100)) * ".$mysession->currency_value.") / cm.currency_value, 2 ) as prod_convert_price,pml.product_name as ProdName FROM product_to_categories as ptc 
+		//,ROUND(((pm.product_price +((pm.product_price * ".$mysession->default_vatrate.")/100)) * ".$mysession->currency_value.") / cm.currency_value, 2 ) as prod_convert_price
+		
+		$sql = "SELECT DISTINCT pm.product_id,pm.product_name,pm.product_price,pi.*,um.*,cm.*,pml.product_name as ProdName,trc.* FROM product_to_categories as ptc 
 				LEFT JOIN product_master as pm ON (pm.product_id = ptc.product_id)
 				LEFT JOIN product_master_lang as pml ON (pm.product_id = pml.product_id and pml.language_id= ".DEFAULT_LANGUAGE.")
 				LEFT JOIN product_images as pi ON (pm.product_id = pi.product_id and is_primary_image = 1)
 				LEFT JOIN user_master as um ON (um.user_id = pm.user_id)
 				LEFT JOIN currency_master as cm ON (cm.currency_id = um.currency_id)
+				LEFT JOIN tax_rate_class as trc ON (pm.tax_rate_class_id = trc.tax_rate_class_id)
 				 ".$where."";
 		//print $sql;die;
  		$result = $db->fetchAll($sql);
@@ -136,12 +139,16 @@ class Models_Product
 	{
 		global $mysession;
 		$db = $this->db;
-		$sql = "SELECT pm.*,um.*,wm.*,lm.*,cm.*,ROUND(((pm.product_price +((pm.product_price * ".$mysession->default_vatrate.")/100)) * ".$mysession->currency_value.")/  cm.currency_value , 2 ) as prod_convert_price,pml.product_name as ProdName,pml.product_description as ProdDesc FROM product_master as pm
+		
+		//,ROUND(((pm.product_price +((pm.product_price * ".$mysession->default_vatrate.")/100)) * ".$mysession->currency_value.")/  cm.currency_value , 2 ) as prod_convert_price
+		
+		$sql = "SELECT pm.*,pm.user_id as uid,um.*,wm.*,lm.*,cm.*,pml.product_name as ProdName,pml.product_description as ProdDesc,trc.* FROM product_master as pm
 				LEFT JOIN product_master_lang as pml ON (pm.product_id = pml.product_id and pml.language_id= ".DEFAULT_LANGUAGE.")
 				LEFT JOIN user_master as um ON (pm.user_id = um.user_id)
   				LEFT JOIN weight_master as wm ON (pm.weight_unit_id = wm.weight_unit_id)
 				LEFT JOIN length_master as lm ON (pm.length_unit_id = lm.length_unit_id)
 				LEFT JOIN currency_master as cm ON (cm.currency_id = um.currency_id)
+				LEFT JOIN tax_rate_class as trc ON (pm.tax_rate_class_id = trc.tax_rate_class_id)
 				WHERE pm.product_id='".$prodId."'";
 		//print $sql;die;
  		$result = $db->fetchRow($sql);
@@ -190,12 +197,15 @@ class Models_Product
 			$where .= " order By sold_count desc";
 		}
  		
-		$sql = "SELECT DISTINCT pm.*,pi.*,um.store_name,cm.*,ROUND(((pm.product_price +((pm.product_price * ".$mysession->default_vatrate.")/100)) * ".$mysession->currency_value.")/  cm.currency_value , 2 ) as prod_convert_price,pml.product_name as ProdName FROM product_master as pm 
+		//ROUND(((pm.product_price +((pm.product_price * ".$mysession->default_vatrate.")/100)) * ".$mysession->currency_value.")/  cm.currency_value , 2 ) as prod_convert_price,
+		
+		$sql = "SELECT DISTINCT pm.*,pi.*,um.store_name,cm.*,pml.product_name as ProdName,trc.* FROM product_master as pm 
 				LEFT JOIN product_master_lang as pml ON (pm.product_id = pml.product_id and pml.language_id= ".DEFAULT_LANGUAGE.")
 				LEFT JOIN product_images as pi ON (pm.product_id = pi.product_id and is_primary_image = 1)
 				LEFT JOIN user_master as um ON (um.user_id = pm.user_id)
 				LEFT JOIN currency_master as cm ON (cm.currency_id = um.currency_id)
-				 ".$where."";
+				LEFT JOIN tax_rate_class as trc ON (pm.tax_rate_class_id = trc.tax_rate_class_id)
+				".$where."";
 		//print $sql;die;
  		$result = $db->fetchAll($sql);
 		return $result;
@@ -348,14 +358,17 @@ class Models_Product
 	{
 		global $mysession;
 		$db = $this->db;
+		
+		//ROUND(((pm.product_price +((pm.product_price * ".$mysession->default_vatrate.")/100)) * ".$mysession->currency_value.") / cm.currency_value, 2 ) as Prod_convert_price
 	 	 
  		$sql  = "";
-		$sql .= "SELECT DISTINCT pm.product_id, pm.*, pi.*,um.*,cm.*,ROUND(((pm.product_price +((pm.product_price * ".$mysession->default_vatrate.")/100)) * ".$mysession->currency_value.") / cm.currency_value, 2 ) as Prod_convert_price,pml.product_name as ProdName FROM product_master as pm 
+		$sql .= "SELECT DISTINCT pm.product_id, pm.*, pi.*,um.*,cm.*,pml.product_name as ProdName,trc.* FROM product_master as pm 
 				 LEFT JOIN product_master_lang as pml ON (pm.product_id = pml.product_id and pml.language_id= ".DEFAULT_LANGUAGE.")	
 				 LEFT JOIN product_to_categories as ptc ON(pm.product_id = ptc.product_id)
 				 LEFT JOIN product_images as pi ON (pi.product_id = pm.product_id and is_primary_image = 1)
 				 LEFT JOIN user_master as um ON (um.user_id = pm.user_id)
 				 LEFT JOIN currency_master as cm ON (cm.currency_id = um.currency_id)
+				 LEFT JOIN tax_rate_class as trc ON (pm.tax_rate_class_id = trc.tax_rate_class_id)
 				 ";
 		// Check search array is null or not
 		if($search = 1) {
@@ -1334,12 +1347,13 @@ class Models_Product
 		$db = $this->db;
 		
 		//print $mysession->default_vatprice;die;
-		$sql = "SELECT pm.*,pi.*,um.*,cm.*,ROUND(((pm.product_price +((pm.product_price * ".$mysession->default_vatrate.")/100))* ".$mysession->currency_value.")/cm.currency_value,2) as converted_price,pml.product_name as ProdName,pml.product_description FROM product_master as pm
+		$sql = "SELECT pm.*,pi.*,um.*,cm.*,trc.*,pml.product_name as ProdName,pml.product_description FROM product_master as pm
 				LEFT JOIN product_master_lang as pml ON (pm.product_id = pml.product_id and pml.language_id= ".DEFAULT_LANGUAGE.")
 				LEFT JOIN product_images as pi ON (pm.product_id = pi.product_id and is_primary_image = 1)
 				LEFT JOIN user_master as um ON (um.user_id = pm.user_id)
 				LEFT JOIN currency_master as cm ON (cm.currency_id = um.currency_id)
-				order By sold_count desc limit 0,3";
+				LEFT JOIN tax_rate_class as trc ON (pm.tax_rate_class_id = trc.tax_rate_class_id)
+ 				order By sold_count desc limit 0,3";
 		//print $sql;die;
 		$result = $db->fetchAll($sql);
 		
@@ -1366,11 +1380,14 @@ class Models_Product
 		global $mysession;
 		$db = $this->db;
 		
-		$sql = "SELECT pm.*,pi.*,um.*,cm.*,ROUND(((pm.product_price +((pm.product_price * ".$mysession->default_vatrate.")/100)) * ".$mysession->currency_value.")/ cm.currency_value, 2 ) as converted_price,pml.product_name as ProdName,pml.product_description FROM product_master as pm 
+		//,ROUND(((pm.product_price +((pm.product_price * ".$mysession->default_vatrate.")/100)) * ".$mysession->currency_value.")/ cm.currency_value, 2 ) as converted_price
+		
+		$sql = "SELECT pm.*,pi.*,um.*,cm.*,pml.product_name as ProdName,pml.product_description,trc.* FROM product_master as pm 
 				LEFT JOIN product_master_lang as pml ON (pm.product_id = pml.product_id and pml.language_id= ".DEFAULT_LANGUAGE.")
 				LEFT JOIN product_images as pi ON (pm.product_id = pi.product_id and is_primary_image = 1)
 				LEFT JOIN user_master as um ON (um.user_id = pm.user_id)
 				LEFT JOIN currency_master as cm ON (cm.currency_id = um.currency_id)
+				LEFT JOIN tax_rate_class as trc ON (pm.tax_rate_class_id = trc.tax_rate_class_id)
 				order By like_count desc limit 0,3";
 		//print $sql;die;
 		$result = $db->fetchAll($sql);
@@ -1450,6 +1467,28 @@ class Models_Product
 		$db->delete('cart_detail',$where);
 		
 		return true;
+	}
+	
+	/**
+	 * function GetUseridByProduct
+	 *
+	 * It is used to delete product in to the cart.
+	 *
+	 * Date created: 2011-10-15
+	 *
+	 * @param (int) - $prodId : Product Id
+	 * @return (Boolean) - Return true on success
+	 * @author Yogesh 
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	 
+	public function GetUseridByProduct($prodId)
+	{
+		$db= $this->db;
+		
+		$sql = "SELECT user_id FROM product_master WHERE product_id = ".$prodId;
+		
+		return $db->fetchOne($sql);		
 	}
 
 }

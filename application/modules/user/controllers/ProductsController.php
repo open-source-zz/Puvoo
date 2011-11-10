@@ -93,6 +93,7 @@ class User_ProductsController extends UserCommonController
 		
 		//Create Object of Product model
 		$product = new Models_UserProduct();
+		$product_master = new Models_Product();
 		
 		//Create Object of Validator
 		$validator = new Zend_Validate_Float();
@@ -107,10 +108,12 @@ class User_ProductsController extends UserCommonController
 		$is_search = "";
 		
 		//Initial records
-		$this->view->category = $product->fetchAllRecords("category_master");
+		$this->view->category = $product_master->getCateTree();
 		
 		//Get Request
 		$request = $this->getRequest();
+		
+		$translate = Zend_Registry::get('Zend_Translate');
 		
 		if($request->isPost()){
 		
@@ -152,8 +155,51 @@ class User_ProductsController extends UserCommonController
 				$range_value = $range;
 			} 
 			
+			$counter = 0;
+			
+			foreach( $data as  $key => $val ) 
+			{
+			
+				if( $val != '' ) {
+					
+					$counter++;
+					
+				}
+			}
+			
+			
+			if( $range[0] != '' && $range[1] != '' ) {
+			
+				$counter++;
+			}
+			
+			
+			if( $counter > 0 ) {
+				
+				echo "here"; die;
+				
+				if( $search_error == '' ) {
+				
+					$result = $product->SearchProducts($data,$range_value);
+				
+				} else {
+				
+					$this->view->Admin_EMessage = $search_error;
+					
+					$result = $product->GetAllDistinctProducts();
+					
+				}
+			
+			} else {
+			
+				$mysession->Admin_EMessage = $translate->_('No_Search_Criteria');
+			
+				$result = $product->GetAllDistinctProducts();
+				
+			}
+			
 			$this->view->Search_Message = $search_error;
-			$result = $product->SearchProducts($data,$range_value);
+			
 			
 		} elseif($is_search == "0") {
 			// Clear serch option
@@ -224,6 +270,8 @@ class User_ProductsController extends UserCommonController
 		// Initial values
 		$this->view->weight = $product->fetchAllRecords("weight_master");
 		$this->view->length = $product->fetchAllRecords("length_master");
+		$this->view->taxrate_class = $product->fetchAllRecords("tax_rate_class","user_id = ".$mysession->User_Id);
+		
 		$this->view->language = $lang->getAllLanguages();
 		$category = $product->fetchAllRecords("category_master");
 		
@@ -255,6 +303,7 @@ class User_ProductsController extends UserCommonController
 			$data['weight_unit_id']=$filter->filter(trim($this->_request->getPost('weight_unit_id')));
 			$data['length']=$filter->filter(trim($this->_request->getPost('length')));
 			$data['length_unit_id']=$filter->filter(trim($this->_request->getPost('length_unit_id')));
+			$data['tax_rate_class_id']=$filter->filter(trim($this->_request->getPost('tax_rate_class_id')));
 			$data['width']=$filter->filter(trim($this->_request->getPost('width')));
 			$data['depth']=$filter->filter(trim($this->_request->getPost('depth')));
 			$data['available_qty']=$filter->filter(trim($this->_request->getPost('available_qty')));
@@ -297,6 +346,7 @@ class User_ProductsController extends UserCommonController
 			if($data['weight_unit_id'] == '') {
 				$addErrorMessage[] = $translate->_('Err_Product_Weight_Unit');								
 			} 
+			
 			if($data['length'] == '') {
 			
 				$addErrorMessage[] = $translate->_('Err_Product_Length');	
@@ -525,6 +575,7 @@ class User_ProductsController extends UserCommonController
 		$this->view->length = $product->fetchAllRecords("length_master");
 		$this->view->category = $product->fetchAllRecords("category_master");
 		$this->view->language = $lang->getAllLanguages();
+		$this->view->taxrate_class = $product->fetchAllRecords("tax_rate_class","user_id = ".$mysession->User_Id);
 		
 		// Fetch records 
 		if($product_id > 0 && $product_id != "") {
@@ -583,6 +634,7 @@ class User_ProductsController extends UserCommonController
 					$data['weight_unit_id']=$filter->filter(trim($this->_request->getPost('weight_unit_id')));
 					$data['length']=$filter->filter(trim($this->_request->getPost('length')));
 					$data['length_unit_id']=$filter->filter(trim($this->_request->getPost('length_unit_id')));
+					$data['tax_rate_class_id']=$filter->filter(trim($this->_request->getPost('tax_rate_class_id')));
 					$data['width']=$filter->filter(trim($this->_request->getPost('width')));
 					$data['depth']=$filter->filter(trim($this->_request->getPost('depth')));
 					$data['available_qty']=$filter->filter(trim($this->_request->getPost('available_qty')));

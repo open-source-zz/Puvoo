@@ -33,6 +33,7 @@
 		&lt;depth&gt; DECIMAL &lt;/depth&gt;
 		&lt;weight_unit&gt; &lt;![CDATA[TEXT]]&gt; &lt;/weight_unit&gt;
 		&lt;length_unit&gt; &lt;![CDATA[TEXT]]&gt; &lt;/length_unit&gt;
+		&lt;taxrate_class&gt; &lt;INT&gt; &lt;/taxrate_class&gt;
 		&lt;start_sales&gt; BOOLEAN &lt;/start_sales&gt;
 		&lt;available_qty&gt; INT &lt;/available_qty&gt;
 		&lt;main_image&gt; URL &lt;/main_image&gt;
@@ -169,6 +170,12 @@
 		<td valign="top">TEXT</td>
 		<td valign="top"><?php echo $this->Translate("Api_Edit_Product_Input_O_Length_Unit"); ?></td>
 		<td ><?php echo $this->Translate("Api_Edit_Product_Input_M_Length_Unit"); ?></td>
+	</tr>
+	<tr>
+		<td valign="top">taxrate_class</td>
+		<td valign="top">INT</td>
+		<td valign="top"><?php echo $this->Translate('Api_Edit_Product_Input_O_Taxrate_Class'); ?></td>
+		<td ><?php echo $this->Translate('Api_Edit_Product_Input_M_Taxrate_Class'); ?>	</td>
 	</tr>
 	<tr>
 		<td valign="top" >start_sales</td>
@@ -411,6 +418,7 @@ $data = "&lt;Products&gt;\r\n"
 	. "&lt;depth&gt;10&lt;/depth&gt;\r\n"
 	. "&lt;weight_unit&gt;&lt;![CDATA[Kgs]]&gt;&lt;/weight_unit&gt;\r\n"
 	. "&lt;length_unit&gt;&lt;![CDATA[Mt]]&gt;&lt;/length_unit&gt;\r\n"
+	. "&lt;taxrate_class&gt;&lt;!1&gt;&lt;/taxrate_class&gt;\r\n"
 	. "&lt;start_sales&gt;0&lt;/start_sales&gt;\r\n"
 	. "&lt;available_qty&gt;10&lt;/available_qty&gt;\r\n"
 	. "&lt;main_image&gt;http://c69282.r82.cf3.rackcdn.com/PALLINE.jpg&lt;/main_image&gt;\r\n"

@@ -2,8 +2,8 @@
 <div class="Breadcrumb" id="PageBreadcrumb">
 	<ul>
 	   <li class="Home SecondLast"><a href="<?php echo SITE_URL; ?>user/"><?php echo $this->Translate("User_Home"); ?></a></li>
-	   <li class="Last1"><a href="<?php echo SITE_URL; ?>user/taxrates"><?php echo $this->Translate("Taxes_Rates"); ?></a></li>
-	   <li class="Last"><span><?php echo $this->Translate("Taxes_Rates_Add"); ?></span></li>
+	   <li class="Last1"><a href="<?php echo SITE_URL; ?>user/taxrates"><?php echo $this->Translate("Tax_Rate_Zone"); ?></a></li>
+	   <li class="Last"><span><?php echo $this->Translate("Tax_Zone_Add"); ?></span></li>
 	</ul>
 </div>
 <!--  Crumb  end -->
@@ -11,7 +11,7 @@
 
 <div class="BodyContainer DashboardContainer" style="text-align:left;"> 
 	<div class="Heading1">
-		<?php echo $this->Translate('Taxes_Management'); ?>
+		<?php echo $this->Translate('Zone_Management'); ?>
 	</div>
 	
 	<?php if(count($this->addErrorMessage) > 0 ) { ?>	
@@ -28,7 +28,7 @@
 	<form method="post" name="add_form" id="add_form" >
 		<table class="Panel" style="margin-top:10px;">
 			<tr>
-				<td class="Heading2" colspan="2"><?php echo $this->Translate('Taxes_Rates_Add'); ?></td>
+				<td class="Heading2" colspan="2"><?php echo $this->Translate('Tax_Zone_Add'); ?></td>
 			</tr>
 			<tr>
 				<td colspan="2">
@@ -36,7 +36,7 @@
 					<table class="Panel" width="100%" cellspacing="0" cellpadding="0">
 						<tr>
 							<td class="FieldLabel">
-								<?php echo $this->Translate('Taxe_Name'); ?>:
+								<?php echo $this->Translate('Zone_Name'); ?>:
 							</td>
 							<td>
 								<input value="<?php echo $this->data['tax_name']; ?>" type="text" name="tax_name" id="tax_name" class="Field250" />
@@ -56,7 +56,7 @@
 								</div>
 							</td>
 						</tr>
-						<tr><td height="5"></td></tr>
+						<!--<tr><td height="5"></td></tr>
 						 <tr>
 							<td class="FieldLabel">
 								<?php echo $this->Translate('Tax_Rate'); ?>:
@@ -65,7 +65,7 @@
 							  <input value="<?php echo $this->data['rate']; ?>" type="text" name="tax_price" id="tax_price" class="Field250" />(%)
 							  <span></span>
 						  </td>
-						</tr>
+						</tr>-->
 						<tr><td height="5"></td></tr>						
 						<tr>
 						   	<td colspan="2">

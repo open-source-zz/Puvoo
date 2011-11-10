@@ -143,9 +143,10 @@ class Fb_IndexController extends FbCommonController
 		 $Product = new Models_Product();
 
 		 $Common = new Models_Common();
+		 
+		 $likes = new Models_Like();
 
- 
-
+ 			
  		 //$this->view->FeaturedProduct = $Product->GetFeaturedSeller();
 
 		 $this->view->FeaturedProduct = array();
@@ -153,24 +154,94 @@ class Fb_IndexController extends FbCommonController
 		 
 
 		 /// Best Seller Products
-
+		
+ 		 $bestSellerProd = $Product->GetBestSelllerProduct();
 		 
-
-		 $bestSellerProd = $Product->GetBestSelllerProduct();
-
- 
-
- 		 $this->view->bestSeller = $bestSellerProd;
+		 //
+		 foreach($bestSellerProd as $prokey => $val)
+		 {
+					 
+			 if($val['tax_zone'] != '')
+			 {		 
+				$taxzone = explode(',',$val['tax_zone']);
+			 }else{
+				$taxzone = explode(',',$mysession->default_taxZone);
+			 }
+			
+			 $tax_rate = $Common->TaxCalculation($taxzone,$val['tax_rate']);
+  			 
+			 $bestSellerProd[$prokey]['converted_price'] = round((($val['product_price'] +(($val['product_price'] * $tax_rate)/100))* $mysession->currency_value)/$val['currency_value'],2);
+			 
+		 }
+		
+		$this->view->bestSeller = $bestSellerProd;
 
 		 
 
 		 // Friens Like
-
-		 $FrdsLikeProd = $Product->GetFrndsLikeProduct();
-
-		 $this->view->frndslike = $FrdsLikeProd;
+		 
+		 if(FACEBOOK_USERID != '' ) {
+		
+			$facebook = new Facebook(array(
+	
+					  'appId'  => FACEBOOK_APP_API_ID,
+	
+					  'secret' => FACEBOOK_APP_SECRET_KEY,
+	
+					  'cookie' => true,
+	
+				));
+		
+		
+			$uprofile = $facebook->api('/me/friends'); 
+					
+			$friends = array();
+			
+		
+			foreach( $uprofile["data"] as $key => $val )
+	
+			{
+	
+				$friends[] = $val["id"];
+	
+			}
 
 		
+
+			$frined_list = implode(",",$friends);
+
+		
+			if( $frined_list != '' ){
+			
+				$FrdsLikeProd = $Category->getAllFriendLikes($frined_list); 
+				
+				 foreach($FrdsLikeProd as $prokey => $val)
+				 {
+							 
+					 if($val['tax_zone'] != '')
+					 {		 
+					 	$taxzone = explode(',',$val['tax_zone']);
+					 }else{
+					 	$taxzone = explode(',',$mysession->default_taxZone);
+					 }
+					
+					 $tax_rate = $Common->TaxCalculation($taxzone,$val['tax_rate']);
+					 
+					 $FrdsLikeProd[$prokey]['converted_price'] = round((($val['product_price'] +(($val['product_price'] * $tax_rate)/100))* $mysession->currency_value)/$val['currency_value'],2);
+					 
+				 }
+ 				
+				$this->view->frndslike = $FrdsLikeProd;
+			}
+		
+		} else {
+		
+			$this->view->frndslike = array();
+		
+		}
+			/*$FrdsLikeProd = $Product->GetFrndsLikeProduct();
+			
+			$this->view->frndslike = $FrdsLikeProd;*/
 
 		 /// Facebook banner
 
@@ -203,7 +274,7 @@ class Fb_IndexController extends FbCommonController
 
 		$master = new Models_AdminMaster();
 		
-		$Commin = new Models_Common();
+		$Common = new Models_Common();
 
 		$Definitions = new Models_LanguageDefinitions();
 
@@ -292,8 +363,7 @@ class Fb_IndexController extends FbCommonController
 
 				if($counter > 0) {
 
-					print_r($prod_ids);die;
-
+				
 					$Definitions->executeQuery($sql);
  					
 					$Common->UpdateProductLikeCount($prod_ids);
@@ -334,8 +404,8 @@ class Fb_IndexController extends FbCommonController
 
 		$this->_helper->layout()->disableLayout();
 
+		$Common = new Models_Common();
 		
-
 		$master = new Models_AdminMaster();
 
 		$filter = new Zend_Filter_StripTags();	

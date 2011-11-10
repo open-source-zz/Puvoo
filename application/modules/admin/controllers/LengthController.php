@@ -106,6 +106,8 @@
 		//Get Request
 		$request = $this->getRequest();
 		
+		$translate = Zend_Registry::get('Zend_Translate');
+		
 		if($request->isPost()){
 		
 			$page_no = $request->getPost('page_no');
@@ -119,8 +121,33 @@
 			$filter = new Zend_Filter_StripTags();	
 			$data['length_unit_name']=$filter->filter(trim($this->_request->getPost('length_unit_name'))); 
 			$data['length_unit_key']=$filter->filter(trim($this->_request->getPost('length_unit_key'))); 
+			
+			
 			//Get search Weight
-			$result = $length->SearchRecords($data);
+			
+			$counter = 0;
+			
+			foreach( $data as  $key => $val ) 
+			{
+			
+				if( $val != '' ) {
+					
+					$counter++;
+					
+				}
+			}
+			
+			if( $counter > 0 ) {
+			
+				$result = $length->SearchRecords($data);
+			
+			} else  {
+			
+				$mysession->Admin_EMessage = $translate->_('No_Search_Criteria');
+			
+				$result = $length->GetAllRecords();
+			
+			} 
 			
 		} elseif($is_search == "0") {
 			// Clear serch option

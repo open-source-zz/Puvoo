@@ -215,6 +215,7 @@
 
 <script language="javascript" type="text/javascript">
 window.onload = createUploader;
+
 var siteurl = "<?php echo SITE_URL; ?>";
 var image_path = "<?php echo IMAGES_PATH; ?>/user/";
 var product_id = "<?php echo $this->product_id; ?>";
@@ -225,14 +226,50 @@ var UPDATE = "<?php echo $this->Translate('Update'); ?>";
 var CANCEL = "<?php echo $this->Translate('Cancel'); ?>"; 
 var PRODUCT_ADD_OPTION = "<?php echo $this->Translate('Product_Add_Option'); ?>"; 
 var PRODUCT_DELETE_OPTION = "<?php echo $this->Translate('Product_Delete_Option'); ?>"; 
+var ERR_PRODUCT_NAME = "<?php echo $this->Translate('Err_Product_Name'); ?>";  
+var ERR_PRODUCT_DESC = "<?php echo $this->Translate('Err_Product_Desc'); ?>";  
+var ERR_PRODUCT_PRICE = "<?php echo $this->Translate('Err_Product_Price'); ?>";
+var ERR_PRODUCT_INVALID_PRICE = "<?php echo $this->Translate('Err_Product_Invalid_Price'); ?>";
+var ERR_PRODUCT_CODE = "<?php echo $this->Translate('Err_Product_Code'); ?>";
+var ERR_PRODUCT_WEIGHT = "<?php echo $this->Translate('Err_Product_Weight'); ?>";
+var ERR_PRODUCT_INVALID_WEIGHT = "<?php echo $this->Translate('Err_Product_Invalid_Weight'); ?>";
+var ERR_PRODUCT_WEIGHT_UNIT = "<?php echo $this->Translate('Err_Product_Weight_Unit'); ?>" ; 
+var ERR_PRODUCT_LENGTH = "<?php echo $this->Translate('Err_Product_Length'); ?>" ; 
+var ERR_PRODUCT_INVALID_LENGTH = "<?php echo $this->Translate('Err_Product_Invalid_Length'); ?>" ; 
+var ERR_PRODUCT_LENGTH_UNIT = "<?php echo $this->Translate('Err_Product_Length_Unit'); ?>" ; 
+var ERR_PRODUCT_WIDTH = "<?php echo $this->Translate('Err_Product_Width'); ?>" ; 
+var ERR_PRODUCT_INVALID_WIDTH = "<?php echo $this->Translate('Err_Product_Invalid_Width'); ?>" ; 
+var ERR_PRODUCT_DEPTH = "<?php echo $this->Translate('Err_Product_Depth'); ?>" ; 
+var ERR_PRODUCT_INVALID_DEPTH = "<?php echo $this->Translate('Err_Product_Invalid_Depth'); ?>" ; 
+var ERR_PRODUCT_QUANTITY = "<?php echo $this->Translate('Err_Product_Quantity'); ?>" ; 
+var ERR_PRODUCT_INVALID_QUANTITY = "<?php echo $this->Translate('Err_Product_Invalid_Quantity'); ?>" ; 
+var ERR_PRODUCT_START_SALE = "<?php echo $this->Translate('Err_Product_Start_Sales'); ?>" ; 
+var ERR_PRODUCT_OPTION_TITLE = "<?php echo $this->Translate('Err_Product_Option_Title'); ?>";
+var ERR_PRODUCT_OPTION_DETAIL = "<?php echo $this->Translate('Err_Product_Option_Detail'); ?>";
+var ERR_PRODUCT_PRIMARY_IMAGE = "<?php echo $this->Translate('Err_Product_Primary_Image'); ?>";
+var ERR_PRODUCT_PRIMARY_IMAGE_OTHER = "<?php echo $this->Translate('Err_Product_Primary_Image_Other'); ?>"; 
 var ERR_PRODUCT_OPTION_VALUE_NAME = "<?php echo $this->Translate('Err_Product_Option_Value_Name'); ?>";  
 var ERR_PRODUCT_OPTION_VALUE_INVALID_PRICE = "<?php echo $this->Translate('Err_Product_Option_Value_Invalid_Price'); ?>";
 var ERR_PRODUCT_OPTION_VALUE_INVALID_QUANTITY = "<?php echo $this->Translate('Err_Product_Option_Value_Invalid_Quantity'); ?>" ;
 var ERR_PRODUCT_OPTION_VALUE_INVALID_WEIGHT = "<?php echo $this->Translate('Err_Product_Option_Value_Invalid_Weight'); ?>";
 var PRODUCT_OPTION_VALUE_EDIT_SUCCESS = "<?php echo $this->Translate('Product_Option_Value_Edit_Success'); ?>";
+var ERR_PRODUCT_PRIMARY_AVAILABLE_DATE = "<?php echo $this->Translate('Err_Product_Available_Date'); ?>"; 
+var ERR_PRODUCT_PRIMARY_EXPIRATION_DATE = "<?php echo $this->Translate('Err_Product_Expiration_Date'); ?>"; 
+var ERR_PRODUCT_PRIMARY_PROMOTION_START_DATE = "<?php echo $this->Translate('Err_Product_Promotion_Start_Date'); ?>"; 
+var ERR_PRODUCT_PRIMARY_PROMOTION_END_DATE = "<?php echo $this->Translate('Err_Product_Promotion_End_Date'); ?>"; 
+var ERR_PRODUCT_PRIMARY_INVALID_DATE = "<?php echo $this->Translate('Err_Product_Invalid_Date'); ?>"; 
+var ERR_PRODUCT_DISCOUNT = "<?php echo $this->Translate('Err_Product_Discount'); ?>"; 
+var ERR_PRODUCT_INVALID_DISCOUNT = "<?php echo $this->Translate('Err_Product_Invalid_Discount'); ?>"; 
+var ERR_PRODUCT_RANGE_DISCOUNT = "<?php echo $this->Translate('Err_Product_Range_Discount'); ?>"; 
 
 </script>
 
+<div id="dialog-confirm" title="<?php echo $this->Translate('Confirm_Delete_Product_Option_Title'); ?>" style="display:none;">
+	<div style="text-align:left;">
+		<span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
+		<?php echo $this->Translate('Confirm_Delete_Product_Option'); ?>
+	</div>
+</div>
 
 <div id="dialog-confirm-delete-pod" title="<?php echo $this->Translate('Confirm_Delete_Product_Option_Value_Title'); ?>" style="display:none;">
 	<div style="text-align:left;">

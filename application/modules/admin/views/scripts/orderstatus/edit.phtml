@@ -1,8 +1,8 @@
 <div class="Breadcrumb" id="PageBreadcrumb">
 	<ul>
 	   <li class="Home SecondLast"><a href="<?php echo SITE_URL; ?>admin/"><?php echo $this->Translate("Administration"); ?></a></li>
-	   <li class="Last1"><a href="<?php echo SITE_URL; ?>admin/banner"><?php echo $this->Translate('Banner'); ?></a></li>
-	   <li class="Last"><span><?php echo $this->Translate('Edit_Banner'); ?></span></li>
+	   <li class="Last1"><a href="<?php echo SITE_URL; ?>admin/orderstatus"><?php echo $this->Translate('Order_Status'); ?></a></li>
+	   <li class="Last"><span><?php echo $this->Translate('Edit_Status'); ?></span></li>
 	</ul>
 </div>
 
@@ -11,7 +11,7 @@
 
 <div class="BodyContainer DashboardContainer" style="text-align:left;"> 
 	<div class="Heading1">
-		<?php echo $this->Translate('Manage_Facebook_Banner'); ?>
+		<?php echo $this->Translate('Manage_Order_Status'); ?>
 	</div>
 	
 	<?php if(count($this->editErrorMessage) > 0 ) { ?>	
@@ -28,7 +28,7 @@
 	<form method="post" name="edit_form" id="edit_form" enctype="multipart/form-data" >
 		<table class="Panel" style="margin-top:10px;">
 			<tr>
-				<td class="Heading2" colspan="2"><?php echo $this->Translate('Edit_Banner'); ?></td>
+				<td class="Heading2" colspan="2"><?php echo $this->Translate('Edit_Status'); ?></td>
 			</tr>
 			<tr>
 				<td colspan="2">
@@ -37,7 +37,7 @@
 						
 						 <tr>
 							<td class="FieldLabel">
-								<?php echo $this->Translate('Status_Value'); ?>
+								<?php echo $this->Translate('Order_Status_Value'); ?>
 							</td>
 							<td>
 								<input type="text" name="status_value" id="status_value" class="Field250"  value="<?php echo $edit_record['status_value']; ?>"/>

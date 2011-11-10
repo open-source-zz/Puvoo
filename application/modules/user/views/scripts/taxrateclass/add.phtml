@@ -1,0 +1,129 @@
+<!--  Crumb  Start -->
+<div class="Breadcrumb" id="PageBreadcrumb">
+	<ul>
+	   <li class="Home SecondLast"><a href="<?php echo SITE_URL; ?>user/"><?php echo $this->Translate("User_Home"); ?></a></li>
+	   <li class="Last1"><a href="<?php echo SITE_URL; ?>user/taxrates"><?php echo $this->Translate("Tax_Class"); ?></a></li>
+	   <li class="Last"><span><?php echo $this->Translate("Tax_Class_Add"); ?></span></li>
+	</ul>
+</div>
+<!--  Crumb  end -->
+
+
+<div class="BodyContainer DashboardContainer" style="text-align:left;"> 
+	<div class="Heading1">
+		<?php echo $this->Translate('Tax_Class_Management'); ?>
+	</div>
+	
+	<?php if(count($this->addErrorMessage) > 0 ) { ?>	
+		<div class="ui-widget" style="margin-top:10pt; width:99%;">
+			<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
+				<?php foreach($this->addErrorMessage as $key => $val ) { ?>
+					<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+					<strong><?php echo $val; ?></strong></p>
+				<?php } ?>
+			</div>
+		</div>
+	<?php } ?>	
+	
+	<form method="post" name="add_form" id="add_form" >
+		<table class="Panel" style="margin-top:10px;">
+			<tr>
+				<td class="Heading2" colspan="2"><?php echo $this->Translate('Taxes_Rates_Add'); ?></td>
+			</tr>
+			<tr>
+				<td colspan="2">
+				<div id="div0" style="padding-bottom:5px">
+					<table class="Panel" width="100%" cellspacing="0" cellpadding="0">
+						<tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Taxe_Name'); ?>:
+							</td>
+							<td>
+								<input value="<?php echo $this->data['tax_rate_name']; ?>" type="text" name="tax_rate_name" id="tax_rate_name" class="Field250" />
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						 <tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Tax_Rate'); ?>:
+							</td>
+						  <td>
+							  <input value="<?php echo $this->data['tax_rate']; ?>" type="text" name="tax_rate" id="tax_rate" class="Field250" />(%)
+							  <span></span>
+						  </td>
+						</tr>
+						<tr><td height="5"></td></tr>
+						<tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate("Tax_Zone"); ?>:
+							</td>
+							<td>
+								<select name="tax_zone" id="tax_zone" multiple="multiple"  >
+									<? foreach($this->zone as $zone){ ?>
+										<option value="<? echo $zone['tr']; ?>"><? echo $zone['tn']; ?></option>	
+									<? } ?>
+									
+								</select>
+								<input type="hidden" name="multiselect_tax_zone_value" id="multiselect_tax_zone_value" value="">
+								<span></span>
+							</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td class="FieldLabel">
+								<?php echo $this->Translate('Is_Default'); ?>:
+							</td>
+							<td>
+								<span>
+									<input type="radio" name="is_default" id="is_default" class="" value="1" <?php echo (($this->data['is_default'] == '1' || $this->data['is_default'] == '') ? 'checked' : '' ); ?> />
+									<?php echo $this->Translate('L_Yes'); ?>&nbsp;
+									<input type="radio" name="is_default"  value="0" <?php echo ($this->data['is_default'] == '0' ? 'checked' : '' ); ?> />
+									<?php echo $this->Translate('L_No'); ?>
+								</span>
+								<span></span>
+							</td>
+						</tr>
+						<tr><td height="5"></td></tr>						
+						<tr>
+						   	<td colspan="2">
+								<input type="submit" id="anything" onclick="Javascript: return ValidateAddRatesClassFrom()"  value="<?php echo $this->Translate('Submit'); ?>" />
+								<input type="button" id="anything"  value="<?php echo $this->Translate('Cancle'); ?>" onclick="window.location='<?php echo $this->site_url; ?>'"/>
+						   </td>
+						</tr>
+					</table>
+				</div>
+				</td>
+			</tr>
+		</table>   
+	</form>            
+</div> 
+
+<!--     JS Global Variable for the language    -->
+
+<script language="javascript" type="text/javascript">
+	var site_url = "<?php echo SITE_URL; ?>";
+	var SAVE = "<?php echo $this->Translate('Save'); ?>";
+	var CLEAR = "<?php echo $this->Translate('Clear'); ?>";
+	var ERR_TAX_NAME = "<?php echo $this->Translate('Err_Tax_Name'); ?>"; 
+	var ERR_TAX_ZONE = "<?php echo $this->Translate('Err_Tax_class_Zone'); ?>";
+	var ERR_TAX_PRICE = "<?php echo $this->Translate('Err_Tax_Price'); ?>";	
+	var ERR_TAX_PRICE_INVALID = "<?php echo $this->Translate('Err_Tax_Price_Invalid'); ?>";	
+	var ERR_SHIPPING_SELECT_COUNTRY = "<?php echo $this->Translate('Err_Shipping_Select_Country'); ?>";
+	var ERR_SHIPPING_SELECT_STATE = "<?php echo $this->Translate('Err_Shipping_Select_State'); ?>";
+	var ERR_COUNTRY_EXIST = "<?php echo $this->Translate('Err_Country_Exists'); ?>";
+	var ERR_STATE_EXIST = "<?php echo $this->Translate('Err_State_Exists'); ?>";
+
+</script>
+
+
+
+<script language="javascript" type="text/javascript">
+
+$(function(){
+   $("#tax_zone").multiselect({
+   		header: false,
+		noneSelectedText: "<?php echo $this->Translate('Tax_Select_Zone'); ?>"
+	}); 
+});
+</script>

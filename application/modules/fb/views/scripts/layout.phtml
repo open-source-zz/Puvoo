@@ -26,7 +26,9 @@
 <script type="text/javascript" src="<?php echo JS_FB_PATH ?>/functions.js?r=<?php echo $this->random;?>"></script>
 <script type="text/javascript" src="<?php echo JS_FB_PATH ?>/search.js?r=<?php echo $this->random;?>"></script>
 <script type="text/javascript" src="<?php echo JS_FB_PATH ?>/ddlevelsmenu.js?r=<?php echo $this->random;?>"></script>
-
+<script type="text/javascript" >
+	<?php echo GOOGLE_ANALYTICAL_CODE; ?>
+</script>
 <style type="text/css" id="page-css">
 			/* Styles specific to this particular page */
 			.scroll-pane
@@ -175,7 +177,7 @@ function sendRequestToManyRecipients()
 			FB.ui({
 				method: 'apprequests',
 				message: '<?php echo $this->Translate("Invite_Friend_Send_Request_Msg"); ?>',
-				exclude_ids: [data]
+				/*exclude_ids: [data]*/
 			}, requestCallback);
 		}
 	});	

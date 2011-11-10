@@ -37,7 +37,7 @@
 								<?php echo $this->Translate('Language'); ?>
 							</td>
 							<td>
-								<select name="language_id" id="language_id">
+								<select name="language_id" id="language_id" class="Field250">
 									<?php for($i = 0; $i < count($this->languages); $i++){ ?>
 										<option value="<?php echo $this->languages[$i]['language_id'] ?>" <?php echo ($this->data["language_id"] == $this->languages[$i]['language_id'] ? "selected" : ""); ?> ><?php echo $this->languages[$i]['name'] . " - " .  $this->languages[$i]['code']?></option>
 									<?php } ?>
@@ -51,7 +51,7 @@
 								<?php echo $this->Translate('Group'); ?>:
 							</td>
 							<td>
-								<select name="content_group" id="content_group">
+								<select name="content_group" id="content_group" class="Field250">
 									<option value="ADMIN" <?php echo ($this->data["content_group"] == 'ADMIN' ? "selected" : ""); ?> >ADMIN</option>
 									<option value="DEFAULT" <?php echo ($this->data["content_group"] == 'DEFAULT' ? "selected" : ""); ?> >DEFAULT</option>
 									<option value="USER" <?php echo ($this->data["content_group"] == 'USER' ? "selected" : ""); ?> >USER</option>

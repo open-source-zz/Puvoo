@@ -127,14 +127,18 @@ class Models_Weightunit
 	 **/
 	
 	
-	public function SearchWeightunit($data)
+	public function SearchWeightunit($value)
 	{
 		$db = $this->db;
 		
 		$sql  = "";
+		
 		$sql .= "SELECT * FROM weight_unit_conversion";
+		
+		$sql.=" WHERE value = '". $value . "'"; 
+		
 		// Check search array is null or not
-		if(count($data) > 0 && $data != "") {
+		/*if(count($data) > 0 && $data != "") {
 			$count = 0;		
 			foreach($data as $key => $val) {
 				if( $count == 0 ) {
@@ -158,7 +162,8 @@ class Models_Weightunit
 		} else {
 		
 			$sql .= " WHERE 1=1";
-		}
+		}*/
+		
 		
 		$result =  $db->fetchAll($sql);		
 		return $result;		

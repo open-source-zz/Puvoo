@@ -3,6 +3,49 @@
 
 /////////////////  For the TAX RATES   //////////////////////////
 
+function ValidateAddRatesClassFrom()
+{
+	
+	var temp = document.getElementsByName("multiselect_tax_zone");
+	
+	var cate_string = '';
+	
+	for(var i=0; i< temp.length; i++)
+	{
+		if(temp[i].checked)
+		{
+			cate_string += temp[i].value+',';
+		}
+	}
+	
+	$('#multiselect_tax_zone_value').val(cate_string);
+	$("#add_form").validate({
+							
+		rules: {	tax_rate_name: {  required: true  }, 
+					multiselect_tax_zone_value: { required: true },
+					tax_rate: { required: true, number: true },
+				},
+			   
+		messages:{	tax_rate_name: {  required: ERR_TAX_NAME  }, 
+					multiselect_tax_zone_value: {  required: ERR_TAX_ZONE  },
+					tax_rate: {  required: ERR_TAX_PRICE, number: ERR_TAX_PRICE_INVALID  },
+				},
+				 
+		errorPlacement: function(error, element) 
+		{ 
+			if ( element.is(":radio") ) { 
+			
+				error.appendTo (element.parent().next() ); 
+				
+			} else {
+				
+				error.appendTo( element.next() ); 
+				
+			}
+		}
+	});
+	
+}
 
 function ValidateAddRatesFrom()
 {
@@ -33,6 +76,49 @@ function ValidateAddRatesFrom()
 		}
 	});
 	
+}
+
+function ValidateEditRateClassFrom()
+{
+	var temp = document.getElementsByName("multiselect_tax_zone");
+	
+	var cate_string = '';
+	
+	for(var i=0; i< temp.length; i++)
+	{
+		if(temp[i].checked)
+		{
+			cate_string += temp[i].value+',';
+		}
+	}
+	
+	$('#multiselect_tax_zone_value').val(cate_string);
+	
+	$("#edit_form").validate({
+							
+		rules: {	tax_rate_name: {  required: true  }, 
+					multiselect_tax_zone_value: { required: true },
+					tax_rate: { required: true, number: true },
+				},
+			   
+		messages:{	tax_rate_name: {  required: ERR_TAX_NAME  }, 
+					multiselect_tax_zone_value: {  required: ERR_TAX_ZONE  },
+					tax_rate: {  required: ERR_TAX_PRICE, number: ERR_TAX_PRICE_INVALID  },
+				},
+				 
+		errorPlacement: function(error, element) 
+		{ 
+			if ( element.is(":radio") ) { 
+			
+				error.appendTo (element.parent().next() ); 
+				
+			} else {
+				
+				error.appendTo( element.next() ); 
+				
+			}
+		}
+	});
 }
 
 function ValidateEditRatesFrom()
@@ -144,7 +230,7 @@ function AddCountry()
 			var country_result = $("#Zone_Result").html();
 			if(country_result != "") {
 				
-				$("#Zone_Result").html(country_result+","+array[1]);
+				$("#Zone_Result").html(country_result+";"+array[1]);
 				
 			} else {
 				
@@ -192,7 +278,7 @@ function AddCountryState()
 			
 		if(string != '' ) {
 	
-			var state_array = country_array[current_country].split(",");
+			var state_array = country_array[current_country].split(";");
 			
 			for(tmp in state_array)
 			{
@@ -205,7 +291,7 @@ function AddCountryState()
 			if (flag != 1 ) {
 				country_array[current_country] = string+','+state;	
 				var country_result = $("#Zone_Result").html();
-				$("#Zone_Result").html(country_result+":"+state);	
+				$("#Zone_Result").html(country_result+","+state);	
 				
 			} else {
 				alert(ERR_STATE_EXIST);

@@ -158,6 +158,7 @@ function createUploader(){
 			action: siteurl+'user/image/index/?id='+product_id,
 			debug: true,
 			actionType:'edit',
+			allowedExtensions:['jpg','png','gif','jpeg'],
 			multiple: true
 		});  
 }
@@ -272,14 +273,21 @@ function ValidateProductOptionFrom()
 				var counter = 0;
 				for( tmp in ProductOptionArray ) 
 				{ 
-					if( counter == 0 ) {
-						ValueString += tmp+"="+$("#product_option_form #prod_"+tmp).val();
+					if( tmp == "product_id" ) {
+						
+						ValueString += "&product_id="+$("#product_id").val();						
+					
 					} else {
-						ValueString += "&"+tmp+"="+$("#product_option_form #prod_"+tmp).val();
+						
+						if( counter == 0 ) {
+							ValueString += tmp+"="+$("#product_option_form #prod_"+tmp).val();
+						} else {
+							ValueString += "&"+tmp+"="+$("#product_option_form #prod_"+tmp).val();
+						}
 					}
 					counter++;
 				}
-				ValueString += "&product_id="+$("#detail_edit_form #product_id").val();
+				
 				UpdateProductOptionValue(ValueString);
 				$( "#dialog-product-option" ).dialog( "close" );
 			}
@@ -456,7 +464,7 @@ function AddMoreOptionValue(id)
 	});	
 	
 	$("#dialog-product-option-add").next().find(".ui-dialog-buttonset button:first-child span").html(ADD);
-	$("#dialog-product-option-add").next().find(".ui-dialog-buttonset button:nth-child(2) span").html(CANCLE);
+	$("#dialog-product-option-add").next().find(".ui-dialog-buttonset button:nth-child(2) span").html(CANCEL);
 }
 
 function ValidateAddProductOptionFrom(Option_Id)
@@ -570,5 +578,5 @@ function DeleteProductOptionValue(id)
 	});	
 	
 	$("#dialog-confirm-delete-pod").next().find(".ui-dialog-buttonset button:first-child span").html(DELETE);
-	$("#dialog-confirm-delete-pod").next().find(".ui-dialog-buttonset button:nth-child(2) span").html(CANCLE);
+	$("#dialog-confirm-delete-pod").next().find(".ui-dialog-buttonset button:nth-child(2) span").html(CANCEL);
 }

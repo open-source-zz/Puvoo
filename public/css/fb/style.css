@@ -1207,6 +1207,7 @@ color:#CCCCCC;
 	border-left: 1px solid #d4d4d4;
 	padding-left: 10px;
 	z-index:7;
+	margin-bottom:10px;
 }
 
 .topNav ul li.women div ul { min-height:200px; height:auto !important; height:200px; }

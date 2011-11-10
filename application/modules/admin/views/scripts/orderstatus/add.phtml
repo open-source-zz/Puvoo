@@ -2,14 +2,14 @@
 	<ul>
 	   <li class="Home SecondLast"><a href="<?php echo SITE_URL; ?>admin/"><?php echo $this->Translate("Administration"); ?></a></li>
 	   <li class="Last1"><a href="<?php echo SITE_URL; ?>admin/orderstatus"><?php echo $this->Translate('Order_Status'); ?></a></li>
-	   <li class="Last"><span><?php echo $this->Translate('Add_Banner'); ?></span></li>
+	   <li class="Last"><span><?php echo $this->Translate('Add_Status'); ?></span></li>
 	</ul>
 </div>
 
 
 <div class="BodyContainer DashboardContainer" style="text-align:left;"> 
 	<div class="Heading1">
-		<?php echo $this->Translate('Manage_Facebook_Banner'); ?>
+		<?php echo $this->Translate('Manage_Order_Status'); ?>
 	</div>
 	
 	<?php if(count($this->addErrorMessage) > 0 ) { ?>	
@@ -34,7 +34,7 @@
 					<table class="Panel" width="100%" cellspacing="0" cellpadding="0">
 						<tr>
 							<td class="FieldLabel">
-								<?php echo $this->Translate('Status_Value'); ?>
+								<?php echo $this->Translate('Order_Status_Value'); ?>
 							</td>
 							<td>
 								<input type="text" name="status_value" id="status_value" class="Field250" value="<?php echo $this->data['status_value']; ?>" />

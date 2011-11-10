@@ -96,6 +96,9 @@ class Fb_ProductController extends FbCommonController
 		$db = Zend_Registry::get('Db_Adapter');
  		$Product = new Models_Product();
 		$Category = new Models_Category();
+		$Common = new Models_Common();
+		$Product_Image = new Models_ProductImages();
+		
  		$Poductid = $this->_request->getParam('id');
 		$this->view->FB_userid = FBUSER_ID;
 		$translate = Zend_Registry::get('Zend_Translate');
@@ -107,12 +110,44 @@ class Fb_ProductController extends FbCommonController
 			if($prodExist)
 			{
 				$this->view->ProdId = $Poductid;
+				
+				$productImages = $Product->GetProductImages($Poductid);
+				
+				
+				$Product_Image->deleteSingleImagesById(105,188);
+				
+				foreach($productImages as $key => $img )
+				{
+					$SmallImg = explode('_',$img['image_name']);
+					
+					$image_ext = substr($SmallImg[1],strrpos($SmallImg[1], ".")); 
+					
+					if( $image_ext == ".peg" ) {
 						
-				 
+						$this->changeimage($img['product_id'], $img["image_name"], $SmallImg[0]);
+						
+						$image_prefix = substr($SmallImg[1],0,strrpos($SmallImg[1], ".")); 
+							
+						$image_prefix = strtolower($image_prefix);
+						
+						$image_name = $SmallImg[0] . "_" . $image_prefix . ".jpg";
+						
+						$data["image_id"] = $img["image_id"];
+						$data["image_name"] = $image_name;
+						
+						$Product_Image->updateProductImage($data);
+						
+						unlink(SITE_PRODUCT_IMAGES_FOLDER. "/p".$img['product_id']."/".$img["image_name"]);
+					}
+					
+				}	
+				
 				//get category id through product id
 					
 				$result = $Category->GetcategoryID($Poductid);
+				
 				$this->view->cat_id = $result['category_id'];
+				
 				if($result['CatName'] != ''){
 					$this->view->catname = $result['CatName'];
 				}else{
@@ -131,6 +166,30 @@ class Fb_ProductController extends FbCommonController
  				
 				//to get Product Details
 				$productDetail = $Product->GetProductDetails($Poductid);
+				
+				
+				 if($productDetail['tax_zone'])
+				 {		 
+					
+					$taxzone = explode(',',$productDetail['tax_zone']);
+					
+				 }else{
+					
+					$taxzone = explode(',',$mysession->default_taxZone);
+				 }
+					
+				//echo "<pre>";
+				//print_r($productDetail);die;
+				 $defaultZone = $Common->GetDefaultTaxRate($productDetail['uid']);
+				
+				
+ 				 $tax_rate = $Common->TaxCalculation($taxzone,$productDetail['tax_rate'],$mysession->Default_Countrycode,'',$defaultZone['tax_rate']);
+				
+				
+				 
+				 $ProdPrice = round((($productDetail['product_price'] +(($productDetail['product_price'] * $tax_rate)/100))* $mysession->currency_value)/$productDetail['currency_value'],2);
+					 
+				
  				
 				if($productDetail['ProdName'] != ''){
 					$product_name = $productDetail['ProdName'];
@@ -143,9 +202,9 @@ class Fb_ProductController extends FbCommonController
 				}else{
 					$product_desc = $productDetail['product_description'];
 				}
-				$this->view->ProdUserId = $productDetail['user_id'];
+				$this->view->ProdUserId = $productDetail['uid'];
 				$this->view->ProdName = ucfirst($product_name);
-				$ProdPrice = $productDetail['prod_convert_price'];
+				//$ProdPrice = $productDetail['prod_convert_price'];
 				//print $ProdPrice;die;
 				$this->view->ProdPrice = $ProdPrice;
 				$this->view->ProdDesc = $product_desc;
@@ -260,6 +319,7 @@ class Fb_ProductController extends FbCommonController
 		$db = Zend_Registry::get('Db_Adapter');
 		$Category = new Models_Category();
 		$Product = new Models_Product();
+		$Common = new Models_Common();
 		
 		$this->view->temp_url = FB_REDIRECT_URL;
 		
@@ -338,6 +398,24 @@ class Fb_ProductController extends FbCommonController
 //		print "<pre>";
 //		print_r($SearchDetails);die;
 		//Set Pagination
+		
+		foreach($SearchDetails as $prokey => $val)
+		{
+			if($val['tax_zone'] != '')
+			{		 
+				$taxzone = explode(',',$val['tax_zone']);
+			}else{
+				$taxzone = explode(',',$mysession->default_taxZone);
+			}
+			
+			
+			$tax_rate = $Common->TaxCalculation($taxzone,$val['tax_rate']);
+			
+			$SearchDetails[$prokey]['Prod_convert_price'] = round((($val['product_price'] +(($val['product_price'] * $tax_rate)/100))* $mysession->currency_value)/$val['currency_value'],2);
+		 
+		}
+		
+		
 		$paginator = Zend_Paginator::factory($SearchDetails);
     	$paginator->setItemCountPerPage($pagesize);
     	$paginator->setCurrentPageNumber($page_no);
@@ -438,6 +516,7 @@ class Fb_ProductController extends FbCommonController
 		if(count($CartDetails) > 0){
 			$this->view->cartItems = $CartDetails;
 			
+			
 			$cartId = '';
 			$Price = 0;
 			$CartTotal = '';
@@ -448,7 +527,7 @@ class Fb_ProductController extends FbCommonController
  				$Price += $value['price']*$value['product_qty'];
 				$cartId = $value['cart_id'];
 				$CartTotal += $value['product_qty'];
-				$cartuserId = $value['user_id'];
+				$cartuserId = $value['uid'];
 				$currency_symbol = $Common->GetCurrencyValue($value['currId']);
 				
 			}
@@ -576,9 +655,74 @@ class Fb_ProductController extends FbCommonController
 		$Opt_detailId = $this->_request->getParam('opt_detail_id');
 		
 		$OptPrice = $Product->getProductOptPrice($Opt_detailId,$prodId);
-		//echo "<pre>";
-		//print_r($OptPrice );die;
+		
 		echo json_encode($OptPrice);die;
+	 }
+	 
+	 
+	 public function changeimage($prod_id, $image_name, $enc_name)
+	 {
+	 
+	 	
+			//create folder for product to insert images
+			$filename =  SITE_PRODUCT_IMAGES_FOLDER. "/p".$prod_id."/".$image_name;
+			
+			$folder_path = SITE_PRODUCT_IMAGES_FOLDER. "/p".$prod_id . "/";
+			
+			$thumb = new Thumbnail();
+			
+			$ext = "";
+			$arr_imgname = array();
+			$img_data = array();
+			$encname = $enc_name;	
+			$imgname = "";
+			
+			//Insert main image and sub images of product
+			list($img_width, $img_height, $img_type) = getimagesize($filename);
+			
+			$ext = "jpg";
+			
+			$arr_imgname = array();
+			
+			//Image of size 350x350
+			$arr_imgname[] = $folder_path . "/" . $encname . "_img.".$ext ;
+			
+			//Image of size 128x128
+			$arr_imgname[] = $folder_path . "/" . $encname . "_th1.".$ext ;
+			
+			//Image of size 64x64
+			$arr_imgname[] = $folder_path . "/" . $encname . "_th2.".$ext ;
+			
+			//Image of size 28x28
+			$arr_imgname[] = $folder_path . "/" . $encname . "_th3.".$ext ;
+				
+				
+			$img_content= file_get_contents($filename);
+				
+			file_put_contents($arr_imgname[0], $img_content );
+				
+			copy($arr_imgname[0],$arr_imgname[1]);
+			copy($arr_imgname[0],$arr_imgname[2]);
+			copy($arr_imgname[0],$arr_imgname[3]);
+			
+			$thumb->image($arr_imgname[0]);
+			$thumb->size_auto(350);
+			$thumb->get($arr_imgname[0]);	
+			
+			
+			$thumb->image($arr_imgname[1]);
+			$thumb->size_auto(128);
+			$thumb->get($arr_imgname[1]);	
+			
+			$thumb->image($arr_imgname[2]);
+			$thumb->size_auto(64);
+			$thumb->get($arr_imgname[2]);	
+			
+			$thumb->image($arr_imgname[3]);
+			$thumb->size_auto(28);
+			$thumb->get($arr_imgname[3]);	
+			
+	 
 	 }
 	 
 }

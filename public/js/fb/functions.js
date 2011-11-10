@@ -328,6 +328,7 @@ function updatecart(prodId,cartId)
  		dataType:'json',
 		success:function(data)
 		{ 
+			
 			$('#loader').hide();
 			$('#loader').removeClass('ui-widget-loading');
 			var totalCost = 0;
@@ -336,8 +337,9 @@ function updatecart(prodId,cartId)
  			for(i in data)
 			{
 				
-				$('#itemPrice'+data[i]['product_id']).html(cartCurrSymbol+" "+roundVal( parseFloat(data[i]['price'])*parseInt(data[i]['product_qty'])));
-				$('#IndivisualPrice'+data[i]['product_id']).val(roundVal(data[i]['price']));
+				$('#itemPrice'+data[i]['product_id']).html(cartCurrSymbol+" "+roundVal( parseFloat(data[i]['product_total_cost'])));
+				
+				$('#IndivisualPrice'+data[i]['product_id']).val(roundVal(data[i]['product_toatl_cost']));
 				$('#ProductQty'+data[i]['product_id']).val(data[i]['product_qty']);
 				ProdQty = parseInt(ProdQty)+parseInt(data[i]['product_qty']);
 				totalCost = parseFloat(totalCost)+parseFloat(data[i]['product_total_cost']);
@@ -347,7 +349,7 @@ function updatecart(prodId,cartId)
 			$('#breadCrumb_cart').show();
 			$('#order_review').show();
 			$('#buttonArea').show();
-			$('#cartSubTotal').html(cartCurrSymbol+" "+totalCost);
+			$('#cartSubTotal').html(cartCurrSymbol+" "+roundVal(totalCost));
 		}		
 	});
 }
@@ -486,6 +488,10 @@ function addShippingDetail()
 			   fbuid: function()
 			  {
 				  return $('#facebook_userid').val();
+			  },
+			  current_currencyId: function() 
+			  {
+					return $('#CurrentCurrencyId').val();
 			  }
 			  
          },
@@ -501,6 +507,8 @@ function addShippingDetail()
 					//$('#div2').show();
 					//$('#cartRow_'+prodId).hide();
 					ShowTab(3);
+					$('#div3').show();
+					$('#div4').hide();
 					$('#div3').html(data);
 					$('#breadCrumb_cart').show();
 					
@@ -590,6 +598,10 @@ function addBillingDetail()
 			  fbuid: function()
 			  {
 				  return $('#facebook_userid').val();
+			  },
+			  current_currencyId: function() 
+			  {
+					return $('#CurrentCurrencyId').val();
 			  }
 			  
          },
@@ -825,7 +837,7 @@ function showProductThumbImage(ThumbIndex,ImagePath,Imagename) {
 
 var ShippingCost = new Array();
 
-function GetShippingCost(ShippMethodId,prodId)
+function GetShippingCost(ShippMethodId,prodId,UserId)
 {
 	
 	
@@ -872,9 +884,9 @@ function GetShippingCost(ShippMethodId,prodId)
 				$('#div3').show();
 			
 			
-				$('#ShippingSpace'+prodId).show();
-				$('#ShippingRow'+prodId).show();
-				$('#ShippingCost'+prodId).html(cartCurrSymbol+" "+data);
+				$('#ShippingSpace'+UserId).show();
+				$('#ShippingRow'+UserId).show();
+				$('#ShippingCost'+UserId).html(cartCurrSymbol+" "+data);
 				
 				ShippingCost[prodId] =  parseFloat(data);
 				
@@ -895,67 +907,59 @@ function GetShippingCost(ShippMethodId,prodId)
 }
 
 var ids = new Array();
-var methodids = new Array();
+var methodids = {};
 var taxrate = new Array();
-function UpdateShipping(CartId,prodId)
+
+function UpdateShipping(CartId,prodId,UserId)
 {
-	//alert();
-	//alert(prodId);
-	//console.log(prodId);
 	
-		$.ajaxSetup({
-		   beforeSend : function(){ 
-				$('#loader').show();
-				$('#loader').css('visibility','visible');
-				$('#loader').addClass('ui-widget-loading');
-				
-				$(this).fadeIn(3000, function() {
-					$('#breadCrumb_cart').hide();
-					$('#buttonArea').hide();
-					$('#div3').hide();
-				});
-		   },
-		   complete : function(){ 
-				$('#loader').hide();
-				$('#loader').removeClass('ui-widget-loading');
-				ShowTab(4);
-		   }		   
-		});
-	
-		$.ajax({
- 	    type: "POST",
-		url:site_url+"cart/updateshippingmethod",
- 		data: {
+	$('#loader').show();
+	$('#loader').css('visibility','visible');
+	$('#loader').addClass('ui-widget-loading');
+		
+	$(this).fadeIn(3000, function() {
+		$('#breadCrumb_cart').hide();
+		$('#buttonArea').hide();
+		$('#div3').hide();
+	});
+ 	
+	$.ajax({
+	type: "POST",
+	url:site_url+"cart/updateshippingmethod",
+	data: {
 			  cartid: function() 
 			  {
 					return CartId;
 			  },
 			  prodid: function() 
 			  {
-				  	for(i=0; i<prodId.length; i++ )
+					for(i=0; i<prodId.length; i++ )
 					{
 						ids[i] = prodId[i];
 					}
- 					return ids;
+					return ids;
 			  },
 			  methodid: function() 
 			  {
-				  	for(j=0; j<prodId.length; j++ )
-					{
-						methodids[j] = $('#Shipping_Method_'+prodId[j]).val();
-						
-					}
-   					return methodids;
-			  },
-			  taxrate: function() 
-			  {
-				  	for(k=0; k<prodId.length; k++ )
-					{
-						taxrate[k] = $('#taxRate'+prodId[k]).html().replace('$','');
-						
-					}
+				  for(tmp in UserId)
+				  {
+					  methodids[tmp] = $('#Shipping_Method_'+UserId[tmp]).val();
+				  }
+				  var str = "{";
+				  for(i in methodids)
+				  {
+					  str += '"'+i+'":'+methodids[i]+',';
+				  }
+				  	
+					var strLen = str.length;
+					str = str.slice(0,strLen-1);
 					
-   					return taxrate;
+				  	str += "}";
+				  return str;
+			  },
+			  shipCost: function()
+			  {
+				  return $('#ShippingtotalAmount').val();
 			  },
 			  fbuid: function()
 			  {
@@ -969,7 +973,9 @@ function UpdateShipping(CartId,prodId)
  		dataType:'json',
 		success:function(data)
 		{ 
-			//alert(data);
+			//console.log(data);return false;
+			$('#loader').hide();
+			$('#loader').removeClass('ui-widget-loading');
 			$('#FinalAmount').val(data['final_amount']);
 			$('#App_username').val(data['Api_Username']);
 			$('#App_password').val(data['Api_Password']);
@@ -977,6 +983,7 @@ function UpdateShipping(CartId,prodId)
 			$('#paypal_url').val(data['Paypal_Url']);
 			$('#paypal_currency').val(data['paypal_currency']);
   			$('#breadCrumb_cart').show();
+			
 			ShowTab(4);
 			//$('#buttonArea').show();
 
@@ -1000,10 +1007,13 @@ function loadPopup()
 	$('#shipping_li').show();
 	$('#billing_li').hide();
 	$('#div8').hide();
+	$('#div3').hide();
 	$('#buttonArea').show();
 	$("#backgroundPopup").css({"opacity": "0.1"});
 	$("#backgroundPopup").fadeIn("fast");
 	$("#popupContact").slideDown("slow");
+	$("#ShippingtotalAmount").val('');
+	
  
  
 }
@@ -1033,7 +1043,7 @@ function loadPopup2()
 	$('#shipping_li').show();
 	$('#billing_li').hide();
 	$('#div8').hide();
-	$('#buttonArea').show();
+ 	$('#buttonArea').show();
 	$("#backgroundPopup").css({"opacity": "0.1"});
 	$("#backgroundPopup").fadeIn("fast");
 	$("#popupContact").slideDown("slow");
@@ -1140,7 +1150,7 @@ function removeUserLike(url,widget)
 }
 
 
-function ChangeCartCurrency()
+function ChangeCartCurrency(cartId)
 {
 	
 		$('#settingarea').hide();
@@ -1163,6 +1173,10 @@ function ChangeCartCurrency()
 				fbuid: function()
 				{
 				  return $('#facebook_userid').val();
+				},
+				cartid: function()
+				{
+				  return cartId;
 				}
 		},
 		dataType:'html',

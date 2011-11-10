@@ -222,7 +222,7 @@ class Rest_ProductController extends RestCommonController
 			$myparams = $this->getRequest()->getParams();
 			$cntProduct = 0;
 			$isProdArray = false;
-//			print (count($myparams["Products"]));die;
+				
 			
 			$name = "";
 			$description = 	"";
@@ -259,6 +259,7 @@ class Rest_ProductController extends RestCommonController
 			$Category = new Models_Category();
 			$ProdImg = new Models_ProductImages();
 			$Language = new Models_Language();
+			$UserMaster = new Models_UserMaster();
 			
 			//variables
 			$img_content = "";
@@ -297,7 +298,15 @@ class Rest_ProductController extends RestCommonController
 					//filter values
 					$name = $filter->filter(trim($prod['name']));
 					$description = 	trim($prod['description']);
-					$product_external_id = 	$filter->filter(trim($prod['product_external_id']));
+					if(isset($prod['product_external_id'])) {
+					
+						$product_external_id = 	$filter->filter(trim($prod['product_external_id']));
+						
+					} else {
+					
+						$product_external_id  = '';
+					
+					}
 					$price = 	(float) $filter->filter(trim($prod['price']));
 					if(isset($prod['code']))
 					{
@@ -312,6 +321,13 @@ class Rest_ProductController extends RestCommonController
 					$start_sales = 	(int) $filter->filter(trim($prod['start_sales']));
 					$available_qty = 	(int) $filter->filter(trim($prod['available_qty']));
 					$main_image = $filter->filter(trim($prod['main_image']));
+					$tex_rate_class = '';
+					
+					if(isset($prod['taxrate_class']))
+					{
+						$tex_rate_class = $prod['taxrate_class'];
+						
+					}
 					
 					if(isset($prod['discount']))
 					{
@@ -425,6 +441,17 @@ class Rest_ProductController extends RestCommonController
 						$arr_error[] = $this->translate->_('Product_Invalid_Product_Depth')." " . ($i+1);
 					}
 					
+					
+					if($tex_rate_class != "" || $tex_rate_class > 0 )
+					{
+						$where = "user_id = " .$this->user_id;
+						
+						if($UserMaster->ValidateTableField("tax_rate_class_id",$tex_rate_class,"tax_rate_class",$where))
+						{
+							$arr_error[] = $this->translate->_('Tax_Rate_Class_Not_Found_Product')." " . ($i+1);
+						} 
+					}
+					
 					if($available_qty == "" || $available_qty <= 0)
 					{
 						$arr_error[] = $this->translate->_('Product_Invalid_Product_Quantity')." " . ($i+1);
@@ -467,7 +494,17 @@ class Rest_ProductController extends RestCommonController
 						$arr_error[] = $this->translate->_('Product_Invalid_Product_Image_Url')." " . ($i+1);
 					}
 					else{
-						//$img_content = file_get_contents($main_image);
+						
+						$image_ext = substr($main_image,strrpos($main_image, ".")); 
+						
+						$image_ext = strtolower($image_ext);
+						
+						
+						if( $image_ext != ".jpg" || $image_ext != ".bmp" || $image_ext != ".gif" || $image_ext != ".png"  ) 
+						{
+							$arr_error[] = $this->translate->_('Product_Invalid_Product_Image_Type')." " . ($i+1);	
+						}
+						
 						list($img_width, $img_height, $img_type) = getimagesize($main_image);
 						
 						if($img_width < 300)
@@ -503,6 +540,17 @@ class Rest_ProductController extends RestCommonController
 								$arr_error[] = $this->translate->_('Product_Invalid_Image_Url')." " . ($j+1) . " ".$this->translate->_('Product_For_Product')." " . ($i+1);	
 							}
 							else{
+							
+									$image_ext = substr($images[$j],strrpos($images[$j], ".")); 
+						
+									$image_ext = strtolower($image_ext);
+									
+									
+									if( $image_ext != ".jpg" || $image_ext != ".gif" || $image_ext != ".png"  ) 
+									{
+										$arr_error[] = $this->translate->_('Product_Invalid_Image_Type')." " . ($j+1) . " ".$this->translate->_('Product_For_Product')." " . ($i+1);	
+									}
+									
 									//$img_content = file_get_contents($main_image);
 									list($img_width, $img_height, $img_type) = getimagesize($images[$j]);
 										 
@@ -688,6 +736,7 @@ class Rest_ProductController extends RestCommonController
 						$products[$i]['depth'] = $depth;
 						$products[$i]['weight_unit'] = $weight_unit;
 						$products[$i]['length_unit'] = $length_unit;
+						$products[$i]['tax_rate_class_id'] = $tex_rate_class;
 						$products[$i]['start_sales'] = $start_sales;
 						$products[$i]['available_qty'] = $available_qty;
 						$products[$i]['discount'] = $discount;
@@ -751,6 +800,7 @@ class Rest_ProductController extends RestCommonController
 						$data["length_unit_id"] = $Length->getLengthIdFromKey($products[$i]["length_unit"]);
 					}
 					
+					$data["tax_rate_class_id"] = $products[$i]["tax_rate_class_id"];
 					$data["start_sales"] = $products[$i]["start_sales"];
 					$data["available_qty"] = $products[$i]["available_qty"];
 					$data['discount'] = $products[$i]['discount'];
@@ -859,6 +909,7 @@ class Rest_ProductController extends RestCommonController
 						
 						list($img_width, $img_height, $img_type) = getimagesize($products[$i]['main_image']);
 						
+						//$ext = image_type_to_extension($img_type);
 						if($img_type == 1)
 						{
 							$ext = "gif";	
@@ -1117,6 +1168,7 @@ class Rest_ProductController extends RestCommonController
 			$Category = new Models_Category();
 			$ProdImg = new Models_ProductImages();
 			$Language = new Models_Language();
+			$UserMaster = new Models_UserMaster();
 			
 			//variables
 			$img_content = "";
@@ -1230,6 +1282,14 @@ class Rest_ProductController extends RestCommonController
 					if(isset($prod['length_unit']))
 					{
 						$length_unit = 	$filterChain1->filter(trim($prod['length_unit']));
+					}
+					
+					$tex_rate_class = '';
+					
+					if(isset($prod['taxrate_class']))
+					{
+						$tex_rate_class = $prod['taxrate_class'];
+						
 					}
 					
 					if(isset($prod['start_sales']))
@@ -1359,6 +1419,17 @@ class Rest_ProductController extends RestCommonController
 						$arr_error[] = $this->translate->_('Product_Invalid_Product_Depth');
 					}
 					
+					if($tex_rate_class != "" || $tex_rate_class > 0 )
+					{
+						$where = "user_id = " .$this->user_id;
+						
+						if($UserMaster->ValidateTableField("tax_rate_class_id",$tex_rate_class,"tax_rate_class",$where))
+						{
+							$arr_error[] = $this->translate->_('Tax_Rate_Class_Not_Found_Product')." " . ($i+1);
+						} 
+					}
+
+					
 					if($available_qty != "" && $available_qty <= 0)
 					{
 						$arr_error[] = $this->translate->_('Product_Invalid_Product_Quantity');
@@ -1402,6 +1473,16 @@ class Rest_ProductController extends RestCommonController
 					}
 					elseif($main_image != "")
 					{
+						
+						$image_ext = substr($main_image,strrpos($main_image, ".")); 
+						
+						$image_ext = strtolower($image_ext);						
+						
+						if( $image_ext != ".jpg" || $image_ext != ".bmp" || $image_ext != ".gif" || $image_ext != ".png"  ) 
+						{
+							$arr_error[] = $this->translate->_('Product_Invalid_Product_Image_Type');
+						}
+						
 						//$img_content = file_get_contents($main_image);
 						list($img_width, $img_height, $img_type) = getimagesize($main_image);
 						
@@ -1439,6 +1520,17 @@ class Rest_ProductController extends RestCommonController
 							}
 							elseif($images[$j] != "")
 							{
+							
+								$image_ext = substr($images[$j],strrpos($images[$j], ".")); 
+						
+								$image_ext = strtolower($image_ext);						
+								
+								if( $image_ext != ".jpg" || $image_ext != ".bmp" || $image_ext != ".gif" || $image_ext != ".png"  ) 
+								{
+									$arr_error[] = $this->translate->_('Product_Invalid_Image_Type')." " . ($j+1) . " ".$this->translate->_('Product_For_Product')."";	
+									
+								}
+								
 								//$img_content = file_get_contents($main_image);
 								list($img_width, $img_height, $img_type) = getimagesize($images[$j]);
 									 
@@ -1624,6 +1716,7 @@ class Rest_ProductController extends RestCommonController
 						$products[$i]['depth'] = $depth;
 						$products[$i]['weight_unit'] = $weight_unit;
 						$products[$i]['length_unit'] = $length_unit;
+						$products[$i]['tax_rate_class_id'] = $tex_rate_class;
 						$products[$i]['start_sales'] = $start_sales;
 						$products[$i]['available_qty'] = $available_qty;
 						$products[$i]['discount'] = $discount;
@@ -1713,6 +1806,13 @@ class Rest_ProductController extends RestCommonController
 						$data["weight_unit_id"] = $Weight->getWeightIdFromKey($products[$i]["weight_unit"]);
 					}
 					
+					// get taxrate class id
+					if($products[$i]["tax_rate_class_id"] != "")
+					{
+						$data["tax_rate_class_id"] = $products[$i]["tax_rate_class_id"];
+					}
+					
+					
 					//get length unit id
 					if($products[$i]["length_unit"] != "")
 					{
@@ -1753,6 +1853,7 @@ class Rest_ProductController extends RestCommonController
 					{
 						$data["promotion_end_date"] = $products[$i]["promotion_end_date"];
 					}
+					
 					
 					
 					$lang_array = array();

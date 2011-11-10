@@ -99,8 +99,8 @@
 							<td style="padding-left:25px;">
 								<select name="order_status" id="order_status" class="Field250">
 									<option value=""><?php echo $this->Translate('Order_Status_Select'); ?></option>
-									<?php	foreach( $this->order_status["order_status"] as $key => $val ) { ?>	
-									<option value="<?php echo $key; ?>"><?php 	echo $val;  ?></option>
+									<?php	foreach( $this->order_status as $key => $val ) { ?>	
+									<option value="<?php echo $val["order_status_id"]; ?>"><?php 	echo $val["status_value"];  ?></option>
 									<?php 	}  ?>
 								</select>
 							</td>

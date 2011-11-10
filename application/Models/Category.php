@@ -157,7 +157,7 @@ class Models_Category
 		$sql = "SELECT cm.*,cml.category_name as CatName from product_to_categories as ptc 
 				LEFT JOIN category_master as cm ON(cm.category_id = ptc.category_id)
 				LEFT JOIN category_master_lang as cml ON(cm.category_id = cml.category_id and cml.language_id= ".DEFAULT_LANGUAGE.")
-				WHERE ptc.product_id='".$Poductid."' and cm.parent_id !='0'";
+				WHERE ptc.product_id='".$Poductid."' or cm.parent_id !='0'";
 				
  		$result = $db->fetchRow($sql);
 		return $result;
@@ -313,7 +313,7 @@ class Models_Category
 				if( $count == 0 ) {
 				
 					if($val != "") {
-						$sql.=" WHERE lower(".$key.") like '%".$val."%'";
+						$sql.= ' WHERE lower('.$key.') like "%'.$val.'%"';
 					} else {
 						$sql.=" WHERE 1=1";
 					}
@@ -332,6 +332,7 @@ class Models_Category
 		
 			$sql .= " WHERE 1=1";
 		}
+		
 		
 		$result =  $db->fetchAll($sql);		
 		return $result;		
@@ -1072,6 +1073,58 @@ class Models_Category
 		
 		return $tree;
 	}
+	
+	/**
+	 * Function getAllFriendLikes
+	 *
+	 * This function is used to friends like product. 
+     *
+	 * Date created: 2011-11-07
+	 *
+	 * @access public
+	 * 
+	 * @param () (array)  - $friends_list : array to put results in.
+	 * @return (array) - Return array of category ids
+	 * @author Yogesh
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	function getAllFriendLikes($friends_list)
+
+	{
+
+ 
+		global $mysession;
+
+		
+
+		$db = $this->db;
+
+		
+
+		$select = "SELECT upl.*,pm.product_id, pm.product_name, pm.product_price, cm.currency_symbol, cm.currency_code, round( ( pm.product_price * ".$mysession->currency_value.") / cm.currency_value, 2 ) as converted_price, pi.image_name, pi.image_path,pml.product_name as ProdName
+
+				   FROM user_product_likes as upl
+
+				   JOIN product_master as pm ON(pm.product_id = upl.product_id)
+
+				   LEFT JOIN product_master_lang as pml ON (pm.product_id = pml.product_id and pml.language_id= ".DEFAULT_LANGUAGE.")
+
+				   LEFT JOIN user_master as um ON ( um.user_id = pm.user_id )
+
+				   LEFT JOIN currency_master as cm ON (um.currency_id = cm.currency_id)
+
+				   LEFT JOIN product_images as pi ON ( pm.product_id = pi.product_id AND pi.is_primary_image = 1)
+
+				   WHERE upl.facebook_user_id in ( ".$friends_list." ) limit 0,3 ";
+
+		
+
+		return $db->fetchAll($select);
+
+	}
+
+
 	
 }
 ?>

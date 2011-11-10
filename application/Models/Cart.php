@@ -214,13 +214,17 @@ class Models_Cart
 		global $mysession;
 		$db= $this->db;
 		
-		$sql = "SELECT cd.*,cd.product_price as price,cm.currency_id as currId,cm.*,cm.currency_id as CurrId,pi.image_path,pi.image_name,pm.*,um.*,ROUND((cd.product_price  * ".$curr_value.") / ".$current_curr_data.", 2 ) as Prod_convert_price,pml.product_name as ProdName FROM cart_detail as cd
+		//,ROUND((cd.product_price  * ".$curr_value.") / ".$current_curr_data.", 2 ) as Prod_convert_price
+		
+		$sql = "SELECT cd.*,cd.tax_rate as taxRate,cd.product_price as price,cm.currency_id as currId,cm.*,cm.currency_id as CurrId,pi.image_path,pi.image_name,pm.*,pml.product_name as ProdName,um.*,um.user_id as uid,crm.*,trc.* FROM cart_detail as cd
 				LEFT JOIN cart_master as cm ON (cd.cart_id = cm.cart_id)
-				LEFT JOIN product_images as pi ON (cd.product_id = pi.product_id and pi.is_primary_image = 1)
-				LEFT JOIN product_master as pm ON (pi.product_id = pm.product_id)
+				LEFT JOIN product_master as pm ON (cd.product_id = pm.product_id)
+				LEFT JOIN product_images as pi ON (pm.product_id = pi.product_id and pi.is_primary_image = 1)
+				
 				LEFT JOIN product_master_lang as pml ON (pm.product_id = pml.product_id and pml.language_id= ".DEFAULT_LANGUAGE.")
 				LEFT JOIN user_master as um ON (pm.user_id = um.user_id)
  				LEFT JOIN currency_master as crm ON (crm.currency_id = um.currency_id)
+				LEFT JOIN tax_rate_class as trc ON (pm.tax_rate_class_id = trc.tax_rate_class_id)
 
 				WHERE cm.facebook_user_id ='".$facebook_id."'";
 		
@@ -230,6 +234,59 @@ class Models_Cart
 		return $result;
 	}	
 	
+	/**
+	 * function GetOptionDetail
+	 *
+	 * It is used to get cart product option detail.
+	 *
+	 * Date created: 2011-11-09
+	 *
+	 * @param (Int) -$cart_detail_id- cart detail id.
+	 * @return (Array) - Return true on success
+	 * @author  Jayesh 
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 */
+	public function GetOptionDetail($cart_detail_id)
+	{	
+		global $mysession;
+		$db= $this->db;
+		
+		$sql = "SELECT option_price FROM cart_product_options WHERE cart_detail_id = '".$cart_detail_id."'";
+		
+		$result = $db->fetchAll($sql);
+		
+		return $result;
+	
+	}
+	
+	/**
+	 * function GetProductCartDetails
+	 *
+	 * It is used to get cart product option detail.
+	 *
+	 * Date created: 2011-11-10
+	 *
+	 * @param (Int) -$prodid- product id.
+	 *
+	 * @param (Int) -$cartid- cart id.
+	 *
+	 * @return (Array) - Return true on success
+	 * @author  Jayesh 
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 */
+	public function GetProductCartDetails($prodid,$cartid)
+	{	
+		global $mysession;
+		$db= $this->db;
+		
+		$sql = "SELECT * FROM cart_detail WHERE cart_id = ".$cartid." and product_id = ".$prodid."";
+		
+		$result = $db->fetchRow($sql);
+		
+		return $result;
+	
+	}
+
 	/**
 	 * function UserExist
 	 *
@@ -271,7 +328,13 @@ class Models_Cart
 	{
 		$db= $this->db;
 		
-		$sql = "SELECT * FROM cart_detail WHERE product_id = ".$prodId." and cart_id=".$cartId."";
+		$sql = "SELECT cd.*,cm.shipping_user_country_id,cum.*,trc.*,pm.product_price FROM cart_detail as cd
+				LEFT JOIN cart_master as cm ON (cd.cart_id = cm.cart_id)
+				LEFT JOIN product_master as pm ON(pm.product_id = cd.product_id)
+				LEFT JOIN user_master as um ON (pm.user_id = um.user_id)
+				LEFT JOIN currency_master as cum ON(cum.currency_id = um.currency_id)
+				LEFT JOIN tax_rate_class as trc ON (pm.tax_rate_class_id = trc.tax_rate_class_id)	
+		 		WHERE cd.product_id = ".$prodId." and cd.cart_id=".$cartId."";
 		
 		$result = $db->fetchRow($sql);
 		

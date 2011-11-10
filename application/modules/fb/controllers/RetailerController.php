@@ -125,6 +125,21 @@ class Fb_RetailerController extends FbCommonController
 				//to get Product Details
 				$Ret_productDetail = $Product->GetProductByRetailerId($retailer_id,$Sort);
 				
+				foreach($Ret_productDetail as $prokey => $val)
+				{
+					if($val['tax_zone'] != '')
+					{		 
+						$taxzone = explode(',',$val['tax_zone']);
+					}else{
+						$taxzone = explode(',',$mysession->default_taxZone);
+					}
+					
+					$tax_rate = $Common->TaxCalculation($taxzone,$val['tax_rate']);
+					
+					$Ret_productDetail[$prokey]['prod_convert_price'] = round((($val['product_price'] +(($val['product_price'] * $tax_rate)/100))* $mysession->currency_value)/$val['currency_value'],2);
+				 
+				}
+				
 				//print_r($Ret_productDetail);die;
 				$this->view->StoreName = $Ret_productDetail[0]['store_name'];
 				$paginator = Zend_Paginator::factory($Ret_productDetail);

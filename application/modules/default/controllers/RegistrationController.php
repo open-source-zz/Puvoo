@@ -355,8 +355,11 @@ class RegistrationController extends DefaultCommonController
 			</body>
 			</html>
 			';
+			$headers  = 'MIME-Version: 1.0' . "\r\n";
+			$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+			$headers .= 'From: '. $from . "\r\n";
 						
-						if(sendMail($to,$to_name,$from,$from_name,$subject,$Body)) {
+						if(mail($to,$subject,$Body,$headers)) {
 							$this->_redirect("http://www.puvoo.com/thankyouregistration.php?m=1");
 							
 							

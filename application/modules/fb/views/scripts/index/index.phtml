@@ -18,6 +18,7 @@
 	<?php }?>
 	<div id="gallery">
 		<div id="slides">
+			<?php if(count($this->frndslike) > 0){?>
 			<div class="slide">
 				<?php foreach($this->frndslike as $val2){?>
 				
@@ -45,9 +46,10 @@
 						</div>
 						<div class="productPrice"><?php echo DEFAULT_CURRENCY_SYMBOL.$val2['converted_price']."&nbsp;".DEFAULT_CURRENCY_CODE;?> </div>
 					</div>
-				<?}?>
+				<?php }?>
 				
 			</div>
+			<?php }?>
 			<div class="slide">
 				<?php foreach($this->bestSeller as $val1){?>
 					<?php 
@@ -57,6 +59,8 @@
 						}else{
 							$prodName1 = $val1['product_name'];
 						}
+						
+ 						
 					?>
 					<div class="productGridBox_scroll">
 						<div class="thumbnailImage" style="margin-top:14px;">
@@ -79,10 +83,14 @@
 	</div>
 		<div id="menu_slide" align="center">
 			<ul>
-				<li class="fbar">&nbsp;</li><li class="menuItem" style="padding-left:1px;"><a href=""><?php echo $this->Translate('FrndsLike')?></a></li><li class="menuItem"><a href=""><?php echo $this->Translate('BestSeller')?></a></li>
+				<?php if(count($this->frndslike) > 0){?>
+				<li class="fbar">&nbsp;</li><li class="menuItem" style="padding-left:1px;"><a href=""><?php echo $this->Translate('FrndsLike')?></a></li>
+				<?php }?>
+				<li class="menuItem"><a href=""><?php echo $this->Translate('BestSeller')?></a></li>
 			</ul>
 		</div>
 	</div>
+	<?php if(count($this->frndslike) > 0){?>
  	<div class="mainColumnWidget">
 		<div class="widgetHeader">
 			<div class="widgetHeaderText"><?php echo $this->Translate('YourFrndsLike')?></div>
@@ -122,4 +130,5 @@
 		</div>
 		<div class="clear"></div>
 	</div>
+	<?php }?>
 </div>

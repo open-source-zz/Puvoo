@@ -268,7 +268,7 @@ class Fb_CartController extends FbCommonController
 
 		
 
-		global $mysession;
+			global $mysession;
 
 		
 
@@ -282,7 +282,7 @@ class Fb_CartController extends FbCommonController
 
 		$Common = new Models_Common();
 
-		
+		$state = new Models_State();
 
 		//$prodId = $this->_request->getParam('prodid');
 
@@ -313,6 +313,10 @@ class Fb_CartController extends FbCommonController
 		$IsBilling = $this->_request->getParam('isbilling');
 
 		$fbuid = $this->_request->getParam('fbuid');
+		
+		$current_currencyId = $this->_request->getParam('current_currencyId');
+		
+		$current_curr_data = $Common->GetCurrencyValue($current_currencyId);
 
 		//print $this->_request->getParam('isbilling');die;
 
@@ -399,63 +403,119 @@ class Fb_CartController extends FbCommonController
 		//print $CartId;die;
 
 		$result = $Cart->UpdateShippingInfo($ShippingDetail,$CartId);
-
-		
-
+ 
 		$ShippingInfo = $Cart->GetShippingInfo($CartId);
-
-		
-
+ 
 		$CartDetails = $Cart->GetProductInCart($fbuid);
-
-		
-
+  
 		$CountryCode = $Cart->GetCountryCode($ShippingInfo['shipping_user_country_id']);
-
-		
-
+ 
 		$this->view->CountryCode = $CountryCode['country_iso2'];
-
+		
+		$state_name = $state->GetStateById($State);
+		
 		$Ship_Method_Combo = array();
 
 		$Ship_Handel_Day = array();
 
+		$Option_Price = 0;
 		
-
+		$test = array();
+		
+		foreach($CartDetails as $prokey => $val)
+		{
+		
+			//print_r($val);die;
+		  //if($val['taxRate'] != 0)
+		  //{
+			 if($val['tax_zone'] != '')
+			 {		 
+				$taxzone = explode(',',$val['tax_zone']);
+			 }else{
+				$taxzone = explode(',',$mysession->default_taxZone);
+			 }
+			
+				$defaultZone = $Common->GetDefaultTaxRate($val['uid']);
+				
+			 $tax_rate = $Common->TaxCalculation($taxzone,$val['tax_rate'], $this->view->CountryCode, $state_name, $defaultZone['tax_rate'] );
+			 
+			 //print $val['product_id']."==>".$tax_rate."////";
+			
+			 $optionDetail = $Cart->GetOptionDetail($val['cart_detail_id']);
+			
+			 $opt_price = 0;
+			
+			if(count($optionDetail)> 0)
+			{
+				foreach($optionDetail as $optprice)
+				{
+					$opt_price += $optprice['option_price'];
+				
+				}
+			}
+			
+			$prodPrice =  (($val['product_price']+$opt_price)*$current_curr_data['currency_value'])/$val['currency_value'];
+  			 
+			 $CartDetails[$prokey]['prodprice'] = $prodPrice;
+			 
+			 $CartDetails[$prokey]['prod_convert_price'] = round(((($prodPrice) +((($prodPrice) * $tax_rate)/100))* $mysession->currency_value)/$val['currency_value'],2);
+			 
+			 //print $CartDetails[$prokey]['prod_convert_price'];die;
+			 //print "((((".$prodPrice."+".$opt_price.") +(((".$prodPrice."+". $opt_price.") * ".$tax_rate.")/100))*". $mysession->currency_value.")/".$val['currency_value'].",2)<br>";
+			 
+//		  } else{
+//		  
+//			 $optionDetail = $Cart->GetOptionDetail($val['cart_detail_id']);
+//			
+//			 $opt_price = 0;
+//			
+//			if(count($optionDetail)> 0)
+//			{
+//				foreach($optionDetail as $optprice)
+//				{
+//					$opt_price += $optprice['option_price'];
+//				
+//				}
+//			}
+//  			 $tax_rate = $val['taxRate'];
+//			 
+//			 $CartDetails[$prokey]['prod_convert_price'] = round(((($val['product_price']+$opt_price) +((($val['product_price']+ $opt_price) * $tax_rate)/100))* $mysession->currency_value)/$val['currency_value'],2);
+//			 
+//			 print "((((".$val['product_total_cost']."+".$opt_price.") +(((".$val['product_total_cost']."+". $opt_price.") * ".$tax_rate.")/100))*". $mysession->currency_value.")/".$val['currency_value'].",2)";die;
+//		  
+//		  }
+		}
+		
+		
 		$this->view->cartItems = $CartDetails;
-
-		
-
+ 
 		$cartId = '';
 
 		$Price = 0;
 
 		$CartTotal = '';
 
-
-
+		
+	
 		for($j=0; $j < count($CartDetails); $j++)
 
 		{
-
-		
-
-			$Price += $CartDetails[$j]['product_price']*$CartDetails[$j]['product_qty'];
+			
+ 
+			$Price += $CartDetails[$j]['product_price'] * $CartDetails[$j]['product_qty'];
 
 			$cartId = $CartDetails[$j]['cart_id'];
 
 			$CartTotal += $CartDetails[$j]['product_qty'];
 
-			
-
+ 
 			$currency_symbol = $Common->GetCurrencyValue($CartDetails[$j]['currId']);
 
 			//print $Price;die;
 
 			$this->view->currency_symbol = $currency_symbol['currency_symbol'];
 
-			
-
+ 
  			$this->view->CartCnt = count($CartDetails);
 
  			$this->view->TotalPrice = $Price;
@@ -464,7 +524,7 @@ class Fb_CartController extends FbCommonController
 
 			$mysession->cartId = $cartId;
 
-			$cartuserId = $CartDetails[$j]['user_id'];
+			$cartuserId = $CartDetails[$j]['uid'];
 
 			$this->view->cartuserId = $cartuserId;
 
@@ -472,20 +532,17 @@ class Fb_CartController extends FbCommonController
 
 			
 
-			$this->view->cartuserId = $CartDetails[$j]['user_id'];
+			//$this->view->cartuserId = $CartDetails[$j]['user_id'];
 
 			// For Shipping Method for each product
 
-			$ShippingMetodInfo = $Cart->GetShippingMethod($CartDetails[$j]['user_id']);
-
-			
-
+			$ShippingMetodInfo = $Cart->GetShippingMethod($CartDetails[$j]['uid']);
+ 
 			$start = 0;
 
 			$Ship_Method_Combo_Str = array();
 
-			
-
+			$Ship_handling_day = 0;
 			foreach($ShippingMetodInfo as $ship)
 
 			{
@@ -506,7 +563,8 @@ class Fb_CartController extends FbCommonController
 
 				}
 
-				$shippingZone = explode(',',$ship['zone']);
+				//print $ship['zone'];
+				$shippingZone = explode(';',$ship['zone']);
 
 				
 
@@ -514,47 +572,36 @@ class Fb_CartController extends FbCommonController
 
 				{
 
-					//echo "<pre>";
-
-					//print_r($shippingZone[$k]);
-
-					
-
- 					
-
+ 
 					if($shippingZone[$k] == 'Worldwide')
 
 					{
-
-					
-
+ 
 						$Ship_Method_Combo_Str[$ship['shipping_method_id']] = $Ship_Method_name;
 
-						
-
+ 
 					}else
 
 					{
 
 						$shippingState = explode(':',$shippingZone[$k]);
 
+
 						foreach($shippingState as $key => $val )
 
 						{
 
 							if($key == 0 ) {
-
-								
-
+ 
+ 							//print $val."// ";
+							//print $CountryCode['country_iso2']."<br>";
 								if($val == $CountryCode['country_iso2']) {
 
 									
 
 									$Ship_Method_Combo_Str[$ship['shipping_method_id']] = $Ship_Method_name;
 
-									
-
-								}
+ 								}
 
 								
 
@@ -569,14 +616,10 @@ class Fb_CartController extends FbCommonController
 									$Ship_Method_Combo_Str[$ship['shipping_method_id']] = $Ship_Method_name;
 
 								}
-
-							
-
+ 
 							}
-
-							
-
-						}
+ 
+						}//die;
 
 					}
 
@@ -585,27 +628,17 @@ class Fb_CartController extends FbCommonController
 				$Ship_handling_day = $ship['shipping_handling_time'];
 
 			}//die;
+ 
+			$Ship_Handel_Day[$CartDetails[$j]['uid']] = $Ship_handling_day;
+ 
+			$Ship_Method_Combo[$CartDetails[$j]['uid']] = $Ship_Method_Combo_Str;
 
-			
-
-			$Ship_Handel_Day[$CartDetails[$j]['product_id']] = $Ship_handling_day;
-
-			
-
-			$Ship_Method_Combo[$CartDetails[$j]['product_id']] = $Ship_Method_Combo_Str;
-
-			
-
-			//to get paypal details
+ 			//to get paypal details
 
 			$paypalUrl = $Common->GetConfigureValue('paypal_url');
-
-			
-
-			$PaypalDetails = $Common->GetPaypalDetails($this->view->cartuserId);
-
-	
-
+ 
+ 			$PaypalDetails = $Common->GetPaypalDetails($this->view->cartuserId);
+ 
 			$mysession->Paypal_Url = $paypalUrl['configuration_value'];
 
 			$mysession->Api_Username = $PaypalDetails['paypal_email'];
@@ -616,13 +649,15 @@ class Fb_CartController extends FbCommonController
 
 			// For Tax rate for each product
 
-			$TaxInfo = $Cart->GetTaxName($CartDetails[$j]['user_id']);
-
-			
+			$TaxInfo = $Cart->GetTaxName($CartDetails[$j]['uid']);
 
  			$tax_rate = array();
+			
+			
+				
 
-			foreach($TaxInfo as $tax)
+
+			/*foreach($TaxInfo as $tax)
 
 			{
 
@@ -676,7 +711,7 @@ class Fb_CartController extends FbCommonController
 
 				}
 
-			}
+			}*/
 
 			
 
@@ -709,17 +744,16 @@ class Fb_CartController extends FbCommonController
 			$combo_array[$key] = $str;
 
 		}
-
 		
-
+		
  		$this->view->taxRate = $taxe_rate_value;
-
+		
 		$this->view->ship_handel_day = $Ship_Handel_Day;
 
 		$this->view->Ship_Method_Combo = $combo_array;
 
-
-
+		$this->view->Total_Option_Price = $Option_Price;
+		
 		//echo json_encode($IsBilling);die;
 
 		
@@ -771,6 +805,7 @@ class Fb_CartController extends FbCommonController
 		$Cart = new Models_Cart();
 
 		$Common = new Models_Common();
+		$state = new Models_State();
 
 		$this->_helper->layout()->disableLayout();
 
@@ -802,7 +837,9 @@ class Fb_CartController extends FbCommonController
 
 		$fbuid = $this->_request->getParam('fbuid');
 
+		$current_currencyId = $this->_request->getParam('current_currencyId');
 		
+		$current_curr_data = $Common->GetCurrencyValue($current_currencyId);
 
 			$BillingDetail = array(
 
@@ -836,62 +873,119 @@ class Fb_CartController extends FbCommonController
 
 		$result = $Cart->UpdateShippingInfo($BillingDetail,$CartId);
 
-  		
 
 		$ShippingInfo = $Cart->GetShippingInfo($CartId);
-
-		
-
+ 
 		$CartDetails = $Cart->GetProductInCart($fbuid);
-
-		
-
+  
 		$CountryCode = $Cart->GetCountryCode($ShippingInfo['shipping_user_country_id']);
-
-		
-
+ 
 		$this->view->CountryCode = $CountryCode['country_iso2'];
-
+		
+		$state_name = $state->GetStateById($State);
+		
 		$Ship_Method_Combo = array();
 
 		$Ship_Handel_Day = array();
 
+		$Option_Price = 0;
 		
-
+		$test = array();
+		
+		foreach($CartDetails as $prokey => $val)
+		{
+		
+			//print_r($val);die;
+		  //if($val['taxRate'] != 0)
+		  //{
+			 if($val['tax_zone'] != '')
+			 {		 
+				$taxzone = explode(',',$val['tax_zone']);
+			 }else{
+				$taxzone = explode(',',$mysession->default_taxZone);
+			 }
+			
+				$defaultZone = $Common->GetDefaultTaxRate($val['uid']);
+				
+			 $tax_rate = $Common->TaxCalculation($taxzone,$val['tax_rate'], $this->view->CountryCode, $state_name, $defaultZone['tax_rate'] );
+			 
+			 //print $val['product_id']."==>".$tax_rate."////";
+			
+			 $optionDetail = $Cart->GetOptionDetail($val['cart_detail_id']);
+			
+			 $opt_price = 0;
+			
+			if(count($optionDetail)> 0)
+			{
+				foreach($optionDetail as $optprice)
+				{
+					$opt_price += $optprice['option_price'];
+				
+				}
+			}
+			
+			$prodPrice =  (($val['product_price']+$opt_price)*$current_curr_data['currency_value'])/$val['currency_value'];
+  			 
+			 $CartDetails[$prokey]['prodprice'] = $prodPrice;
+			 
+			 $CartDetails[$prokey]['prod_convert_price'] = round(((($prodPrice) +((($prodPrice) * $tax_rate)/100))* $mysession->currency_value)/$val['currency_value'],2);
+			 
+			 //print $CartDetails[$prokey]['prod_convert_price'];die;
+			 //print "((((".$prodPrice."+".$opt_price.") +(((".$prodPrice."+". $opt_price.") * ".$tax_rate.")/100))*". $mysession->currency_value.")/".$val['currency_value'].",2)<br>";
+			 
+//		  } else{
+//		  
+//			 $optionDetail = $Cart->GetOptionDetail($val['cart_detail_id']);
+//			
+//			 $opt_price = 0;
+//			
+//			if(count($optionDetail)> 0)
+//			{
+//				foreach($optionDetail as $optprice)
+//				{
+//					$opt_price += $optprice['option_price'];
+//				
+//				}
+//			}
+//  			 $tax_rate = $val['taxRate'];
+//			 
+//			 $CartDetails[$prokey]['prod_convert_price'] = round(((($val['product_price']+$opt_price) +((($val['product_price']+ $opt_price) * $tax_rate)/100))* $mysession->currency_value)/$val['currency_value'],2);
+//			 
+//			 print "((((".$val['product_total_cost']."+".$opt_price.") +(((".$val['product_total_cost']."+". $opt_price.") * ".$tax_rate.")/100))*". $mysession->currency_value.")/".$val['currency_value'].",2)";die;
+//		  
+//		  }
+		}
+		
+		
 		$this->view->cartItems = $CartDetails;
-
-		
-
+ 
 		$cartId = '';
 
 		$Price = 0;
 
 		$CartTotal = '';
 
-
-
+		
+	
 		for($j=0; $j < count($CartDetails); $j++)
 
 		{
-
-		
-
-			$Price += $CartDetails[$j]['product_price']*$CartDetails[$j]['product_qty'];
+			
+ 
+			$Price += $CartDetails[$j]['product_price'] * $CartDetails[$j]['product_qty'];
 
 			$cartId = $CartDetails[$j]['cart_id'];
 
 			$CartTotal += $CartDetails[$j]['product_qty'];
 
-			
-
+ 
 			$currency_symbol = $Common->GetCurrencyValue($CartDetails[$j]['currId']);
 
 			//print $Price;die;
 
 			$this->view->currency_symbol = $currency_symbol['currency_symbol'];
 
-			
-
+ 
  			$this->view->CartCnt = count($CartDetails);
 
  			$this->view->TotalPrice = $Price;
@@ -900,7 +994,7 @@ class Fb_CartController extends FbCommonController
 
 			$mysession->cartId = $cartId;
 
-			$cartuserId = $CartDetails[$j]['user_id'];
+			$cartuserId = $CartDetails[$j]['uid'];
 
 			$this->view->cartuserId = $cartuserId;
 
@@ -908,85 +1002,76 @@ class Fb_CartController extends FbCommonController
 
 			
 
-			$this->view->cartuserId = $CartDetails[$j]['user_id'];
+			//$this->view->cartuserId = $CartDetails[$j]['user_id'];
 
 			// For Shipping Method for each product
 
-			$ShippingMetodInfo = $Cart->GetShippingMethod($CartDetails[$j]['user_id']);
-
-			
-
-			
-
+			$ShippingMetodInfo = $Cart->GetShippingMethod($CartDetails[$j]['uid']);
+ 
 			$start = 0;
 
 			$Ship_Method_Combo_Str = array();
 
-			
-
+			$Ship_handling_day = 0;
 			foreach($ShippingMetodInfo as $ship)
 
 			{
 
- 				
+ 				if($ship['ShippingName'] != '')
 
-				$shippingZone = explode(',',$ship['zone']);
+				{
+
+					$Ship_Method_name = $ship['ShippingName'];
+
+				}
+
+				else
+
+				{
+
+					$Ship_Method_name = $ship['shipping_method_name'];
+
+				}
+
+				//print $ship['zone'];
+				$shippingZone = explode(';',$ship['zone']);
+
+				
 
  				for($k=0; $k < count($shippingZone); $k++)
 
 				{
 
-					if($ship['ShippingName'] != '')
-
-					{
-
-						$Ship_Method_name = $ship['ShippingName'];
-
-					}
-
-					else
-
-					{
-
-						$Ship_Method_name = $ship['shipping_method_name'];
-
-					}
-
- 					
-
+ 
 					if($shippingZone[$k] == 'Worldwide')
 
 					{
-
-					
-
+ 
 						$Ship_Method_Combo_Str[$ship['shipping_method_id']] = $Ship_Method_name;
 
-						
-
+ 
 					}else
 
 					{
 
 						$shippingState = explode(':',$shippingZone[$k]);
 
+
 						foreach($shippingState as $key => $val )
 
 						{
 
 							if($key == 0 ) {
-
-								
-
+ 
+ 							//print $val."// ";
+							//print $CountryCode['country_iso2']."<br>";
 								if($val == $CountryCode['country_iso2']) {
 
 									
 
 									$Ship_Method_Combo_Str[$ship['shipping_method_id']] = $Ship_Method_name;
 
-									
-
-								}
+ 								}
 
 								
 
@@ -1001,14 +1086,10 @@ class Fb_CartController extends FbCommonController
 									$Ship_Method_Combo_Str[$ship['shipping_method_id']] = $Ship_Method_name;
 
 								}
-
-							
-
+ 
 							}
-
-							
-
-						}
+ 
+						}//die;
 
 					}
 
@@ -1016,18 +1097,17 @@ class Fb_CartController extends FbCommonController
 
 				$Ship_handling_day = $ship['shipping_handling_time'];
 
-			}
+			}//die;
+ 
+			$Ship_Handel_Day[$CartDetails[$j]['uid']] = $Ship_handling_day;
+ 
+			$Ship_Method_Combo[$CartDetails[$j]['uid']] = $Ship_Method_Combo_Str;
 
- 
-			$Ship_Handel_Day[$CartDetails[$j]['product_id']] = $Ship_handling_day;
- 
-			$Ship_Method_Combo[$CartDetails[$j]['product_id']] = $Ship_Method_Combo_Str;
- 
-			//to get paypal details
+ 			//to get paypal details
 
 			$paypalUrl = $Common->GetConfigureValue('paypal_url');
  
-			$PaypalDetails = $Common->GetPaypalDetails($this->view->cartuserId);
+ 			$PaypalDetails = $Common->GetPaypalDetails($this->view->cartuserId);
  
 			$mysession->Paypal_Url = $paypalUrl['configuration_value'];
 
@@ -1039,13 +1119,15 @@ class Fb_CartController extends FbCommonController
 
 			// For Tax rate for each product
 
-			$TaxInfo = $Cart->GetTaxName($CartDetails[$j]['user_id']);
-
-			
+			$TaxInfo = $Cart->GetTaxName($CartDetails[$j]['uid']);
 
  			$tax_rate = array();
+			
+			
+				
 
-			foreach($TaxInfo as $tax)
+
+			/*foreach($TaxInfo as $tax)
 
 			{
 
@@ -1062,33 +1144,55 @@ class Fb_CartController extends FbCommonController
 					{
 
 						if($key == 0 ) {
- 
+
+							
+
 							if($val == $CountryCode['country_iso2']) {
- 
+
+								
+
 								$tax_rate[$tax['tax_rate_id']] = $tax['rate'];
- 
+
+								
+
 							}
- 
+
+							
+
 						} else {
- 
+
+						
+
 							if( $val == $ShippingInfo['state_name'] ) {
- 
+
+						
+
 								$tax_rate[$tax['tax_rate_id']] = $tax['rate'];
 
 							}
- 
+
+						
+
 						}
- 
+
+						
+
 					}
 
 				}
 
-			}
- 
+			}*/
+
+			
+
 			$taxe_rate_value[$CartDetails[$j]['product_id']] = $tax_rate;
- 
+
+	
+
 		}
- 
+
+		
+
 		$combo_array = array();
 
 		foreach( $Ship_Method_Combo as $key => $val ) 
@@ -1101,19 +1205,25 @@ class Fb_CartController extends FbCommonController
 
 			{
 
-				$str .= "<option name='' value='".$key2."' onclick='GetShippingCost(".$key2.",".$key.")'>".$val2."</option>";
- 
+				$str .= "<option name='' value='".$key2."' >".$val2."</option>";
+
+				
+
 			}
 
 			$combo_array[$key] = $str;
 
 		}
- 
+		
+		
  		$this->view->taxRate = $taxe_rate_value;
-
+		
 		$this->view->ship_handel_day = $Ship_Handel_Day;
 
 		$this->view->Ship_Method_Combo = $combo_array;
+
+		$this->view->Total_Option_Price = $Option_Price;
+		
  
 	}	
  
@@ -1189,19 +1299,21 @@ class Fb_CartController extends FbCommonController
 
 		$prodPrice = $this->_request->getParam('prodPrice');
 
-		$prodData = $Product->GetProductDetails($prodId);
+		$prodData = $Cart->GetProductCartDetails($prodId,$cartId);
 
 		$updateData = array(
 
  				'product_qty' => $this->_request->getParam('prodQty'),
 
-				'product_total_cost' => $prodPrice*$this->_request->getParam('prodQty')
+				'product_total_cost' => ($prodData['product_price']+$prodData['tax_rate'])*$this->_request->getParam('prodQty')
 
  			);
 
   		$UpdateCartDetails = $Cart->UpdateCart($updateData,$cartId,$prodId);
   
 		$CartData = $Cart->GetProductInCart($fbuid);
+		
+		
  
 		echo json_encode($CartData);die;
 
@@ -1238,16 +1350,53 @@ class Fb_CartController extends FbCommonController
 
 		$methodId = $this->_request->getParam('shipmethodid');
 
-		$prodId = $this->_request->getParam('prodid');
+		$prodId = explode('#',$this->_request->getParam('prodid'));
 		
-		$prod_Qty = $this->_request->getParam('Qty');
+		
+		
+		$total_product_weight = 0;
+		
+		foreach( $prodId as $key => $val )
+		{
+			
+			if($val != '' ) {
+			
+				$product = explode("~",$val);
+				
+				if($product[0] != '' && $product[0] > 0 ) {
+				
+					$prodData = $Product->GetProductDetails($product[0]);
+					
+					
+					if($prodData['weight_unit_id'] == DEFAULT_WEIGHT_UNIT)
+					{
+						$product_weight = $prodData['product_weight'] * $product[1];
+						
+					}else{
+						
+						$converted_weigth_price = $Common->GetWeigthUnitPrice($prodData['weight_unit_id'],DEFAULT_WEIGHT_UNIT);
+						
+						$pro_converted_weigth = $prodData['product_weight'] * $converted_weigth_price;
+						
+						$product_weight = round($pro_converted_weigth * $product[1]);
+					
+					}
+					
+					
+					
+					$total_product_weight += $product_weight;
+					
+				}
+			}
+		
+		}
 
 		$filter = new Zend_Filter_StripTags();	
  
  		$current_currencyId = $filter->filter(trim($this->_request->getPost('current_currencyId')));
  		$current_curr_data = $Common->GetCurrencyValue($current_currencyId);
  
-		$prodData = $Product->GetProductDetails($prodId);
+		//$prodData = $Product->GetProductDetails($prodId);
  
  		$ShippingCostDetails = $Cart->GetShippingCost($methodId);
 		
@@ -1261,28 +1410,11 @@ class Fb_CartController extends FbCommonController
  			$start = 0;
  	
 			foreach($shippingPriceArray as $val)
-	
 			{
-				//echo "<pre>";
-				//print_r($val);die;
+				
 				$shippingRangeArray = explode(':',$val);
-				if($prodData['weight_unit_id'] == DEFAULT_WEIGHT_UNIT)
-				{
-	
-					$product_weight = $prodData['product_weight'] * $prod_Qty;
-					
-				}else{
-					
-					$converted_weigth_price = $Common->GetWeigthUnitPrice($prodData['weight_unit_id'],DEFAULT_WEIGHT_UNIT);
-					
-					$pro_converted_weigth = $prodData['product_weight'] * $converted_weigth_price;
-					
-					$product_weight = round($pro_converted_weigth * $prod_Qty);
-				
-				}
-				
-				
-				if($product_weight > $start && $product_weight <= $shippingRangeArray[0] || $product_weight >= $shippingRangeArray[0])
+								
+				if($total_product_weight > $start && $total_product_weight <= $shippingRangeArray[0] || $total_product_weight >= $shippingRangeArray[0])
 	
 				{
  					$ship_Price = $shippingRangeArray[1];
@@ -1401,8 +1533,11 @@ class Fb_CartController extends FbCommonController
 
 		$prodIds = explode(',',$this->_request->getParam('prodid'));
 
-		$methodIds = explode(',',$this->_request->getParam('methodid'));
-
+		$methodIds = json_decode(stripslashes($this->_request->getParam('methodid')),true);
+		
+		//print_r($methodIds);die;
+		
+		
  		$taxrates = explode(',',$this->_request->getParam('taxrate'));
  
  		$current_currencyId = $filter->filter(trim($this->_request->getPost('current_currencyId')));
@@ -1417,51 +1552,26 @@ class Fb_CartController extends FbCommonController
 
 		$product_tax_price = 0;
 
+		$ship_Price = $this->_request->getParam('shipCost');
+		
+		
+		
  		for($i=0; $i<count($prodIds); $i++)
 
 		{
  
-			$taxRate = preg_replace("/[^0-9,.]/", '', $taxrates[$i]);
+			//$taxRate = preg_replace("/[^0-9,.]/", '', $taxrates[$i]);
 
-			$ship_Price = 0;
+			
 
-			$prodData = $Product->GetProductDetails($prodIds[$i]);
+			$prodData1 = $Product->GetProductDetails($prodIds[$i]);
 
-			if($methodIds[$i])
-
-			{
-
-				$ShippingCostDetails = $Cart->GetShippingCost($methodIds[$i]);
- 
-				$shippingPriceArray = explode(',',$ShippingCostDetails['price']);
- 
-				$start = 0;
- 
-				foreach($shippingPriceArray as $val)
-
-				{
-
-					$shippingRangeArray = explode(':',$val);
- 
-					if($prodData['product_weight'] > $start && $prodData['product_weight'] <= $shippingRangeArray[0])
-
-					{
- 
-						$ship_Price = $shippingRangeArray[1];
-
-					}
- 
-					$start = $shippingRangeArray[0];
-
- 				}
-
-			}
  
 			if($ship_Price)
 
 			{
  
-				$Shipping_Price = round(($ship_Price*$current_curr_data['currency_value'])/ $ShippingCostDetails['currency_value'],2);
+				$Shipping_Price = round($ship_Price,2);
 
 				$ShippingValue = $Shipping_Price;
  
@@ -1472,27 +1582,75 @@ class Fb_CartController extends FbCommonController
 			}
  
 			$prodData = $Cart->GetCartProductDetail($prodIds[$i],$cartId);
-
-			$total_cost = round((($prodData['product_price']+$ShippingValue)*$prodData['product_qty'])+$taxRate,2);
+			
+			//print_r($prodData);die;
+			$CountryCode = $Cart->GetCountryCode($prodData['shipping_user_country_id']);
  
-			$product_total_price = $product_total_price+($prodData['product_price']*$prodData['product_qty']);
+			$Country_Code = $CountryCode['country_iso2'];
+			
+			 if($prodData['tax_zone'] != '')
+			 {		 
+				$taxzone = explode(',',$prodData['tax_zone']);
+			 }else{
+				$taxzone = explode(',',$mysession->default_taxZone);
+			 }
+			
+			 $defaultZone = $Common->GetDefaultTaxRate($prodData['user_id']);
+			
+			 $tax_rate = $Common->TaxCalculation($taxzone,$prodData['tax_rate'], $Country_Code,'', $defaultZone['tax_rate']);
+			 
+			 $optionDetail = $Cart->GetOptionDetail($prodData['cart_detail_id']);
+			
+			 $opt_price = 0;
+			
+			if(count($optionDetail)> 0)
+			{
+				foreach($optionDetail as $optprice)
+				{
+					$opt_price += $optprice['option_price'];
+				
+				}
+			}
+			 
+			// print $tax_rate;die;
+			 
+			 $prodPrice =  (($prodData['product_price']+$opt_price)*$current_curr_data['currency_value'])/$prodData['currency_value'];
+			
+			$total_taxrate = ($prodPrice  * $tax_rate)/100;
+			
 
- 			$product_shipping_price = $product_shipping_price+($ShippingValue*$prodData['product_qty']);
+			$total_cost = round((($prodPrice )*$prodData['product_qty'])+$total_taxrate,2);
+ 
+			$product_total_price = $product_total_price+($prodPrice *$prodData['product_qty']);
 
-			$product_tax_price = $product_tax_price+$taxRate;
+ 			$product_shipping_price = $ShippingValue;
+
+			$product_tax_price = $product_tax_price+$total_taxrate;
+			
+			
+  			 
+			 //print "(".$prodData['product_price']."*".$current_curr_data['currency_value'].")/".$prodData['currency_value']."<br>";
+			// print $prodPrice;die;
+			// $CartDetails[$prokey]['prod_convert_price'] = round(((($prodPrice+$opt_price) +((($prodPrice + $opt_price) * $tax_rate)/100))* $mysession->currency_value)/$val['currency_value'],2);
+			
+			 // print $total_taxrate;die;
  
 			$updateData = array(
+					
+					'product_price' => round($prodPrice,2),
 
-					'tax_rate' => $taxRate,
+					'tax_rate' => round($total_taxrate,2),
 
-					'shipping_method_id' => $methodIds[$i],
+					'shipping_method_id' => $methodIds[$prodIds[$i]],
 
-					'shipping_cost' => $ShippingValue,
+					'shipping_cost' => 0,
 
-					'product_total_cost' => $total_cost
+					'product_total_cost' => round($total_cost,2)
 
 				);
- 
+			//echo "<pre>";
+			//print_r($updateData)."<br>";
+ 			
 			$UpdateCartDetails = $Cart->UpdateCart($updateData,$cartId,$prodIds[$i]);
  
 		}
@@ -1507,10 +1665,12 @@ class Fb_CartController extends FbCommonController
 
 					'total_tax_cost' => round($product_tax_price,2),
 
-					'total_order_amount' => $order_total_amt
+					'total_order_amount' => round($order_total_amt,2)
 
 				);
  
+ 			//echo "<pre>";
+			//print_r($updatePrice);die;
 		$Cart->UpdateCartMaster($updatePrice,$cartId,$fbuid);
  		
  		$CartData = $Cart->GetProductInCart($fbuid);
@@ -1560,7 +1720,7 @@ class Fb_CartController extends FbCommonController
  
 		}
 
-		$Final_Amount['final_amount'] = $amt;
+		$Final_Amount['final_amount'] = $amt+$product_shipping_price;
 
 		$mysession->final_amount = $amt;
 
@@ -1599,30 +1759,87 @@ class Fb_CartController extends FbCommonController
 		$Cart = new Models_Cart();
 
 		$Product = new Models_Product();
+		
+		$state = new Models_State();
 
  		$Common = new Models_Common();
 
 		$filter = new Zend_Filter_StripTags();	
  
-		$cart_currencyId = $filter->filter(trim($this->_request->getPost('currencyId'))); 
+		$cart_currencyId = $filter->filter(trim($this->_request->getParam('currencyId'))); 
 
-		$current_currencyId = $filter->filter(trim($this->_request->getPost('current_currencyId')));
-
-		$fbuid = $filter->filter(trim($this->_request->getPost('fbuid')));
-
-		//print $current_currencyId."<br>";
+		$current_currencyId = $filter->filter(trim($this->_request->getParam('current_currencyId')));
+		$CartId = $this->_request->getParam('cartid');
 		
-		//print $cart_currencyId;die;
+ 		$fbuid = $filter->filter(trim($this->_request->getParam('fbuid')));
+
+		$ShippingInfo = $Cart->GetShippingInfo($CartId);
+ 
+ 		$CountryCode = $Cart->GetCountryCode($ShippingInfo['shipping_user_country_id']);
+ 
+		$Country_Code = $CountryCode['country_iso2'];
+		
+		$state_name = $state->GetStateById($ShippingInfo['shipping_user_state_id']);
 
 		$curr_data = $Common->GetCurrencyValue($cart_currencyId);
 
  		$current_curr_data = $Common->GetCurrencyValue($current_currencyId);
 
- 		$cartData = $Cart->GetProductInCart($fbuid,$curr_data['currency_value'],$current_curr_data['currency_value']);
+ 		$cartData = $Cart->GetProductInCart($fbuid);
 
- 
+		$Price = 0;
+ 		
 		foreach($cartData as $key=>$value)
  		{
+		
+		 if($value['taxRate'] != 0)
+		 {
+ 
+			 if($value['tax_zone'] != '')
+			 {		 
+				$taxzone = explode(',',$value['tax_zone']);
+			 }else{
+				$taxzone = explode(',',$mysession->default_taxZone);
+			 }
+			
+				$defaultZone = $Common->GetDefaultTaxRate($value['user_id']);
+				
+			 $tax_rate = $Common->TaxCalculation($taxzone,$value['tax_rate'], $Country_Code, $state_name, $defaultZone['tax_rate'] );
+			 
+			
+			 $optionDetail = $Cart->GetOptionDetail($value['cart_detail_id']);
+			
+			 $opt_price = 0;
+			
+			if(count($optionDetail)> 0)
+			{
+				foreach($optionDetail as $optprice)
+				{
+					$opt_price += $optprice['option_price'];
+				
+				}
+			}
+			 
+			 	$Prod_convert_price = round(((($value['product_price']+$opt_price) +((($value['product_price']+ $opt_price) * $tax_rate)/100))* $curr_data['currency_value'])/$current_curr_data['currency_value'],2);
+		
+				//print "here";
+				//print "((((".$value['product_price']."+".$opt_price.") +(((".$value['product_price']."+". $opt_price.") * ".$tax_rate.")/100))*". $curr_data['currency_value'].")/".$current_curr_data['currency_value'].",2)";die;
+				
+		}else{
+			
+		 
+			$tax_rate = $value['taxRate'];
+			
+			$Prod_convert_price = round(((($value['product_total_cost']) +((($value['product_total_cost']) * $tax_rate)/100))* $curr_data['currency_value'])/$current_curr_data['currency_value'],2);
+			
+			//$Prod_convert_price = round(((($value['product_total_cost']+$opt_price) +((($value['product_total_cost']+ $opt_price) * $tax_rate)/100))* $curr_data['currency_value'])/$current_curr_data['currency_value'],2);
+			
+			//print "((((".$value['product_total_cost'].") +(((".$value['product_total_cost'].") * ".$tax_rate.")/100))*". $curr_data['currency_value'].")/".$current_curr_data['currency_value'].",2)";die;
+			
+			//$prodPrice = round(((($value['product_total_cost']) +((($value['product_total_cost']) * $tax_rate)/100))* $curr_data['currency_value'])/$current_curr_data['currency_value'],2);
+			 
+		}
+ 	
  
 			$updateCuurency = array(
 
@@ -1635,17 +1852,19 @@ class Fb_CartController extends FbCommonController
 
  			$updateData = array(
 
-					'product_price' => $value['Prod_convert_price'],
+					'product_price' => $Prod_convert_price,
 
 					'product_qty' => $value['product_qty'],
 
-					'product_total_cost' => $value['Prod_convert_price']*$value['product_qty']
+					'product_total_cost' => $Prod_convert_price*$value['product_qty']
 
 				);
 
 			//print_r($updateData);die;
 
 			$UpdateCartDetails = $Cart->UpdateCart($updateData,$value['cart_id'],$value['product_id']);
+			
+			$Price += $Prod_convert_price*$value['product_qty'];
 
 		}
 
@@ -1659,7 +1878,7 @@ class Fb_CartController extends FbCommonController
  
 			$cartId = '';
 
-			$Price = 0;
+			
 
 			$CartTotal = '';
 
@@ -1667,7 +1886,7 @@ class Fb_CartController extends FbCommonController
 
 			{
  
- 				$Price += $value['price']*$value['product_qty'];
+ 				//$Price += $value['price']*$value['product_qty'];
 
 				$cartId = $value['cart_id'];
 

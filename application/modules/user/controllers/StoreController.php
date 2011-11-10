@@ -222,7 +222,7 @@ class User_StoreController extends UserCommonController
 				
 			} else {
 		
-				$addErrorMessage = $translate->_('Err_Store_Found');
+				$addErrorMessage[] = $translate->_('Err_Store_Found');
 			}	
 			
 			$this->view->User_EMessage = $addErrorMessage;

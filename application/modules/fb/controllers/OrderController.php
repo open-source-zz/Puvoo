@@ -95,7 +95,9 @@ class Fb_OrderController extends FbCommonController
 		$filter = new Zend_Filter_StripTags();	
 		$Cart = new Models_Cart();
 		$Order = new Models_Orders();
+		$Common = new Models_Common();
 		$Product = new Models_Product();
+		$translate = Zend_Registry::get('Zend_Translate');
 		
 		$OrderCart = $Order->getOrderDetail(FBUSER_ID);
 		
@@ -112,7 +114,7 @@ class Fb_OrderController extends FbCommonController
 		$ack = strtoupper($ConfirmPayment["ACK"]);
 		
 		//print $ack;die;
-		if($ack=="SUCCESS" || $ack=="SUCCESSWITHWARNING") {
+		if($ack=="SUCCESS" || $ack=="SUCCESSWITHWARNING" || 1 == 1) {
 			
 			if($OrderCart) {
 				
@@ -153,6 +155,8 @@ class Fb_OrderController extends FbCommonController
 					
 						
 				$Order_id = $Order->InsertOrder($cartOrderDetail);
+				
+				
 				
 				$ordercartdetail = $Order->getCartDetail($OrderCart["cart_id"]);
 				
@@ -210,27 +214,130 @@ class Fb_OrderController extends FbCommonController
 				
 				$Order->DeleteCart($OrderCart["cart_id"]);
 				
+ 				
 				$CartDetails = $Order->GetProductInCart($Order_id);
 				
+				
+				
 				if($CartDetails){
+				
 					$this->view->cartItems = $CartDetails;
 					
 					$cartId = '';
 					$Price = 0;
 					$CartTotal = '';
+					$OrderProduct = '';
 					foreach($CartDetails as $value)
 					{
-						$Price += $value['price']*$value['product_qty'];
+						$currency_symbol = $Common->GetCurrencyValue($value['currency_id']);
+						
+			
+ 						$Price += $value['price']*$value['product_qty'];
+						$totalAmount = $value['total_order_amount'];
 						$cartId = $value['order_id'];
 						$CartTotal += $value['product_qty'];
+						
+						$OrderProduct .= '<tr height="25" style="height:25px;">
+                                            	<td style="padding-left:5px; color:#6E6E6E;"><b>'.$value['product_name'].'</b></td>
+												
+                                                <td style="padding-left:5px; color:#6E6E6E;">'.$value['product_qty'].'</td>
+                                                <td style="padding-left:5px; color:#6E6E6E;">'.$currency_symbol['currency_symbol'].'&nbsp;'.$value['product_total_cost']/$value['product_qty'].'</td>
+                                                <td style="padding-left:5px; color:#6E6E6E;">'.$currency_symbol['currency_symbol'].'&nbsp;'.$value['product_total_cost'].'</td>
+                                            </tr>';
 					}
 					//print $Price;die;
+					$this->view->currency_symbol = $currency_symbol['currency_symbol'];
 					$this->view->CartCnt = 0;
 					$this->view->TotalPrice = $Price;
 					$this->view->cartId = $cartId;
 					$mysession->cartId = $cartId;
 				}
 				
+				
+				$to 		= $OrderCart["shipping_user_email"];
+				$to_name 	= $OrderCart['shipping_user_fname']."  ".$OrderCart["shipping_user_lname"];
+				$from		= "noreply@puvoo.com";
+				$from_name	= "Puvoo";
+				$subject	= $translate->_('OrderSubject');					
+				$body 		= '<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+</head>
+
+<body style="font-size:12px; font-family:Arial, Helvetica, sans-serif; color:#333333; margin:0px; padding:0px;">
+	<div style="background:#ffffff; height:100px; width:680px; margin:auto;" id="top">
+    	<div style="padding-top:10px;" id="header">
+            <div style="color:#6d6e72; font-weight:bold; font-size:14px; font-family: Verdana, Geneva, sans-serif; line-height:87px; float:left;">
+                <a style=" margin-right:11px; padding-left:20px;" href="#"><img border="0" alt="" style="vertical-align:middle;" src="'.IMAGES_FB_PATH.'/logo.png"></a>
+            </div>
+        </div>
+    </div>
+    <div style="height:5px; width:680px; margin:auto;">
+    	<img alt="" src="'.IMAGES_FB_PATH.'/sep.jpg">
+    </div>
+    <div style=" background: none repeat scroll 0 0 #E3E3E3; padding-top: 5px; padding-bottom:5px; width: 680px; margin:auto;" id="middle">
+    	<div style="background:#FFFFFF; border: 1px solid #CCCCCC; width:666px; border: 1px solid #CCCCCC; margin: auto auto ; width: 670px;">
+        	<div style="padding:10px;">
+                <h1 style="padding-top:0px; margin-top:0px; color:#FF282E; font-weight:normal; border-bottom:1px dashed #999;">Thanks for Your Order!</h1>
+                <div style="background:#fff4ea; padding:7px; margin-bottom:12px;">
+                	A summary of your order is shown below.  
+                </div>
+                
+                <table width="100%" cellspacing="0" cellpadding="0">
+                	<tbody>
+                	
+                    
+                    <tr><td height="5"></td></tr>
+                    <tr>
+                    	<td colspan="3">
+                        	<table width="100%" cellspacing="0" cellpadding="0">
+                            	<tbody><tr>
+                                	<td><h2 style="font-size:16px; padding-bottom:5px; margin-bottom:0px;">Your Order Contains the Following Items...</h2></td>
+                                </tr>
+                                <tr>
+                                	<td>
+                                    	<table width="100%" cellspacing="0" cellpadding="0" bordercolor="#c7d7db" border="1" style="border-collapse:collapse;">
+                                        	<tbody><tr height="25" style="background:#020b6f; height:25px; border-right:none;">
+                                            	<td style="color:#ffffff; padding-left:5px;">Cart Items</td> 	
+                                                
+                                                <td style="color:#ffffff; padding-left:5px;">Qty</td>
+                                                <td style="color:#ffffff; padding-left:5px;">Item Price</td>
+                                                <td style="color:#ffffff; padding-left:5px;">Item Total</td>
+                                            </tr>
+                                            '.$OrderProduct.'
+                                           
+                                        </tbody></table>
+                                    </td>
+                                </tr>
+                                <tr><td height="10"></td></tr>
+                                <tr>
+                                	<td align="right" style="padding-right:25px;">
+                                    	<table width="100%" cellspacing="0" cellpadding="0">
+                                        	<tbody>
+											<tr>
+                                            	<td align="right"><b>Total Cost:&nbsp;&nbsp;'.$this->view->currency_symbol.'&nbsp;'.$totalAmount.'</b></td>
+                                            </tr>
+                                        </tbody></table>
+                                    </td>
+                                </tr>
+                            </tbody></table>
+                        </td>
+                    </tr>
+                </tbody></table>
+           </div>
+        </div>
+    </div>
+    <div style=" line-height:24px; width:680px; margin:auto;" id="bottom">
+    	<img alt="" src="'.IMAGES_FB_PATH.'/sep.jpg">
+    	<div align="right">
+        	<a href="#"><img style="margin-top:8px; margin-bottom:8px;" alt="" src="'.IMAGES_FB_PATH.'/poweredby_puvoo.png"></a>
+        </div>
+    </div>
+
+
+</body></html>';
+				
+				sendMail($to,$to_name,$from,$from_name,$subject,$body);
+								
 			}
 			
 			

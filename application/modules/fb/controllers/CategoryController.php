@@ -130,6 +130,7 @@ class Fb_CategoryController extends FbCommonController
  		$catid = $this->_request->getParam('id');
 		$this->view->cat_id = $catid;
 		$Category = new Models_Category();
+		$Common = new Models_Common();
 		
 		
 		if($catid)
@@ -195,6 +196,56 @@ class Fb_CategoryController extends FbCommonController
 				$Product = new Models_Product();
 				$catProd = $Product->GetProductByCategoryId($catid_String,$Sort);
 				$this->view->ProductList = $catProd;
+				
+				
+				 foreach($catProd as $prokey => $val)
+				 {
+					 if($val['tax_zone'] != '')
+					 {		 
+					 	$taxzone = explode(',',$val['tax_zone']);
+					 }else{
+					 	$taxzone = explode(',',$mysession->default_taxZone);
+					 }
+					 
+					 $defaultZone = $Common->GetDefaultTaxRate($val['user_id']);
+					
+					 $tax_rate = $Common->TaxCalculation($taxzone,$val['tax_rate'],$mysession->Default_Countrycode,'',$defaultZone['tax_rate']);
+					 
+					 
+					 $catProd[$prokey]['prod_convert_price'] = round((($val['product_price'] +(($val['product_price'] * $tax_rate)/100))* $mysession->currency_value)/$val['currency_value'],2);
+					 
+				 }
+				
+				
+//				foreach($catProd as $val)
+//				{
+//					$url = SITE_FB_URL . "product/view/id/" . $val['product_id'];
+//					print $url;die;
+//					$facebook = new Facebook(array(
+//			
+//							  'appId'  => FACEBOOK_APP_API_ID,
+//			
+//							  'secret' => FACEBOOK_APP_SECRET_KEY,
+//			
+//							  'cookie' => true,
+//			
+//						));
+//					
+//					$data = $facebook->api( 
+//			
+//									array( 
+//			
+//											'method' => 'fql.query', 
+//			
+//											'query' => 'SELECT like_count FROM link_stat WHERE url='.$url.'' 
+//			
+//										) 
+//			
+//									);
+//									
+//					print $data;
+//				
+//				}die;
 				
 				//Set Pagination
 				$paginator = Zend_Paginator::factory($catProd);

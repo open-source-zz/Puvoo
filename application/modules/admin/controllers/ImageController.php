@@ -322,7 +322,7 @@ class qqFileUploader {
 		
         $pathinfo = pathinfo($this->file->getName());
         $filename = $pathinfo['filename'] ;
-		//$filename."_". //$filename."_".
+		
 		$filename = md5(microtime());
 		
 		$ext = $pathinfo['extension'];

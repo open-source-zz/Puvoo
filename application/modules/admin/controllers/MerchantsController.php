@@ -105,6 +105,8 @@
 		//Get Request
 		$request = $this->getRequest();
 		
+		$translate = Zend_Registry::get('Zend_Translate');
+		
 		if($request->isPost()){
 		
 			$page_no = $request->getPost('page_no');
@@ -119,7 +121,29 @@
 			$data['user_fname']=$filter->filter(trim($this->_request->getPost('user_fname'))); 	
 			$data['user_status']=$filter->filter(trim($this->_request->getPost('user_status'))); 			
 			
-			$result = $merchants->SearchMerchants($data);
+			$counter = 0;
+			
+			foreach( $data as  $key => $val ) 
+			{
+			
+				if( $val != '' ) {
+					
+					$counter++;
+					
+				}
+			}
+			
+			if( $counter > 0 ) {
+			
+				$result = $merchants->SearchMerchants($data);
+				
+			} else  {
+			
+				$mysession->Admin_EMessage = $translate->_('No_Search_Criteria');
+			
+				$result = $merchants->GetAllMerchants();
+			
+			} 
 			
 		} elseif($is_search == "0") {
 			// Clear serch option

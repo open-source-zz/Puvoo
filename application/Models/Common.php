@@ -387,12 +387,11 @@ class Models_Common
 		
 		if(count($prodIds) > 0 ){ 
 		
-			foreach($prodIds as $key =>$val)
+			foreach($prodIds as $key => $val)
 			{
 				$sql = "SELECT count(*) as cnt FROM user_product_likes WHERE product_id= ".$val."";
 				
-				//print $sql;die;
-				$result = $db->fetchAll($sql);
+				$result = $db->fetchOne($sql);
 			
 				$sql1 = "UPDATE product_master set like_count = ".$result." WHERE product_id = ".$val."";
 				
@@ -403,7 +402,232 @@ class Models_Common
 		return true;
 	
 	}
+	
+ 	/**
+	 * function GetZoneDetails 
+	 *
+	 * It is used to get details of zone.
+	 *
+	 * Date created: 2011-11-09
+	 *
+	 * @param (int) $zoneid- tax_rate_id .
+  	 *
+   	 * @return (Array) - Return array of records
+	 *
+	 * @author Jayesh 
+	 *
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	public function GetZoneDetails($zoneid)
+	{
+		$db= $this->db;
+		
+ 		$sql = "SELECT * FROM tax_rate_detail WHERE tax_rate_id = ".$zoneid;
+		//print $sql;die;		
+ 		$result = $db->fetchRow($sql);
+		 
+ 		return $result;
+	}
+	
+ 	/**
+	 * function GetDefaultTaxRate 
+	 *
+	 * It is used to get default tax rate for store.
+	 *
+	 * Date created: 2011-11-09
+	 * @param (int) - $userid - user id
+     * @return (Array) - Return array of records
+	 *
+	 * @author Jayesh 
+	 *
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	public function GetDefaultTaxRate($userid)
+	{
+		$db= $this->db;
+		
+ 		$sql = "SELECT * FROM tax_rate_class WHERE user_id = ".$userid." and is_default  = '1'";
+		//print $sql;die;		
+ 		$result = $db->fetchRow($sql);
+		 
+ 		return $result;
+	}
+	
+ 	/**
+	 * function TaxCalculation 
+	 *
+	 * It is used to get tax rate.
+	 *
+	 * Date created: 2011-11-09
+	 * @param (Array) $taxzone- array of data .
+	 *
+     * @return (Array) - Return array of records
+	 *
+	 * @author Jayesh 
+	 *
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	public function TaxCalculation($taxzone,$taxrate, $Ship_country='', $state = '', $defaultRate )
+	{
+		global $mysession;
+		
+		$flag = false;
+		 foreach($taxzone as $zn)
+		 {
+		 	if($zn !='')
+			{
+				$ZoneDetail = $this->GetZoneDetails($zn);
+				
+				$zone = explode(';',$ZoneDetail['zone']);
+				
+				//IT:st1,st2; US:st1,st3; AO
+		
+				for($k=0; $k < count($zone); $k++)
+				{
+					
+					$taxArray = explode(':',$zone[$k]);
+					
+					
+					if(isset($taxArray[0])) {
+						
+						$country = $taxArray[0];
+					
+					} else {
+					
+						$country = $zone[$k];
+					}
+					
+					
+//					if($country == $mysession->Default_Countrycode) {
+//			
+//						$tax_rate = $taxrate;
+//						$flag = true;
+//						break;
+//
+//					}else{
+//					
+//						$tax_rate = $mysession->default_taxrate;
+//					}
+					if($Ship_country != '')
+					{
+						//print $country." == ".$Ship_country."<br />";
+						
+						if($country == $Ship_country) {
+				
+							$tax_rate = $taxrate;
+							$flag = true;
+							break;
+	
+						}else{
+						
+							$tax_rate = $defaultRate;
+						}
+					}else{
+						if($country == $mysession->Default_Countrycode) {
+				
+							$tax_rate = $taxrate;
+							$flag = true;
+							break;
+	
+						}else{
+						
+							$tax_rate = $defaultRate;
+						}
+						}
 
+					
+					if(isset($taxArray[1]))
+					{
+					
+						$stateArray = explode(",", $taxArray[1] );
+						
+						foreach($stateArray as $key => $val1 )
+						{
+							
+							if($state != '' ){
+								
+									foreach( $stateArray as $key2 => $val2 )
+									{
+									
+										//print $state."/";
+										//print $val2."=";
+										if( $state == $val2  )
+										{
+											$tax_rate = $taxrate;
+																						
+										}else{
+										
+											
+											$tax_rate = $defaultRate;
+											
+										}
+									}//die;
+								
+								}
+							
+						}
+						
+					}
+					
+				}	
+				
+			}
+			if($flag == true)	
+				{
+					break;
+				}	
+		
+		 }
+	
+ 		return $tax_rate;
+		
+				//	foreach($taxArray as $key => $val1 )
+				//	{
+		
+						//if($key == 0 ) {
+						
+		
+//							if($val1 == $mysession->Default_Countrycode) {
+//			
+//								$tax_rate = $taxrate;
+//		
+//							}else{
+//							
+//								$tax_rate = $mysession->default_taxrate;
+//							}
+		
+						//} 
+						//else {
+						
+							//if($val1 != '' ) {
+//							
+//								$stateArray = explode(",", $val1);
+//								
+//								if($state != '' ){
+//								
+//									foreach( $stateArray as $key2 => $val2 )
+//									{
+//									
+//										if($val1 == $mysession->Default_Countrycode && $state = $val2  )
+//										{
+//											$tax_rate = $taxrate;
+//																						
+//										}else{
+//											$tax_rate = $mysession->default_taxrate;
+//											
+//										}
+//									}
+//								
+//								}
+//							
+//							}
+						
+						//}		
+				//	}
+		
+				
+			
+	}
 	
 }
 ?>

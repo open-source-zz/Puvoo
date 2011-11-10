@@ -105,6 +105,8 @@
 		//Get Request
 		$request = $this->getRequest();
 		
+		$translate = Zend_Registry::get('Zend_Translate');
+		
 		if($request->isPost()){
 		
 			$page_no = $request->getPost('page_no');
@@ -120,8 +122,31 @@
 			$data['currency_code']=$filter->filter(trim($this->_request->getPost('currency_code'))); 
 			$data['currency_symbol']=$filter->filter(trim($this->_request->getPost('currency_symbol'))); 	
 			$data['currency_value']=$filter->filter(trim($this->_request->getPost('currency_value'))); 
+			
 			//Get search Currency
-			$result = $currency->SearchCurrency($data);
+			$counter = 0;
+			
+			foreach( $data as  $key => $val ) 
+			{
+			
+				if( $val != '' ) {
+					
+					$counter++;
+					
+				}
+			}
+			
+			if( $counter > 0 ) {
+			
+				$result = $currency->SearchCurrency($data);
+				
+			} else  {
+			
+				$mysession->Admin_EMessage = $translate->_('No_Search_Criteria');
+			
+				$result = $currency->GetAllCurrency();
+			
+			} 
 			
 		} elseif($is_search == "0") {
 			// Clear serch option
