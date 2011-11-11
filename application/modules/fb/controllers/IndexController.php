@@ -131,11 +131,10 @@ class Fb_IndexController extends FbCommonController
 
 
     public function indexAction()
-
-     {
-
+	{
+		 
          // action body
-
+		 
 		 global $db,$mysession;
 
 		 $Category = new Models_Category();

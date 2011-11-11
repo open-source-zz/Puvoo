@@ -164,7 +164,35 @@ class Models_Category
 	
 	}
 
+	/**
+	 * function GetCategoryID2
+	 *
+	 * It is used to get category id throught product id.
+	 *
+	 * Date created: 2011-08-22
+	 *
+	 * @param () (Int)  - $Poductid : Product Id
+	 * @return (Array) - Return Array of records
+	 * @author  Jayesh 
+	 * @param   two parameters / login_id and password.
+     * @global  $db Zend_db for database.
+                $mysession Zend_Session_Namespace for session variables.
+	 * 
+	 */
 	
+	public function GetCategoryID2($Poductid)
+	{
+		$db = $this->db;
+		
+		$sql = "SELECT cm.*,cml.category_name as CatName from product_to_categories as ptc 
+				LEFT JOIN category_master as cm ON(cm.category_id = ptc.category_id )
+				LEFT JOIN category_master_lang as cml ON(cm.category_id = cml.category_id and cml.language_id= ".DEFAULT_LANGUAGE.")
+				WHERE ptc.product_id='".$Poductid."'";
+			//print 	$sql;die;
+ 		$result = $db->fetchRow($sql);
+		return $result;
+	
+	}
 	/*
 	 * GetCategoryById(): To get data of category by selected category id.
 	 *
@@ -834,7 +862,59 @@ class Models_Category
 		return $tree;
 	}
 	
+	/**
+	 * Function getCategoryTreeString
+	 *
+	 * This function is used to get category tree for API call
+     *
+	 * Date created: 2011-10-17
+	 *
+	 * @access public
+	 * @param (int)  - $cid : category id 
+	 * @param (int)  - $lvl: current level of category.
+	 * @return (array) - Return array of category ids
+	 * @author Amar
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
 	
+	//recursive function that prints categories as a nested html unorderd list
+
+	function getCategoryTreeString2($parent = 0, $lvl=0)
+	{
+		$db= $this->db;
+		
+		
+	
+		$sql = "SELECT * FROM category_master WHERE is_active = 1 and category_id = ". $parent;
+		//print $sql . "<br>";die;
+		$data = $db->fetchAll($sql);
+		
+		$tree = "";
+		
+		foreach($data as $key => $value)
+		{
+	
+			$sql_child = "select count(*) as cnt from category_master where is_active = 1 and parent_id = " . $value["category_id"];
+			$cnt = $db->fetchOne($sql_child);
+			
+			if($cnt > 0)
+			{
+					
+					$tree .= $value['category_id'] . ",";
+					
+					//array_push($tree, $this->getCategoryTreeForAPI($value['category_id'],$lvl,$tree)	); 
+					$tree .= $this->getCategoryTreeString($value['category_id'],$lvl+1);
+			}
+			else
+			{
+				$tree .= $value['category_id'] . ",";
+			}
+			
+		}
+		return $tree;
+	}
+
 	/**
 	 * Function getCategoryTreeProductCount
 	 *

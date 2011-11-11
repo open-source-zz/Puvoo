@@ -161,6 +161,7 @@ class Fb_CategoryController extends FbCommonController
 				
 				// to get category details
 				$catdetails = $Category->GetCategoryDetail($catid);
+				
 				$parentid = $catdetails['parent_id'];
 				
 				// to get parentcategory details

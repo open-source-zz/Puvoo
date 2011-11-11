@@ -134,6 +134,7 @@ class FbCommonController extends Zend_Controller_Action
 			
 		} 
 		
+		
 		// Facebook User Id
 		define('FACEBOOK_USERID', $Facebook_UserId);
 				
@@ -427,7 +428,7 @@ class FbCommonController extends Zend_Controller_Action
 				$CartTotal += $value['product_qty'];
 				$ShippingInfo = $Cart->GetShippingInfo($cartId);
 				
-				$this->view->cartuserId = $value['user_id'];
+				$this->view->cartuserId = $value['uid'];
 				//print_r($ShippingInfo);die;
 				if($ShippingInfo['shipping_user_state_id'])
 				{
@@ -442,9 +443,9 @@ class FbCommonController extends Zend_Controller_Action
 					$Country_Code = $mysession->Default_Countrycode;
 				}
 				
-				if($value['user_id'] != '')
+				if($value['id'] != '')
 				{
-					$defaultZone = $Common->GetDefaultTaxRate($value['user_id']);
+					$defaultZone = $Common->GetDefaultTaxRate($value['uid']);
 					$mysession->default_taxrate = $defaultZone['tax_rate'];
 					$mysession->default_taxZone = $defaultZone['tax_zone'];
 					
@@ -456,7 +457,7 @@ class FbCommonController extends Zend_Controller_Action
 						$taxzone = explode(',',$mysession->default_taxZone);
 					 }
 					
-						$defaultZone = $Common->GetDefaultTaxRate($value['user_id']);
+						$defaultZone = $Common->GetDefaultTaxRate($value['uid']);
 						
 					 $tax_rate = $Common->TaxCalculation($taxzone,$value['tax_rate'], $mysession->Default_Countrycode, $state_name, $defaultZone['tax_rate'] );
 					 
@@ -588,7 +589,7 @@ class FbCommonController extends Zend_Controller_Action
 				$prodExist = $Product->ProductExist($Id);
 				if($prodExist) {		
 					$productDetails = $Product->GetProductDetails($Id);
-					$userId = $productDetails['user_id'];
+					$userId = $productDetails['uid'];
 				} else  {
 					$this->_redirect("/fb");
 				 }

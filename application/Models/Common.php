@@ -472,6 +472,8 @@ class Models_Common
 		global $mysession;
 		
 		$flag = false;
+		$tax_rate = 1;
+		
 		 foreach($taxzone as $zn)
 		 {
 		 	if($zn !='')

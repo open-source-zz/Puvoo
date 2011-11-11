@@ -99,6 +99,7 @@ class Fb_ProductController extends FbCommonController
 		$Common = new Models_Common();
 		$Product_Image = new Models_ProductImages();
 		
+		
  		$Poductid = $this->_request->getParam('id');
 		$this->view->FB_userid = FBUSER_ID;
 		$translate = Zend_Registry::get('Zend_Translate');
@@ -143,20 +144,37 @@ class Fb_ProductController extends FbCommonController
 				}	
 				
 				//get category id through product id
+				
+				$product_category = $this->_request->getParam('subcategory_id');
+				
+			
+				if( $product_category != '' ) {
+				
+					$this->view->cat_id = $product_category;
+					$cat_details = $Category->GetCategoryDetail($product_category);
+				
+				} else {
+				
+					$result = $Category->GetcategoryID2($Poductid);
+				
+					$cat_details = $Category->GetCategoryDetail($result["category_id"]);
+					$this->view->cat_id = $result["category_id"];
 					
-				$result = $Category->GetcategoryID($Poductid);
+				}
 				
-				$this->view->cat_id = $result['category_id'];
 				
-				if($result['CatName'] != ''){
-					$this->view->catname = $result['CatName'];
+				
+				if($cat_details['CatName'] != ''){
+					$this->view->catname = $cat_details['CatName'];
 				}else{
-					$this->view->catname = $result['category_name'];
+					$this->view->catname = $cat_details['category_name'];
 				}
 		
 				//to get parentcategory details
-				$parentcat_details = $Category->GetCategoryDetail($result['parent_id']);
-				$this->view->parentcat_id = $result['parent_id'];
+				$parentcat_details = $Category->GetCategoryDetail($cat_details['parent_id']);
+				$this->view->parentcat_id = $cat_details['parent_id'];
+				
+				
 				
 				if($parentcat_details['CatName'] != ''){
 					$this->view->parentcat_name = $parentcat_details['CatName'];
