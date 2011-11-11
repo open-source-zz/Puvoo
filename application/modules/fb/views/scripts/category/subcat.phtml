@@ -74,7 +74,7 @@
 			?>
 			<div class="productGridItem productGridItemTopRow firstborder">
 				<div class="thumbnailImage" style="margin-top:14px;">
-					<a target="_top" style="cursor:pointer" class="category" url="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $prodval['product_id'];?>">
+					<a target="_top" style="cursor:pointer" class="category" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $prodval['product_id'];?>/sid/<?php echo $this->cat_id; ?>">
 					
 					<?php if(!$prodval['image_name']){?>
 						<img class="img" alt="Default" title="Default" src="<?php echo IMAGES_FB_PATH ?>/Default.gif"/>
@@ -84,7 +84,7 @@
 					</a>
 				</div>
 				<div class="productTitle">
-					<a target="_top" style="cursor:pointer" class="category" url="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $prodval['product_id'];?>"><?php echo $prodName; ?></a> 
+					<a target="_top" style="cursor:pointer" class="category" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $prodval['product_id'];?>/sid/<?php echo $this->cat_id; ?>"><?php echo $prodName; ?></a> 
 				</div>
 				<div class="productPrice">
 				   <?php echo DEFAULT_CURRENCY_SYMBOL.$prodval['prod_convert_price']."&nbsp;".DEFAULT_CURRENCY_CODE;?>
@@ -117,18 +117,4 @@
 	</div>
 	<?php }?>
 	</form>
-	<script type="text/javascript">
-		$(document).ready(function(){
-			$(".category").click(function(){
-				
-				var action = $(".category").attr("url");
-				
-				$(this).attr("href",action+"?subcategory_id="+'<?php echo $this->cat_id; ?>');
-				
-				//$("#frmcatproduct").attr("action",action).submit();
-				
-			});
-		});
-	</script>
-   
 </div>

@@ -1083,7 +1083,21 @@ class Models_Category
 		 return $tempTree;          // Return the entire child tree
 	}
 	
-	
+	/**
+	 * Function getCategoryTreeForMenu
+	 *
+	 * This function is used to get category tree 
+     *
+	 * Date created: 2011-09-30
+	 *
+	 * @access public
+	 * @param () (int)  - $cid : category id 
+	 * @param () (array)  - $carray : array to put results in.
+	 * @return (array) - Return array of category ids
+	 * @author Yogesh
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
 	
 	function getCategoryTreeForMenu($langCode, $parent = 0)
 	{
@@ -1170,19 +1184,17 @@ class Models_Category
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
 	function getAllFriendLikes($friends_list)
-
 	{
 
- 
 		global $mysession;
 
 		
 
 		$db = $this->db;
 
-		
+		//round( ( pm.product_price * ".$mysession->currency_value.") / cm.currency_value, 2 ) as converted_price, 
 
-		$select = "SELECT upl.*,pm.product_id, pm.product_name, pm.product_price, cm.currency_symbol, cm.currency_code, round( ( pm.product_price * ".$mysession->currency_value.") / cm.currency_value, 2 ) as converted_price, pi.image_name, pi.image_path,pml.product_name as ProdName,um.user_id as uid
+		$select = "SELECT upl.*,pm.product_id, pm.product_name, pm.product_price, cm.*, pi.image_name, pi.image_path,pml.product_name as ProdName,um.user_id as uid,trc.*
 
 				   FROM user_product_likes as upl
 
@@ -1195,6 +1207,8 @@ class Models_Category
 				   LEFT JOIN currency_master as cm ON (um.currency_id = cm.currency_id)
 
 				   LEFT JOIN product_images as pi ON ( pm.product_id = pi.product_id AND pi.is_primary_image = 1)
+				   
+				   LEFT JOIN tax_rate_class as trc ON (pm.tax_rate_class_id = trc.tax_rate_class_id)
 
 				   WHERE upl.facebook_user_id in ( ".$friends_list." ) limit 0,3 ";
 

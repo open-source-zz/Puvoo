@@ -145,7 +145,7 @@ class Fb_ProductController extends FbCommonController
 				
 				//get category id through product id
 				
-				$product_category = $this->_request->getParam('subcategory_id');
+				$product_category = $this->_request->getParam('sid');
 				
 			
 				if( $product_category != '' ) {

@@ -218,7 +218,8 @@ class Fb_IndexController extends FbCommonController
 				
 				 foreach($FrdsLikeProd as $prokey => $val)
 				 {
-							 
+						
+						 
 					 if($val['tax_zone'] != '')
 					 {		 
 					 	$taxzone = explode(',',$val['tax_zone']);
@@ -230,7 +231,10 @@ class Fb_IndexController extends FbCommonController
 					 	
 					 $tax_rate = $Common->TaxCalculation($taxzone,$val['tax_rate'],$mysession->Default_Countrycode,'',$defaultZone['tax_rate']);
 					 
-					 $FrdsLikeProd[$prokey]['converted_price'] = round((($val['product_price'] +(($val['product_price'] * $tax_rate)/100))* $mysession->currency_value)/$val['currency_value'],2);
+ 										 
+					 $FrdsLikeProd[$prokey]['converted_price'] = (($val['product_price'] +(($val['product_price'] * $tax_rate)/100))* $mysession->currency_value)/$val['currency_value'];
+					 
+					 //print $FrdsLikeProd[$prokey]['converted_price'];die;
 					 
 				 }
  				
