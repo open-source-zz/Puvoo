@@ -1595,7 +1595,7 @@ class Fb_CartController extends FbCommonController
 				$taxzone = explode(',',$mysession->default_taxZone);
 			 }
 			
-			 $defaultZone = $Common->GetDefaultTaxRate($prodData['user_id']);
+			 $defaultZone = $Common->GetDefaultTaxRate($prodData['uid']);
 			
 			 $tax_rate = $Common->TaxCalculation($taxzone,$prodData['tax_rate'], $Country_Code,'', $defaultZone['tax_rate']);
 			 
@@ -1692,13 +1692,13 @@ class Fb_CartController extends FbCommonController
 			$mysession->paypal_currency = $currency_value['currency_code'];
 
  
-			if($value['user_id'] != '' )
+			if($value['uid'] != '' )
 			{
 
  
 				$paypalUrl = $Common->GetConfigureValue('paypal_url');
 
-				$PaypalDetails = $Common->GetPaypalDetails($value['user_id']);
+				$PaypalDetails = $Common->GetPaypalDetails($value['uid']);
 
  				$Final_Amount['Paypal_Url'] = $paypalUrl['configuration_value'];
 
@@ -1802,7 +1802,7 @@ class Fb_CartController extends FbCommonController
 				$taxzone = explode(',',$mysession->default_taxZone);
 			 }
 			
-				$defaultZone = $Common->GetDefaultTaxRate($value['user_id']);
+				$defaultZone = $Common->GetDefaultTaxRate($value['uid']);
 				
 			 $tax_rate = $Common->TaxCalculation($taxzone,$value['tax_rate'], $Country_Code, $state_name, $defaultZone['tax_rate'] );
 			 
@@ -1819,8 +1819,10 @@ class Fb_CartController extends FbCommonController
 				
 				}
 			}
+			
+				$prodPrice =  (($value['product_price']+$opt_price)*$current_curr_data['currency_value'])/$value['currency_value'];
 			 
-			 	$Prod_convert_price = round(((($value['product_price']+$opt_price) +((($value['product_price']+ $opt_price) * $tax_rate)/100))* $curr_data['currency_value'])/$current_curr_data['currency_value'],2);
+			 	$Prod_convert_price = round(((($prodPrice) +((($prodPrice) * $tax_rate)/100))* $curr_data['currency_value'])/$current_curr_data['currency_value'],2);
 		
 				//print "here";
 				//print "((((".$value['product_price']."+".$opt_price.") +(((".$value['product_price']."+". $opt_price.") * ".$tax_rate.")/100))*". $curr_data['currency_value'].")/".$current_curr_data['currency_value'].",2)";die;
@@ -1894,7 +1896,7 @@ class Fb_CartController extends FbCommonController
 
 				
 
-				$cartuserId = $value['user_id'];
+				$cartuserId = $value['uid'];
 
 				$currency_symbol = $Common->GetCurrencyValue($value['currId']);
 

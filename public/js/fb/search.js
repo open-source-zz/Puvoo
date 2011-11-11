@@ -7,7 +7,7 @@ function PerformSearch()
 	  
 	 
  	if(searchtext == 'Search the Mall'){
-		alert('Please Enter Proper Text');
+		alert(Enter_Proper_Text);
 		return false;
  		//window.top.location = request_url;
 	}else{

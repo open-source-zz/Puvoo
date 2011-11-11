@@ -55,7 +55,7 @@ class FbCommonController extends Zend_Controller_Action
 		
  		$db = Zend_Db_Table::getDefaultAdapter();
 		Zend_Registry::set('Db_Adapter', $db);
- 		//error_reporting(0);
+ 		error_reporting(0);
 		// Model Objects
  		$Category = new Models_Category();
 		$Product = new Models_Product();
@@ -477,15 +477,10 @@ class FbCommonController extends Zend_Controller_Action
 					 
 					$prodPrice =  (($value['product_price']+$opt_price)*$mysession->currency_value)/$value['currency_value']; 
 					
-					
-					
-					//print "((".$value['product_price']."+".$opt_price.")*".$mysession->currency_value.")/".$value['currency_value']."";die;
-										 
+ 										 
 					$CartDetails[$prokey]['product_total_cost'] = round(((($prodPrice) +((($prodPrice) * $tax_rate)/100))* $mysession->currency_value)/$value['currency_value'],2);
 						
-					//$CartDetails[$prokey]['product_total_cost'] = ($value['product_price']+(($value['product_price']*$tax_rate)/100));
-					//print $CartDetails[$prokey]['product_total_cost'];die;
-										
+ 										
 				}
 				
 				$Price += $CartDetails[$prokey]['product_total_cost']*$value['product_qty'];
@@ -536,6 +531,8 @@ class FbCommonController extends Zend_Controller_Action
 				$this->view->zip = $ShippingInfo['shipping_user_zipcode'];
 				
 				$BillingInfo = $Cart->GetBillingInfo($cartId);
+				
+				//print_r($BillingInfo);die;
  
  				$this->view->bill_firstName = $BillingInfo['billing_user_fname'];
 				$this->view->bill_lastName = $BillingInfo['billing_user_lname'];

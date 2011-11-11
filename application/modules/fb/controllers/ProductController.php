@@ -222,7 +222,7 @@ class Fb_ProductController extends FbCommonController
 				$this->view->Expiredate = $ExpiteDate;
 				
 				
-				$this->view->ProdSellerId = $productDetail['user_id'];
+				$this->view->ProdSellerId = $productDetail['uid'];
 		
 				//to get Product images
 				$productImages = $Product->GetProductImages($Poductid);
@@ -640,10 +640,7 @@ class Fb_ProductController extends FbCommonController
 		$Category = new Models_Category();
 		$Product = new Models_Product();
 		$Cart = new Models_Cart();
- 	 	
-		//print_r($_POST);die;
-		//if(Facebook_Authentication_URL)
-		//{
+		$Common = new Models_Common();
 		
 		if($this->_request->getParam('prodid'))
 		{
@@ -654,7 +651,29 @@ class Fb_ProductController extends FbCommonController
 		
 		$Opt_detailId = $this->_request->getParam('opt_detail_id');
 		
-		$OptPrice = $Product->getProductOptPrice($Opt_detailId,$prodId);
+		$Opt_Price = $Product->getProductOptPrice($Opt_detailId,$prodId);
+		
+		$productDetail = $Product->GetProductDetails($prodId);
+				
+				
+		 if($productDetail['tax_zone'])
+		 {		 
+			
+			$taxzone = explode(',',$productDetail['tax_zone']);
+			
+		 }else{
+			
+			$taxzone = explode(',',$mysession->default_taxZone);
+		 }
+			
+		 $defaultZone = $Common->GetDefaultTaxRate($productDetail['uid']);
+		
+		
+		 $tax_rate = $Common->TaxCalculation($taxzone,$productDetail['tax_rate'],$mysession->Default_Countrycode,'',$defaultZone['tax_rate']);
+		 
+		 $OptPrice = array();
+ 
+ 		 $OptPrice['Opt_convert_price'] = ($Opt_Price['Opt_convert_price']+(($Opt_Price['Opt_convert_price']*$tax_rate)/100));
 		
 		echo json_encode($OptPrice);die;
 	 }

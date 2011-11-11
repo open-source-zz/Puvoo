@@ -499,12 +499,11 @@ class Rest_ProductController extends RestCommonController
 						
 						$image_ext = strtolower($image_ext);
 						
-						
-						if( $image_ext != ".jpg" || $image_ext != ".bmp" || $image_ext != ".gif" || $image_ext != ".png"  ) 
+						if( $image_ext != ".jpg" && $image_ext != ".jpeg" && $image_ext != ".bmp" && $image_ext != ".gif" && $image_ext != ".png"  ) 
 						{
 							$arr_error[] = $this->translate->_('Product_Invalid_Product_Image_Type')." " . ($i+1);	
 						}
-						
+												
 						list($img_width, $img_height, $img_type) = getimagesize($main_image);
 						
 						if($img_width < 300)
@@ -546,7 +545,7 @@ class Rest_ProductController extends RestCommonController
 									$image_ext = strtolower($image_ext);
 									
 									
-									if( $image_ext != ".jpg" || $image_ext != ".gif" || $image_ext != ".png"  ) 
+									if( $image_ext != ".jpg" && $image_ext != ".jpeg" && $image_ext != ".bmp" && $image_ext != ".gif" && $image_ext != ".png"  ) 
 									{
 										$arr_error[] = $this->translate->_('Product_Invalid_Image_Type')." " . ($j+1) . " ".$this->translate->_('Product_For_Product')." " . ($i+1);	
 									}
@@ -926,7 +925,12 @@ class Rest_ProductController extends RestCommonController
 						}
 						
 						
-						$ext = substr($products[$i]['main_image'], -3);
+						$ext = substr($products[$i]['main_image'], -4);
+						
+						if( $ext != "jpeg" ) {
+						
+							$ext = substr($products[$i]['main_image'], -3);
+						}
 						
 						$encname = md5($imgname . time());
 						
@@ -1015,6 +1019,13 @@ class Rest_ProductController extends RestCommonController
 								$ext = "png";
 							}
 							
+							
+							$ext = substr($products[$i]['main_image'], -4);
+						
+							if( $ext != "jpeg" ) {
+							
+								$ext = substr($products[$i]['main_image'], -3);
+							}
 							
 							$encname = md5($imgname . $j . time());
 							
@@ -1478,10 +1489,11 @@ class Rest_ProductController extends RestCommonController
 						
 						$image_ext = strtolower($image_ext);						
 						
-						if( $image_ext != ".jpg" || $image_ext != ".bmp" || $image_ext != ".gif" || $image_ext != ".png"  ) 
+						if( $image_ext != ".jpg" && $image_ext != ".jpeg"  && $image_ext != ".bmp" && $image_ext != ".gif" && $image_ext != ".png"  ) 
 						{
 							$arr_error[] = $this->translate->_('Product_Invalid_Product_Image_Type');
 						}
+						
 						
 						//$img_content = file_get_contents($main_image);
 						list($img_width, $img_height, $img_type) = getimagesize($main_image);
@@ -1525,7 +1537,7 @@ class Rest_ProductController extends RestCommonController
 						
 								$image_ext = strtolower($image_ext);						
 								
-								if( $image_ext != ".jpg" || $image_ext != ".bmp" || $image_ext != ".gif" || $image_ext != ".png"  ) 
+								if( $image_ext != ".jpg" && $image_ext != ".jpeg"  && $image_ext != ".bmp" && $image_ext != ".gif" && $image_ext != ".png"  ) 
 								{
 									$arr_error[] = $this->translate->_('Product_Invalid_Image_Type')." " . ($j+1) . " ".$this->translate->_('Product_For_Product')."";	
 									
@@ -1978,8 +1990,12 @@ class Rest_ProductController extends RestCommonController
 							$ext = "png";
 						}
 						
+						$ext = substr($products[$i]['main_image'], -4);
 						
-						$ext = substr($products[$i]['main_image'], -3);
+						if( $ext != "jpeg" ) {
+						
+							$ext = substr($products[$i]['main_image'], -3);
+						}
 						
 						$encname = md5($imgname . time());
 						
@@ -2071,6 +2087,12 @@ class Rest_ProductController extends RestCommonController
 								$ext = "png";
 							}
 							
+							$ext = substr($products[$i]['main_image'], -4);
+						
+							if( $ext != "jpeg" ) {
+							
+								$ext = substr($products[$i]['main_image'], -3);
+							}
 							
 							$encname = md5($imgname . $j . time());
 							

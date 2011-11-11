@@ -234,6 +234,8 @@ class Fb_OrderController extends FbCommonController
 			
  						$Price += $value['price']*$value['product_qty'];
 						$totalAmount = $value['total_order_amount'];
+						$totalshipping = $value['shipping_cost'];
+						
 						$cartId = $value['order_id'];
 						$CartTotal += $value['product_qty'];
 						
@@ -247,6 +249,8 @@ class Fb_OrderController extends FbCommonController
 					}
 					//print $Price;die;
 					$this->view->currency_symbol = $currency_symbol['currency_symbol'];
+					$this->view->TotalOrder = $totalAmount;
+					$this->view->TotalShipping = $totalshipping;
 					$this->view->CartCnt = 0;
 					$this->view->TotalPrice = $Price;
 					$this->view->cartId = $cartId;
@@ -308,6 +312,17 @@ class Fb_OrderController extends FbCommonController
                                         </tbody></table>
                                     </td>
                                 </tr>
+								<tr><td height="10"></td></tr>
+                                <tr>
+                                	<td align="right" style="padding-right:25px;">
+                                    	<table width="100%" cellspacing="0" cellpadding="0">
+                                        	<tbody>
+											<tr>
+                                            	<td align="right"><b>Total Shipping:&nbsp;&nbsp;'.$this->view->currency_symbol.'&nbsp;'.$totalshipping.'</b></td>
+                                            </tr>
+                                        </tbody></table>
+                                    </td>
+                                </tr>
                                 <tr><td height="10"></td></tr>
                                 <tr>
                                 	<td align="right" style="padding-right:25px;">
@@ -336,8 +351,14 @@ class Fb_OrderController extends FbCommonController
 
 </body></html>';
 				
-				sendMail($to,$to_name,$from,$from_name,$subject,$body);
-								
+				//sendMail($to,$to_name,$from,$from_name,$subject,$body);
+				
+				$headers  = 'MIME-Version: 1.0' . "\r\n";
+				$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+				$headers .= 'From: '. $from . "\r\n";
+						
+				mail($to,$subject,$body,$headers);
+				
 			}
 			
 			

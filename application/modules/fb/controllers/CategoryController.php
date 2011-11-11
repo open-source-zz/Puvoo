@@ -207,7 +207,7 @@ class Fb_CategoryController extends FbCommonController
 					 	$taxzone = explode(',',$mysession->default_taxZone);
 					 }
 					 
-					 $defaultZone = $Common->GetDefaultTaxRate($val['user_id']);
+					 $defaultZone = $Common->GetDefaultTaxRate($val['uid']);
 					
 					 $tax_rate = $Common->TaxCalculation($taxzone,$val['tax_rate'],$mysession->Default_Countrycode,'',$defaultZone['tax_rate']);
 					 

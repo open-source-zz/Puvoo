@@ -167,8 +167,10 @@ class Fb_IndexController extends FbCommonController
 			 }else{
 				$taxzone = explode(',',$mysession->default_taxZone);
 			 }
+			 
+			 $defaultZone = $Common->GetDefaultTaxRate($val['uid']);
 			
-			 $tax_rate = $Common->TaxCalculation($taxzone,$val['tax_rate']);
+			 $tax_rate = $Common->TaxCalculation($taxzone,$val['tax_rate'],$mysession->Default_Countrycode,'',$defaultZone['tax_rate']);
   			 
 			 $bestSellerProd[$prokey]['converted_price'] = round((($val['product_price'] +(($val['product_price'] * $tax_rate)/100))* $mysession->currency_value)/$val['currency_value'],2);
 			 
@@ -225,7 +227,9 @@ class Fb_IndexController extends FbCommonController
 					 	$taxzone = explode(',',$mysession->default_taxZone);
 					 }
 					
-					 $tax_rate = $Common->TaxCalculation($taxzone,$val['tax_rate']);
+					 $defaultZone = $Common->GetDefaultTaxRate($val['uid']);
+					 	
+					 $tax_rate = $Common->TaxCalculation($taxzone,$val['tax_rate'],$mysession->Default_Countrycode,'',$defaultZone['tax_rate']);
 					 
 					 $FrdsLikeProd[$prokey]['converted_price'] = round((($val['product_price'] +(($val['product_price'] * $tax_rate)/100))* $mysession->currency_value)/$val['currency_value'],2);
 					 

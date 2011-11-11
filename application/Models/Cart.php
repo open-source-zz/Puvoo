@@ -328,7 +328,7 @@ class Models_Cart
 	{
 		$db= $this->db;
 		
-		$sql = "SELECT cd.*,cm.shipping_user_country_id,cum.*,trc.*,pm.product_price FROM cart_detail as cd
+		$sql = "SELECT cd.*,cm.shipping_user_country_id,cum.*,trc.*,pm.product_price,um.user_id as uid FROM cart_detail as cd
 				LEFT JOIN cart_master as cm ON (cd.cart_id = cm.cart_id)
 				LEFT JOIN product_master as pm ON(pm.product_id = cd.product_id)
 				LEFT JOIN user_master as um ON (pm.user_id = um.user_id)

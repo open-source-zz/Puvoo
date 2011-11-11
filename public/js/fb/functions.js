@@ -771,7 +771,7 @@ function GetStateforCountry1(id)
 					$('#Shippingstate1').html(combo);
 				}
 			}else{
-					combo ="<option value='0'>Select State</option>";
+					combo ="<option value='0'>"+select_state+"</option>";
 					$('#Shippingstate1').html(combo);
 			}
   			//top.location.href = '';
@@ -805,7 +805,7 @@ function GetStateforCountry2(id)
 					$('#Billingstate').html(combo);
 				}
 			}else{
-					combo ="<option value='0'>Select State</option>";
+					combo ="<option value='0'>"+select_state+"</option>";
 					$('#Billingstate').html(combo);
 			}
   			//top.location.href = '';
@@ -912,6 +912,17 @@ var taxrate = new Array();
 
 function UpdateShipping(CartId,prodId,UserId)
 {
+	
+	for(tmp in UserId)
+	  {
+		  methodids[tmp] = $('#Shipping_Method_'+UserId[tmp]).val();
+		  
+		  if(methodids[tmp] == 0)
+		  {
+			  alert(Select_Shipping_Method);
+			  return false;
+		  }
+	  }
 	
 	$('#loader').show();
 	$('#loader').css('visibility','visible');

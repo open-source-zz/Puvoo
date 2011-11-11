@@ -109,7 +109,7 @@ class Models_Product
  		
 		//,ROUND(((pm.product_price +((pm.product_price * ".$mysession->default_vatrate.")/100)) * ".$mysession->currency_value.") / cm.currency_value, 2 ) as prod_convert_price
 		
-		$sql = "SELECT DISTINCT pm.product_id,pm.product_name,pm.product_price,pi.*,um.*,cm.*,pml.product_name as ProdName,trc.* FROM product_to_categories as ptc 
+		$sql = "SELECT DISTINCT pm.product_id,pm.product_name,pm.product_price,pi.*,um.user_id as uid,um.*,cm.*,pml.product_name as ProdName,trc.* FROM product_to_categories as ptc 
 				LEFT JOIN product_master as pm ON (pm.product_id = ptc.product_id)
 				LEFT JOIN product_master_lang as pml ON (pm.product_id = pml.product_id and pml.language_id= ".DEFAULT_LANGUAGE.")
 				LEFT JOIN product_images as pi ON (pm.product_id = pi.product_id and is_primary_image = 1)
@@ -1347,7 +1347,7 @@ class Models_Product
 		$db = $this->db;
 		
 		//print $mysession->default_vatprice;die;
-		$sql = "SELECT pm.*,pi.*,um.*,cm.*,trc.*,pml.product_name as ProdName,pml.product_description FROM product_master as pm
+		$sql = "SELECT pm.*,pi.*,um.*,um.user_id as uid,cm.*,trc.*,pml.product_name as ProdName,pml.product_description FROM product_master as pm
 				LEFT JOIN product_master_lang as pml ON (pm.product_id = pml.product_id and pml.language_id= ".DEFAULT_LANGUAGE.")
 				LEFT JOIN product_images as pi ON (pm.product_id = pi.product_id and is_primary_image = 1)
 				LEFT JOIN user_master as um ON (um.user_id = pm.user_id)
