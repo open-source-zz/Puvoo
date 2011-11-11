@@ -176,7 +176,6 @@ class User_ProductsController extends UserCommonController
 			
 			if( $counter > 0 ) {
 				
-				echo "here"; die;
 				
 				if( $search_error == '' ) {
 				
