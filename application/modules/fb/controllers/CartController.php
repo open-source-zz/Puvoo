@@ -454,14 +454,21 @@ class Fb_CartController extends FbCommonController
 				}
 			}
 			
-			$prodPrice =  (($val['product_price']+$opt_price)*$current_curr_data['currency_value'])/$val['currency_value'];
+			$OptPrice = ($opt_price+(($opt_price*$tax_rate)/100));
+			
+			$prodPrice =  (($val['product_price']+$OptPrice)*$current_curr_data['currency_value'])/$val['currency_value'];
   			 
+			 //print $prodPrice;die;
 			 $CartDetails[$prokey]['prodprice'] = $prodPrice;
 			 
-			 $CartDetails[$prokey]['prod_convert_price'] = round(((($prodPrice) +((($prodPrice) * $tax_rate)/100))* $mysession->currency_value)/$val['currency_value'],2);
+			// $CartDetails[$prokey]['prod_convert_price'] = round(((($prodPrice) +((($prodPrice) * $tax_rate)/100))* $current_curr_data['currency_value'])/$val['currency_value'],2);
+			 
+			 $CartDetails[$prokey]['prod_convert_price'] = round(($prodPrice +(($prodPrice * $tax_rate)/100)),2);
 			 
 			 //print $CartDetails[$prokey]['prod_convert_price'];die;
-			 //print "((((".$prodPrice."+".$opt_price.") +(((".$prodPrice."+". $opt_price.") * ".$tax_rate.")/100))*". $mysession->currency_value.")/".$val['currency_value'].",2)<br>";
+			 
+			// print "((".$prodPrice." +((".$prodPrice." * ".$tax_rate.")/100)),2)";die;
+			 //print "((((".$prodPrice.") +(((".$prodPrice.") * ".$tax_rate.")/100))*". $mysession->currency_value.")/".$val['currency_value'].",2)<br>";die;
 			 
 //		  } else{
 //		  
@@ -510,8 +517,14 @@ class Fb_CartController extends FbCommonController
 
  
 			$currency_symbol = $Common->GetCurrencyValue($CartDetails[$j]['currId']);
+			
+			$CurrencyValue = $Common->GetValueForCountry($CartDetails[$j]['currId']);
 
 			//print $Price;die;
+
+  			$this->view->cart_decimal_sep = $CurrencyValue['numeric_separator_decimal'];
+			
+  			$this->view->cart_thousand_sep = $CurrencyValue['numeric_separator_thousands'];
 
 			$this->view->currency_symbol = $currency_symbol['currency_symbol'];
 
@@ -924,12 +937,16 @@ class Fb_CartController extends FbCommonController
 				}
 			}
 			
-			$prodPrice =  (($val['product_price']+$opt_price)*$current_curr_data['currency_value'])/$val['currency_value'];
+			$OptPrice = ($opt_price+(($opt_price*$tax_rate)/100));
+			
+			$prodPrice =  (($val['product_price']+$OptPrice)*$current_curr_data['currency_value'])/$val['currency_value'];
   			 
+			 //print $prodPrice;die;
 			 $CartDetails[$prokey]['prodprice'] = $prodPrice;
 			 
-			 $CartDetails[$prokey]['prod_convert_price'] = round(((($prodPrice) +((($prodPrice) * $tax_rate)/100))* $mysession->currency_value)/$val['currency_value'],2);
+			// $CartDetails[$prokey]['prod_convert_price'] = round(((($prodPrice) +((($prodPrice) * $tax_rate)/100))* $current_curr_data['currency_value'])/$val['currency_value'],2);
 			 
+			 $CartDetails[$prokey]['prod_convert_price'] = round(($prodPrice +(($prodPrice * $tax_rate)/100)),2);
 			 //print $CartDetails[$prokey]['prod_convert_price'];die;
 			 //print "((((".$prodPrice."+".$opt_price.") +(((".$prodPrice."+". $opt_price.") * ".$tax_rate.")/100))*". $mysession->currency_value.")/".$val['currency_value'].",2)<br>";
 			 
@@ -980,10 +997,16 @@ class Fb_CartController extends FbCommonController
 
  
 			$currency_symbol = $Common->GetCurrencyValue($CartDetails[$j]['currId']);
+			
+			$CurrencyValue = $Common->GetValueForCountry($CartDetails[$j]['currId']);
 
 			//print $Price;die;
 
 			$this->view->currency_symbol = $currency_symbol['currency_symbol'];
+			
+  			$this->view->cart_decimal_sep = $CurrencyValue['numeric_separator_decimal'];
+			
+  			$this->view->cart_thousand_sep = $CurrencyValue['numeric_separator_thousands'];
 
  
  			$this->view->CartCnt = count($CartDetails);
@@ -1612,9 +1635,10 @@ class Fb_CartController extends FbCommonController
 				}
 			}
 			 
+			$OptPrice = ($opt_price+(($opt_price*$tax_rate)/100)); 
 			// print $tax_rate;die;
 			 
-			 $prodPrice =  (($prodData['product_price']+$opt_price)*$current_curr_data['currency_value'])/$prodData['currency_value'];
+			 $prodPrice =  (($prodData['product_price']+$OptPrice)*$current_curr_data['currency_value'])/$prodData['currency_value'];
 			
 			$total_taxrate = ($prodPrice  * $tax_rate)/100;
 			
@@ -1820,7 +1844,9 @@ class Fb_CartController extends FbCommonController
 				}
 			}
 			
-				$prodPrice =  (($value['product_price']+$opt_price)*$current_curr_data['currency_value'])/$value['currency_value'];
+			$OptPrice = ($opt_price+($opt_price * $tax_rate)/100);
+			
+				$prodPrice =  (($value['product_price']+$OptPrice)*$current_curr_data['currency_value'])/$value['currency_value'];
 			 
 			 	$Prod_convert_price = round(((($prodPrice) +((($prodPrice) * $tax_rate)/100))* $curr_data['currency_value'])/$current_curr_data['currency_value'],2);
 		
@@ -1832,7 +1858,7 @@ class Fb_CartController extends FbCommonController
 		 
 			$tax_rate = $value['taxRate'];
 			
-			$Prod_convert_price = round(((($value['product_total_cost']) +((($value['product_total_cost']) * $tax_rate)/100))* $curr_data['currency_value'])/$current_curr_data['currency_value'],2);
+			$Prod_convert_price = round(((($value['price']) +((($value['price']) * $tax_rate)/100))* $curr_data['currency_value'])/$current_curr_data['currency_value'],2);
 			
 			//$Prod_convert_price = round(((($value['product_total_cost']+$opt_price) +((($value['product_total_cost']+ $opt_price) * $tax_rate)/100))* $curr_data['currency_value'])/$current_curr_data['currency_value'],2);
 			
@@ -1894,14 +1920,20 @@ class Fb_CartController extends FbCommonController
 
 				$CartTotal += $value['product_qty'];
 
-				
 
 				$cartuserId = $value['uid'];
 
 				$currency_symbol = $Common->GetCurrencyValue($value['currId']);
+				
+				$CurrencyValue = $Common->GetValueForCountry($value['currId']);
+
 
  			}
 
+  			$this->view->cart_decimal_sep = $CurrencyValue['numeric_separator_decimal'];
+			
+  			$this->view->cart_thousand_sep = $CurrencyValue['numeric_separator_thousands'];
+			
  			$this->view->cartuserId = $cartuserId;
 
 			$this->view->currency_symbol = $currency_symbol['currency_symbol'];

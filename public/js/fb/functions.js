@@ -337,7 +337,10 @@ function updatecart(prodId,cartId)
  			for(i in data)
 			{
 				
-				$('#itemPrice'+data[i]['product_id']).html(cartCurrSymbol+" "+roundVal( parseFloat(data[i]['product_total_cost'])));
+				var ItemPrice = roundVal( parseFloat(data[i]['product_total_cost']));
+				
+				
+				$('#itemPrice'+data[i]['product_id']).html(cartCurrSymbol+" "+MoneyFormatting(ItemPrice,2,cartDecimalSep,cartThousandSep));
 				
 				$('#IndivisualPrice'+data[i]['product_id']).val(roundVal(data[i]['product_toatl_cost']));
 				$('#ProductQty'+data[i]['product_id']).val(data[i]['product_qty']);
@@ -349,7 +352,7 @@ function updatecart(prodId,cartId)
 			$('#breadCrumb_cart').show();
 			$('#order_review').show();
 			$('#buttonArea').show();
-			$('#cartSubTotal').html(cartCurrSymbol+" "+roundVal(totalCost));
+			$('#cartSubTotal').html(cartCurrSymbol+" "+MoneyFormatting(roundVal(totalCost),2,cartDecimalSep,cartThousandSep));
 		}		
 	});
 }
@@ -405,9 +408,9 @@ function changePrice(detailId,prodId,OptId)
  					$('#hiddenPrice').val(parseFloat(total));
 					var OptPrice = $('#hiddenPrice').val();
  					var total = parseFloat(dft_price)+parseFloat(OptPrice);
-					//alert(total);
 					
- 					$('#prod_price').html(def_curr_symbol+total.toFixed(2));
+					
+ 					$('#prod_price').html(def_curr_symbol+" "+MoneyFormatting(total,2,default_decimal_sep,default_thousand_sep));
 					$('#TotalPrice').val(total);
  		}		
 	});
@@ -886,7 +889,7 @@ function GetShippingCost(ShippMethodId,prodId,UserId)
 			
 				$('#ShippingSpace'+UserId).show();
 				$('#ShippingRow'+UserId).show();
-				$('#ShippingCost'+UserId).html(cartCurrSymbol+" "+data);
+				$('#ShippingCost'+UserId).html(cartCurrSymbol+" "+MoneyFormatting(data,2,cartDecimalSep,cartThousandSep));
 				
 				ShippingCost[prodId] =  parseFloat(data);
 				
@@ -1031,7 +1034,7 @@ function loadPopup()
 
 function loadPopup1()
 {
-	$('#popupContactClose').css('color','#000');
+	$('#popupContactClose').css('color','#fff');
 	$('#cartarea').hide();
 	$('#EmptyCart').hide();
 	$('#userExist').hide();
@@ -1105,10 +1108,13 @@ $(document).ready(function()
   centerPopup();
   loadPopup1();
  });
-	 $("#popupContactClose").click(function()
-	 {
-		 disablePopup();
-	 });
+// $("#popupContactClose").click(function()
+// {
+//	 disablePopup();
+//	  $(this).fadeOut(2500000, function() {
+//			top.location.href = request_url;
+//									  });
+// });
   
  $(document).keypress(function(e)
  {
@@ -1203,4 +1209,27 @@ function ChangeCartCurrency(cartId)
 		}		
 	});
 	
+}
+
+
+function MoneyFormatting(amount,decimals, decimal_sep, thousands_sep)
+{ 
+   var n = amount,
+   c = isNaN(decimals) ? 2 : Math.abs(decimals), //if decimal is zero we must take it, it means user does not want to show any decimal
+   d = decimal_sep || ',', //if no decimal separetor is passed we use the comma as default decimal separator (we MUST use a decimal separator)
+
+   /*
+   according to [http://stackoverflow.com/questions/411352/how-best-to-determine-if-an-argument-is-not-sent-to-the-javascript-function]
+   the fastest way to check for not defined parameter is to use typeof value === 'undefined' 
+   rather than doing value === undefined.
+   */   
+   t = (typeof thousands_sep === 'undefined') ? '.' : thousands_sep, //if you don't want ot use a thousands separator you can pass empty string as thousands_sep value
+
+   sign = (n < 0) ? '-' : '',
+
+   //extracting the absolute value of the integer part of the number and converting to string
+   i = parseInt(n = Math.abs(n).toFixed(c)) + '', 
+
+   j = ((j = i.length) > 3) ? j % 3 : 0; 
+   return sign + (j ? i.substr(0, j) + t : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : ''); 
 }

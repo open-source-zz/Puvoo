@@ -33,11 +33,13 @@
 					
 					<div class="productGridBox_scroll">
 						<div class="thumbnailImage" style="margin-top:14px;">
-						<?php
-							$SmallImg2 = explode('_',$val2['image_name']);
-							$tinyImage2 = SITE_PRODUCT_IMAGES_PATH.$val2['image_path']."/".$SmallImg2[0]."_th1.jpg";
-						?>
-							<a href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $val2['product_id'];?>" target="_top">
+						
+					 <?php
+						$SmallImg2 = str_replace('img','th1',$val2['image_name']);
+						$tinyImage2 = SITE_PRODUCT_IMAGES_PATH.$val2['image_path']."/".$SmallImg2;	
+						$ThumbImage2 = SITE_PRODUCT_IMAGES_PATH.$val2['image_path']."/".$val2['image_name'];
+					 ?>
+							<a url="<?php echo $ThumbImage2;?>" class="preview" style="cursor:pointer" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $val2['product_id'];?>" target="_top">
 								<img class="img" src="<?php echo $tinyImage2;?>" alt="<?php echo $prodName2;?>" title="<?php echo $prodName2;?>" />
 							</a>
 						</div>
@@ -64,11 +66,13 @@
 					?>
 					<div class="productGridBox_scroll">
 						<div class="thumbnailImage" style="margin-top:14px;">
-						<?php
-							$SmallImg = explode('_',$val1['image_name']);
-							$tinyImage = SITE_PRODUCT_IMAGES_PATH.$val1['image_path']."/".$SmallImg[0]."_th1.jpg";
-						?>
-							<a href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $val1['product_id'];?>" target="_top">
+						
+						 <?php
+							$SmallImg = str_replace('img','th1',$val1['image_name']);
+							$tinyImage = SITE_PRODUCT_IMAGES_PATH.$val1['image_path']."/".$SmallImg;	
+							$ThumbImage = SITE_PRODUCT_IMAGES_PATH.$val1['image_path']."/".$val1['image_name'];
+						 ?>
+							<a url="<?php echo $ThumbImage;?>" class="preview" style="cursor:pointer" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $val1['product_id'];?>" target="_top">
 								<img class="img" src="<?php echo $tinyImage;?>" alt="<?php echo $prodName1;?>" title="<?php echo $prodName1;?>" />
 							</a>
 						</div>
@@ -110,11 +114,13 @@
 					<li>
 						<div class="productGridBox">
 							<div class="thumbnailImage" style="margin-top:14px;">
-								<?php
-									$Img = explode('_',$prod['image_name']);
-									$tinyImg = SITE_PRODUCT_IMAGES_PATH.$prod['image_path']."/".$Img[0]."_th1.jpg";
-					?>
-								<a href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $prod['product_id'];?>" target="_top">
+						 <?php
+							$Img = str_replace('img','th1',$prod['image_name']);
+							$tinyImg = SITE_PRODUCT_IMAGES_PATH.$prod['image_path']."/".$Img;	
+							$ThumbImg = SITE_PRODUCT_IMAGES_PATH.$prod['image_path']."/".$prod['image_name'];
+						 ?>
+					
+								<a url="<?php echo $ThumbImg;?>" class="preview" style="cursor:pointer" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $prod['product_id'];?>" target="_top">
 									<img class="img" src="<?php echo $tinyImg; ?>" alt="<?php echo $prodName3;?>" title="<?php echo $prodName3;?>" />
 								</a>
 							</div>

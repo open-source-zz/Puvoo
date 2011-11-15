@@ -157,14 +157,42 @@ class Models_Category
 		$sql = "SELECT cm.*,cml.category_name as CatName from product_to_categories as ptc 
 				LEFT JOIN category_master as cm ON(cm.category_id = ptc.category_id)
 				LEFT JOIN category_master_lang as cml ON(cm.category_id = cml.category_id and cml.language_id= ".DEFAULT_LANGUAGE.")
-				WHERE ptc.product_id='".$Poductid."' and cm.parent_id !='0'";
+				WHERE ptc.product_id='".$Poductid."' or cm.parent_id !='0'";
 				
  		$result = $db->fetchRow($sql);
 		return $result;
 	
 	}
 
+	/**
+	 * function GetCategoryID2
+	 *
+	 * It is used to get category id throught product id.
+	 *
+	 * Date created: 2011-08-22
+	 *
+	 * @param () (Int)  - $Poductid : Product Id
+	 * @return (Array) - Return Array of records
+	 * @author  Jayesh 
+	 * @param   two parameters / login_id and password.
+     * @global  $db Zend_db for database.
+                $mysession Zend_Session_Namespace for session variables.
+	 * 
+	 */
 	
+	public function GetCategoryID2($Poductid)
+	{
+		$db = $this->db;
+		
+		$sql = "SELECT cm.*,cml.category_name as CatName from product_to_categories as ptc 
+				LEFT JOIN category_master as cm ON(cm.category_id = ptc.category_id )
+				LEFT JOIN category_master_lang as cml ON(cm.category_id = cml.category_id and cml.language_id= ".DEFAULT_LANGUAGE.")
+				WHERE ptc.product_id='".$Poductid."'";
+			//print 	$sql;die;
+ 		$result = $db->fetchRow($sql);
+		return $result;
+	
+	}
 	/*
 	 * GetCategoryById(): To get data of category by selected category id.
 	 *
@@ -217,14 +245,14 @@ class Models_Category
 	 */
 
 
-	public function GetSubCategory($parentid=0)
+	public function GetSubCategory($ids=0)
 	{
 		$db = $this->db;
 		
 		$sql = "select distinct ptc.category_id as CatId,cm.*,cml.category_name as catName from category_master as cm
 				LEFT JOIN product_to_categories as ptc ON (ptc.category_id = cm.category_id)
 				LEFT JOIN category_master_lang as cml ON(cm.category_id = cml.category_id  AND cml.language_id= ".DEFAULT_LANGUAGE." )
-				where  cm.parent_id = ".$parentid." order By cm.category_name asc ";
+				where  cm.parent_id IN(".$ids.") order By cm.category_name asc ";
 				
  		$result = $db->fetchAll($sql);
 		return $result;
@@ -313,7 +341,7 @@ class Models_Category
 				if( $count == 0 ) {
 				
 					if($val != "") {
-						$sql.=" WHERE lower(".$key.") like '%".$val."%'";
+						$sql.= ' WHERE lower('.$key.') like "%'.$val.'%"';
 					} else {
 						$sql.=" WHERE 1=1";
 					}
@@ -332,6 +360,7 @@ class Models_Category
 		
 			$sql .= " WHERE 1=1";
 		}
+		
 		
 		$result =  $db->fetchAll($sql);		
 		return $result;		
@@ -365,7 +394,7 @@ class Models_Category
 		
 		foreach( $langArray as $key => $val )
 		{
-			$sql .= "(" . $category_id . ",". $key. ", '".$val["category_name"]."' ),";
+			$sql .= '(' . $category_id . ','. $key. ', "'.$val["category_name"].'" ),';
 		}
 		
 		$sql = rtrim($sql,",");
@@ -741,17 +770,20 @@ class Models_Category
 	
 	//recursive function that prints categories as a nested html unorderd list
 
-	function getCategoryTreeForAPI($parent = 0, $lvl=0)
+	function getCategoryTreeForAPI($langCode, $parent = 0, $lvl=0)
 	{
 		$db= $this->db;
 		
 		
 	
-		$sql = "SELECT * FROM category_master WHERE is_active = 1 and parent_id = ". $parent;
-		//print $sql . "<br>";
+		$sql = "SELECT cm.category_id,cml.category_name FROM category_master as cm
+				LEFT JOIN category_master_lang as cml ON(cm.category_id = cml.category_id and cml.language_id = 
+				(
+					SELECT language_id FROM language_master WHERE code = '".$langCode."'
+				))
+				WHERE is_active = 1 and parent_id = ". $parent;
+		
 		$data = $db->fetchAll($sql);
-		
-		
 		
 		foreach($data as $key => $value)
 		{
@@ -765,7 +797,7 @@ class Models_Category
 					$tree[$value['category_id']]["Id"] = $value['category_id'];
 					
 					//array_push($tree, $this->getCategoryTreeForAPI($value['category_id'],$lvl,$tree)	); 
-					$tree[$value['category_id']]["Category"] = $this->getCategoryTreeForAPI($value['category_id'],$lvl+1);
+					$tree[$value['category_id']]["Category"] = $this->getCategoryTreeForAPI($langCode, $value['category_id'],$lvl+1);
 			}
 			else
 			{
@@ -830,7 +862,59 @@ class Models_Category
 		return $tree;
 	}
 	
+	/**
+	 * Function getCategoryTreeString
+	 *
+	 * This function is used to get category tree for API call
+     *
+	 * Date created: 2011-10-17
+	 *
+	 * @access public
+	 * @param (int)  - $cid : category id 
+	 * @param (int)  - $lvl: current level of category.
+	 * @return (array) - Return array of category ids
+	 * @author Amar
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
 	
+	//recursive function that prints categories as a nested html unorderd list
+
+	function getCategoryTreeString2($parent = 0, $lvl=0)
+	{
+		$db= $this->db;
+		
+		
+	
+		$sql = "SELECT * FROM category_master WHERE is_active = 1 and category_id = ". $parent;
+		//print $sql . "<br>";die;
+		$data = $db->fetchAll($sql);
+		
+		$tree = "";
+		
+		foreach($data as $key => $value)
+		{
+	
+			$sql_child = "select count(*) as cnt from category_master where is_active = 1 and parent_id = " . $value["category_id"];
+			$cnt = $db->fetchOne($sql_child);
+			
+			if($cnt > 0)
+			{
+					
+					$tree .= $value['category_id'] . ",";
+					
+					//array_push($tree, $this->getCategoryTreeForAPI($value['category_id'],$lvl,$tree)	); 
+					$tree .= $this->getCategoryTreeString($value['category_id'],$lvl+1);
+			}
+			else
+			{
+				$tree .= $value['category_id'] . ",";
+			}
+			
+		}
+		return $tree;
+	}
+
 	/**
 	 * Function getCategoryTreeProductCount
 	 *
@@ -999,6 +1083,142 @@ class Models_Category
 		 return $tempTree;          // Return the entire child tree
 	}
 	
+	/**
+	 * Function getCategoryTreeForMenu
+	 *
+	 * This function is used to get category tree 
+     *
+	 * Date created: 2011-09-30
+	 *
+	 * @access public
+	 * @param () (int)  - $cid : category id 
+	 * @param () (array)  - $carray : array to put results in.
+	 * @return (array) - Return array of category ids
+	 * @author Yogesh
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	
+	function getCategoryTreeForMenu($langCode, $parent = 0)
+	{
+		$db= $this->db;
+		
+		$sql = "SELECT cm.category_id,cm.category_name,cml.category_name as catName,cm.icon_image FROM category_master as cm
+				LEFT JOIN category_master_lang as cml ON(cm.category_id = cml.category_id and cml.language_id = 
+				(
+					SELECT language_id FROM language_master WHERE code = '".$langCode."'
+				))
+				WHERE is_active = 1 and parent_id = ". $parent;
+		
+		$data = $db->fetchAll($sql);
+		
+		$tree = '';
+		foreach($data as $key => $value)
+		{
+			
+			if($value['catName'] != '')
+			{
+				$subCatName = $value['catName'];
+			}else{
+				$subCatName = $value['category_name'];
+			}
+			
+			if($parent == 0) {
+				$tree .= '<ul id="Category_'.$value['category_id'].'" class="ddsubmenustyle blackwhite">';
+			} 
+			
+			if($parent != 0) {
+				
+				if($value['icon_image'] != '')
+				{
+					$Icon = "<img src='".SITE_ICONS_IMAGES_PATH."/".$value['icon_image']."' style='vertical-align:middle;' alt='' />&nbsp;&nbsp;";
+				}else{
+					$Icon = "<img src='".IMAGES_FB_PATH."/cat_default.png' style='vertical-align:middle;' alt='' />&nbsp;&nbsp;";
+				}
+			
+				$tree .= '<li><a href="'.SITE_FB_URL.'category/subcat/id/'.$value['category_id'].'" target="_top">'.$Icon.$subCatName.'</a>';
+			}
+			
+			$sql_child = "select count(*) as cnt from category_master where is_active = 1 and parent_id = " . $value["category_id"];
+			$cnt = $db->fetchOne($sql_child);
+			
+			if( $cnt > 0 ) {
+				
+				if($parent != 0) {
+					
+					$tree .= '<ul>';
+				} 
+				
+				$tree .= $this->getCategoryTreeForMenu($langCode,$value["category_id"]);
+				
+				if($parent != 0) {
+					$tree .= '</ul>';					
+				} 
+			}
+			
+			if($parent != 0) {
+				$tree .= '</li>';
+			} 
+			
+			if($parent == 0) {
+				$tree .= '</ul>';
+			}
+		}
+		
+		return $tree;
+	}
+	
+	/**
+	 * Function getAllFriendLikes
+	 *
+	 * This function is used to friends like product. 
+     *
+	 * Date created: 2011-11-07
+	 *
+	 * @access public
+	 * 
+	 * @param () (array)  - $friends_list : array to put results in.
+	 * @return (array) - Return array of category ids
+	 * @author Yogesh
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	function getAllFriendLikes($friends_list)
+	{
+
+		global $mysession;
+
+		
+
+		$db = $this->db;
+
+		//round( ( pm.product_price * ".$mysession->currency_value.") / cm.currency_value, 2 ) as converted_price, 
+
+		$select = "SELECT upl.*,pm.product_id, pm.product_name, pm.product_price, cm.*, pi.image_name, pi.image_path,pml.product_name as ProdName,um.user_id as uid,trc.*
+
+				   FROM user_product_likes as upl
+
+				   JOIN product_master as pm ON(pm.product_id = upl.product_id)
+
+				   LEFT JOIN product_master_lang as pml ON (pm.product_id = pml.product_id and pml.language_id= ".DEFAULT_LANGUAGE.")
+
+				   LEFT JOIN user_master as um ON ( um.user_id = pm.user_id )
+
+				   LEFT JOIN currency_master as cm ON (um.currency_id = cm.currency_id)
+
+				   LEFT JOIN product_images as pi ON ( pm.product_id = pi.product_id AND pi.is_primary_image = 1)
+				   
+				   LEFT JOIN tax_rate_class as trc ON (pm.tax_rate_class_id = trc.tax_rate_class_id)
+
+				   WHERE upl.facebook_user_id in ( ".$friends_list." ) limit 0,3 ";
+
+		
+
+		return $db->fetchAll($select);
+
+	}
+
+
 	
 }
 ?>

@@ -26,8 +26,10 @@
 			<?php $storename =  $val['store_name'];?>
 				<?php 	
 				if($Item['prod_convert_price']){ ?>
+					
 					<?php $subtotal += floatval($Item['prod_convert_price']*$Item['product_qty']);?>
 				<?php }else{?>
+					
 					<?php $subtotal += $Item['prodprice'];?>
 				<?php } ?>
 				
@@ -125,7 +127,7 @@
 					<label for="lastName"><?php echo $this->Translate('SubTotal')?></label>
 				</td>
 				<td>
-					<?php echo $this->currency_symbol."&nbsp;".$Item["subtotal"] ;?>
+					<?php echo $this->currency_symbol."&nbsp;".number_format($Item["subtotal"], 2, $this->cart_decimal_sep, $this->cart_thousand_sep);?>
 				</td>
 			</tr>
 			<tr><td height="4"></td></tr>	

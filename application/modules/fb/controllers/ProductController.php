@@ -196,8 +196,7 @@ class Fb_ProductController extends FbCommonController
 					$taxzone = explode(',',$mysession->default_taxZone);
 				 }
 					
-				//echo "<pre>";
-				//print_r($productDetail);die;
+				
 				 $defaultZone = $Common->GetDefaultTaxRate($productDetail['uid']);
 				
 				
@@ -205,9 +204,10 @@ class Fb_ProductController extends FbCommonController
 				
 				
 				 
-				 $ProdPrice = round((($productDetail['product_price'] +(($productDetail['product_price'] * $tax_rate)/100))* $mysession->currency_value)/$productDetail['currency_value'],2);
+				 $ProdPrice1 = round((($productDetail['product_price'] +(($productDetail['product_price'] * $tax_rate)/100))* $mysession->currency_value)/$productDetail['currency_value'],2);
 					 
-				
+				 $ProdPrice = number_format($ProdPrice1, 2, DEFAULT_DECIMAL_SEPARATOR, DEFAULT_THOUSANDS_SEPARATOR);
+				 
  				
 				if($productDetail['ProdName'] != ''){
 					$product_name = $productDetail['ProdName'];
@@ -223,7 +223,8 @@ class Fb_ProductController extends FbCommonController
 				$this->view->ProdUserId = $productDetail['uid'];
 				$this->view->ProdName = ucfirst($product_name);
 				//$ProdPrice = $productDetail['prod_convert_price'];
-				//print $ProdPrice;die;
+				
+				$this->view->ProdPrice1 = $ProdPrice1;
 				$this->view->ProdPrice = $ProdPrice;
 				$this->view->ProdDesc = $product_desc;
 				$this->view->ProdWeight = $productDetail['product_weight']."&nbsp;".$productDetail['weight_unit_key'];
@@ -283,8 +284,6 @@ class Fb_ProductController extends FbCommonController
 					foreach($productOptions as $key => $option)
 					{
 							$OptionsValue = $Product->GetProductOptionValue($option['product_options_id']);
-							//print "<pre>";
-							//print_r($option);die;
 							
 							$Opt .= "<tr>";
 							$Opt .= "<td><b>".ucfirst($option['option_title'])." ".$translate->_('Choice').":</b><br />";
@@ -292,14 +291,11 @@ class Fb_ProductController extends FbCommonController
 							$Opt .= "<option value='0' >".$translate->_('Choose')."&nbsp;".$option['option_title']."</option>";
 							
 							foreach($OptionsValue as $val){
-								//print_r($val);die;
-								//$TotalPrice += $val['option_price'];
+								
 								$Opt .= "<option value='".$val['product_options_detail_id']."' >".$val['option_name']."</option>";
 								
 							}
-							//print $TotalPrice."+".$ProdPrice;die;
-							//$this->view->ProdPrice = $ProdPrice+$TotalPrice;
-							//print $this->view->ProdPrice;die;
+							
 							$Opt .= "</select></td></tr>";
 							$Opt .= "<tr><td height='8'></td></tr>";
 							
@@ -368,10 +364,13 @@ class Fb_ProductController extends FbCommonController
 		//print $sort;die;
 		$this->view->qstring = $QueryString;
    		$this->view->catid = $CatId;
+		
  		//set current page number
 		$page_no = 1;
+		
  		//set no. of records to display on page
 		$pagesize = $mysession->pagesize1;
+		
    		//Get Request
 		$request = $this->getRequest();
 		
@@ -403,21 +402,21 @@ class Fb_ProductController extends FbCommonController
 			{
 				$catid_String = $CatId;
 			}
+			
  			//to get category product
  			$catProd = $Product->GetProductByCategoryId($CatId,$sort);
-			//$this->view->ProductList = $catProd;
+			
 		}
 		
 		$QueryString =$this->_request->getParam('q');
 		$Search = $this->_request->getParam('search');
 		$CatId = $this->_request->getParam('cid');
 		
+		// get search product details
 		$SearchDetails = $Product->GetProductSearch($QueryString,$Search,$catid_String,$sort);
-//		print "<pre>";
-//		print_r($SearchDetails);die;
-		//Set Pagination
 		
-		foreach($SearchDetails as $prokey => $val)
+		//Set Pagination
+ 		foreach($SearchDetails as $prokey => $val)
 		{
 			if($val['tax_zone'] != '')
 			{		 
@@ -426,10 +425,13 @@ class Fb_ProductController extends FbCommonController
 				$taxzone = explode(',',$mysession->default_taxZone);
 			}
 			
+			 $defaultZone = $Common->GetDefaultTaxRate($val['uid']);
 			
-			$tax_rate = $Common->TaxCalculation($taxzone,$val['tax_rate']);
+			 $tax_rate = $Common->TaxCalculation($taxzone,$val['tax_rate'],$mysession->Default_Countrycode,'',$defaultZone['tax_rate']);
 			
-			$SearchDetails[$prokey]['Prod_convert_price'] = round((($val['product_price'] +(($val['product_price'] * $tax_rate)/100))* $mysession->currency_value)/$val['currency_value'],2);
+			
+			
+			$SearchDetails[$prokey]['Prod_convert_price'] = number_format(round((($val['product_price'] +(($val['product_price'] * $tax_rate)/100))* $mysession->currency_value)/$val['currency_value'],2), 2, DEFAULT_DECIMAL_SEPARATOR, DEFAULT_THOUSANDS_SEPARATOR);
 		 
 		}
 		
@@ -444,7 +446,7 @@ class Fb_ProductController extends FbCommonController
 		$this->view->arr_pagesize = '1';
 		$this->view->paginator = $paginator;
 		$this->view->records = $paginator->getCurrentItems();
-		//print_r($this->view->records);die;		
+				
 	 }
 	 
 	 /**
@@ -502,8 +504,9 @@ class Fb_ProductController extends FbCommonController
 					{
 						$CartDetails = $Cart->GetCartDetailId($prodId,$ProductInfo['fbid']);
  						$cartDetailId = $CartDetails['cart_detail_id'];
+						
 						// Insert Record in cart option
-						//print_r($this->_request->getParam('option'));die;
+						
 						if($this->_request->getPost('option') != '')
 						{
 							$optionInfo = explode(',',$this->_request->getPost('option'));
@@ -513,22 +516,21 @@ class Fb_ProductController extends FbCommonController
 								if($opt != 0)
 								{
 									$productOptions = $Product->GetProductOptionUsingValue($prodId,$opt);
-									//print_r($productOptions);die;
+									
 									$ins_opt = $Cart->InsertCartOptionRecord($productOptions,$cartDetailId);
 								}
-								//$ProductInfo['options'] = $optionInfo;
+								
 								
 							}
 						}
-						//echo json_encode("Yout product add successfully in your cart");die;
+					
 					}
- 					//echo json_encode($CartCnt);die;
-					//echo SITE_FB_URL.$_SERVER['REQUEST_URI'];die;
+ 					
 					
 				}
 	
 			}
-			
+		// get product in cart	
 		$CartDetails = $Cart->GetProductInCart($this->_request->getPost('fbuserid'));
 		
 		if(count($CartDetails) > 0){
@@ -540,9 +542,7 @@ class Fb_ProductController extends FbCommonController
 			$CartTotal = '';
 			foreach($CartDetails as $value)
 			{
-				//echo "<pre>";
-				//print_r($value);die;
- 				$Price += $value['price']*$value['product_qty'];
+  				$Price += $value['price']*$value['product_qty'];
 				$cartId = $value['cart_id'];
 				$CartTotal += $value['product_qty'];
 				$cartuserId = $value['uid'];
@@ -560,9 +560,10 @@ class Fb_ProductController extends FbCommonController
 			
 			if($cartId) {
 				
+				// Shipping Information
 				$ShippingInfo = $Cart->GetShippingInfo($cartId);
-				//print_r($ShippingInfo);die;
-				$this->view->firstName = $ShippingInfo['shipping_user_fname'];
+				
+ 				$this->view->firstName = $ShippingInfo['shipping_user_fname'];
 				$this->view->lastName = $ShippingInfo['shipping_user_lname'];
 				$this->view->email = $ShippingInfo['shipping_user_email'];
 				$this->view->phone = $ShippingInfo['shipping_user_telephone'];
@@ -584,8 +585,9 @@ class Fb_ProductController extends FbCommonController
 				$this->view->state = $ShippingInfo['shipping_user_state_id'];
 				$this->view->zip = $ShippingInfo['shipping_user_zipcode'];
 				
+				// Billing Information
 				$BillingInfo = $Cart->GetBillingInfo($cartId);
-				//print_r($ShippingInfo);die;
+			
 				$this->view->bill_firstName = $BillingInfo['billing_user_fname'];
 				$this->view->bill_lastName = $BillingInfo['billing_user_lname'];
 				$this->view->bill_email = $BillingInfo['billing_user_email'];
@@ -669,29 +671,37 @@ class Fb_ProductController extends FbCommonController
 		
 		$Opt_detailId = $this->_request->getParam('opt_detail_id');
 		
-		$Opt_Price = $Product->getProductOptPrice($Opt_detailId,$prodId);
-		
-		$productDetail = $Product->GetProductDetails($prodId);
+		if($Opt_detailId != 0)
+		{
+			// to get option price by option detail id and product id
+			$Opt_Price = $Product->getProductOptPrice($Opt_detailId,$prodId);
+			
+			// get product details by id
+			$productDetail = $Product->GetProductDetails($prodId);
+					
+			// tax zone		
+			 if($productDetail['tax_zone'])
+			 {		 
 				
+				$taxzone = explode(',',$productDetail['tax_zone']);
 				
-		 if($productDetail['tax_zone'])
-		 {		 
+			 }else{
+				
+				$taxzone = explode(',',$mysession->default_taxZone);
+			 }
+				
+			 $defaultZone = $Common->GetDefaultTaxRate($productDetail['uid']);
 			
-			$taxzone = explode(',',$productDetail['tax_zone']);
-			
-		 }else{
-			
-			$taxzone = explode(',',$mysession->default_taxZone);
-		 }
-			
-		 $defaultZone = $Common->GetDefaultTaxRate($productDetail['uid']);
+			 // tax rate calculate
+			 $tax_rate = $Common->TaxCalculation($taxzone,$productDetail['tax_rate'],$mysession->Default_Countrycode,'',$defaultZone['tax_rate']);
+			 
+			 $OptPrice = array();
+	 
+			 $OptPrice['Opt_convert_price'] = ($Opt_Price['Opt_convert_price']+(($Opt_Price['Opt_convert_price']*$tax_rate)/100));
+		}else{
 		
-		
-		 $tax_rate = $Common->TaxCalculation($taxzone,$productDetail['tax_rate'],$mysession->Default_Countrycode,'',$defaultZone['tax_rate']);
-		 
-		 $OptPrice = array();
- 
- 		 $OptPrice['Opt_convert_price'] = ($Opt_Price['Opt_convert_price']+(($Opt_Price['Opt_convert_price']*$tax_rate)/100));
+			$OptPrice['Opt_convert_price'] = 0;
+		}
 		
 		echo json_encode($OptPrice);die;
 	 }

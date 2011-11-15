@@ -146,13 +146,18 @@ class Models_Orders
 	 {
 	 	$db = $this->db;
 		
-		$select = "SELECT * 
-				   FROM order_master as om";
+		$select = " SELECT om.*,cm.currency_symbol,cm.currency_code
+					FROM `order_master` as om
+					JOIN currency_master as cm ON (cm.currency_id = om.currency_id)";
+		
 		if( $where != '' ){
 		 	$select .=" WHERE 1=1 ".$where;
 		} else {
 			$select .=" WHERE 2=1";
 		}
+		
+		$select .= " ORDER BY `order_id` DESC";
+		
 		return $db->fetchAll($select);
 	 }
 	 
@@ -592,8 +597,7 @@ class Models_Orders
 				LEFT JOIN product_images as pi ON (cd.product_id = pi.product_id and pi.is_primary_image = 1)
 				LEFT JOIN product_master as pm ON (pi.product_id = pm.product_id)
 				LEFT JOIN user_master as um ON (pm.user_id = um.user_id)
-				WHERE cm.order_id ='".$order_id."'";
-				
+ 				WHERE cm.order_id ='".$order_id."'";
 		$result = $db->fetchAll($sql);
 		
 		return $result;

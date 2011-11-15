@@ -11,7 +11,7 @@
           <?php echo $this->CartCnt;?>
           <?}else{?>
           0
-          <?php }?>
+          <?php } ?>
           </span></a></li>
       </ul>
     </div>
@@ -44,10 +44,12 @@
       <div class="productWidgetLineItem">
         <div class="productWidgetThumbnail">
           <div>
-            <?php
-											$SmallImg = explode('_',$val['image_name']);
-											$tinyImage = SITE_PRODUCT_IMAGES_PATH.$val['image_path']."/".$SmallImg[0]."_th3.jpg";	
-										?>
+										
+						 <?php
+							$SmallImg = str_replace('img','th3',$val['image_name']);
+							$tinyImage = SITE_PRODUCT_IMAGES_PATH.$val['image_path']."/".$SmallImg;	
+							$ThumbImage = SITE_PRODUCT_IMAGES_PATH.$val['image_path']."/".$val['image_name'];
+						 ?>
             <a href="<?php echo SITE_FB_URL?>product/view/id/<?php echo $val['product_id'];?>" target="_top">
             <?php if($val['image_name']){?>
             <img src="<?php echo $tinyImage; ?>" alt="<?php echo $prodName; ?>" title="<?php echo $prodName; ?>" />

@@ -306,13 +306,15 @@ class Models_Common
 	 *
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
-	public function GetVatForCountry($CurrencyId)
+	public function GetValueForCountry($CurrencyId)
 	{
 		$db= $this->db;
 		
- 		$sql = "SELECT vat FROM language_master WHERE currency_id = ".$CurrencyId."";
+ 		$sql = "SELECT * FROM language_master as lm
+				LEFT JOIN currency_master as cm ON(cm.currency_id = lm.currency_id) 
+				WHERE lm.currency_id = ".$CurrencyId."";
 		//print $sql;die;		
- 		$result = $db->fetchOne($sql);
+ 		$result = $db->fetchRow($sql);
 		 
  		return $result;
 	}

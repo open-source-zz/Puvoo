@@ -224,12 +224,9 @@ class Models_UserTaxes
 	
 	public function updateRecord($data,$where,$table = USER_TABLE)
 	{
-		$db = $this->db;					
-		if($db->update($table, $data, $where)){
-			return true;	
-		} else {
-			return false;
-		}	
+		$db = $this->db;		
+		$db->update($table, $data, $where);
+		return true;			
 	}
 	
 	/**
@@ -353,6 +350,67 @@ class Models_UserTaxes
 		$data = $db->fetchAll($sql);
 		return $data;
 	
+	}
+	
+	/**
+	 * Function checkZoneRecord
+	 *
+	 * This function is used to check zone is allocated to any tax rate record.
+     *
+	 * Date created: 2011-11-09
+	 *
+	 * @access public
+	 * @param () (string)  - $id : comma saprated string of record id to check record is used or not
+	 * @param () (String)  - $type : For single record or multiple record
+	 * @return (Boolean) - Return true on success
+	 * @author Hiren
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	
+	
+	public function checkZoneRecord($id,$type)
+	{
+		$db = $this->db;		
+		$sql = "SELECT tax_zone FROM tax_rate_class where user_id = ".$this->user_id;
+		$data = $db->fetchAll($sql);
+		
+		if($type == "Single")
+		{
+			foreach($data as $val)
+			{
+				$tz = $val['tax_zone'];
+				$t_arr = explode(',',$tz);
+				foreach($t_arr as $record)
+				{
+					if($record == $id)
+					{
+						return false;
+					}
+				}
+			}
+		}
+		else if($type == "Multiple")
+		{
+			foreach($data as $val)
+			{
+				$id_arr = explode(',',$id);
+				$tz = $val['tax_zone'];
+				$t_arr = explode(',',$tz);
+				foreach($id_arr as $ids)
+				{
+					foreach($t_arr as $record)
+					{
+						if($record == $ids)
+						{
+							return false;
+						}
+						
+					}
+				}
+			}
+		}
+		return true;			
 	}
 }
 ?>

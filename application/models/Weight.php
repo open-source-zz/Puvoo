@@ -216,6 +216,14 @@ class Models_Weight
 	{
 		$db = $this->db;
 		
+		if( $data["is_default"] == 1 ) {
+			
+			$data1["is_default"] = 0;
+			$where1 = "1=1";
+			$db->update("weight_master", $data1, $where1); 	
+		}
+		
+		
 		$db->insert("weight_master", $data); 	 
 		//return $db->lastInsertId(); 
 		return true; 
@@ -240,6 +248,31 @@ class Models_Weight
 	public function updateWeight($data,$where)
 	{
 		$db = $this->db;		
+		
+		$sql = "select is_default from weight_master where ".$where;
+		$result = $db->fetchOne($sql);
+		
+		if($result == 1 ) {		
+		
+			if( $data["is_default"] == 1 ) {
+				$db->update("weight_master", $data, $where); 	
+				return true;
+			} else {			
+				return false;
+			}
+			
+		} else {
+		
+			if( $data["is_default"] == 1 ) {
+					
+				$data1["is_default"] = 0;
+				$where1 = "1=1";
+				$db->update("weight_master", $data1, $where1); 	
+			} 
+			$db->update("weight_master", $data, $where); 	
+			return true;
+		}
+		
 		$db->update("weight_master", $data, $where); 	
 		return true;
 	}
@@ -263,8 +296,27 @@ class Models_Weight
 	public function deleteWeight($id)
 	{
 		$db = $this->db;	
-		$db->delete("weight_master", 'weight_unit_id = ' .$id);		
-		return true;		
+		
+		$where = "is_default = 1"; 
+		
+		$validator = new Zend_Validate_Db_NoRecordExists(
+				array(
+						'table' => "weight_master",
+						'field' => "weight_unit_id",
+						'exclude' => $where
+				)
+		);
+		
+		if ($validator->isValid($id)) {
+			
+			$db->delete("weight_master", 'weight_unit_id = ' .$id);		
+			return true;		
+				
+		} else {
+		
+			return false;
+		}
+		
 	}
 	
 	/**
@@ -285,10 +337,26 @@ class Models_Weight
 	public function deletemultipleWeight($ids)
 	{
 		$db = $this->db;	
-		$where = 'weight_unit_id in ('.$ids.')'; 			
-		$db->delete("weight_master",$where);	 
+		$where = 'weight_unit_id in ('.$ids.')'; 		
 		
-		return true;	
+		$validator = new Zend_Validate_Db_NoRecordExists(
+				array(
+						'table' => "weight_master",
+						'field' => "is_default",
+						'exclude' => $where
+				)
+		);
+		
+		if ($validator->isValid(1)) {
+			
+			$db->delete("weight_master",$where);	 
+			
+			return true;	
+		
+		} else {
+		
+			return false;	
+		}
 	}
 	
 	/**

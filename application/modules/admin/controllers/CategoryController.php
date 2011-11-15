@@ -1050,9 +1050,9 @@
 
      * @access public
 
-	 * @param ()  - No parameter
+	 * @param (Array)  - $file: File data 
 
-	 * @return (void) - Return void
+	 * @return (Array) - Return Suceess array with file name value
 
 	 *
 

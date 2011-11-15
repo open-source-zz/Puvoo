@@ -134,9 +134,11 @@ class Fb_RetailerController extends FbCommonController
 						$taxzone = explode(',',$mysession->default_taxZone);
 					}
 					
-					$tax_rate = $Common->TaxCalculation($taxzone,$val['tax_rate']);
+					$defaultZone = $Common->GetDefaultTaxRate($val['uid']);
 					
-					$Ret_productDetail[$prokey]['prod_convert_price'] = round((($val['product_price'] +(($val['product_price'] * $tax_rate)/100))* $mysession->currency_value)/$val['currency_value'],2);
+					$tax_rate = $Common->TaxCalculation($taxzone,$val['tax_rate'],$mysession->Default_Countrycode,'',$defaultZone['tax_rate']);
+					
+					$Ret_productDetail[$prokey]['prod_convert_price'] = number_format(round((($val['product_price'] +(($val['product_price'] * $tax_rate)/100))* $mysession->currency_value)/$val['currency_value'],2), 2, DEFAULT_DECIMAL_SEPARATOR, DEFAULT_THOUSANDS_SEPARATOR);
 				 
 				}
 				

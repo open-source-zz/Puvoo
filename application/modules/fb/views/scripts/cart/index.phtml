@@ -41,7 +41,7 @@
               <a href="javascript:void(0)" onclick="updatecart(<?php echo $Item['product_id'];?>,<?php echo $Item['cart_id'];?>);"><img src="<?php echo IMAGES_FB_PATH ?>/refresh_icon.png" alt="" style="vertical-align:middle; padding-bottom:4px; margin-left:5px;" /></a> </div>
             <div class="cartItemDivider cartItemDeleteButton"> <a href="javascript:void(0)" onclick="DeleteCartProduct(<?php echo $Item['product_id'];?>,<?php echo $Item['cart_id'];?>);"><img src="<?php echo IMAGES_FB_PATH ?>/close_icon.png" alt="" /></a> </div>
             <div id="itemQtyPrice_1" class="cartItemDivider cartItemPriceDisplay">
-              <div id="itemPrice<?php echo $Item['product_id'];?>" align="right"><?php echo $this->currency_symbol."&nbsp;".$Item['product_total_cost']*$Item['product_qty'];?></div>
+              <div id="itemPrice<?php echo $Item['product_id'];?>" align="right"><?php echo $this->currency_symbol."&nbsp;".number_format($Item['product_total_cost'], 2, $this->cart_decimal_sep, $this->cart_thousand_sep);?></div>
               <input type="hidden" value="<?php echo $Item['price'] ?>" name="IndivisualPrice<?php echo $Item['product_id'];?>" id="IndivisualPrice<?php echo $Item['product_id'];?>" />
               <input type="hidden" value="<?php echo $Item['price'] ?>" name="ProductTotalPrice<?php echo $Item['product_id'];?>" id="ProductTotalPrice<?php echo $Item['product_id'];?>" />
             </div>
@@ -49,7 +49,7 @@
           </div>
           <?php }?>
         </div>
-        <div class="cartItemSubtotal" id="SubtotalDiv"> <span class="boldText"><?php echo $this->Translate('CartTotal')?></span> <span id="cartSubTotal" class="boldText"><?php echo $this->currency_symbol."&nbsp;".$this->TotalPrice;?></span> </div>
+        <div class="cartItemSubtotal" id="SubtotalDiv"> <span class="boldText"><?php echo $this->Translate('CartTotal')?></span> <span id="cartSubTotal" class="boldText"><?php echo $this->currency_symbol."&nbsp;".number_format($this->TotalPrice, 2, $this->cart_decimal_sep, $this->cart_thousand_sep);?></span> </div>
         <div class="clear"></div>
         <div id="buttonArea">
           <div class="SharingOptions_Text"> </div>
@@ -671,7 +671,7 @@
 <?php }?>
 <div id="sellerarea" style="display:none;">
 	
-  <!--<div id="popup_head"><h1>Seller Information</h1></div>-->
+ <div id="popup_head"><h1>Seller Information</h1></div>
   <ul class="tabs" style="margin-top:10px;">
     <li class="active"><a href="#tab8"><?php echo $this->Translate('About')?></a></li>
     <li class=""><a href="#tab9"><?php echo $this->Translate('TermsPolicies')?></a></li>
@@ -770,6 +770,8 @@ Translate('ShoppingCart')?>
 	</script>
 <script type="text/javascript">
 	 var cartCurrSymbol = '<?php echo $this->currency_symbol;?>';
+	 var cartDecimalSep = '<?php echo $this->cart_decimal_sep;?>';
+	 var cartThousandSep = '<?php echo $this->cart_thousand_sep;?>';
 	 			function ShowTab(T)
 				{
 					
@@ -794,17 +796,13 @@ Translate('ShoppingCart')?>
 					}
 					
 					var activeTab = $('#fb_tabs .selected');
-					//alert(activeTab);
-					var tabName = activeTab.attr('id').replace('tab', '');
-					//alert(tabName);
-					//alert(T);
-					activeTab.removeClass('selected');
+ 					var tabName = activeTab.attr('id').replace('tab', '');
+ 					activeTab.removeClass('selected');
 					$('#div'+tabName).hide();
 					$('#div'+T).fadeIn(1000);	
 					$('#div'+T).show();
 					$('#tab'+T).addClass('selected');
-					//document.getElementById("currentTab").value = T;				
-				}
+ 				}
 		function showsetting()
 		{
 			document.getElementById('settingarea').style.display='block';
@@ -827,7 +825,12 @@ Translate('ShoppingCart')?>
 		{
 			 $("#popupContactClose").click(function()
 			 {
+			 	
 				 disablePopup();
+				 
+				 $(this).fadeOut('slow', function() {
+						top.location.href = request_url;
+												  });
 			 });
 		 
 		});

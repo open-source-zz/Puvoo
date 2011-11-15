@@ -1243,3 +1243,12 @@ color:#CCCCCC;
 
 .fb_edge_widget_with_comment span.fb_edge_comment_widget iframe.fb_ltr 
 {display: none !important;}
+
+#preview{
+	position:absolute;
+	border:5px solid #E3E3E3;
+	background:#E3E3E3;
+	display:none;
+	color:#000000;
+	z-index:3000;
+}

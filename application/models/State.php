@@ -96,6 +96,33 @@ class Models_State
 	}
  	
 	
+	/**
+	 * Function GetStateById($stateid)
+	 *
+	 * This function with used to get state by state id.
+     * 
+	 *
+	 * Date created: 2011-11-09
+	 *
+	 * @access public
+	 * @param (int)  - $country_id: state id.
+	 * @return (int) - Return state id if found else 0
+	 * @author Yogesh
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	 
+	function GetStateById($stateid)
+	{
+		$db = $this->db;
+		
+		$sql = "select state_name from state_master where state_id = " . $stateid ;
+		
+		return $db->fetchOne($sql);
+		
+		
+	}
+	
 	
 }
 ?>

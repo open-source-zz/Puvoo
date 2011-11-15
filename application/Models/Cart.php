@@ -234,6 +234,18 @@ class Models_Cart
 		return $result;
 	}	
 	
+	public function GetCartDetails($facebook_id)
+	{
+		global $mysession;
+		$db= $this->db;
+	
+		$sql = "SELECT * FROM cart_master WHERE facebook_user_id = '".$facebook_id."'";
+		
+		$result = $db->fetchRow($sql);
+		
+		return $result;
+	}
+	
 	/**
 	 * function GetOptionDetail
 	 *

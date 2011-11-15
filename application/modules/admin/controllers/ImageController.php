@@ -26,13 +26,13 @@
  * Admin_ImageController
  *
  * Admin_ImageController extends AdminCommonController.
- * It is used to handle product related api calls.
+ * It is used to handle product image upload.
  *
  * Date created: 2011-09-06
  *
  * @category	Puvoo
  * @package 	Admin_Controllers
- * @author	    Amar 
+ * @author	    Yogesh 
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */  
 class Admin_ImageController extends AdminCommonController
@@ -41,17 +41,18 @@ class Admin_ImageController extends AdminCommonController
 	/**
 	 * Function init
 	 *
-	 * This is function is used to initialize rest api
+	 * This function in used for initialization
 	 *
 	 * Date created: 2011-09-06
 	 *
 	 * @access public
 	 * @param ()  - No parameter
 	 * @return () - Return void
-	 * @author Amar
+	 * @author Yogesh
 	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
+	 
 	public function init(){
 		parent::init();
 		Zend_Loader::loadClass('Thumbnail');
@@ -61,15 +62,14 @@ class Admin_ImageController extends AdminCommonController
 	/**
 	 * Function indexAction
 	 *
-	 * The index action handles index/list requests; it should respond with a
-     * list of the requested resources.
+	 * The index action handles product image upload.
 	 *
 	 * Date created: 2011-09-06
 	 *
 	 * @access public
 	 * @param ()  - No parameter
 	 * @return () - Return void
-	 * @author Amar
+	 * @author Yogesh
 	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/

@@ -109,8 +109,21 @@ class User_TaxrateclassController extends UserCommonController
 		if($is_search == "1") {
 		
 			$filter = new Zend_Filter_StripTags();	
-			$data["tax_rate_name"]=$filter->filter(trim($this->_request->getPost('tax_name'))); 			
-			$result = $taxes->SearchTaxes($data);
+			$data["tax_rate_name"]=$filter->filter(trim($this->_request->getPost('tax_name'))); 	
+			
+			
+			if( $data["tax_rate_name"]  != '' ) {
+			
+				$result = $taxes->SearchTaxes($data);
+			
+			} else {
+			
+				$mysession->User_EMessage = $translate->_('No_Search_Criteria');
+				
+				$result = $taxes->getAllRateRecors();
+			}
+					
+			
 			
 		} elseif($is_search == "0") {
 			// Clear serch option
@@ -439,6 +452,23 @@ class User_TaxrateclassController extends UserCommonController
 		$this->_redirect('/user/taxrateclass'); 	
 	
 	}
+	
+	
+	/**
+     * Function fillstateAction
+	 *
+	 * This function is used to fill the state combo on country selection.
+	 *
+     * Date Created: 2011-09-01
+     *
+     * @access public
+	 * @param ()  - No parameter
+	 * @return (String) - Html string
+	 *
+     * @author Yogesh
+     *  
+     * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+     **/
 	
 	public function fillstateAction()
 	{

@@ -234,22 +234,22 @@ class User_OrdersController extends UserCommonController
 			
 
 			$filter = new Zend_Filter_StripTags();
+			
+			$data["product_name"] 	= $filter->filter(trim($this->_request->getPost('product_name'))); 
 
-			$product_name 	= $filter->filter(trim($this->_request->getPost('product_name'))); 
+			$data["user_name"] 		= $filter->filter(trim($this->_request->getPost('user_name'))); 
 
-			$user_name 		= $filter->filter(trim($this->_request->getPost('user_name'))); 
+			$data["date_from"] 		= $filter->filter(trim($this->_request->getPost('order_date_from'))); 
 
-			$date_from 		= $filter->filter(trim($this->_request->getPost('order_date_from'))); 
+			$data["date_to"] 		= $filter->filter(trim($this->_request->getPost('order_date_to'))); 
 
-			$date_to 		= $filter->filter(trim($this->_request->getPost('order_date_to'))); 
-
-			$status 		= $filter->filter(trim($this->_request->getPost('order_status'))); 
+			$data["status"] 		= $filter->filter(trim($this->_request->getPost('order_status'))); 
 
 			
 
-			if( $product_name != '' ) {
+			if( $data["product_name"] != '' ) {
 
-				$order_array = $orders->getAllOrderId($product_name);
+				$order_array = $orders->getAllOrderId($data["product_name"]);
 
 				$ids = '';
 
@@ -277,37 +277,58 @@ class User_OrdersController extends UserCommonController
 
 			}			
 
-			if($user_name != '') {
+			if($data["user_name"] != '') {
 
-				$where .= " AND om.shipping_user_fname LIKE '%".$user_name."%' OR om.billing_user_fname LIKE '%".$user_name."%'";
+				$where .= " AND om.shipping_user_fname LIKE '%".$data["user_name"]."%' OR om.billing_user_fname LIKE '%".$data["user_name"]."%'";
 
 			}
 
-			if($date_from != '' && $date_to != '' )
+			if($data["date_from"] != '' && $data["date_to"] != '' )
 
 			{
 
-				if($date_to < $date_from) {
+				if($data["date_to"] < $data["date_from"]) {
 
 					$mysession->Admin_Message = $translate->_('Err_Order_Search_Date');
 
 				} else {
 
-					$where .= " AND om.order_creation_date >= '".$date_from."' AND om.order_creation_date <= '".$date_to."'";
+					$where .= " AND om.order_creation_date >= '".$data["date_from"]."' AND om.order_creation_date <= '".$data["date_to"]."'";
 
 				}
 
 			}
 
-			if($status != '') {
+			if($data["status"] != '') {
 
-				$where .= " AND om.order_status = ".$status;
+				$where .= " AND om.order_status = ".$data["status"];
 
 			}
 
 			
-
-			$result = $orders->SearchOrders($where);
+			$counter = 0;
+			
+			foreach( $data as  $key => $val ) 
+			{
+			
+				if( $val != '' ) {
+					
+					$counter++;
+					
+				}
+			}
+			
+			if( $counter > 0 ) {
+			
+				$result = $orders->SearchOrders($where);
+			
+			} else {
+			
+				$mysession->User_EMessage = $translate->_('No_Search_Criteria');
+				
+				$result = $orders->GetAllOrders();
+				
+			}
 
 			
 

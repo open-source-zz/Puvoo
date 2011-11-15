@@ -82,7 +82,7 @@ class FbCommonController extends Zend_Controller_Action
 		
 		$user = null; //facebook user uid
 		
-		try{
+		try{	
 				include_once SITE_ROOT_PATH.'/../src/facebook.php';
 		
 			}catch(Exception $o){ }
@@ -227,6 +227,10 @@ class FbCommonController extends Zend_Controller_Action
 			$Site_config_value = $Common->GetConfigValue($Country_id);
 			$mysession->default_Currency = $Site_config_value['currency_id'];
 			$mysession->default_Language = $Site_config_value['language_id'];
+			
+			$mysession->default_numeric_separator_decimal = $Site_config_value['numeric_separator_decimal'];
+			$mysession->default_numeric_separator_thousands = $Site_config_value['numeric_separator_thousands'];
+			
  			$mysession->default_Language_locale = $Site_config_value['code'];
 			$this->view->sel_country = $Site_config_value['country_id'];
 			
@@ -239,11 +243,16 @@ class FbCommonController extends Zend_Controller_Action
 			
 		}
 		else
-		{
-			 
+		{ 
  			$DefaultValues = $Common->GetDefaultConfigValue();
+			
 			$mysession->default_Currency = $DefaultValues['currency_id'];
 			$mysession->default_Language = $DefaultValues['language_id'];
+			
+			$mysession->default_numeric_separator_decimal = $DefaultValues['numeric_separator_decimal'];
+			$mysession->default_numeric_separator_thousands = $DefaultValues['numeric_separator_thousands'];
+			
+			
 			//$mysession->default_vatrate = $DefaultValues['vat'];
 			$mysession->default_Language_locale = $DefaultValues['code'];
 			$this->view->sel_country = $DefaultValues['country_id'];
@@ -274,12 +283,16 @@ class FbCommonController extends Zend_Controller_Action
 		
 		// Define Language Id
 		define('DEFAULT_LANGUAGE', $mysession->default_Language);
-
+		
+		// Define default seprators
+		define('DEFAULT_DECIMAL_SEPARATOR', $mysession->default_numeric_separator_decimal);
+		define('DEFAULT_THOUSANDS_SEPARATOR', $mysession->default_numeric_separator_thousands);
+		
 		// Define vat price for current country
 		define('DEFAULT_VAT_RATE', $mysession->default_vatrate);
 		
 		$currency_value = $Common->GetCurrencyValue(DEFAULT_CURRENCY);
-		
+				
 		$mysession->currency_value = $currency_value['currency_value'];
 		
 		$mysession->currency_id = $currency_value['currency_id'];
@@ -408,9 +421,21 @@ class FbCommonController extends Zend_Controller_Action
 		$state = new Models_State();
 		$CartDetails = $Cart->GetProductInCart(FBUSER_ID);
 		
+		$cartValue = $Cart->GetCartDetails(FBUSER_ID);
+		
+		$CurrencyValue = $Common->GetValueForCountry($cartValue['currency_id']);
+		
+		$Curr_curr_value = $CurrencyValue['currency_value'];
+		
+ 		$this->view->cart_decimal_sep = $CurrencyValue['numeric_separator_decimal'];
+		
+		$this->view->cart_thousand_sep = $CurrencyValue['numeric_separator_thousands'];
+
+		
 		// Country combo
 		$this->view->CountryCombo = $Cart->GetCountry();
 		$this->view->ShipCountryCombo = $Cart->GetCountryCombo();
+		
 		
 		if($CartDetails){
 			
@@ -429,7 +454,8 @@ class FbCommonController extends Zend_Controller_Action
 				$ShippingInfo = $Cart->GetShippingInfo($cartId);
 				
 				$this->view->cartuserId = $value['uid'];
-				//print_r($ShippingInfo);die;
+				
+				// to get state name and country code of user
 				if($ShippingInfo['shipping_user_state_id'])
 				{
 					$state_name = $state->GetStateById($ShippingInfo['shipping_user_state_id']);
@@ -443,60 +469,69 @@ class FbCommonController extends Zend_Controller_Action
 					$Country_Code = $mysession->Default_Countrycode;
 				}
 				
-				if($value['id'] != '')
+				if($value['uid'] != '')
 				{
-					$defaultZone = $Common->GetDefaultTaxRate($value['uid']);
-					$mysession->default_taxrate = $defaultZone['tax_rate'];
-					$mysession->default_taxZone = $defaultZone['tax_zone'];
-					
-					
-					 if($value['tax_zone'] != '')
-					 {		 
-						$taxzone = explode(',',$value['tax_zone']);
-					 }else{
-						$taxzone = explode(',',$mysession->default_taxZone);
-					 }
-					
-						$defaultZone = $Common->GetDefaultTaxRate($value['uid']);
-						
-					 $tax_rate = $Common->TaxCalculation($taxzone,$value['tax_rate'], $mysession->Default_Countrycode, $state_name, $defaultZone['tax_rate'] );
-					 
-					//print $tax_rate;
-					 $optionDetail = $Cart->GetOptionDetail($value['cart_detail_id']);
-					
-					 $opt_price = 0;
-					
-					if(count($optionDetail)> 0)
+					if($value['taxRate'] != 0)
 					{
-						foreach($optionDetail as $optprice)
+						//to get default tax rate
+						$defaultZone = $Common->GetDefaultTaxRate($value['uid']);
+						$mysession->default_taxrate = $defaultZone['tax_rate'];
+						$mysession->default_taxZone = $defaultZone['tax_zone'];
+						
+						//tax zone
+						 if($value['tax_zone'] != '')
+						 {		 
+							$taxzone = explode(',',$value['tax_zone']);
+						 }else{
+							$taxzone = explode(',',$mysession->default_taxZone);
+						 }
+							
+							
+						 $tax_rate = $Common->TaxCalculation($taxzone,$value['tax_rate'], $Country_Code, $state_name, $defaultZone['tax_rate'] );
+						 
+						 //to get options value of cart product
+						 $optionDetail = $Cart->GetOptionDetail($value['cart_detail_id']);
+						
+						 $opt_price = 0;
+						
+						if(count($optionDetail)> 0)
 						{
-							$opt_price += $optprice['option_price'];
-						
+							foreach($optionDetail as $optprice)
+							{
+								$opt_price += $optprice['option_price'];
+							
+							}
 						}
-					}
-					
-					 
-					$prodPrice =  (($value['product_price']+$opt_price)*$mysession->currency_value)/$value['currency_value']; 
-					
- 										 
-					$CartDetails[$prokey]['product_total_cost'] = round(((($prodPrice) +((($prodPrice) * $tax_rate)/100))* $mysession->currency_value)/$value['currency_value'],2);
 						
+						$OptPrice = ($opt_price+($opt_price * $tax_rate)/100);
+						
+						 //cart product price calculation
+						$prodPrice =  ($value['product_price']+$OptPrice); 
+						
+											 
+						$CartDetails[$prokey]['product_total_cost'] = round(($prodPrice +(($prodPrice * $tax_rate)/100)),2);
+					
+					}	
  										
 				}
 				
-				$Price += $CartDetails[$prokey]['product_total_cost']*$value['product_qty'];
+				$Price += $CartDetails[$prokey]['product_total_cost'];
 				
 				$currency_symbol = $Common->GetCurrencyValue($value['currId']);
 				
+				$CurrencyValue = $Common->GetValueForCountry($value['currId']);
+				
 			}
 			
-			//echo "<pre>";
-			//print_r($CartDetails);die;
+  			$this->view->cart_decimal_sep = $CurrencyValue['numeric_separator_decimal'];
+			
+  			$this->view->cart_thousand_sep = $CurrencyValue['numeric_separator_thousands'];
 			
 			$this->view->cartItems = $CartDetails;
 			
 			$this->view->currency_symbol = $currency_symbol['currency_symbol'];
 			
+			// define currency symbol for cart
 			define('CURRENCY_SYMBOL',$currency_symbol['currency_symbol']);
 			
  			$this->view->CartCnt = count($CartDetails);
@@ -504,6 +539,7 @@ class FbCommonController extends Zend_Controller_Action
 			$this->view->cartId = $cartId;
 			$mysession->cartId = $cartId;
 			$this->view->currencyId = $currency_symbol['currency_id'];
+			
 			// Get Shipping Information
 			if($cartId) {
 				
@@ -563,7 +599,7 @@ class FbCommonController extends Zend_Controller_Action
 			/// Currency
 			$this->view->CurrencyCombo = $Common->GetCurrency();
 			
-			
+			// paypal information
 			if($this->view->cartuserId != '' ){
 				
 				$paypalUrl = $Common->GetConfigureValue('paypal_url');
@@ -577,7 +613,7 @@ class FbCommonController extends Zend_Controller_Action
 			
 		}
 		
-		
+		// for seller information
 		$Id = $this->_request->getParam('id');
 		
 		if($cur_controller == 'product' || $cur_controller == 'retailer')

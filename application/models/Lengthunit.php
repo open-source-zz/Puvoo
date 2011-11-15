@@ -76,6 +76,7 @@ class Models_Lengthunit
 	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
+	 
 	public function GetAllLengthunit()
 	{
 		$db = $this->db;
@@ -86,7 +87,7 @@ class Models_Lengthunit
 		return $result;
 	}
 
-		/*
+	/*
 	 * GetLengthunitById(): To get data of currency by selected currency id.
 	 *
 	 * It is used to get the all records of particular currency by currency id.
@@ -111,7 +112,7 @@ class Models_Lengthunit
 	}
 
 
-		/**
+	/**
 	 * Function SearchLengthunit
 	 *
 	 * This function is used to search the currency from length_unit_conversion on search array.
@@ -127,14 +128,18 @@ class Models_Lengthunit
 	 **/
 	
 	
-	public function SearchLengthunit($data)
+	public function SearchLengthunit($value)
 	{
 		$db = $this->db;
 		
 		$sql  = "";
+		
 		$sql .= "SELECT * FROM length_unit_conversion";
+		
+		$sql.=" WHERE value = '".$value."'"; 
+		
 		// Check search array is null or not
-		if(count($data) > 0 && $data != "") {
+		/*if(count($data) > 0 && $data != "") {
 			$count = 0;		
 			foreach($data as $key => $val) {
 				if( $count == 0 ) {
@@ -158,7 +163,7 @@ class Models_Lengthunit
 		} else {
 		
 			$sql .= " WHERE 1=1";
-		}
+		}*/
 		
 		$result =  $db->fetchAll($sql);		
 		return $result;		
@@ -257,7 +262,25 @@ class Models_Lengthunit
 		
 		return true;	
 	}
-
+	
+	
+	/**
+	 * Function ValidateLengthunit
+	 *
+	 * This function is used to check that lemgth unit conversion is already exists or not.
+     *
+	 * Date created: 2011-08-26
+	 *
+	 * @access public
+	 * @param (Int)  - $from_id : Length unit id
+	 * @param (Int)  - $to_id : Length unit id
+	 *
+	 * @return (Int) - $data : Return count value on success
+	 * @author Vaibhavi
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	
     public function ValidateLengthunit($from_id,$to_id)
 	{
 		$db = $this->db;

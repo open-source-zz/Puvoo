@@ -171,7 +171,7 @@ class Fb_IndexController extends FbCommonController
 			
 			 $tax_rate = $Common->TaxCalculation($taxzone,$val['tax_rate'],$mysession->Default_Countrycode,'',$defaultZone['tax_rate']);
   			 
-			 $bestSellerProd[$prokey]['converted_price'] = round((($val['product_price'] +(($val['product_price'] * $tax_rate)/100))* $mysession->currency_value)/$val['currency_value'],2);
+			 $bestSellerProd[$prokey]['converted_price'] = number_format(round((($val['product_price'] +(($val['product_price'] * $tax_rate)/100))* $mysession->currency_value)/$val['currency_value'],2), 2, DEFAULT_DECIMAL_SEPARATOR, DEFAULT_THOUSANDS_SEPARATOR);
 			 
 		 }
 		
@@ -232,9 +232,9 @@ class Fb_IndexController extends FbCommonController
 					 $tax_rate = $Common->TaxCalculation($taxzone,$val['tax_rate'],$mysession->Default_Countrycode,'',$defaultZone['tax_rate']);
 					 
  										 
-					 $FrdsLikeProd[$prokey]['converted_price'] = (($val['product_price'] +(($val['product_price'] * $tax_rate)/100))* $mysession->currency_value)/$val['currency_value'];
+					 $FrdsLikeProd[$prokey]['converted_price'] = number_format(round((($val['product_price'] +(($val['product_price'] * $tax_rate)/100))* $mysession->currency_value)/$val['currency_value']), 2, DEFAULT_DECIMAL_SEPARATOR, DEFAULT_THOUSANDS_SEPARATOR);
 					 
-					 //print $FrdsLikeProd[$prokey]['converted_price'];die;
+					 
 					 
 				 }
  				

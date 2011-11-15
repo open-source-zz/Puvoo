@@ -111,9 +111,23 @@ class User_ShippingmethodController extends UserCommonController
 		
 			$filter = new Zend_Filter_StripTags();	
 			$data['shipping_method_name']=$filter->filter(trim($this->_request->getPost('shipping_method_name'))); 
-			$data['shipping_rate']=$filter->filter(trim($this->_request->getPost('shipping_method_rate'))); 	
+			
+			//$data['shipping_rate']=$filter->filter(trim($this->_request->getPost('shipping_method_rate'))); 	
+			
+			
+			if( $data["shipping_method_name"]  != '' ) {
+			
+				$result = $shipping_method->SearchShippingMethod($data);
+			
+			} else {
+			
+				$mysession->User_EMessage = $translate->_('No_Search_Criteria');
 				
-			$result = $shipping_method->SearchShippingMethod($data);
+				$result = $shipping_method->getAllShippingMethod();
+			}
+			
+			
+			
 			
 		} elseif($is_search == "0") {
 			// Clear serch option

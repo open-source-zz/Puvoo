@@ -256,8 +256,6 @@ class Admin_OrdersController extends AdminCommonController
 
 				$ids = '';
 
-				
-
 				for($i = 0; $i < count($order_array); $i++ ){
 
 					if($i != 0 ){

@@ -23,16 +23,16 @@
 
 
 /**
- * Rest_ProductController
+ * User_ImageController
  *
- * Rest_ProductController extends RestCommonController.
- * It is used to handle product related api calls.
+ * User_ImageController extends UserCommonController.
+ * It is used to handle product image upload.
  *
  * Date created: 2011-09-06
  *
  * @category	Puvoo
  * @package 	Rest_Controllers
- * @author	    Amar
+ * @author	    Yogesh
  *  
  * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */  
@@ -42,14 +42,14 @@ class User_ImageController extends UserCommonController
 	/**
 	 * Function init
 	 *
-	 * This is function is used to initialize rest api
+	 * This is function is used for initializations.
 	 *
 	 * Date created: 2011-09-06
 	 *
 	 * @access public
 	 * @param ()  - No parameter
 	 * @return () - Return void
-	 * @author Amar
+	 * @author Yogesh
 	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
@@ -60,15 +60,14 @@ class User_ImageController extends UserCommonController
 	/**
 	 * Function indexAction
 	 *
-	 * The index action handles index/list requests; it should respond with a
-     * list of the requested resources.
+	 * The index action handles user product image upload.
 	 *
 	 * Date created: 2011-09-06
 	 *
 	 * @access public
 	 * @param ()  - No parameter
 	 * @return () - Return void
-	 * @author Amar
+	 * @author Yogesh
 	 *  
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/

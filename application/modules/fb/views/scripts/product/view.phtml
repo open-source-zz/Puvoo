@@ -37,7 +37,7 @@
 				<?php echo $this->ProdName;?>
 			</div>
 			<div class="right" id="prod_price">
-				<?php echo DEFAULT_CURRENCY_SYMBOL.$this->ProdPrice; ?> 
+				<?php echo DEFAULT_CURRENCY_SYMBOL."&nbsp;".$this->ProdPrice; ?> 
 			</div>
 			<div class="clear"></div>
 		</div>  
@@ -96,10 +96,10 @@
 						<input type="button" class="add_cartbtn" value="" id="btn" onclick="validateAddToCart()" />
 					</div>
 						<input id="productId" name="productId" type="hidden" value="<?php echo $this->ProdId;?>"/>
-						<input id="productPrice" name="productPrice" type="hidden" value="<?php echo $this->ProdPrice;?>" />
+						<input id="productPrice" name="productPrice" type="hidden" value="<?php echo $this->ProdPrice1;?>" />
 						<input type="hidden" name="hiddenPrice" id="hiddenPrice" value="0" />
-						<input type="hidden" name="DefaultPrice" id="DefaultPrice" value="<?php echo $this->ProdPrice; ?> " />
-						<input type="hidden" name="TotalPrice" id="TotalPrice" value="<?php echo $this->ProdPrice; ?> " />
+						<input type="hidden" name="DefaultPrice" id="DefaultPrice" value="<?php echo $this->ProdPrice1; ?> " />
+						<input type="hidden" name="TotalPrice" id="TotalPrice" value="<?php echo $this->ProdPrice1; ?> " />
 						<input type="hidden" name="FbuserId" id="FbuserId" value="<?php echo $this->FB_userid;?>" />
 						<input id="product_userId" name="product_userId" type="hidden" value="<?php echo $this->ProdUserId;?>"/>
 				</form>
@@ -129,10 +129,10 @@
 			<div class="left" style="padding-left: 10px;">
 				<div class="productInfoBox">
 					<div>
-						<div id="pfshipto">
+						<!--<div id="pfshipto">
 							<strong><?php echo $this->Translate('ShipTo')?></strong>
 							<a href="#"><?php echo $this->Translate('WorldWide')?></a>
-						</div>
+						</div>-->
 						<div style="clear:both;padding-bottom:5px"></div>
 						<div id="pfshipmethod">
 							<?php echo $this->Translate('ShippingCalculate')?>  
@@ -187,14 +187,17 @@
 		</div>
 	</div>
 </div>
-<script type="text/javascript">
+<!--<script type="text/javascript">
 
 		$(document).ready(function()
 		{
 			 $("#popupContactClose").click(function()
 			 {
 				 disablePopup();
+				 $(this).fadeIn(1000000, function() {
+						top.location.href = request_url;
+												  });
 			 });
 		});
 
-</script>
+</script>-->

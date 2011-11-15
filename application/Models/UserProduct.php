@@ -177,12 +177,22 @@ class Models_UserProduct
 		$db = $this->db;
 		$sql = "";
 		if(count($data) > 0 && $data != "") {
-			foreach($data as $key => $val) {				
-				if($val != "") {
-					$sql.=" AND lower(".$key.") like '%".$val."%'";					
-				} 						
+			foreach($data as $key => $val) {			
+				if( $key == "category_id" && $val != ""  ) {
+					
+					$sql.=" AND ptc.".$key." = ".$val;		
+									
+				} else {
+					
+					if($val != "") {
+						$sql.=" AND lower(".$key.") like '%".$val."%'";					
+					}
+				
+				}	
+				 						
 			}			
 		}
+		
 		
 		if($range!=NULL)
 		{

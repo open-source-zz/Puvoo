@@ -290,6 +290,348 @@ class Models_Common
 		 
  		return $result;
 	}
+
+ 	/**
+	 * function GetVatForCountry 
+	 *
+	 * It is used to get default vat rate from language_master table.
+	 *
+	 * Date created: 2011-11-04
+	 *
+	 * @param (int) $CurrencyId- Currency Id.
+	 *
+  	 * @return (Array) - Return number of records
+	 *
+	 * @author Jayesh 
+	 *
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	public function GetValueForCountry($CurrencyId)
+	{
+		$db= $this->db;
+		
+ 		$sql = "SELECT * FROM language_master as lm
+				LEFT JOIN currency_master as cm ON(cm.currency_id = lm.currency_id) 
+				WHERE lm.currency_id = ".$CurrencyId."";
+		//print $sql;die;		
+ 		$result = $db->fetchRow($sql);
+		 
+ 		return $result;
+	}
+	
+ 	/**
+	 * function GetWeigthUnit 
+	 *
+	 * It is used to get default weight unit for store.
+	 *
+	 * Date created: 2011-11-05
+	 *
+   	 * @return (int) - Return weight unit id
+	 *
+	 * @author Jayesh 
+	 *
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	public function GetWeigthUnit()
+	{
+		$db= $this->db;
+		
+ 		$sql = "SELECT weight_unit_id FROM weight_master WHERE is_default = 1";
+		//print $sql;die;		
+ 		$result = $db->fetchOne($sql);
+		 
+ 		return $result;
+	}
+	
+ 	/**
+	 * function GetWeigthUnitPrice 
+	 *
+	 * It is used to get convert weight price.
+	 *
+	 * Date created: 2011-11-05
+	 *
+	 * @param (int) $from_weightunitid- From Weigth Unit Id.
+	 *
+	 * @param (int) $to_weightunitid- From Weigth Unit Id.
+	 *
+   	 * @return (int) - Return weight unit id
+	 *
+	 * @author Jayesh 
+	 *
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	public function GetWeigthUnitPrice($from_weightunitid,$to_weightunitid)
+	{
+		$db= $this->db;
+		
+ 		$sql = "SELECT value FROM weight_unit_conversion WHERE from_id = ".$from_weightunitid." and to_id=".$to_weightunitid."";
+		//print $sql;die;		
+ 		$result = $db->fetchOne($sql);
+		 
+ 		return $result;
+	}
+
+	/**
+	 * function UpdateProductLikeCount
+	 *
+	 * It is used to updates product like count.
+	 *
+	 * Date created: 2011-11-07
+	 *
+	 * @param (Array) $prodIds - Array of product id
+	 * @return (Array) - Return true on success
+	 * @author  Jayesh 
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 */
+	public function UpdateProductLikeCount($prodIds)
+	{
+		$db= $this->db;
+		
+		if(count($prodIds) > 0 ){ 
+		
+			foreach($prodIds as $key => $val)
+			{
+				$sql = "SELECT count(*) as cnt FROM user_product_likes WHERE product_id= ".$val."";
+				
+				$result = $db->fetchOne($sql);
+			
+				$sql1 = "UPDATE product_master set like_count = ".$result." WHERE product_id = ".$val."";
+				
+				$db->query($sql1);
+			}
+			
+		}
+		return true;
+	
+	}
+	
+ 	/**
+	 * function GetZoneDetails 
+	 *
+	 * It is used to get details of zone.
+	 *
+	 * Date created: 2011-11-09
+	 *
+	 * @param (int) $zoneid- tax_rate_id .
+  	 *
+   	 * @return (Array) - Return array of records
+	 *
+	 * @author Jayesh 
+	 *
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	public function GetZoneDetails($zoneid)
+	{
+		$db= $this->db;
+		
+ 		$sql = "SELECT * FROM tax_rate_detail WHERE tax_rate_id = ".$zoneid;
+		//print $sql;die;		
+ 		$result = $db->fetchRow($sql);
+		 
+ 		return $result;
+	}
+	
+ 	/**
+	 * function GetDefaultTaxRate 
+	 *
+	 * It is used to get default tax rate for store.
+	 *
+	 * Date created: 2011-11-09
+	 * @param (int) - $userid - user id
+     * @return (Array) - Return array of records
+	 *
+	 * @author Jayesh 
+	 *
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	public function GetDefaultTaxRate($userid)
+	{
+		$db= $this->db;
+		
+ 		$sql = "SELECT * FROM tax_rate_class WHERE user_id = ".$userid." and is_default  = '1'";
+		//print $sql;die;		
+ 		$result = $db->fetchRow($sql);
+		 
+ 		return $result;
+	}
+	
+ 	/**
+	 * function TaxCalculation 
+	 *
+	 * It is used to get tax rate.
+	 *
+	 * Date created: 2011-11-09
+	 * @param (Array) $taxzone- array of data .
+	 *
+     * @return (Array) - Return array of records
+	 *
+	 * @author Jayesh 
+	 *
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	public function TaxCalculation($taxzone,$taxrate, $Ship_country='', $state = '', $defaultRate )
+	{
+		global $mysession;
+		
+		$flag = false;
+		$tax_rate = 1;
+		
+		 foreach($taxzone as $zn)
+		 {
+		 	if($zn !='')
+			{
+				$ZoneDetail = $this->GetZoneDetails($zn);
+				
+				$zone = explode(';',$ZoneDetail['zone']);
+				
+				//IT:st1,st2; US:st1,st3; AO
+		
+				for($k=0; $k < count($zone); $k++)
+				{
+					
+					$taxArray = explode(':',$zone[$k]);
+					
+					
+					if(isset($taxArray[0])) {
+						
+						$country = $taxArray[0];
+					
+					} else {
+					
+						$country = $zone[$k];
+					}
+					
+					
+//					if($country == $mysession->Default_Countrycode) {
+//			
+//						$tax_rate = $taxrate;
+//						$flag = true;
+//						break;
+//
+//					}else{
+//					
+//						$tax_rate = $mysession->default_taxrate;
+//					}
+					if($Ship_country != '')
+					{
+						//print $country." == ".$Ship_country."<br />";
+						
+						if($country == $Ship_country) {
+				
+							$tax_rate = $taxrate;
+							$flag = true;
+							break;
+	
+						}else{
+						
+							$tax_rate = $defaultRate;
+						}
+					}else{
+						if($country == $mysession->Default_Countrycode) {
+				
+							$tax_rate = $taxrate;
+							$flag = true;
+							break;
+	
+						}else{
+						
+							$tax_rate = $defaultRate;
+						}
+						}
+
+					
+					if(isset($taxArray[1]))
+					{
+					
+						$stateArray = explode(",", $taxArray[1] );
+						
+						foreach($stateArray as $key => $val1 )
+						{
+							
+							if($state != '' ){
+								
+									foreach( $stateArray as $key2 => $val2 )
+									{
+									
+										//print $state."/";
+										//print $val2."=";
+										if( $state == $val2  )
+										{
+											$tax_rate = $taxrate;
+																						
+										}else{
+										
+											
+											$tax_rate = $defaultRate;
+											
+										}
+									}//die;
+								
+								}
+							
+						}
+						
+					}
+					
+				}	
+				
+			}
+			if($flag == true)	
+				{
+					break;
+				}	
+		
+		 }
+	
+ 		return $tax_rate;
+		
+				//	foreach($taxArray as $key => $val1 )
+				//	{
+		
+						//if($key == 0 ) {
+						
+		
+//							if($val1 == $mysession->Default_Countrycode) {
+//			
+//								$tax_rate = $taxrate;
+//		
+//							}else{
+//							
+//								$tax_rate = $mysession->default_taxrate;
+//							}
+		
+						//} 
+						//else {
+						
+							//if($val1 != '' ) {
+//							
+//								$stateArray = explode(",", $val1);
+//								
+//								if($state != '' ){
+//								
+//									foreach( $stateArray as $key2 => $val2 )
+//									{
+//									
+//										if($val1 == $mysession->Default_Countrycode && $state = $val2  )
+//										{
+//											$tax_rate = $taxrate;
+//																						
+//										}else{
+//											$tax_rate = $mysession->default_taxrate;
+//											
+//										}
+//									}
+//								
+//								}
+//							
+//							}
+						
+						//}		
+				//	}
+		
+				
+			
+	}
 	
 }
 ?>

@@ -291,6 +291,23 @@ class Admin_FbController extends AdminCommonController
 		$this->view->configuration_group_id = $id;
 	}
 	
+	
+	/**
+     * Function appsettingsAction
+	 *
+	 * This function is used to set facebook application seettings.
+	 *
+     * Date Created: 2011-10-15
+     *
+     * @access public
+	 * @param ()  - No parameter
+	 * @return (void) - Return void
+	 *
+     * @author Yogesh
+     *  
+     * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/ 
+	
 	function appsettingsAction()
 	{
 	

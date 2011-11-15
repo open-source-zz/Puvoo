@@ -118,7 +118,24 @@ class Models_Like
 
 	}
 
+  /**
+	* Function getAllLikes
+	*
+	* This function is used to get all user's like product.
+    *
+	* Date created: 2011-10-13
+	*
+	* @access public
 	
+    * @param (Int)  - $facebook_userid: Facebook user id
+	
+	* @return (Array) - Return Array of records
+	*
+	* @author Yogesh
+	*  
+	* @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	*
+	**/
 
 	function getAllLikes($facebook_userid)
 
@@ -152,6 +169,25 @@ class Models_Like
 		
 	}
 
+	
+  /**
+	* Function getAllFriendLikes
+	*
+	* This function is used to get all user friend's like product.
+    *
+	* Date created: 2011-10-13
+	*
+	* @access public
+	
+    * @param (String)  - $friends_list: String of facebook user id with comma separator. 
+	
+	* @return (Array) - Return Array of records
+	*
+	* @author Yogesh
+	*  
+	* @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	*
+	**/
 	
 
 	function getAllFriendLikes($friends_list)

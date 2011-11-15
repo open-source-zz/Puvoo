@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="<?php echo CSS_FB_PATH ?>/ddlevelsmenu-base.css" />
 <link rel="stylesheet" href="<?php echo CSS_FB_PATH ?>/ddlevelsmenu-topbar.css" />
 <link rel="stylesheet" href="<?php echo CSS_FB_PATH ?>/ddlevelsmenu-sidebar.css" />
+<link rel="stylesheet" href="<?php echo CSS_FB_PATH ?>/dd.css" />
 
 <![if  IE 6]> <link href="<?php echo CSS_FB_PATH ?>/ie6.css" rel="stylesheet" type="text/css" />  <![endif]>
 <script type="text/javascript" src="<?php echo JS_FB_PATH ?>/jquery-1.6.1.min.js?r=<?php echo $this->random;?>"></script>
@@ -26,6 +27,11 @@
 <script type="text/javascript" src="<?php echo JS_FB_PATH ?>/functions.js?r=<?php echo $this->random;?>"></script>
 <script type="text/javascript" src="<?php echo JS_FB_PATH ?>/search.js?r=<?php echo $this->random;?>"></script>
 <script type="text/javascript" src="<?php echo JS_FB_PATH ?>/ddlevelsmenu.js?r=<?php echo $this->random;?>"></script>
+<script type="text/javascript" src="<?echo JS_FB_PATH; ?>/jquery.dd.js"></script>
+<script type="text/javascript" src="<?echo JS_FB_PATH; ?>/test.js"></script>
+<script type="text/javascript" src="<?echo JS_FB_PATH; ?>/main.js"></script>
+
+
 <script type="text/javascript" >
 	<?php echo GOOGLE_ANALYTICAL_CODE; ?>
 </script>
@@ -76,6 +82,8 @@
 	var Select_State = '<?php echo $this->Translate("Select_State"); ?>';
 	var Select_Shipping_Method = '<?php echo $this->Translate("Select_Shipping_Method"); ?>';
 	var Enter_Proper_Text  = '<?php echo $this->Translate("Enter_Proper_Text"); ?>';
+	var default_decimal_sep = '<?php echo DEFAULT_DECIMAL_SEPARATOR;?>';
+	var default_thousand_sep = '<?php echo DEFAULT_THOUSANDS_SEPARATOR;?>';
 	/*window.fbAsyncInit = function() {
 	
 	FB.Canvas.setSize({ height: 1078 });

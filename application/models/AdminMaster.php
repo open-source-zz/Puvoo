@@ -148,6 +148,7 @@ class Models_AdminMaster
 	 * @author Yogesh
 	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 	 **/
+	 
 	public function getConstantArray()
 	{
 		global $mysession;
@@ -159,9 +160,11 @@ class Models_AdminMaster
 		
 		// For Order Status
 		$order_status = array(
-							   "0" => $translate->_('Order_Status_Pending'),
-							   "1" => $translate->_('Order_Status_Complete'),
-							   "2" => $translate->_('Order_Status_Cancle'),							   
+							   "1" => $translate->_('Order_Status_Payment_Received'),	
+							   "2" => $translate->_('Order_Status_Pending'),
+							   "3" => $translate->_('Order_Status_Complete'),
+							   "4" => $translate->_('Order_Status_Cancle'),
+							   						   
 						    );
 		
 		$array["order_status"] = $order_status;
@@ -284,5 +287,5 @@ class Models_AdminMaster
 		
 		return $db->fetchOne($Sql); 	 	
 	}
-	
+		
 }

@@ -228,6 +228,21 @@ class Models_ProductImages
 		return true;
 	}
 	
+	/**
+	 * Function updateProductImage
+	 *
+	 * This function is used to update product images data.
+     *
+	 * Date created: 2011-09-15
+	 *  
+	 * @access public
+	 * @param (Array) - $data: id of product
+	 *
+	 * @return (void) - Return void
+	 * @author Yogesh
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
 	
 	public function updateProductImage($data)
 	{
@@ -238,6 +253,23 @@ class Models_ProductImages
 		
 		return $db->update("product_images", $data, $where); 	
 	}
+	
+	/**
+	 * Function updateProductPrimaryImg
+	 *
+	 * This function is used to update product primary image.
+     *
+	 * Date created: 2011-09-15
+	 *  
+	 * @access public
+	 * @param (Int) - $product_id: id of product
+	 * @param (Int) - $image_id: id of product image
+	 *
+	 * @return (void) - Return void
+	 * @author Yogesh
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
 	
 	public function updateProductPrimaryImg($product_id,$image_id)
 	{

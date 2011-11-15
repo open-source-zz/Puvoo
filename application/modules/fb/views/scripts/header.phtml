@@ -16,10 +16,10 @@ var produImagePath = "<?php echo SITE_PRODUCT_IMAGES_PATH;?>";
                             	<td><a href="http://www.puvoo.com/marketplace.php" target="_blank"><input type="button" value="" class="join_marketplace" /></a></td>
                                 <td style="padding-left:10px;">
 									
-                                	<select id="cid" style="height:26px; width:120px;" name="cid" onchange="javascript:changelang(this.value);" >
+                                	<select id="cid" style="height:26px; width:190px;" name="cid" onchange="javascript:changelang(this.value);" class="mydds" >
                                       
                                         <?php foreach($this->CountryCombo as $value){?>
-											<option class="flag flag-<?php echo strtolower($value['country_iso2']); ?>"  value="<?php echo $value['country_id']; ?>" <?php if($value['country_id'] == $this->sel_country){?> selected="selected" <?php }?>>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $value['country_name']; ?></option>
+											<option title="<?php echo IMAGES_PATH; ?>/fb/countryflag/<?php echo $value['country_iso2'];?>.png" class="flag flag-<?php echo strtolower($value['country_iso2']); ?>"  value="<?php echo $value['country_id']; ?>" <?php if($value['country_id'] == $this->sel_country){?> selected="selected" <?php }?>><?php echo $value['country_name']; ?></option>
 											<?php }?>
                                     </select>
                                 </td>
@@ -31,3 +31,19 @@ var produImagePath = "<?php echo SITE_PRODUCT_IMAGES_PATH;?>";
             </div>
             <div class="clear"></div>
 </div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+
+try {
+		oHandler = $("#cid").msDropDown().data("dd");
+		//oHandler.visible(true);
+		//alert($.msDropDown.version);
+		//$.msDropDown.create("body select");
+		$("#ver").html($.msDropDown.version);
+		} catch(e) {
+			alert("Error: "+e.message);
+		}
+})
+
+</script>

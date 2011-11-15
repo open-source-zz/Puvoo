@@ -46,14 +46,19 @@
 								}
 							?>
 							<div class="productGridItem productGridItemTopRow">
+							
+							 <?php
+								$SmallImg = str_replace('img','th1',$prodval['image_name']);
+								$tinyImage = SITE_PRODUCT_IMAGES_PATH.$prodval['image_path']."/".$SmallImg;	
+								$ThumbImage = SITE_PRODUCT_IMAGES_PATH.$prodval['image_path']."/".$prodval['image_name'];
+							 ?>
 								<div class="thumbnailImage" style="margin-top:14px;">
-									<a target="_top" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $prodval['product_id'];?>">
+									<a target="_top" url="<?php echo $ThumbImage;?>" class="preview" style="cursor:pointer" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $prodval['product_id'];?>">
 									
 									<?php if(!$prodval['image_name']){?>
 										<img class="img" src="<?php echo IMAGES_FB_PATH ?>/Default.gif" alt="Default" title="Default"/>
 									<?}else{?>
-									
-										<img class="img" src="<?php echo SITE_PRODUCT_IMAGES_PATH.$prodval['image_path'] ?>/<?php echo $prodval['image_name'] ?>" width="128" alt="<?php echo $prodName;?>" title="<?php echo $prodName;?>"/>
+										<img class="img" src="<?php echo $tinyImage;?>" width="128" alt="<?php echo $prodName;?>" title="<?php echo $prodName;?>"/>
 									<?}?>
 									</a>
 								</div>
@@ -61,7 +66,7 @@
 									<a target="_top" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $prodval['product_id'];?>"><?php echo $prodName;?></a> 
 								</div>
 								<div class="productPrice">
-								    <?php echo DEFAULT_CURRENCY_SYMBOL. $prodval['Prod_convert_price']."&nbsp;".DEFAULT_CURRENCY_CODE;?>
+								    <?php echo DEFAULT_CURRENCY_SYMBOL."&nbsp;".$prodval['Prod_convert_price']."&nbsp;".DEFAULT_CURRENCY_CODE;?>
 								</div>
 								<div class="socialbtn">
 									<script>(function(d, s, id) {

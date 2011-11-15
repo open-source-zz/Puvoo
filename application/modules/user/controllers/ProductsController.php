@@ -176,9 +176,8 @@ class User_ProductsController extends UserCommonController
 			
 			if( $counter > 0 ) {
 				
-				
 				if( $search_error == '' ) {
-				
+					
 					$result = $product->SearchProducts($data,$range_value);
 				
 				} else {
@@ -191,7 +190,7 @@ class User_ProductsController extends UserCommonController
 			
 			} else {
 			
-				$mysession->Admin_EMessage = $translate->_('No_Search_Criteria');
+				$mysession->User_EMessage = $translate->_('No_Search_Criteria');
 			
 				$result = $product->GetAllDistinctProducts();
 				
@@ -476,6 +475,22 @@ class User_ProductsController extends UserCommonController
 		}	
 	} 
 	
+	
+	/**
+     * Function addimageAction
+	 *
+	 * This function is used to upload the product image and add the product option detail.
+	 *
+     * Date Created: 2011-09-20
+     *
+     * @access public
+	 * @param ()  - No parameter
+	 * @return (void) - Return void
+	 *
+     * @author Yogesh
+     *  
+     * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+     **/
 	
 	public function addimageAction()
 	{

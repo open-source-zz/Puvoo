@@ -146,7 +146,7 @@ class Models_UserOrders
 	 {
 	 	$db = $this->db;
 		
-		$select = "	SELECT om.*, 
+		/*$select = "	SELECT om.*, 
 					SUM(od.product_price * product_qty ) as product_cost, 
 					SUM(od.shipping_cost) as shipping_cost,
 					SUM(od.tax_rate) as tax_rate,
@@ -156,7 +156,26 @@ class Models_UserOrders
 					WHERE od.product_id 
 					IN( SELECT pm.product_id 
 						FROM product_master as pm
-						WHERE pm.user_id = '".$this->user_id."' ) ";
+						WHERE pm.user_id = '".$this->user_id."' ) ";*/
+		
+		$select = "	SELECT om.*, scm.country_name as shipping_country, bcm.country_name as billing_country, ssm.state_name as shipping_state_name, bsm.state_name as billing_state_name,
+					SUM(od.product_price * product_qty ) as product_cost, 
+					SUM(od.shipping_cost) as shipping_cost,
+					SUM(od.tax_rate) as tax_rate,
+					SUM(od.product_total_cost) as order_total_cost,
+					cm.currency_symbol,cm.currency_code
+					FROM order_master as om
+					JOIN order_detail as od ON (om.order_id = od.order_id)
+					LEFT JOIN country_master as scm ON ( scm.country_id = om.shipping_user_country_id)
+				    LEFT JOIN country_master as bcm ON ( bcm.country_id = om.billing_user_country_id )
+				    LEFT JOIN state_master as ssm ON ( ssm.state_id = om.shipping_user_state_id )
+				    LEFT JOIN state_master as bsm ON ( bsm.state_id = om.billing_user_state_id )
+					JOIN currency_master as cm ON (cm.currency_id = om.currency_id)
+					WHERE od.product_id 
+					IN( SELECT pm.product_id 
+						FROM product_master as pm
+						WHERE pm.user_id = '".$this->user_id."' )";
+		
 					
 		if( $where != '' ){
 		 	$select .= $where;
@@ -387,12 +406,16 @@ class Models_UserOrders
 	{
 	 	$db = $this->db;
 		
-		foreach( $data["order_status"] as $key => $val )
+		/*foreach( $data["order_status"] as $key => $val )
 		{
 			$where = "order_detail_id = ".$key;
 			$row["delivery_status"] = $val;
 			$db->update("order_detail", $row, $where);
-		}
+		}*/
+		
+		$where = "order_id = ".$data["order_id"];
+		
+		$db->update("order_master", $data, $where);
 		
 		return true;
 	 }

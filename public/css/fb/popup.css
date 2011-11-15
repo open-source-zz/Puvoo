@@ -305,8 +305,8 @@ white-space:nowrap;
 	float: left;
 	list-style: none;
 	height: 32px;
-	border-bottom: 1px solid #999;
-	border-left: 1px solid #999;
+	border-bottom: 1px solid #17649E;
+	/*border-left: 1px solid #17649E;*/
 	width: 97%;
 	margin-left:10px;
 }
@@ -316,28 +316,28 @@ white-space:nowrap;
 	padding: 0;
 	height: 31px;
 	line-height: 31px;
-	border: 1px solid #999;
+	/*border: 1px solid #17649E;*/
 	border-left: none;
 	margin-bottom: -1px;
-	background: #e0e0e0;
+	background: #17649E;
 	overflow: hidden;
 	position: relative;
 }
 #sellerarea ul.tabs li a {
 	text-decoration: none;
-	color: #000;
+	color: #fff;
 	display: block;
 	font-size: 1.2em;
 	padding: 0 20px;
-	border: 1px solid #fff;
+	border-right: 1px solid #fff;
 	outline: none;
 }
 #sellerarea ul.tabs li a:hover {
-	background: #ccc;
+	background: #ED9704;
 }	
 #sellerarea ul.tabs li.active, html ul.tabs li.active a:hover  {
-	background: #fff;
-	border-bottom: 1px solid #fff;
+	background: #ED9704;
+	/*border-bottom: 1px solid #fff;*/
 }
 #sellerarea .tab_container {
 	padding-left:20px;

@@ -31,7 +31,7 @@
  * @author	    Amar
  * 
  */
-class ErrorController extends Zend_Controller_Action
+class ErrorController extends FbCommonController
 {
 
     public function errorAction()

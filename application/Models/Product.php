@@ -199,7 +199,7 @@ class Models_Product
  		
 		//ROUND(((pm.product_price +((pm.product_price * ".$mysession->default_vatrate.")/100)) * ".$mysession->currency_value.")/  cm.currency_value , 2 ) as prod_convert_price,
 		
-		$sql = "SELECT DISTINCT pm.*,pi.*,um.store_name,cm.*,pml.product_name as ProdName,trc.* FROM product_master as pm 
+		$sql = "SELECT DISTINCT pm.*,pi.*,um.store_name,um.user_id as uid,cm.*,pml.product_name as ProdName,trc.* FROM product_master as pm 
 				LEFT JOIN product_master_lang as pml ON (pm.product_id = pml.product_id and pml.language_id= ".DEFAULT_LANGUAGE.")
 				LEFT JOIN product_images as pi ON (pm.product_id = pi.product_id and is_primary_image = 1)
 				LEFT JOIN user_master as um ON (um.user_id = pm.user_id)
@@ -362,7 +362,7 @@ class Models_Product
 		//ROUND(((pm.product_price +((pm.product_price * ".$mysession->default_vatrate.")/100)) * ".$mysession->currency_value.") / cm.currency_value, 2 ) as Prod_convert_price
 	 	 
  		$sql  = "";
-		$sql .= "SELECT DISTINCT pm.product_id, pm.*, pi.*,um.*,cm.*,pml.product_name as ProdName,trc.* FROM product_master as pm 
+		$sql .= "SELECT DISTINCT pm.product_id, pm.*, pi.*,um.*,um.user_id as uid,cm.*,pml.product_name as ProdName,trc.* FROM product_master as pm 
 				 LEFT JOIN product_master_lang as pml ON (pm.product_id = pml.product_id and pml.language_id= ".DEFAULT_LANGUAGE.")	
 				 LEFT JOIN product_to_categories as ptc ON(pm.product_id = ptc.product_id)
 				 LEFT JOIN product_images as pi ON (pi.product_id = pm.product_id and is_primary_image = 1)
@@ -686,10 +686,18 @@ class Models_Product
 		$db = $this->db;
 		$sql = "";
 		if(count($data) > 0 && $data != "") {
-			foreach($data as $key => $val) {				
-				if($val != "") {
-					$sql.=" AND lower(".$key.") like '%".$val."%'";					
-				} 						
+			foreach($data as $key => $val) {		
+				
+				if( $key == "category_id" && $val != "" ) {
+					
+					$sql.=" AND ptc.".$key." = ".$val;		
+									
+				} else {
+						
+					if($val != "") {
+						$sql.=" AND lower(".$key.") like '%".$val."%'";					
+					} 						
+				}
 			}			
 		}
 		

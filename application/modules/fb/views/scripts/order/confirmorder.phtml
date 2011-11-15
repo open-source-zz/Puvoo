@@ -19,7 +19,13 @@
         <?php foreach($this->cartItems as $Item){?>
 		
         <div id="cartRow_2" class="itemAvailable">
-          <div class="cartItemProductImageCell"> <img class="cartItemProductImage" src="<?php echo SITE_PRODUCT_IMAGES_PATH.$Item['image_path'] ?>/<?php echo $Item['image_name'] ?>" alt="<?php echo ucfirst($Item['product_name']);?>" title="<?php echo ucfirst($Item['product_name']);?>" /> </div>
+          <div class="cartItemProductImageCell">
+		  <?php
+			$SmallImg = explode('_',$Item['image_name']);
+			$tinyImage = SITE_PRODUCT_IMAGES_PATH.$Item['image_path']."/".$SmallImg[0]."_th2.jpg";	
+		 ?>
+		   <img class="cartItemProductImage" src="<?php echo $tinyImage;?>" alt="<?php echo ucfirst($Item['product_name']);?>" title="<?php echo ucfirst($Item['product_name']);?>" />
+		  </div>
           <div class="cartItemDivider cartItemMainContent"> <span class="cartItemProductTitle"> <a title="<?php echo $Item['store_name'];?>" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $Item['product_id'];?>" target="_top"><?php echo ucfirst($Item['product_name']);?></a> </span>
             <div id="cartItemDetail_1" class="cartItemDetail" style="display: block"> <span class="cartRetailerLabel"> <?php echo $this->Translate('Seller')?> <a href="javascript:void(0)" target="_top"><?php echo $Item['store_name'];?></a> </span> </div>
           </div>
