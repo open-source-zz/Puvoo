@@ -38,8 +38,14 @@
 				</div>
 				<div style="clear:both"></div>
 			</div>
+		<?php $image_preview = ''; ?>
 		<div id="productGridView" class="portlet">
 		<?php foreach($this->records as $prodval){?>
+		
+			<?php
+				$image_preview .= $prodval['product_id'] . ":{ img:'" .SITE_PRODUCT_IMAGES_PATH.$prodval['image_path']."/".$prodval['image_name'] . "', txt: '', w: 350  }, ";						
+			?>
+		
 			<?php 
 				if($prodval['ProdName'] != '')
 				{
@@ -57,13 +63,13 @@
 						$ThumbImage = SITE_PRODUCT_IMAGES_PATH.$prodval['image_path']."/".$prodval['image_name'];
 					 ?>
 				
-					<a target="_top" url="<?php echo $ThumbImage;?>" class="preview" style="cursor:pointer" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $prodval['product_id'];?>">
+					<a target="_top" url="<?php echo $ThumbImage;?>" class="showTip <?php echo $prodval['product_id'];?>" style="cursor:pointer" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $prodval['product_id'];?>">
 					
 					<?php if(!$prodval['image_name']){?>
 						<img class="img" src="<?php echo IMAGES_FB_PATH ?>/Default.gif" alt="Default" title="Default"/>
 					<?}else{?>
 					
- 						<img class="img" src="<?php echo $tinyImage;?>" width="128" alt="<?php echo $prodName; ?>" title="<?php echo $prodName; ?>"/>
+ 						<img class="img" src="<?php echo $tinyImage;?>" alt="<?php echo $prodName; ?>" title="<?php echo $prodName; ?>"/>
 					<?}?>
 					</a>
 				</div>
@@ -127,3 +133,13 @@
 	</script>-->
    
 </div>
+<script type="text/javascript">
+
+dw_Tooltip.defaultProps = {
+    wrapFn: dw_Tooltip.wrapImageOverText
+}
+
+dw_Tooltip.content_vars = {
+	<?php echo $image_preview; ?>
+}
+</script>

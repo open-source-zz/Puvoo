@@ -31,30 +31,38 @@
  * @author	    Amar
  * 
  */
-class ErrorController extends FbCommonController
+class Fb_ErrorController extends Zend_Controller_Action
 {
 
     public function errorAction()
     {
 
         $errors = $this->_getParam('error_handler');
-       
-		echo "<pre>";
-		print_r( $errors);die;
+      // echo "test";die;
+			$this->_helper->viewRenderer->setNoRender(true);
+			$this->_helper->layout()->disableLayout();
+			//echo SITE_URL;die;
+		//echo "<pre>";
+		//print_r($errors);die;
         switch ($errors->type) {
             case Zend_Controller_Plugin_ErrorHandler::EXCEPTION_NO_ROUTE:
             case Zend_Controller_Plugin_ErrorHandler::EXCEPTION_NO_CONTROLLER:
+				$this->view->message = '404: Not Found';
+				$this->render('error');
+				 break;
             case Zend_Controller_Plugin_ErrorHandler::EXCEPTION_NO_ACTION:
-        
-                // 404 error -- controller or action not found
+        		// 404 error -- controller or action not found
                 $this->getResponse()->setHttpResponseCode(404);
-                $this->view->message = 'Page not found';
-                $this->view->message = $errors->exception;//'Application error';
+                $this->view->message = '404: Not Found';
+                //$this->view->message = $errors->exception;//'Application error';
+				$this->render('error');
                 break;
             default:
                 // application error
-                $this->getResponse()->setHttpResponseCode(500);
-                $this->view->message = $errors->exception;//'Application error';
+				$this->getResponse()->setHttpResponseCode(500);
+				$this->view->message = 'An unexpected error occurred.';
+				$this->render('error');
+                //$this->view->message = $errors->exception;//'Application error';
                 break;
         }
         

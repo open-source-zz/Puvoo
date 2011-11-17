@@ -31,10 +31,18 @@
 		<?php if( FACEBOOK_USERID != '' ) { ?>
 		
 		<div id="productGridView" class="portlet">
-		
+			
+			<?php $image_preview = ''; ?>
+			
 			<?php if(count($this->records) > 0){ ?>
 			
 			<?php 	foreach($this->records as $key => $val ) { ?>
+			
+				<?php
+					$image_preview .= $val['product_id'] . ":{ img:'" .SITE_PRODUCT_IMAGES_PATH.$val['image_path']."/".$val['image_name'] . "', txt: '', w: 350  }, ";						
+				?>
+			
+			
 				<?php 
 					if($val['ProdName'] != '')
 					{
@@ -52,14 +60,14 @@
 						$ThumbImage = SITE_PRODUCT_IMAGES_PATH.$val['image_path']."/".$val['image_name'];
 					 ?>
 				
-					<a target="_top" url="<?php echo $ThumbImage;?>" class="preview" style="cursor:pointer" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $val['product_id'];?>">
+					<a target="_top" class="showTip <?php echo $val['product_id'];?>" class="preview" style="cursor:pointer" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $val['product_id'];?>">
 					
 						<?php if( $val['image_name'] == '' ){ ?>
 					
 							<img class="img" src="<?php echo IMAGES_FB_PATH ?>/Default.gif" alt="Default" title="Default"/>
 					
 						<?php } else { ?>
-							<img class="img" src="<?php echo $tinyImage; ?>" width="128" alt="<?php echo $prodName;?>" title="<?php echo $prodName;?>"/>
+							<img class="img" src="<?php echo $tinyImage; ?>" alt="<?php echo $prodName;?>" title="<?php echo $prodName;?>"/>
 					
 						<?php } ?>
 					
@@ -128,3 +136,14 @@
 		 
 	</div>
 </div>
+
+<script type="text/javascript">
+
+dw_Tooltip.defaultProps = {
+    wrapFn: dw_Tooltip.wrapImageOverText
+}
+
+dw_Tooltip.content_vars = {
+	<?php echo $image_preview; ?>
+}
+</script>

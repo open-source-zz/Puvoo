@@ -423,15 +423,18 @@ class FbCommonController extends Zend_Controller_Action
 		
 		$cartValue = $Cart->GetCartDetails(FBUSER_ID);
 		
-		$CurrencyValue = $Common->GetValueForCountry($cartValue['currency_id']);
+		if($cartValue != NULL)
+		{
 		
-		$Curr_curr_value = $CurrencyValue['currency_value'];
-		
- 		$this->view->cart_decimal_sep = $CurrencyValue['numeric_separator_decimal'];
-		
-		$this->view->cart_thousand_sep = $CurrencyValue['numeric_separator_thousands'];
+			$CurrencyValue = $Common->GetValueForCountry($cartValue['currency_id']);
+			
+			$Curr_curr_value = $CurrencyValue['currency_value'];
+			
+			$this->view->cart_decimal_sep = $CurrencyValue['numeric_separator_decimal'];
+			
+			$this->view->cart_thousand_sep = $CurrencyValue['numeric_separator_thousands'];
 
-		
+		}
 		// Country combo
 		$this->view->CountryCombo = $Cart->GetCountry();
 		$this->view->ShipCountryCombo = $Cart->GetCountryCombo();

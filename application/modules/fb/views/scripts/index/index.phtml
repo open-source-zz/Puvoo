@@ -16,12 +16,17 @@
             </div>
             
 	<?php }?>
+	<?php $image_preview = ''; ?>
 	<div id="gallery">
 		<div id="slides">
 			<?php if(count($this->frndslike) > 0){?>
 			<div class="slide">
 				<?php foreach($this->frndslike as $val2){?>
-				
+					
+					<?php
+						$image_preview .= $val2['product_id'] . ":{ img:'" .SITE_PRODUCT_IMAGES_PATH.$val2['image_path']."/".$val2['image_name'] . "', txt: '', w: 350  }, ";						
+					?>
+					
 					<?php 
 						if($val2['ProdName'] != '')
 						{
@@ -39,7 +44,7 @@
 						$tinyImage2 = SITE_PRODUCT_IMAGES_PATH.$val2['image_path']."/".$SmallImg2;	
 						$ThumbImage2 = SITE_PRODUCT_IMAGES_PATH.$val2['image_path']."/".$val2['image_name'];
 					 ?>
-							<a url="<?php echo $ThumbImage2;?>" class="preview" style="cursor:pointer" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $val2['product_id'];?>" target="_top">
+							<a url="<?php echo $ThumbImage2;?>" class="showTip <?php echo $val2['product_id'];?>" style="cursor:pointer" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $val2['product_id'];?>" target="_top">
 								<img class="img" src="<?php echo $tinyImage2;?>" alt="<?php echo $prodName2;?>" title="<?php echo $prodName2;?>" />
 							</a>
 						</div>
@@ -54,6 +59,11 @@
 			<?php }?>
 			<div class="slide">
 				<?php foreach($this->bestSeller as $val1){?>
+					
+					<?php
+						$image_preview .= $val1['product_id'] . ":{ img:'" .SITE_PRODUCT_IMAGES_PATH.$val1['image_path']."/".$val1['image_name'] . "', txt: '', w: 350  }, ";						
+					?>
+				
 					<?php 
 						if($val1['ProdName'] != '')
 						{
@@ -72,7 +82,7 @@
 							$tinyImage = SITE_PRODUCT_IMAGES_PATH.$val1['image_path']."/".$SmallImg;	
 							$ThumbImage = SITE_PRODUCT_IMAGES_PATH.$val1['image_path']."/".$val1['image_name'];
 						 ?>
-							<a url="<?php echo $ThumbImage;?>" class="preview" style="cursor:pointer" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $val1['product_id'];?>" target="_top">
+							<a url="<?php echo $ThumbImage;?>" class="showTip <?php echo $val1['product_id'];?>" style="cursor:pointer" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $val1['product_id'];?>" target="_top">
 								<img class="img" src="<?php echo $tinyImage;?>" alt="<?php echo $prodName1;?>" title="<?php echo $prodName1;?>" />
 							</a>
 						</div>
@@ -103,6 +113,11 @@
 		<div id="celebritySliderContainer">
 			<ul>
 				<?php foreach($this->frndslike as $prod){?>
+				
+					<?php
+						$image_preview .= $prod['product_id'] . ":{ img:'" .SITE_PRODUCT_IMAGES_PATH.$prod['image_path']."/".$prod['image_name'] . "', txt: '', w: 350  }, ";						
+					?>
+				
 					<?php 
 						if($prod['ProdName'] != '')
 						{
@@ -120,7 +135,7 @@
 							$ThumbImg = SITE_PRODUCT_IMAGES_PATH.$prod['image_path']."/".$prod['image_name'];
 						 ?>
 					
-								<a url="<?php echo $ThumbImg;?>" class="preview" style="cursor:pointer" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $prod['product_id'];?>" target="_top">
+								<a url="<?php echo $ThumbImg;?>" class="showTip <?php echo $prod['product_id'];?>" style="cursor:pointer" href="<?php echo SITE_FB_URL;?>product/view/id/<?php echo $prod['product_id'];?>" target="_top">
 									<img class="img" src="<?php echo $tinyImg; ?>" alt="<?php echo $prodName3;?>" title="<?php echo $prodName3;?>" />
 								</a>
 							</div>
@@ -138,3 +153,14 @@
 	</div>
 	<?php }?>
 </div>
+
+<script type="text/javascript">
+
+dw_Tooltip.defaultProps = {
+    wrapFn: dw_Tooltip.wrapImageOverText
+}
+
+dw_Tooltip.content_vars = {
+	<?php echo $image_preview; ?>
+}
+</script>

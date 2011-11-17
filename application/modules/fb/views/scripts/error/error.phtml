@@ -1,24 +1,59 @@
-<!-- application/views/scripts/error/error.phtml -->
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"; "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>Zend Framework Default Application</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<link rel="stylesheet" href="<?php echo CSS_PATH ?>/fb/style.css" />
+<link rel="stylesheet" href="<?php echo CSS_PATH ?>/fb/demo.css" />
+<![if  IE 6]> <link href="<?php echo CSS_PATH ?>/fb/ie6.css" rel="stylesheet" type="text/css" />  <![endif]>
+<script type="text/javascript" >
+	<?php echo GOOGLE_ANALYTICAL_CODE; ?>
+</script>
+<style type="text/css" id="page-css">
+			/* Styles specific to this particular page */
+			.scroll-pane
+			{
+				width: 100%;
+				height: 255px;
+				overflow: auto;
+			}
+			.horizontal-only
+			{
+				height: auto;
+				max-height: 255px;
+			}
+		</style> 
+
+<title>Puvoo</title>
 </head>
-<body>
-	<h1>An error occurred</h1>
-	<h2><?php echo $this->message ?></h2>
-	<?php if ('development' == $this->env): ?>
-	<h3>Exception information:</h3>
-	<p>
-		<b>Message:</b> <?php echo $this->exception->getMessage() ?>
-	</p>
-	<h3>Stack trace:</h3>
-	<pre><?php echo $this->exception->getTraceAsString() ?>
-	</pre>
-	<h3>Request Parameters:</h3>
-	<pre><?php echo var_export($this->request->getParams(), 1) ?>
-	</pre>
-	<?php endif ?>
+<body id="body">
+	<div class="width">
+    	<div id="header">
+        	<div class="left" style="width:250px;">
+            	<a href="<?php echo SITE_URL ?>fb/" target="_top"><img src="<?php echo IMAGES_PATH ?>/fb/logo.png" width="239" height="79" alt="" /></a>
+            </div>
+            <div class="clear"></div>
+</div>
+		<div id="headerRowTwo">
+        	<img src='<?php echo IMAGES_PATH ?>/fb/sep.jpg' alt="" />
+        </div>
+        <div class="clear"></div>
+         <div id="mainbody">
+			<div id="mainwhitebg" style="min-height:410px;">
+				<div><h1><?php echo $this->message; ?></h1></div>
+				<div class="clear"></div>
+			</div>
+			
+         </div>
+		<div id="storeFooter">
+            	<div class="clear"></div>
+              <div><img src='<?php echo IMAGES_PATH ?>/fb/sep.jpg' alt="" /></div>
+              
+                <div class="right">
+                	<a href="#"><img src="<?php echo IMAGES_PATH ?>/fb/poweredby_puvoo.png" alt="" style="margin-top:8px; margin-bottom:8px;" /></a>
+                </div>
+            </div>
+			
+    </div>
+	<div id="fb-root"></div>
 </body>
 </html>

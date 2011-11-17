@@ -218,7 +218,7 @@ class Models_Like
 
 				   LEFT JOIN product_images as pi ON ( pm.product_id = pi.product_id AND pi.is_primary_image = 1)
 
-				   WHERE upl.facebook_user_id in ( ".$friends_list." ) ";
+				   WHERE upl.facebook_user_id in ( ".$friends_list." ) group by pm.product_name ";
 
 		
 
