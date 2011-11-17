@@ -157,6 +157,17 @@ Zend_Loader::loadClass('Zend_Translate');
 $front = Zend_Controller_Front::getInstance();
 $router = $front->getRouter();
 
+	   
+//Error Handling
+//$front->addModuleDirectory(dirname(__FILE__) . '\../application/modules');
+
+$front->registerPlugin(new Zend_Controller_Plugin_ErrorHandler(array(
+    'module'     => 'fb',
+    'controller' => 'Error',
+    'action'     => 'error'
+)));
+
+
 // Specifying the "rest" module only as RESTful:
 $restRoute = new Zend_Rest_Route($front, array(), array('rest'));
 $router->addRoute('rest', $restRoute);
