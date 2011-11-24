@@ -12,7 +12,7 @@
 	<div class="Heading1">
 		<?php echo $this->Translate('Add_Product_Api_Help'); ?>
 	</div>
-<div style="margin-top:20px;"><h4><?php echo $this->Translate('Api_Add_Product_Rest_Url'); ?> : <?php echo SITE_URL."rest/product"; ?></h4> </div>
+<div style="margin-top:20px;"><h4><?php echo $this->Translate('Api_Add_Product_Rest_Url'); ?> : <?php echo SITE_URL."rest/addproduct"; ?></h4> </div>
 <div style="margin-top:20px;"><h4><?php echo $this->Translate('Api_Add_Product_Input'); ?></h4></div>
 <div style="margin-top:20px;"><?php echo $this->Translate('Api_Add_Product_Title'); ?></div>
 <pre style="background-color:#E0E0E0;  font-size:12px">
@@ -439,7 +439,7 @@
 <pre style="background-color:#E0E0E0;  font-size:12px">
 &lt;?php
 
-$rest_url = "<?php echo SITE_URL.'rest/product'; ?>";
+$rest_url = "<?php echo SITE_URL.'rest/addproduct'; ?>";
 $api_key = "<b>your_api_key</b>";
 
 $data = "&lt;Products&gt;\r\n"

@@ -12,7 +12,7 @@
 	<div class="Heading1">
 		<?php echo $this->Translate('Edit_Product_Api_Help'); ?>
 	</div>
-<div style="margin-top:20px;"><h4><?php echo $this->Translate("Api_Edit_Product_Rest_Url"); ?> : <?php echo SITE_URL."rest/product"; ?></h4> </div>
+<div style="margin-top:20px;"><h4><?php echo $this->Translate("Api_Edit_Product_Rest_Url"); ?> : <?php echo SITE_URL."rest/editproduct"; ?></h4> </div>
 <div style="margin-top:20px;"><h4><?php echo $this->Translate("Api_Edit_Product_Input"); ?></h4></div>
 <div style="margin-top:20px;"><?php echo $this->Translate("Api_Edit_Product_Title"); ?></div>
 <pre style="background-color:#E0E0E0;  font-size:12px">
@@ -402,7 +402,7 @@
 <pre style="background-color:#E0E0E0;  font-size:12px">
 &lt;?php
 
-$rest_url = "<?php echo SITE_URL.'rest/product'; ?>";
+$rest_url = "<?php echo SITE_URL.'rest/editproduct'; ?>";
 $api_key = "<b>your_api_key</b>";
 
 $data = "&lt;Products&gt;\r\n"
@@ -457,22 +457,11 @@ $arr_header[] = "Content-Type: text/xml;charset=UTF-8";
 $arr_header[] = "Accept: text/xml";
 $arr_header[] = "apikey: " . $api_key;
 
-$fp = fopen('php://temp/', 'w');
-if (!$fp) {
-    die('<?php echo $this->Translate("Api_Edit_Product_Err_Temp_Data"); ?>');
-}
-$data = urlencode($data);
-
-fwrite($fp, $data);
-fseek($fp, 0); 
-
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $rest_url);
-curl_setopt($ch, CURLOPT_PUT, 1);
+curl_setopt($ch, CURLOPT_POST, 1);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
-curl_setopt($ch, CURLOPT_INFILE, $fp); // file pointer
-curl_setopt($ch, CURLOPT_INFILESIZE, strlen($data));    
+curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 curl_setopt($ch, CURLOPT_HTTPHEADER, $arr_header);
 
 $result = curl_exec($ch);
@@ -480,10 +469,6 @@ $result = curl_exec($ch);
 if(curl_errno($ch)){
    echo 'Curl error: ' . curl_error($ch);
 }
-
-
-// <?php echo $this->Translate("Api_Edit_Product_Err_Temp_Data"); ?>
-fclose($fp);
 
 curl_close($ch);
 echo $result;

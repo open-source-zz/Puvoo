@@ -12,7 +12,7 @@
 	<div class="Heading1">
 		<?php echo $this->Translate('Get_Order_Api_Help'); ?>
 	</div>
-<div style="margin-top:20px;"><h4><?php echo $this->Translate('Api_Get_Order_Rest_Url'); ?> : <?php echo SITE_URL."rest/GetOrder"; ?></h4> </div>
+<div style="margin-top:20px;"><h4><?php echo $this->Translate('Api_Get_Order_Rest_Url'); ?> : <?php echo SITE_URL."rest/getorder"; ?></h4> </div>
 <div style="margin-top:20px;"><h4><?php echo $this->Translate('Api_Get_Order_Input'); ?></h4></div>
 <div style="margin-top:20px;"><?php echo $this->Translate('Api_Get_Order_Input_Title'); ?></div>
 <pre style="background-color:#E0E0E0;  font-size:12px">
@@ -150,7 +150,7 @@
 	<tr>
 		<td >id</td>
 		<td >INT</td>
-		<td ><?php echo $this->Translate('Api_Get_Order_Output_O_Odrs_Order_id'); ?></td>
+		<td ><?php echo $this->Translate('Api_Get_Order_Output_O_Odrs_Order_Id'); ?></td>
 		<td ><?php echo $this->Translate('Api_Get_Order_Output_M_Odrs_Order_id'); ?></td>
 	</tr>
 	<tr>
@@ -403,7 +403,7 @@
 <pre style="background-color:#E0E0E0;  font-size:12px">
 &lt;?php
 
-$rest_url = "<?php echo SITE_URL.'rest/GetOrder'; ?>";
+$rest_url = "<?php echo SITE_URL.'rest/getorder'; ?>";
 $api_key = "<b>your_api_key</b>";
 
 $data = "&lt;Order&gt;\r\n"
@@ -419,7 +419,7 @@ $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $rest_url);
 curl_setopt($ch, CURLOPT_POST, 1);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-curl_setopt($ch, CURLOPT_POSTFIELDS, urlencode($data));
+curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 curl_setopt($ch, CURLOPT_HTTPHEADER, $arr_header);
 
 $result = curl_exec($ch);

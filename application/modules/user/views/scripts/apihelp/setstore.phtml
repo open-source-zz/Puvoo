@@ -12,7 +12,7 @@
 	<div class="Heading1">
 		<?php echo $this->Translate('Set_Store_Api_Help'); ?>
 	</div>
-<div style="margin-top:20px;"><h4><?php echo $this->Translate('Api_Set_Store_Rest_Url'); ?> : <?php echo SITE_URL."rest/inventory"; ?></h4> </div>
+<div style="margin-top:20px;"><h4><?php echo $this->Translate('Api_Set_Store_Rest_Url'); ?> : <?php echo SITE_URL."rest/store"; ?></h4> </div>
 <div style="margin-top:20px;"><h4><?php echo $this->Translate('Api_Set_Store_Input'); ?></h4></div>
 <div style="margin-top:20px;"><?php echo $this->Translate('Api_Set_Store_Title'); ?></div>
 <pre style="background-color:#E0E0E0;  font-size:12px">
@@ -328,12 +328,11 @@ $arr_header[] = "Content-Type: text/xml;charset=UTF-8";
 $arr_header[] = "Accept: text/xml";
 $arr_header[] = "apikey: " . $api_key;
 
-
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $rest_url);
-curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+curl_setopt($ch, CURLOPT_POST, 1);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-curl_setopt($ch, CURLOPT_POSTFIELDS, urlencode($data));
+curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 curl_setopt($ch, CURLOPT_HTTPHEADER, $arr_header);
 
 $result = curl_exec($ch);

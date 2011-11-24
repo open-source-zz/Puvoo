@@ -1153,7 +1153,7 @@ color:#CCCCCC;
 .ui-widget2-loading { background:  url(../../images/fb/ajax-loader1.gif) 50% no-repeat; left}
 .topNav {z-index:1;	margin: 0px 10px; margin-left:0px;}
 .topNav ul {list-style: none;margin: 0;padding: 0;height: 30px;background: #17649e;font-family: arial;z-index:2;} 
-.topNav ul li {float: left;position: relative;z-index:1500;}
+.topNav ul li {float: left;position: relative;z-index:1000;}
 .topNav ul li a {
 	display: block;
 	float: left;
