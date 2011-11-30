@@ -398,5 +398,42 @@ class Models_UserTaxClass
 		}
 		return $data;
 	}
+	
+	/**
+	 * Function validateTaxClass
+	 *
+	 * This function is used to validate the taxrate value of merchant.
+     *
+	 * Date created: 2011-11-29
+	 *
+	 * @access public
+	 * @param () (Int)  	- $taxrate_value : Taxrate value
+	 * @param () (String)  	- $where : condition
+	 * @return (Boolean) 	- Return true on success
+	 * @author Yogesh
+	 *  
+	 * @license http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+	 **/
+	
+	public function validateTaxClass($taxrate_value, $user_id)
+	{
+		$db = $this->db;	
+		
+		$select = "SELECT * 
+				   FROM tax_rate_class 
+				   WHERE tax_rate = ".$taxrate_value."
+				   AND user_id = ".$user_id;
+				   
+		$data = $db->fetchRow($select);	 		
+				
+		if( $data != NULL && count($data) > 0 ) {
+			return $data["tax_rate_class_id"];
+		} else {
+			return false;
+		}		
+	}
+	
+	
+	
 }
 ?>

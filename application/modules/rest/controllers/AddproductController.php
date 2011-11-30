@@ -260,6 +260,7 @@ class Rest_AddproductController extends RestCommonController
 			$ProdImg = new Models_ProductImages();
 			$Language = new Models_Language();
 			$UserMaster = new Models_UserMaster();
+			$TaxClass = new Models_UserTaxClass();
 			
 			//variables
 			$img_content = "";
@@ -444,14 +445,16 @@ class Rest_AddproductController extends RestCommonController
 					
 					if($tex_rate_class != "" || $tex_rate_class > 0 )
 					{
-						$where = "user_id = " .$this->user_id;
-						
-						if($UserMaster->ValidateTableField("tax_rate_class_id",$tex_rate_class,"tax_rate_class",$where))
+						if(!$TaxClass->validateTaxClass($tex_rate_class,$this->user_id))
 						{
 							$arr_error[] = $this->translate->_('Tax_Rate_Class_Not_Found_Product')." " . ($i+1);
-						} 
-					}
-					
+						}
+						else 
+						{
+							$tex_rate_class = $TaxClass->validateTaxClass($tex_rate_class,$this->user_id);
+						}						
+					}	
+									
 					if($available_qty == "" || $available_qty <= 0)
 					{
 						$arr_error[] = $this->translate->_('Product_Invalid_Product_Quantity')." " . ($i+1);
