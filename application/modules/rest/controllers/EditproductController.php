@@ -655,6 +655,7 @@ class Rest_EditproductController extends RestCommonController
 					
 					if(count($attributes > 0))
 					{
+						$prod_opt_qty = 0;
 						
 						for ($j = 0; $j < count($attributes); $j++)
 						{
@@ -662,17 +663,34 @@ class Rest_EditproductController extends RestCommonController
 							
 							if($attributes[$j]["name"] == "")
 							{
-								$arr_error[] = $this->translate->_('Product_Invalid_Name_For_Attr')." " . ($j+1) . " ".$this->translate->_('Product_For_Product')."";	
+								$arr_error[] = $this->translate->_('Product_Invalid_Name_For_Attr')." " . ($j+1) . " ".$this->translate->_('Product_For_Product')." " . ($i+1);	
 							}
 							
-							if(is_array($attributes[$j]["options"]["value"]) && isset($attributes[$j]["options"]["value"]["name"]))
-							{
-								$attributes[$j]["options"]["value"] = array($attributes[$j]["options"]["value"]);
+							if(count($attributes[$j]["options"]) > 0) {
+							
+								if(is_array($attributes[$j]["options"]["value"]) && isset($attributes[$j]["options"]["value"]["name"]))
+								{
+									
+									$attributes[$j]["options"]["value"] = array($attributes[$j]["options"]["value"]);
+								
+								} else if (isset($attributes[$j]["options"][0]) ){
+								
+									$_attribute = array();
+									
+									foreach($attributes[$j]["options"] as $key => $val ) {
+									
+										$_attribute[] = $val["value"];
+										unset($attributes[$j]["options"][$key]);
+										
+									}		
+																	
+									$attributes[$j]["options"]["value"] = $_attribute;							
+								}
 							}
+							
 							
 							if(count($attributes[$j]["options"]["value"]) > 0)
 							{
-								$prod_opt_qty = 0;
 								
 								for($k = 0; $k < count($attributes[$j]["options"]["value"]); $k++)
 								{
@@ -733,16 +751,16 @@ class Rest_EditproductController extends RestCommonController
 									
 									if($attributes[$j]["options"]["value"][$k]["name"] == "")
 									{
-										$arr_error[] = $this->translate->_('Product_Invalid_Option_Value')." " . ($k+1) . " ".$this->translate->_('Product_For_Product')." " ;
+										$arr_error[] = $this->translate->_('Product_Invalid_Option_Value')." " . ($k+1) . " ".$this->translate->_('Product_For_Product')." " . ($i+1);
 									}
 								}
-								
-								/*if($prod_opt_qty != $available_qty)
-								{
-									$arr_error[] = "Sum of quantity of product options is not equal to available quantity for product";
-								}*/
 							}
 						}
+						
+						/*if($prod_opt_qty != $available_qty)
+						{
+							$arr_error[] = $this->translate->_('Product_Quantity_Error')." " . ($i+1);
+						}*/
 					}
 					
 					$warning_error = array();

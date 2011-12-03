@@ -428,14 +428,16 @@ class Fb_CartController extends FbCommonController
 			//print_r($val);die;
 		  //if($val['taxRate'] != 0)
 		  //{
+		  $defaultZone = $Common->GetDefaultTaxRate($val['uid']);
+		  
 			 if($val['tax_zone'] != '')
 			 {		 
 				$taxzone = explode(',',$val['tax_zone']);
 			 }else{
-				$taxzone = explode(',',$mysession->default_taxZone);
+				$taxzone = explode(',',$defaultZone['tax_zone']);
 			 }
 			
-				$defaultZone = $Common->GetDefaultTaxRate($val['uid']);
+				
 				
 			 $tax_rate = $Common->TaxCalculation($taxzone,$val['tax_rate'], $this->view->CountryCode, $state_name, $defaultZone['tax_rate'] );
 			 
@@ -910,15 +912,18 @@ class Fb_CartController extends FbCommonController
 		
 			//print_r($val);die;
 		  //if($val['taxRate'] != 0)
+		  
 		  //{
+		 	 $defaultZone = $Common->GetDefaultTaxRate($val['uid']);
+			 
 			 if($val['tax_zone'] != '')
 			 {		 
 				$taxzone = explode(',',$val['tax_zone']);
 			 }else{
-				$taxzone = explode(',',$mysession->default_taxZone);
+				$taxzone = explode(',',$defaultZone['tax_zone']);
 			 }
 			
-				$defaultZone = $Common->GetDefaultTaxRate($val['uid']);
+				
 				
 			 $tax_rate = $Common->TaxCalculation($taxzone,$val['tax_rate'], $this->view->CountryCode, $state_name, $defaultZone['tax_rate'] );
 			 
@@ -1610,15 +1615,16 @@ class Fb_CartController extends FbCommonController
 			$CountryCode = $Cart->GetCountryCode($prodData['shipping_user_country_id']);
  
 			$Country_Code = $CountryCode['country_iso2'];
+			$defaultZone = $Common->GetDefaultTaxRate($prodData['uid']);
 			
 			 if($prodData['tax_zone'] != '')
 			 {		 
 				$taxzone = explode(',',$prodData['tax_zone']);
 			 }else{
-				$taxzone = explode(',',$mysession->default_taxZone);
+				$taxzone = explode(',',$defaultZone['tax_zone']);
 			 }
 			
-			 $defaultZone = $Common->GetDefaultTaxRate($prodData['uid']);
+			 
 			
 			 $tax_rate = $Common->TaxCalculation($taxzone,$prodData['tax_rate'], $Country_Code,'', $defaultZone['tax_rate']);
 			 
@@ -1819,14 +1825,16 @@ class Fb_CartController extends FbCommonController
 		 if($value['taxRate'] != 0)
 		 {
  
+ 			 $defaultZone = $Common->GetDefaultTaxRate($value['uid']);
+			
 			 if($value['tax_zone'] != '')
 			 {		 
 				$taxzone = explode(',',$value['tax_zone']);
 			 }else{
-				$taxzone = explode(',',$mysession->default_taxZone);
+				$taxzone = explode(',',$defaultZone['tax_zone']);
 			 }
 			
-				$defaultZone = $Common->GetDefaultTaxRate($value['uid']);
+				
 				
 			 $tax_rate = $Common->TaxCalculation($taxzone,$value['tax_rate'], $Country_Code, $state_name, $defaultZone['tax_rate'] );
 			 

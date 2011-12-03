@@ -203,12 +203,13 @@ class User_ProductsController extends UserCommonController
 			// Clear serch option
 			$page_no = 1;
 			$result = $product->GetAllDistinctProducts();
-						
+					
 		} else 	{
 			//Get all Categories
 			$result = $product->GetAllDistinctProducts();
 			
 		}		
+		
 		// Success Message
 		$this->view->products = $product->GetAllProdCate();
 		

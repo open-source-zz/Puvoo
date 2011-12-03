@@ -159,15 +159,16 @@ class Fb_IndexController extends FbCommonController
 		 //
 		 foreach($bestSellerProd as $prokey => $val)
 		 {
+		 	 $defaultZone = $Common->GetDefaultTaxRate($val['uid']);
 					 
 			 if($val['tax_zone'] != '')
 			 {		 
 				$taxzone = explode(',',$val['tax_zone']);
 			 }else{
-				$taxzone = explode(',',$mysession->default_taxZone);
+				$taxzone = explode(',',$defaultZone['tax_zone']);
 			 }
 			 
-			 $defaultZone = $Common->GetDefaultTaxRate($val['uid']);
+			 
 			
 			 $tax_rate = $Common->TaxCalculation($taxzone,$val['tax_rate'],$mysession->Default_Countrycode,'',$defaultZone['tax_rate']);
   			 
@@ -219,15 +220,16 @@ class Fb_IndexController extends FbCommonController
 				 foreach($FrdsLikeProd as $prokey => $val)
 				 {
 						
-						 
+					 $defaultZone = $Common->GetDefaultTaxRate($val['uid']);
+					  
 					 if($val['tax_zone'] != '')
 					 {		 
 					 	$taxzone = explode(',',$val['tax_zone']);
 					 }else{
-					 	$taxzone = explode(',',$mysession->default_taxZone);
+					 	$taxzone = explode(',',$defaultZone['tax_zone']);
 					 }
 					
-					 $defaultZone = $Common->GetDefaultTaxRate($val['uid']);
+					 
 					 	
 					 $tax_rate = $Common->TaxCalculation($taxzone,$val['tax_rate'],$mysession->Default_Countrycode,'',$defaultZone['tax_rate']);
 					 

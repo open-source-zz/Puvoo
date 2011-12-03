@@ -134,7 +134,6 @@ class FbCommonController extends Zend_Controller_Action
 			
 		} 
 		
-		
 		// Facebook User Id
 		define('FACEBOOK_USERID', $Facebook_UserId);
 				
@@ -486,7 +485,7 @@ class FbCommonController extends Zend_Controller_Action
 						 {		 
 							$taxzone = explode(',',$value['tax_zone']);
 						 }else{
-							$taxzone = explode(',',$mysession->default_taxZone);
+							$taxzone = explode(',',$defaultZone['tax_zone']);
 						 }
 							
 							

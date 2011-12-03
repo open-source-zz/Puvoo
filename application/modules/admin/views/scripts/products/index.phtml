@@ -146,16 +146,19 @@
 					<td width="20%" align="center" class="tdclasshome">
 						<?php echo $this->Translate('Product_Desc'); ?>
 					</td>
-					<td width="15%" align="center" class="tdclasshome">
+					<td width="10%" align="center" class="tdclasshome">
 						<?php echo $this->Translate('Product_User'); ?>
 					</td>
-					<td width="15%" align="center" class="tdclasshome">
+					<td width="13%" align="center" class="tdclasshome">
 						<?php echo $this->Translate('Product_Category'); ?>
 					</td>
 					<td width="10%" align="center" class="tdclasshome">
 						<?php echo $this->Translate('Product_Price'); ?>
 					</td>
 					<td width="10%" align="center" class="tdclasshome">
+						<?php echo $this->Translate('Product_Price'); ?>
+					</td>
+					<td width="7%" align="center" class="tdclasshome">
 						<?php echo $this->Translate('Product_Weight'); ?>
 					</td>					
 					<td width="15%" align="center" class="tdclasshome bordernone">
@@ -193,7 +196,10 @@
 						?>
 					</td>
 					<td class="FieldLabel2" align="center">
-						<?php echo $this->records[$i]['product_price']; ?>
+						<?php echo $this->records[$i]['product_price']; ?> 
+					</td>
+					<td class="FieldLabel2" align="center">
+						<?php echo $this->records[$i]['tax_rate_name']; ?> 
 					</td>
 					<td class="FieldLabel2" align="center">
 						<?php echo $this->records[$i]['product_weight']; ?>
@@ -216,7 +222,7 @@
 			}	
 			else {  	?>
 				<tr id="tr100" class="GridRow" onmouseover="this.className='GridRowOver'" onmouseout="this.className='GridRow'">
-					<td class="FieldLabel2" colspan="8" align="center"><?php echo $this->Translate('No_record'); ?></td>
+					<td class="FieldLabel2" colspan="9" align="center"><?php echo $this->Translate('No_record'); ?></td>
 				</tr>
 	<?php 		 } 		?>				
 			

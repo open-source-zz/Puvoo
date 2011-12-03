@@ -198,18 +198,21 @@ class Fb_CategoryController extends FbCommonController
 				$catProd = $Product->GetProductByCategoryId($catid_String,$Sort);
 				$this->view->ProductList = $catProd;
 				
+				foreach($catProd as $prokey => $val)
+				{
 				
-				 foreach($catProd as $prokey => $val)
-				 {
+					$defaultZone = $Common->GetDefaultTaxRate($val['uid']);
+					//$mysession->default_taxrate = $defaultZone['tax_rate'];
+					//$mysession->default_taxZone = $defaultZone['tax_zone'];
+					
 					 if($val['tax_zone'] != '')
 					 {		 
 					 	$taxzone = explode(',',$val['tax_zone']);
 					 }else{
-					 	$taxzone = explode(',',$mysession->default_taxZone);
+					 	$taxzone = explode(',',$defaultZone['tax_zone']);
 					 }
 					 
-					 $defaultZone = $Common->GetDefaultTaxRate($val['uid']);
-					
+ 					
 					 $tax_rate = $Common->TaxCalculation($taxzone,$val['tax_rate'],$mysession->Default_Countrycode,'',$defaultZone['tax_rate']);
 					 
 					 

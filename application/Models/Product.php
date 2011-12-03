@@ -650,7 +650,7 @@ class Models_Product
 		global $mysession;
 		$db = $this->db;
 		
-		$select = "SELECT pm.product_id,pm.product_name, pm.product_description, pm.product_price, pm.product_weight, ptc.category_id,
+		$select = "SELECT pm.product_id,pm.product_name, pm.product_description, pm.product_price, pm.product_weight, ptc.category_id,trc.tax_rate_name,
 					(SELECT CONCAT(um.user_fname,' ',um.user_lname) 
 					 FROM user_master as um
 					 WHERE um.user_id = pm.user_id) as user_name,
@@ -658,8 +658,9 @@ class Models_Product
 					 FROM category_master as cm
 					 WHERE cm.category_id = ptc.category_id) as category_name
 				   FROM product_master as pm 
-				   LEFT JOIN product_to_categories as ptc
-				   ON (pm.product_id = ptc.product_id) GROUP BY pm.product_id";
+				   LEFT JOIN product_to_categories as ptc ON (pm.product_id = ptc.product_id)
+				   LEFT JOIN tax_rate_class as trc ON (trc.tax_rate_class_id = pm.tax_rate_class_id)
+				   GROUP BY pm.product_id";
 		
 		return $db->fetchAll($select);
 	}

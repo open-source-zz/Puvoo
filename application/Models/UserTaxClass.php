@@ -421,8 +421,8 @@ class Models_UserTaxClass
 		
 		$select = "SELECT * 
 				   FROM tax_rate_class 
-				   WHERE tax_rate = ".$taxrate_value."
-				   AND user_id = ".$user_id;
+				   WHERE tax_rate = '".$taxrate_value."'
+				   AND user_id = '".$user_id."'";
 				   
 		$data = $db->fetchRow($select);	 		
 				
