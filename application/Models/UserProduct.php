@@ -199,7 +199,7 @@ class Models_UserProduct
 			$sql.=" AND pm.product_price >= '".$range[0]."' AND pm.product_price <= '".$range[1]."'";			
 		}
 		
-		$select = "SELECT pm.product_id,pm.product_name, pm.product_description, pm.product_price, pm.product_weight, ptc.category_id, pm.user_id,
+		$select = "SELECT pm.product_id,pm.product_name, pm.product_description, pm.product_price, pm.product_weight, ptc.category_id, pm.user_id,trc.tax_rate_name,
 					(SELECT CONCAT(um.user_fname,' ',um.user_lname) 
 					 FROM user_master as um
 					 WHERE um.user_id = pm.user_id) as user_name,
@@ -209,6 +209,7 @@ class Models_UserProduct
 				   FROM product_master as pm 
 				   LEFT JOIN product_to_categories as ptc
 				   ON (pm.product_id = ptc.product_id)
+				   LEFT JOIN tax_rate_class as trc ON (trc.tax_rate_class_id = pm.tax_rate_class_id)
 				   WHERE pm.user_id = ".$this->user_id." ".$sql." 
 				   GROUP BY pm.product_id";
 		
