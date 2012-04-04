@@ -502,14 +502,14 @@ class Rest_AddproductController extends RestCommonController
 						
 						$image_ext = strtolower($image_ext);
 						
-						if( $image_ext != ".jpg" && $image_ext != ".jpeg" && $image_ext != ".bmp" && $image_ext != ".gif" && $image_ext != ".png"  ) 
+/*						if( $image_ext != ".jpg" && $image_ext != ".jpeg" && $image_ext != ".bmp" && $image_ext != ".gif" && $image_ext != ".png"  ) 
 						{
 							$arr_error[] = $this->translate->_('Product_Invalid_Product_Image_Type')." " . ($i+1);	
-						}
+						}*/
 												
 						list($img_width, $img_height, $img_type) = getimagesize($main_image);
 						
-						if($img_width < 300)
+/*						if($img_width < 300)
 						{
 							$arr_error[] = $this->translate->_('Product_Invalid_Product_Image_Width')." " . ($i+1);	
 						}
@@ -522,7 +522,7 @@ class Rest_AddproductController extends RestCommonController
 						if($img_type <= 0  ||  $img_type > 3) 
 						{
 							$arr_error[] = $this->translate->_('Product_Invalid_Product_Image_Type')." " . ($i+1);	
-						}
+						}*/
 						
 						
 						$img_width = 0;
@@ -548,15 +548,15 @@ class Rest_AddproductController extends RestCommonController
 									$image_ext = strtolower($image_ext);
 									
 									
-									if( $image_ext != ".jpg" && $image_ext != ".jpeg" && $image_ext != ".bmp" && $image_ext != ".gif" && $image_ext != ".png"  ) 
+/*									if( $image_ext != ".jpg" && $image_ext != ".jpeg" && $image_ext != ".bmp" && $image_ext != ".gif" && $image_ext != ".png"  ) 
 									{
 										$arr_error[] = $this->translate->_('Product_Invalid_Image_Type')." " . ($j+1) . " ".$this->translate->_('Product_For_Product')." " . ($i+1);	
-									}
+									}*/
 									
 									//$img_content = file_get_contents($main_image);
 									list($img_width, $img_height, $img_type) = getimagesize($images[$j]);
 										 
-									if($img_width < 300)
+							/*		if($img_width < 300)
 									{
 										$arr_error[] = $this->translate->_('Product_Invalid_Image_Width')." " . ($j+1) . " ".$this->translate->_('Product_For_Product')." " . ($i+1);	
 									}
@@ -569,7 +569,7 @@ class Rest_AddproductController extends RestCommonController
 									if($img_type <= 0  ||  $img_type > 3) 
 									{
 										$arr_error[] = $this->translate->_('Product_Invalid_Image_Type')." " . ($j+1) . " ".$this->translate->_('Product_For_Product')." " . ($i+1);	
-									}
+									}*/
 									
 									$img_width = 0;
 									$img_height = 0;
@@ -710,10 +710,10 @@ class Rest_AddproductController extends RestCommonController
 							}
 						}
 						
-						if($prod_opt_qty != $available_qty)
+/*						if($prod_opt_qty != $available_qty)
 						{
 							$arr_error[] = $this->translate->_('Product_Quantity_Error')." " . ($i+1);
-						}
+						}*/
 					}
 					
 					$warning_error = array();
@@ -1511,16 +1511,16 @@ class Rest_AddproductController extends RestCommonController
 						
 						$image_ext = strtolower($image_ext);						
 						
-						if( $image_ext != ".jpg" && $image_ext != ".jpeg"  && $image_ext != ".bmp" && $image_ext != ".gif" && $image_ext != ".png"  ) 
+/*						if( $image_ext != ".jpg" && $image_ext != ".jpeg"  && $image_ext != ".bmp" && $image_ext != ".gif" && $image_ext != ".png"  ) 
 						{
 							$arr_error[] = $this->translate->_('Product_Invalid_Product_Image_Type');
-						}
+						}*/
 						
 						
 						//$img_content = file_get_contents($main_image);
 						list($img_width, $img_height, $img_type) = getimagesize($main_image);
 						
-						if($img_width < 350)
+					/*	if($img_width < 350)
 						{
 							$arr_error[] = $this->translate->_('Product_Invalid_Product_Image_Width');
 						}
@@ -1533,7 +1533,7 @@ class Rest_AddproductController extends RestCommonController
 						if($img_type <= 0  ||  $img_type > 3) 
 						{
 							$arr_error[] = $this->translate->_('Product_Invalid_Product_Image_Type');
-						}
+						}*/
 						
 						
 						$img_width = 0;
@@ -1559,16 +1559,16 @@ class Rest_AddproductController extends RestCommonController
 						
 								$image_ext = strtolower($image_ext);						
 								
-								if( $image_ext != ".jpg" && $image_ext != ".jpeg"  && $image_ext != ".bmp" && $image_ext != ".gif" && $image_ext != ".png"  ) 
+							/*	if( $image_ext != ".jpg" && $image_ext != ".jpeg"  && $image_ext != ".bmp" && $image_ext != ".gif" && $image_ext != ".png"  ) 
 								{
 									$arr_error[] = $this->translate->_('Product_Invalid_Image_Type')." " . ($j+1) . " ".$this->translate->_('Product_For_Product')."";	
 									
-								}
+								}*/
 								
 								//$img_content = file_get_contents($main_image);
 								list($img_width, $img_height, $img_type) = getimagesize($images[$j]);
 									 
-								if($img_width < 350)
+							/*	if($img_width < 350)
 								{
 									$arr_error[] = $this->translate->_('Product_Invalid_Image_Width')." " . ($j+1) . " ".$this->translate->_('Product_For_Product')."";	
 								}
@@ -1576,12 +1576,12 @@ class Rest_AddproductController extends RestCommonController
 								if($img_height < 350)
 								{
 									$arr_error[] = $this->translate->_('Product_Invalid_Image_Height')." " . ($j+1) . " ".$this->translate->_('Product_For_Product')."";	
-								}
+								}*/
 								
-								if($img_type <= 0  ||  $img_type > 3) 
+/*								if($img_type <= 0  ||  $img_type > 3) 
 								{
 									$arr_error[] = $this->translate->_('Product_Invalid_Image_Type')." " . ($j+1) . " ".$this->translate->_('Product_For_Product')."";	
-								}
+								}*/
 								
 								$img_width = 0;
 								$img_height = 0;
